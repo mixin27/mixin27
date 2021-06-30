@@ -1,7 +1,10 @@
 ### Hi there 👋
 
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=ZattWine&theme=cobalt&show_icons=true)](https://github.com/anuraghazra/github-readme-stats)
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=ZattWine&theme=vue&show_icons=true)](https://github.com/ZattWine)
 
+[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=ZattWine&repo=kyawzayartun)](https://github.com/ZattWine/kyawzayartun)
+
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ZattWine&layout=compact)](https://github.com/anuraghazra/github-readme-stats)
 
 <!--
 **ZattWine/ZattWine** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
