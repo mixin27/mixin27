@@ -1,21 +1,21 @@
-### Hi there 👋
+### Hi there 👋 
+
+[![GitHub followers](https://img.shields.io/github/followers/ZattWine?style=social)](https://img.shields.io/github/followers/ZattWine?style=social)
+
+- 🇲🇲 I'm from [Myanmar (Burma)][country].
+- 🎓 I've got B.C.Sc
+- 🏢 I’m currently working on `109/110` 😛
+- 👨‍💻 I’m currently learning `software development and software engineering`.
+- 😎 I'm willing to learn new `technologies`.
+- 📫 How to reach me: kyawzayartun.dev@gmail.com
+
+[![kyawzayartun](https://github-readme-stats.vercel.app/api/pin/?username=ZattWine&theme=blueberry&repo=kyawzayartun)](https://kyawzayartun.vercel.app/)
+
+### My Github Status
 
 <!-- https://github.com/anuraghazra/github-readme-stats -->
-[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=ZattWine&theme=vue&show_icons=true)](https://github.com/ZattWine)
+[![Zayar Tun's GitHub stats](https://github-readme-stats.vercel.app/api?username=ZattWine&theme=blueberry&show_icons=true&locale=en)](https://github.com/ZattWine)
 
-[![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=ZattWine&repo=kyawzayartun)](https://github.com/ZattWine/kyawzayartun)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ZattWine&layout=compact&theme=blueberry)](https://github.com/ZattWine)
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ZattWine&layout=compact)](https://github.com/ZattWine)
-
-<!-- **ZattWine/ZattWine** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started: -->
-<!-- - 👯 I’m looking to collaborate on  -->
-<!-- - 🤔 I’m looking for help with ... -->
-
-- 🔭 I’m currently working on 109/110
-- 🌱 I’m currently learning `software development` and `software engineering`.
-- 💬 Ask me about everything whatever you want.
-- 📫 How to reach me: [facebook](https://www.facebook.com/zy.98727)
-- 😄 Pronouns: pronouns as you like and you can call me `Zayar`
-- ⚡ Fun fact: `single` lol!!
+[country]: https://en.wikipedia.org/wiki/Myanmar
