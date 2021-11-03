@@ -1,6 +1,6 @@
 ### Hi there 👋 
 
-[![GitHub followers](https://img.shields.io/github/followers/ZattWine?style=social)](https://img.shields.io/github/followers/ZattWine?style=social)
+[![GitHub followers](https://img.shields.io/github/followers/mixin27?style=social)](https://img.shields.io/github/followers/mixin27?style=social)
 
 - 🇲🇲 I'm from [Myanmar (Burma)][country].
 - 🎓 I've got B.C.Sc
@@ -9,13 +9,13 @@
 - 😎 I'm very eager to learn new `technologies`.
 - 📫 How to reach me: kyawzayartun.dev@gmail.com
 
-[![kyawzayartun](https://github-readme-stats.vercel.app/api/pin/?username=ZattWine&theme=blueberry&repo=kyawzayartun)](https://kyawzayartun.vercel.app/)
+[![kyawzayartun](https://github-readme-stats.vercel.app/api/pin/?username=mixin27&theme=blueberry&repo=kyawzayartun)](https://kyawzayartun.vercel.app/)
 
 ### My Github Status
 
 <!-- https://github.com/anuraghazra/github-readme-stats -->
-[![Zayar Tun's GitHub stats](https://github-readme-stats.vercel.app/api?username=ZattWine&theme=blueberry&show_icons=true&locale=en)](https://github.com/ZattWine)
+[![Zayar Tun's GitHub stats](https://github-readme-stats.vercel.app/api?username=mixin27&theme=blueberry&show_icons=true&locale=en)](https://github.com/mixin27)
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=ZattWine&layout=compact&theme=blueberry)](https://github.com/ZattWine)
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=mixin27&layout=compact&theme=blueberry)](https://github.com/mixin27)
 
 [country]: https://en.wikipedia.org/wiki/Myanmar
