@@ -1,7 +1,7 @@
 ---
 title: Rust & WebAssembly with JS (TS) - The Practical Guide
 description: Learn how to code in Rust! Compile the code to WebAssembly, prepare JS/TS frontend and finish the course by creating the practical Snake game that can run in any browser.
-author: Filip Jerga
+author: Kyaw Zayar Tun
 authorImage: https://thrangra.sirv.com/Rust_small.jpg
 coverImage: https://thrangra.sirv.com/Rust_small.jpg
 date: "2022-03-25"
@@ -11,7 +11,7 @@ date: "2022-03-25"
 
 Rust is a programing language. Rust is blazingly fast and memory-efficient: with no runtime or garbage collector, it can power performance-critical services, run on embedded devices, and easily integrate with other languages.
 
-**What is WebAssembly?** 
+**What is WebAssembly?**
 
 WebAssembly is a new type of code that can be run in modern web browsers — it is a low-level assembly-like language with a compact binary format that runs with near-native performance and provides languages such as C/C++, C#, and Rust with a compilation target so that they can run on the web. It is also designed to run alongside JavaScript, allowing both to work together.
 
@@ -33,7 +33,7 @@ The next feature you will learn of is borrowing and references. Through referenc
 
 In the beginning lectures, we will also talk about memory management in Stack and the Heap structures, modularity, strings, and other essential topics.
 
-After Rust's introduction lectures, you will start building your Snake game. You will learn how to structure the application modular and cleanly. 
+After Rust's introduction lectures, you will start building your Snake game. You will learn how to structure the application modular and cleanly.
 
 You will build your own JS frontend, exposed through a simple Webpack development server. Later, you will transform JS implementation into TS (Typescript). This will specify types and be on the same page as Rust code.
 

@@ -1,7 +1,7 @@
 ---
 title: Web Development & Code 101 - Full Guide [2022]
 description: Learn programming in JS language, HTML, and CSS. Create a Web Application made in React JS. The path to the final project includes many assignments, code exercises, and challenges.
-author: Filip Jerga
+author: Kyaw Zayar Tun
 authorImage: https://thrangra.sirv.com/Course_logo%20copy.jpg
 coverImage: https://thrangra.sirv.com/Course_logo%20copy.jpg
 date: "2021-05-25"
@@ -27,18 +27,18 @@ The focus of this section is to think like the programmers and not repeat code w
 
 Some of the topics from this section are:
 
-*   computing history, variables, primitive types, functions, parameters, 
-*   objects, arrays, conditionals, logical operators, classes, inheritance, prototypes
-*   debugging, scope, call stack
+- computing history, variables, primitive types, functions, parameters,
+- objects, arrays, conditionals, logical operators, classes, inheritance, prototypes
+- debugging, scope, call stack
 
 **2\. HTML Basics**
 
-This part of the course covers the core part of HTML. You will learn and understand how to structurize HTML documents. 
+This part of the course covers the core part of HTML. You will learn and understand how to structurize HTML documents.
 
 This part covers:
 
-*   dom (document object model), document object,
-*   elements + functions
+- dom (document object model), document object,
+- elements + functions
 
 **3\. CSS Basics**
 
@@ -54,11 +54,11 @@ This part will teach you how things work behind the scene. You will use javascri
 
 The main topics of this section are:
 
-*   HTML nodes, dynamic elements
+- HTML nodes, dynamic elements
 
-*   "mini" JS framework, modularity, 
+- "mini" JS framework, modularity,
 
-*   ES and Common modules
+- ES and Common modules
 
 **5\. Web server  + Webpack**
 
@@ -68,15 +68,15 @@ Then we will create our custom Web Server, which will serve our HTML project, wh
 
 Later in the section, we will dive into Webpack. Webpack is a  bundler, and we will use it to bundle our javascript code together. You will learn how to write a javascript, which was impossible to write before.
 
-*   client->sever, servers
-*   Node JS, Webpack, 
+- client->sever, servers
+- Node JS, Webpack,
 
 **6. React JS**
 
 The final part of this course will cover React JS library. You will learn to use React JS to create web applications with ease. You will create a final version of your web app. In the end, everything will connect, and you will understand how React JS works.
 
-*   React JS
-*   Hooks, State
-*   Reactivity
+- React JS
+- Hooks, State
+- Reactivity
 
 It will be a long journey, but you will become developers in the end.
