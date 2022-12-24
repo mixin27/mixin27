@@ -15,6 +15,13 @@ const __BLOG_DIR__ = getDirectory("/content/blogs");
 const getBlogFileNames = (): string[] => getFileNames(__BLOG_DIR__);
 
 /**
+ * Get list slug from file names.
+ * @returns List of `slug`.
+ */
+const getBlogSlugs = (): string[] =>
+  getBlogFileNames().map((name) => name.replace(".md", ""));
+
+/**
  * Get blog content from file.
  * @param fileName The name of the blog file.
  * @returns The `Blog` of the blog file.
@@ -24,6 +31,13 @@ const getBlog = (fileName: string): Blog => {
   blog.slug = fileName.replace(".md", "");
   return blog;
 };
+
+/**
+ * Get the blog with the name of `slug` from blog files.
+ * @param slug Slug to get `Blog`.
+ * @returns The `Blog` according to `slug`.
+ */
+const getBlogBySlug = (slug: string): Blog => getBlog(slug + ".md");
 
 /**
  * Get blog list by file names.
@@ -44,4 +58,4 @@ const getBlogList = (): Blog[] => {
   return getBlogListByFileNames(blogFileNames);
 };
 
-export { getBlogFileNames, getBlog, getBlogList };
+export { getBlogFileNames, getBlogSlugs, getBlog, getBlogBySlug, getBlogList };

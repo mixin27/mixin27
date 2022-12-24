@@ -19,7 +19,7 @@ const BaseLayout: FunctionComponent<PropsWithChildren> = ({ children }) => {
             <Navbar />
             <Header />
           </div>
-          <div className="relative lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+          {/* <div className="relative lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
             <Image
               priority
               alt=""
@@ -28,7 +28,7 @@ const BaseLayout: FunctionComponent<PropsWithChildren> = ({ children }) => {
               fill
               sizes="100vw"
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
