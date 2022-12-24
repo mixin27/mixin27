@@ -14,7 +14,6 @@ const BlogDetail: NextPage<Props> = ({ blog }) => {
     <>
       <PageLayout pageTitle={blog.title}>
         <div className="w-2/3 m-auto">
-          {/* Blog Header Starts */}
           <div className="blog-detail-header">
             <div className="flex flex-row justify-between mb-2">
               <div className="flex items-center">
@@ -60,9 +59,8 @@ const BlogDetail: NextPage<Props> = ({ blog }) => {
               />
             </div>
           </div>
-          {/* Blog Header Ends */}
-          <article className="prose lg:prose-lg markdown-image-50">
-            <div dangerouslySetInnerHTML={{ __html: blog.content }}></div>
+          <article className="prose lg:prose-lg markdown-image-50 markdown-code">
+            <div dangerouslySetInnerHTML={{ __html: blog.content }} />
           </article>
         </div>
       </PageLayout>
