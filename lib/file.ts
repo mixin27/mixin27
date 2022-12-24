@@ -1,5 +1,6 @@
 import { join } from "path";
 import fs from "fs";
+import matter from "gray-matter";
 
 /**
  * Get full directory path.
@@ -20,9 +21,10 @@ const getFileNames = (dir: string): string[] => fs.readdirSync(dir);
  * @param filePath Path of the file you want to open.
  * @returns File content.
  */
-const getFileContent = (filePath: string): string => {
+const getFileContent = (filePath: string) => {
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  return fileContent;
+  const { data, content } = matter(fileContent);
+  return { ...data, content };
 };
 
 export { getDirectory, getFileNames, getFileContent };

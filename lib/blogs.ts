@@ -1,7 +1,5 @@
 import { join } from "path";
 
-import matter from "gray-matter";
-
 import { getDirectory, getFileContent, getFileNames } from "./file";
 import { getAllItems } from "./helpers";
 import { Blog } from "../interfaces/Blog";
@@ -23,9 +21,9 @@ const getBlogFileNames = (): string[] => getFileNames(__BLOG_DIR__);
  * @returns The `Blog` of the blog file.
  */
 const getBlog = (fileName: string): Blog => {
-  const fileContent = getFileContent(join(__BLOG_DIR__, fileName));
-  const { data, content } = matter(fileContent);
-  return { ...data, content } as Blog;
+  const blog = getFileContent(join(__BLOG_DIR__, fileName)) as Blog;
+  blog.slug = fileName.replace(".md", "");
+  return blog;
 };
 
 /**
