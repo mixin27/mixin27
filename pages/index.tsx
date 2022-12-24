@@ -1,11 +1,10 @@
+import { BlogList } from "@components/blog";
+import { BaseLayout } from "@components/layout";
+import { PortfolioList } from "@components/portfolio";
+import { Blog } from "@interfaces/Blog";
+import { getBlogList } from "@lib/blogs";
 import type { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
-
-import { BlogList } from "../components/blog";
-import { PortfolioList } from "../components/portfolio";
-import { BaseLayout } from "../components/layout";
-import { getBlogList } from "../lib/blogs";
-import { Blog } from "../interfaces/Blog";
 
 type Props = {
   blogs: Blog[];

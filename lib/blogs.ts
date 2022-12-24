@@ -1,8 +1,7 @@
+import { Blog } from "@interfaces/Blog";
 import { join } from "path";
-
 import { getDirectory, getFileContent, getFileNames } from "./file";
 import { getAllItems } from "./helpers";
-import { Blog } from "../interfaces/Blog";
 
 /**
  * Blog directory

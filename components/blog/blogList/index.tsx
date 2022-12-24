@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 
-import { Blog } from "../../../interfaces/Blog";
+import { Blog } from "@interfaces/Blog";
 import { BlogItem } from "./BlogItem";
 
 type Props = {
