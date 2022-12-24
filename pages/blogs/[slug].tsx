@@ -1,6 +1,6 @@
 import { PageLayout } from "@components/layout";
 import { Blog } from "@interfaces/Blog";
-import { getBlogBySlug, getBlogSlugs } from "@lib/blogs";
+import { getBlogBySlugWithMarkdown, getBlogSlugs } from "@lib/blogs";
 import Image from "next/image";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next/types";
 import { ParsedUrlQuery } from "querystring";
@@ -62,7 +62,7 @@ const BlogDetail: NextPage<Props> = ({ blog }) => {
           </div>
           {/* Blog Header Ends */}
           <article className="prose lg:prose-lg markdown-image-50">
-            {blog.content}
+            <div dangerouslySetInnerHTML={{ __html: blog.content }}></div>
           </article>
         </div>
       </PageLayout>
@@ -74,9 +74,11 @@ interface Params extends ParsedUrlQuery {
   slug: string;
 }
 
-export const getStaticProps: GetStaticProps<Props, Params> = (context) => {
+export const getStaticProps: GetStaticProps<Props, Params> = async (
+  context
+) => {
   const { slug } = context.params!;
-  const blog = getBlogBySlug(slug);
+  const blog = await getBlogBySlugWithMarkdown(slug);
   return {
     props: { blog },
   };

@@ -2,6 +2,7 @@ import { Blog } from "@interfaces/Blog";
 import { join } from "path";
 import { getDirectory, getFileContent, getFileNames } from "./file";
 import { getAllItems } from "./helpers";
+import { markdownToHtml } from "./md";
 
 /**
  * Blog directory
@@ -40,6 +41,18 @@ const getBlog = (fileName: string): Blog => {
 const getBlogBySlug = (slug: string): Blog => getBlog(slug + ".md");
 
 /**
+ * Get the blog with the name of `slug` from blog files with
+ * converted `HTML` content.
+ * @param slug Slug to get `Blog`
+ * @returns The `Blog` with converted `HTML` content.
+ */
+const getBlogBySlugWithMarkdown = async (slug: string): Promise<Blog> => {
+  const blog = getBlogBySlug(slug);
+  blog.content = await markdownToHtml(blog.content);
+  return blog;
+};
+
+/**
  * Get blog list by file names.
  * @param fileNames List of blog file names.
  * @returns List of `Blog`.
@@ -58,4 +71,11 @@ const getBlogList = (): Blog[] => {
   return getBlogListByFileNames(blogFileNames);
 };
 
-export { getBlogFileNames, getBlogSlugs, getBlog, getBlogBySlug, getBlogList };
+export {
+  getBlogFileNames,
+  getBlogSlugs,
+  getBlog,
+  getBlogBySlug,
+  getBlogBySlugWithMarkdown,
+  getBlogList,
+};
