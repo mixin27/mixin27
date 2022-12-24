@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Fragment } from "react";
 
 import { Popover, Transition } from "@headlessui/react";
