@@ -1,9 +1,11 @@
-import type { NextPage } from "next";
+import { join } from "path";
+import type { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 
 import { BlogList } from "../components/blog";
 import { PortfolioList } from "../components/portfolio";
 import { BaseLayout } from "../components/layout";
+import { getBlogContent, getBlogFileNames } from "../lib/md";
 
 const Home: NextPage = () => {
   return (
@@ -29,6 +31,21 @@ const Home: NextPage = () => {
       <PortfolioList />
     </BaseLayout>
   );
+};
+
+export const getStaticProps: GetStaticProps = () => {
+  // Get all file names from blogs directory.
+  const blogFileNames = getBlogFileNames();
+
+  blogFileNames.forEach((fileName) => {
+    // Read blog content from file
+    const blogContent = getBlogContent(fileName);
+    console.log(blogContent);
+  });
+
+  return {
+    props: {},
+  };
 };
 
 export default Home;
