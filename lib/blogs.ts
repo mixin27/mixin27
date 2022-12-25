@@ -1,6 +1,12 @@
 import { Blog } from "@interfaces/Blog";
+import { SearchContent } from "@interfaces/Markdown";
 import { join } from "path";
-import { getDirectory, getFileContent, getFileNames } from "./file";
+import {
+  getDirectory,
+  getFileContent,
+  getFileNames,
+  writeContentToFile,
+} from "./file";
 import { getAllItems } from "./helpers";
 import { markdownToHtml } from "./md";
 
@@ -8,6 +14,7 @@ import { markdownToHtml } from "./md";
  * Blog directory
  */
 const __BLOG_DIR__ = getDirectory("/content/blogs");
+const __BLOG_SEARCH_FILE__ = getDirectory("/content/search/index.json");
 
 /**
  * Get blog file names from /content/blogs/
@@ -71,6 +78,27 @@ const getBlogList = (): Blog[] => {
   return getBlogListByFileNames(blogFileNames);
 };
 
+/**
+ * Write `Blog` json data to a file.
+ *
+ * @param blogs List of `Blog` to be written to a file.
+ */
+const writeBlogListToFile = (blogs: Blog[]) => {
+  const searchItemList: SearchContent[] = [];
+
+  blogs.forEach((blog) => {
+    const searchItem: SearchContent = {
+      slug: blog.slug,
+      title: blog.title,
+      description: blog.description,
+      category: "blogs",
+    };
+    searchItemList.push(searchItem);
+  });
+  const json = JSON.stringify(searchItemList, null, 2);
+  writeContentToFile(json, __BLOG_SEARCH_FILE__);
+};
+
 export {
   getBlogFileNames,
   getBlogSlugs,
@@ -78,4 +106,5 @@ export {
   getBlogBySlug,
   getBlogBySlugWithMarkdown,
   getBlogList,
+  writeBlogListToFile,
 };

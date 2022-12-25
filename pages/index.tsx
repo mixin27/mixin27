@@ -1,8 +1,11 @@
+import fs from "fs";
 import { BlogList } from "@components/blog";
 import { BaseLayout } from "@components/layout";
 import { PortfolioList } from "@components/portfolio";
 import { Blog } from "@interfaces/Blog";
-import { getBlogList } from "@lib/blogs";
+import { SearchContent } from "@interfaces/Markdown";
+import { getBlogList, writeBlogListToFile } from "@lib/blogs";
+import { getDirectory } from "@lib/file";
 import type { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 
@@ -38,6 +41,8 @@ const Home: NextPage<Props> = ({ blogs }) => {
 
 export const getStaticProps: GetStaticProps = () => {
   const blogs = getBlogList();
+  // Store blogs to search document as json
+  writeBlogListToFile(blogs);
 
   return {
     props: { blogs },

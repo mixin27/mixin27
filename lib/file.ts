@@ -27,4 +27,13 @@ const getFileContent = (filePath: string) => {
   return { ...data, content };
 };
 
-export { getDirectory, getFileNames, getFileContent };
+/**
+ * Write `string` content to a specific file.
+ *
+ * @param content `string` content to write.
+ * @param filePath File path to be written.
+ */
+const writeContentToFile = (content: string, filePath: string): void =>
+  fs.writeFileSync(filePath, content);
+
+export { getDirectory, getFileNames, getFileContent, writeContentToFile };
