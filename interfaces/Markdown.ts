@@ -5,3 +5,7 @@ export interface MarkdownItem {
   slug: string;
   date: string;
 }
+
+export interface SearchContent extends Partial<MarkdownItem> {
+  category: string;
+}
