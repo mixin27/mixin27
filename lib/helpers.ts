@@ -4,6 +4,7 @@ import {
   SearchContent,
 } from "@interfaces/Markdown";
 import { getDirectory, writeContentToFile } from "./file";
+import searchDocs from "@content/search/index.json";
 
 const __SEARCH_DATA_FILE__ = getDirectory("/content/search/index.json");
 
@@ -13,7 +14,10 @@ const __SEARCH_DATA_FILE__ = getDirectory("/content/search/index.json");
  * @param get Function to invoke.
  * @returns List of `T`.
  */
-function getAllItems<T>(fileNames: string[], get: (name: string) => T): T[] {
+function getAllItems<T>(
+  fileNames: string[],
+  get: (fileName: string) => T
+): T[] {
   return fileNames.map((name) => get(name));
 }
 
@@ -37,4 +41,8 @@ function saveSearchData(content: MarkdownContent) {
   writeContentToFile(json, __SEARCH_DATA_FILE__);
 }
 
-export { getAllItems, saveSearchData };
+const getLocalSearchDocuments = () => {
+  return searchDocs;
+};
+
+export { getAllItems, saveSearchData, getLocalSearchDocuments };
