@@ -1,6 +1,6 @@
 import * as JsSearch from "js-search";
 import { SearchContent } from "@interfaces/Markdown";
-import { getLocalSearchDocuments } from "@lib/helpers";
+import { getLocalSearchDocuments } from "./utils";
 
 class ContentIndexer {
   private static instance: ContentIndexer;

@@ -4,7 +4,6 @@ import {
   SearchContent,
 } from "@interfaces/Markdown";
 import { getDirectory, writeContentToFile } from "./file";
-import searchDocs from "@content/search/index.json";
 
 const __SEARCH_DATA_FILE__ = getDirectory("/content/search/index.json");
 
@@ -41,8 +40,4 @@ function saveSearchData(content: MarkdownContent) {
   writeContentToFile(json, __SEARCH_DATA_FILE__);
 }
 
-const getLocalSearchDocuments = () => {
-  return searchDocs;
-};
-
-export { getAllItems, saveSearchData, getLocalSearchDocuments };
+export { getAllItems, saveSearchData };
