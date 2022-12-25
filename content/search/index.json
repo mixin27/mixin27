@@ -30,9 +30,15 @@
     "category": "blogs"
   },
   {
-    "slug": "software-engineer-siemens",
-    "title": "Software Engineer Siemens",
-    "description": "Working as C++ and C# software engineer",
+    "slug": "flutter-mobile-developer-sbs",
+    "title": "Mobile Developer - Flutter",
+    "description": "Currently working as mobile developer using flutter.",
+    "category": "portfolios"
+  },
+  {
+    "slug": "android-developer-etrade",
+    "title": "Android Developer",
+    "description": "Working as an android developer.",
     "category": "portfolios"
   }
 ]

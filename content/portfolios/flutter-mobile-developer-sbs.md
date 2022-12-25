@@ -1,16 +1,16 @@
 ---
-title: Software Engineer Siemens
-description: Working as C++ and C# software engineer
+title: Mobile Developer - Flutter
+description: Currently working as mobile developer using flutter.
 employee: Kyaw Zayar Tun
 employmentTime: 10
 employeeImage: https://images.unsplash.com/photo-1622473590773-f588134b6ce7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1370&q=50
-coverImage: https://images.unsplash.com/photo-1622473590773-f588134b6ce7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1370&q=50
-date: "2022-05-20"
+coverImage: https://images.unsplash.com/photo-1617040619263-41c5a9ca7521?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80
+date: "2022-12-25"
 highlights:
   [
-    "C# & C++ Programming",
-    "Working on the medical Ultrasound device",
-    "Experience with a parsing framework for medical data",
+    "Using Dart Programming Language and Flutter framework",
+    "Working on technical department.",
+    "Experience with developing new flutter application and re-develop old application using flutter",
   ]
 ---
 
