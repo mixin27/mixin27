@@ -5,8 +5,10 @@ import { BaseLayout } from "@components/layout";
 import { PortfolioList } from "@components/portfolio";
 import { Blog } from "@interfaces/Blog";
 import { Portfolio } from "@interfaces/Portofolio";
-import { getBlogList, writeBlogListToFile } from "@lib/blogs";
+import { getBlogList } from "@lib/blogs";
 import { getPortfolioList } from "@lib/portfolios";
+import { saveSearchData } from "@lib/helpers";
+import { MarkdownContent } from "@interfaces/Markdown";
 
 type Props = {
   blogs: Blog[];
@@ -42,9 +44,11 @@ const Home: NextPage<Props> = ({ blogs, portfolios }) => {
 export const getStaticProps: GetStaticProps = () => {
   const blogs = getBlogList();
   const portfolios = getPortfolioList();
-
-  // Store blogs to search document as json
-  writeBlogListToFile(blogs);
+  const content: MarkdownContent = {
+    blogs,
+    portfolios,
+  };
+  saveSearchData(content);
 
   return {
     props: { blogs, portfolios },

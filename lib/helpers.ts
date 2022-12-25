@@ -1,5 +1,11 @@
-import { MarkdownItem, SearchContent } from "@interfaces/Markdown";
-import { writeContentToFile } from "./file";
+import {
+  ContentItemName,
+  MarkdownContent,
+  SearchContent,
+} from "@interfaces/Markdown";
+import { getDirectory, writeContentToFile } from "./file";
+
+const __SEARCH_DATA_FILE__ = getDirectory("/content/search/index.json");
 
 /**
  * Get `T` item list according to `get` function.
@@ -11,31 +17,24 @@ function getAllItems<T>(fileNames: string[], get: (name: string) => T): T[] {
   return fileNames.map((name) => get(name));
 }
 
-/**
- * Prepare and write list of search document data as `json` list to a file.
- *
- * @param filePath Path of file to be written.
- * @param items List of item to be written.
- * @param category Category name for each written item.
- */
-function writeListToFile<T extends MarkdownItem>(
-  filePath: string,
-  items: T[],
-  category: string
-) {
+function saveSearchData(content: MarkdownContent) {
   const searchItemList: SearchContent[] = [];
 
-  items.forEach((item) => {
-    const searchItem: SearchContent = {
-      slug: item.slug,
-      title: item.title,
-      description: item.description,
-      category: category,
-    };
-    searchItemList.push(searchItem);
+  Object.keys(content).forEach((dataSource) => {
+    const contentName = dataSource as ContentItemName;
+    content[contentName].forEach((data) => {
+      const searchItem: SearchContent = {
+        slug: data.slug,
+        title: data.title,
+        description: data.description,
+        category: contentName,
+      };
+      searchItemList.push(searchItem);
+    });
   });
+
   const json = JSON.stringify(searchItemList, null, 2);
-  writeContentToFile(json, filePath);
+  writeContentToFile(json, __SEARCH_DATA_FILE__);
 }
 
-export { getAllItems, writeListToFile };
+export { getAllItems, saveSearchData };

@@ -1,20 +1,13 @@
 import { Blog } from "@interfaces/Blog";
-import { SearchContent } from "@interfaces/Markdown";
 import { join } from "path";
-import {
-  getDirectory,
-  getFileContent,
-  getFileNames,
-  writeContentToFile,
-} from "./file";
-import { getAllItems, writeListToFile } from "./helpers";
+import { getDirectory, getFileContent, getFileNames } from "./file";
+import { getAllItems } from "./helpers";
 import { markdownToHtml } from "./md";
 
 /**
  * Blog directory
  */
 const __BLOG_DIR__ = getDirectory("/content/blogs");
-const __BLOG_SEARCH_FILE__ = getDirectory("/content/search/index.json");
 
 /**
  * Get blog file names from /content/blogs/
@@ -78,15 +71,6 @@ const getBlogList = (): Blog[] => {
   return getBlogListByFileNames(blogFileNames);
 };
 
-/**
- * Write `Blog` json data to a file.
- *
- * @param blogs List of `Blog` to be written to a file.
- */
-const writeBlogListToFile = (blogs: Blog[]) => {
-  writeListToFile<Blog>(__BLOG_SEARCH_FILE__, blogs, "blogs");
-};
-
 export {
   getBlogFileNames,
   getBlogSlugs,
@@ -94,5 +78,4 @@ export {
   getBlogBySlug,
   getBlogBySlugWithMarkdown,
   getBlogList,
-  writeBlogListToFile,
 };

@@ -1,12 +1,6 @@
-import { SearchContent } from "@interfaces/Markdown";
 import { Portfolio } from "@interfaces/Portofolio";
 import { join } from "path";
-import {
-  getDirectory,
-  getFileContent,
-  getFileNames,
-  writeContentToFile,
-} from "./file";
+import { getDirectory, getFileContent, getFileNames } from "./file";
 import { getAllItems } from "./helpers";
 import { markdownToHtml } from "./md";
 
@@ -14,7 +8,6 @@ import { markdownToHtml } from "./md";
  * Portfolios directory
  */
 const __PORTFOLIO_DIR__ = getDirectory("/content/portfolios");
-const __PORTFOLIO_SEARCH_FILE__ = getDirectory("/content/search/index.json");
 
 /**
  * Get portfolio file names from /content/portfolios/
@@ -83,27 +76,6 @@ const getPortfolioList = (): Portfolio[] => {
   return getPortfolioListByFileNames(portfolioFileNames);
 };
 
-/**
- * Write `portfolio` json data to a file.
- *
- * @param portfolios List of `portfolio` to be written to a file.
- */
-const writeportfolioListToFile = (portfolios: Portfolio[]) => {
-  const searchItemList: SearchContent[] = [];
-
-  portfolios.forEach((portfolio) => {
-    const searchItem: SearchContent = {
-      slug: portfolio.slug,
-      title: portfolio.title,
-      description: portfolio.description,
-      category: "portfolios",
-    };
-    searchItemList.push(searchItem);
-  });
-  const json = JSON.stringify(searchItemList, null, 2);
-  writeContentToFile(json, __PORTFOLIO_SEARCH_FILE__);
-};
-
 export {
   getPortfoliosFileNames,
   getPortfoliosSlugs,
@@ -111,5 +83,4 @@ export {
   getPortfolioBySlug,
   getPortfolioBySlugWithMarkdown,
   getPortfolioList,
-  writeportfolioListToFile,
 };
