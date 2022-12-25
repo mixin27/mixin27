@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import "../styles/themes/prism-laserwave.css";
+import "../styles/themes/prism-night-owl.css";
 import type { AppProps } from "next/app";
 import { Analytics } from "@vercel/analytics/react";
 

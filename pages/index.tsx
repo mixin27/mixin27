@@ -51,7 +51,10 @@ export const getStaticProps: GetStaticProps = () => {
   saveSearchData(content);
 
   return {
-    props: { blogs, portfolios },
+    props: {
+      blogs: blogs.splice(0, 4),
+      portfolios: portfolios.splice(0, 4),
+    },
   };
 };
 

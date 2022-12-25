@@ -1,6 +1,7 @@
 import {
   ContentItemName,
   MarkdownContent,
+  MarkdownItem,
   SearchContent,
 } from "@interfaces/Markdown";
 import { getDirectory, writeContentToFile } from "./file";
@@ -13,11 +14,13 @@ const __SEARCH_DATA_FILE__ = getDirectory("/content/search/index.json");
  * @param get Function to invoke.
  * @returns List of `T`.
  */
-function getAllItems<T>(
+function getAllItems<T extends MarkdownItem>(
   fileNames: string[],
   get: (fileName: string) => T
 ): T[] {
-  return fileNames.map((name) => get(name));
+  return fileNames
+    .map((name) => get(name))
+    .sort((a, b) => (a.date > b.date ? -1 : 1));
 }
 
 function saveSearchData(content: MarkdownContent) {
