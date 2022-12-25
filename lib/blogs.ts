@@ -7,7 +7,7 @@ import {
   getFileNames,
   writeContentToFile,
 } from "./file";
-import { getAllItems } from "./helpers";
+import { getAllItems, writeListToFile } from "./helpers";
 import { markdownToHtml } from "./md";
 
 /**
@@ -84,19 +84,7 @@ const getBlogList = (): Blog[] => {
  * @param blogs List of `Blog` to be written to a file.
  */
 const writeBlogListToFile = (blogs: Blog[]) => {
-  const searchItemList: SearchContent[] = [];
-
-  blogs.forEach((blog) => {
-    const searchItem: SearchContent = {
-      slug: blog.slug,
-      title: blog.title,
-      description: blog.description,
-      category: "blogs",
-    };
-    searchItemList.push(searchItem);
-  });
-  const json = JSON.stringify(searchItemList, null, 2);
-  writeContentToFile(json, __BLOG_SEARCH_FILE__);
+  writeListToFile<Blog>(__BLOG_SEARCH_FILE__, blogs, "blogs");
 };
 
 export {

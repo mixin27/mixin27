@@ -1,19 +1,19 @@
-import fs from "fs";
+import type { GetStaticProps, NextPage } from "next";
+import Link from "next/link";
 import { BlogList } from "@components/blog";
 import { BaseLayout } from "@components/layout";
 import { PortfolioList } from "@components/portfolio";
 import { Blog } from "@interfaces/Blog";
-import { SearchContent } from "@interfaces/Markdown";
+import { Portfolio } from "@interfaces/Portofolio";
 import { getBlogList, writeBlogListToFile } from "@lib/blogs";
-import { getDirectory } from "@lib/file";
-import type { GetStaticProps, NextPage } from "next";
-import Link from "next/link";
+import { getPortfolioList } from "@lib/portfolios";
 
 type Props = {
   blogs: Blog[];
+  portfolios: Portfolio[];
 };
 
-const Home: NextPage<Props> = ({ blogs }) => {
+const Home: NextPage<Props> = ({ blogs, portfolios }) => {
   return (
     <BaseLayout>
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
@@ -34,18 +34,20 @@ const Home: NextPage<Props> = ({ blogs }) => {
         </Link>
       </h2>
 
-      <PortfolioList />
+      <PortfolioList portfolios={portfolios} />
     </BaseLayout>
   );
 };
 
 export const getStaticProps: GetStaticProps = () => {
   const blogs = getBlogList();
+  const portfolios = getPortfolioList();
+
   // Store blogs to search document as json
   writeBlogListToFile(blogs);
 
   return {
-    props: { blogs },
+    props: { blogs, portfolios },
   };
 };
 
