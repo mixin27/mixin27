@@ -1,6 +1,6 @@
 ---
-title: What is Solid JS?
-description: A short introduction to Solid JS. Learn about Solid JS and its features, and build modern web applications.
+title: "Next JS Data Fetching: GetStaticProps vs GetServerSideProps"
+description: Learn in detail the difference between GetStaticProps and GetServerSideProps, functions used in Next.js to fetch data for pre-rendering.
 author: Filip Jerga
 authorImage: https://cdn.sanity.io/images/55mm68d3/production/9db58be7d6d8ec2962b8754c8e89316afc190733-460x460.png
 coverImage: https://cdn.sanity.io/images/55mm68d3/production/1ff41f3a60c18b834752dfe0c4c259ddca4d0bb0-1280x720.jpg?h=600&fm=jpg&q=70
