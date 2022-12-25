@@ -31,13 +31,14 @@ const Navbar = () => {
               <div className="flex w-full items-center justify-between md:w-auto">
                 <Link legacyBehavior href="/">
                   <a>
-                    <span className="sr-only">Your Company</span>
+                    <span className="sr-only">Portfolio Logo</span>
                     <Image
                       width={30}
                       height={30}
                       alt="Your Company"
                       className="h-8 w-auto sm:h-10"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                      // src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                      src="https://vercel.com/api/www/avatar/67e0fd839056b79a5d7fb9a44b39b8151c996ebe?s=64"
                       style={{
                         maxWidth: "100%",
                         height: "auto",

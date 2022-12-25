@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Blog } from "@interfaces/Blog";
 import { FunctionComponent } from "react";
+import { SocialLinks } from "@components/common";
 
 type Props = {
   blog: Blog;
@@ -37,7 +38,7 @@ const BlogHeader: FunctionComponent<Props> = ({ blog }) => {
             </div>
           </div>
         </div>
-        <div className="flex self-end">{/* Social Links Here */}</div>
+        <div className="flex self-end">{/* <SocialLinks /> */}</div>
       </div>
       <h1 className="font-bold text-4xl mb-1">{blog.title}</h1>
       <h2 className="blog-detail-header-subtitle mb-2 text-xl text-gray-600">

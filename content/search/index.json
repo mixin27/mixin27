@@ -1,8 +1,26 @@
 [
   {
-    "slug": "web-development-and-coding-full-course",
-    "title": "Web Development & Code 101 - Full Guide [2022]",
-    "description": "Learn programming in JS language, HTML, and CSS. Create a Web Application made in React JS. The path to the final project includes many assignments, code exercises, and challenges.",
+    "slug": "what-is-solid-js",
+    "title": "What is Solid JS?",
+    "description": "A short introduction to Solid JS. Learn about Solid JS and its features, and build modern web applications.",
+    "category": "blogs"
+  },
+  {
+    "slug": "solid-js-vs-react-js-what-is-better",
+    "title": "Solid JS vs React JS. What is Better?",
+    "description": "The practical comparison of Solid JS and React JS. Learn about the differences between these two excellent libraries.",
+    "category": "blogs"
+  },
+  {
+    "slug": "next-js-data-fetching-getstaticprops-vs-getserversideprops",
+    "title": "What is Solid JS?",
+    "description": "A short introduction to Solid JS. Learn about Solid JS and its features, and build modern web applications.",
+    "category": "blogs"
+  },
+  {
+    "slug": "how-web-apps-work-next-js-react-js",
+    "title": "How Web Apps Work — Next JS & React JS",
+    "description": "This new video lecture by Eincode elaborates on the working of web applications.",
     "category": "blogs"
   },
   {
@@ -12,21 +30,15 @@
     "category": "blogs"
   },
   {
-    "slug": "nft-marketplace-in-react-js-next-typescript-full-guide",
-    "title": "NFT Marketplace in React, Typescript & Solidity - Full Guide",
-    "description": "Learn how to use React / Next JS, Solidity, and Pinata(IPFS) to create NFT marketplace on Ethereum. All In Typescript.",
+    "slug": "top-5-resources-to-learn-react-js-next-js",
+    "title": "Top 5 Resources To Learn React JS /Next.JS",
+    "description": "Next JS is an amazing framework for building SSR apps. There is a lot of resources to learn it. Find out how they differ and discover your favorite one.",
     "category": "blogs"
   },
   {
-    "slug": "rust-webassembly-with-js-ts-the-practical-guide",
-    "title": "Rust & WebAssembly with JS (TS) - The Practical Guide",
-    "description": "Learn how to code in Rust! Compile the code to WebAssembly, prepare JS/TS frontend and finish the course by creating the practical Snake game that can run in any browser.",
-    "category": "blogs"
-  },
-  {
-    "slug": "unity-2d-with-c-complete-game-dev-course",
-    "title": "Unity 2D With C# - Complete Game Dev Course",
-    "description": "Create the complete 2D survival game in Unity with C#. Learn best practices and patterns.",
+    "slug": "how-to-consume-data-in-next-js-apps",
+    "title": "How to consume data in Next.js apps",
+    "description": "The way data is fetched on Next.js will affect the pre-rendering strategy applied. Do you know them?",
     "category": "blogs"
   },
   {

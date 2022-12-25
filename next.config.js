@@ -9,6 +9,8 @@ const nextConfig = {
       "images.unsplash.com",
       "eincode.com",
       "thrangra.sirv.com",
+      "cdn.sanity.io",
+      "vercel.com",
     ],
   },
 };
