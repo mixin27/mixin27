@@ -3,7 +3,7 @@
 [![GitHub followers](https://img.shields.io/github/followers/mixin27?style=social)](https://img.shields.io/github/followers/mixin27?style=social)
 
 - 🇲🇲 I'm from [Myanmar (Burma)][country].
-- 🎓 I've got B.C.Sc from `University of Computer Studies, Yangon` since 2020.
+- 🎓 I've got B.C.Sc from `University of Computer Studies, Yangon` in 2020.
 - 🏢 I’m currently working as mobile developer at `SYSTEMATIC Business Solution, Myanmar`
 - 👨‍💻 I’m currently learning `software development and software engineering`.
 - 😎 I'm very eager to learn new `technologies`.
