@@ -1,6 +1,6 @@
 ### Hi there 👋
 
-[![GitHub followers](https://img.shields.io/github/followers/mixin27?style=social)](https://img.shields.io/github/followers/mixin27?style=social)
+<!-- [![GitHub followers](https://img.shields.io/github/followers/mixin27?style=social)](https://img.shields.io/github/followers/mixin27?style=social) -->
 
 - 🇲🇲 I'm from [Myanmar (Burma)][country].
 - 🎓 I've got B.C.Sc from `University of Computer Studies, Yangon` in 2020.
@@ -10,7 +10,7 @@
 - 📫 How to reach me: [kyawzayartun98](https://twitter.com/kyawzayartun98)
 - 💻 Happy coding!
 
-[![kyawzayartun](https://github-readme-stats.vercel.app/api/pin/?username=mixin27&theme=blueberry&repo=kyawzayartun)](https://kyawzayartun.vercel.app/)
+<!-- [![kyawzayartun](https://github-readme-stats.vercel.app/api/pin/?username=mixin27&theme=blueberry&repo=kyawzayartun)](https://kyawzayartun.vercel.app/) -->
 
 ### My Github Status
 
