@@ -4,7 +4,7 @@
 
 - 🇲🇲 I'm from [Myanmar (Burma)][country].
 - 🎓 I've got B.C.Sc from `University of Computer Studies, Yangon` in 2020.
-- 🏢 I’m currently working as mobile developer at `SYSTEMATIC Business Solution, Myanmar`
+- 🏢 I’m currently working as a mobile developer.
 - 👨‍💻 I’m currently learning `software development and software engineering`.
 - 😎 I'm very eager to learn new `technologies`.
 - 📫 How to reach me: [kyawzayartun98](https://twitter.com/kyawzayartun98)
