@@ -13,6 +13,14 @@ const nextConfig = {
       "vercel.com",
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/',
+        destination: '/google8f06b5535b3e9018.html',
+      }
+    ];
+  },
 };
 
 module.exports = nextConfig;
