@@ -13,8 +13,8 @@
   },
   {
     "slug": "next-js-data-fetching-getstaticprops-vs-getserversideprops",
-    "title": "What is Solid JS?",
-    "description": "A short introduction to Solid JS. Learn about Solid JS and its features, and build modern web applications.",
+    "title": "Next JS Data Fetching: GetStaticProps vs GetServerSideProps",
+    "description": "Learn in detail the difference between GetStaticProps and GetServerSideProps, functions used in Next.js to fetch data for pre-rendering.",
     "category": "blogs"
   },
   {
