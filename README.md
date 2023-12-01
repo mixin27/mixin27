@@ -1,7 +1,7 @@
 ### Hi there 👋
 
 <!-- [![GitHub followers](https://img.shields.io/github/followers/mixin27?style=social)](https://img.shields.io/github/followers/mixin27?style=social) -->
-[![committers.top badge](https://user-badge.committers.top/myanmar/mixin27.svg)](https://user-badge.committers.top/myanmar/mixin27)
+[![committers.top badge](https://user-badge.committers.top/myanmar/mixin27.svg)](https://user-badge.committers.top/myanmar/mixin27) [![committers.top badge](https://user-badge.committers.top/myanmar_public/mixin27.svg)](https://user-badge.committers.top/myanmar_public/mixin27) [![committers.top badge](https://user-badge.committers.top/myanmar_private/mixin27.svg)](https://user-badge.committers.top/myanmar_private/mixin27)
 
 - 🇲🇲 I'm from [Myanmar (Burma)][country].
 - 🎓 I've got B.C.Sc from `University of Computer Studies, Yangon` in 2020.
