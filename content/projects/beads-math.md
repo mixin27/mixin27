@@ -12,4 +12,22 @@ developers: ["Kyaw Zayar Tun"]
 highlights: ["Flutter", "Firebase"]
 ---
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+What is abacus?
+An abacus is a method of calculation that has been used for centuries before the advent of calculators.
+
+Types of abacus
+There are many types of abacus.
+The type of abacus that will be used now is the Japanese abacus.
+
+Using abacus as a base, it is a method of simultaneously teaching mental arithmetic.
+
+Benefits
+
+- Brain Development
+- Improve in Math Skills
+
+(Beads Maths application can be used not only for abacus math calculations but also for other math calculations.)
+
+Contact
+Phone or Viber: <a href="tel:+959256199989">+959256199989</a>
+Mail: <a href="mailto:kidsbrainwork2022@gmail.com">kidsbrainwork2022@gmail.com</a>
