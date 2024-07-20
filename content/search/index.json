@@ -43,14 +43,26 @@
   },
   {
     "slug": "flutter-mobile-developer-sbs",
-    "title": "Mobile Developer - Flutter",
-    "description": "Currently working as mobile developer using flutter.",
+    "title": "SYSTEMATIC Business Solution",
+    "description": "Mobile Application Developer",
     "category": "portfolios"
   },
   {
     "slug": "android-developer-etrade",
-    "title": "Android Developer",
-    "description": "Working as an android developer.",
+    "title": "Etrade Myanmar, Hlaing",
+    "description": "Junior Android Developer",
     "category": "portfolios"
+  },
+  {
+    "slug": "internship-web-developer-irrahub",
+    "title": "IrraHub, Shwe Pyi Thar",
+    "description": "Internship Web Developer",
+    "category": "portfolios"
+  },
+  {
+    "slug": "beads-math",
+    "title": "Beads Math",
+    "description": "Mobile application to improve maths calculation skills.",
+    "category": "projects"
   }
 ]

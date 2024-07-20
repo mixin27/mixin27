@@ -12,7 +12,7 @@ const PortfoliosPage: NextPage<Props> = ({ portfolios }) => {
   return (
     <PageLayout pageTitle="All Portfolios">
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        All Portfolios
+        My Work Experiences
       </h2>
       <PortfolioList portfolios={portfolios} />
     </PageLayout>

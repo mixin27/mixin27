@@ -1,11 +1,11 @@
 ---
-title: Mobile Developer - Flutter
-description: Currently working as mobile developer using flutter.
+title: SYSTEMATIC Business Solution
+description: Mobile Application Developer
 employee: Kyaw Zayar Tun
-employmentTime: 10
-employeeImage: https://images.unsplash.com/photo-1622473590773-f588134b6ce7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1370&q=50
-coverImage: https://images.unsplash.com/photo-1617040619263-41c5a9ca7521?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80
-date: "2022-12-25"
+employmentTime: 18
+employeeImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/c_thumb,w_200,g_face/v1721476442/2x2_2349_moqc1k.jpg
+coverImage: https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80
+date: "2022-04-1"
 highlights:
   [
     "Using Dart Programming Language and Flutter framework",

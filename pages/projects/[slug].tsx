@@ -1,26 +1,26 @@
 import Image from "next/image";
 import { PageLayout } from "@components/layout";
-import { Portfolio } from "@interfaces/Portofolio";
+import { Project } from "@interfaces/Project";
 import {
-  getPortfolioBySlugWithMarkdown,
-  getPortfoliosSlugs,
-} from "@lib/portfolios";
+  getProjectBySlugWithMarkdown,
+  getProjectsSlugs,
+} from "@lib/projects";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next/types";
 import { ParsedUrlQuery } from "querystring";
 
 type Props = {
-  portfolio: Portfolio;
+  project: Project;
 };
 
-const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
+const ProjectDetail: NextPage<Props> = ({ project }) => {
   return (
     <>
-      <PageLayout pageTitle={portfolio.title}>
+      <PageLayout pageTitle={project.title}>
         <div className="pt-6">
           <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-                {portfolio.title}
+                {project.title}
               </h1>
             </div>
             <div className="mt-4 lg:row-span-3 lg:mt-0 relative">
@@ -28,7 +28,7 @@ const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
                 fill
                 className="h-56 w-full object-cover sm:h-72 md:h-96 lg:h-full lg:w-full"
                 alt=""
-                src={portfolio.coverImage}
+                src={project.logo}
               />
             </div>
 
@@ -38,7 +38,7 @@ const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
 
                 <div className="space-y-6">
                   <p className="text-base text-gray-900">
-                    {portfolio.description}
+                    {project.description}
                   </p>
                 </div>
               </div>
@@ -50,9 +50,24 @@ const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
 
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {portfolio.highlights.map((highlight) => (
+                    {project.highlights.map((highlight) => (
                       <li key={highlight} className="text-gray-400">
                         <span className="text-gray-600">{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-10">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Developers
+                </h3>
+
+                <div className="mt-4">
+                  <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
+                    {project.developers.map((developer) => (
+                      <li key={developer} className="text-gray-400">
+                        <span className="text-gray-600">{developer}</span>
                       </li>
                     ))}
                   </ul>
@@ -64,7 +79,7 @@ const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
                 <div className="mt-4 space-y-6">
                   <article className="text-sm text-gray-600">
                     <div
-                      dangerouslySetInnerHTML={{ __html: portfolio.content }}
+                      dangerouslySetInnerHTML={{ __html: project.content }}
                     />
                   </article>
                 </div>
@@ -85,14 +100,14 @@ export const getStaticProps: GetStaticProps<Props, Params> = async (
   context
 ) => {
   const { slug } = context.params!;
-  const portfolio = await getPortfolioBySlugWithMarkdown(slug);
+  const project = await getProjectBySlugWithMarkdown(slug);
   return {
-    props: { portfolio },
+    props: { project },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = () => {
-  const slugs = getPortfoliosSlugs();
+  const slugs = getProjectsSlugs();
   const paths = slugs.map((slug) => ({ params: { slug } }));
 
   return {
@@ -101,4 +116,4 @@ export const getStaticPaths: GetStaticPaths = () => {
   };
 };
 
-export default PortfolioDetail;
+export default ProjectDetail;

@@ -40,6 +40,11 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "**",
       },
+      {
+        protocol: "https",
+        hostname: "github.com",
+        pathname: "**",
+      },
     ],
   },
   async rewrites() {

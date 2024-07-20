@@ -9,15 +9,41 @@ import { getBlogList } from "@lib/blogs";
 import { getPortfolioList } from "@lib/portfolios";
 import { saveSearchData } from "@lib/helpers";
 import { MarkdownContent } from "@interfaces/Markdown";
+import { ProjectList } from "@components/project";
+import { getProjectList } from "@lib/projects";
+import { Project } from "@interfaces/Project";
 
 type Props = {
   blogs: Blog[];
   portfolios: Portfolio[];
+  projects: Project[];
 };
 
-const Home: NextPage<Props> = ({ blogs, portfolios }) => {
+const Home: NextPage<Props> = ({ blogs, portfolios, projects }) => {
   return (
     <BaseLayout>
+      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+        Work Experiences
+        <Link legacyBehavior href="/portfolios">
+          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
+        </Link>
+      </h2>
+
+      <PortfolioList portfolios={portfolios} />
+
+      <br></br>
+
+      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+        Projects
+        <Link legacyBehavior href="/portfolios">
+          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
+        </Link>
+      </h2>
+
+      <ProjectList projects={projects} />
+
+      <br></br>
+
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
         Newest Blogs
         <Link legacyBehavior href="/blogs">
@@ -26,17 +52,6 @@ const Home: NextPage<Props> = ({ blogs, portfolios }) => {
       </h2>
 
       <BlogList blogs={blogs} />
-
-      <br></br>
-
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Portfolios
-        <Link legacyBehavior href="/portfolios">
-          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
-        </Link>
-      </h2>
-
-      <PortfolioList portfolios={portfolios} />
     </BaseLayout>
   );
 };
@@ -44,9 +59,11 @@ const Home: NextPage<Props> = ({ blogs, portfolios }) => {
 export const getStaticProps: GetStaticProps = () => {
   const blogs = getBlogList();
   const portfolios = getPortfolioList();
+  const projects = getProjectList();
   const content: MarkdownContent = {
     blogs,
     portfolios,
+    projects,
   };
   saveSearchData(content);
 
@@ -54,6 +71,7 @@ export const getStaticProps: GetStaticProps = () => {
     props: {
       blogs: blogs.splice(0, 4),
       portfolios: portfolios.splice(0, 4),
+      projects: projects.splice(0, 4),
     },
   };
 };
