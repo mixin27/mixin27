@@ -31,18 +31,18 @@ const Navbar = () => {
               <div className="flex w-full items-center justify-between md:w-auto">
                 <Link legacyBehavior href="/">
                   <a>
-                    <span className="sr-only">Portfolio Logo</span>
+                    <span className="sr-only">Home</span>
                     <Image
-                      width={30}
-                      height={30}
-                      alt="Your Company"
+                      width={45}
+                      height={45}
+                      alt="Picture of author"
                       className="h-8 w-auto sm:h-10"
-                      // src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                      src="https://vercel.com/api/www/avatar/67e0fd839056b79a5d7fb9a44b39b8151c996ebe?s=64"
-                      style={{
-                        maxWidth: "100%",
-                        height: "auto",
-                      }}
+                      // src={profilePic}
+                      src="https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721476442/2x2_2349_moqc1k.jpg"
+                      // style={{
+                      //   maxWidth: "100%",
+                      //   height: "auto",
+                      // }}
                     />
                   </a>
                 </Link>

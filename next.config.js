@@ -4,13 +4,42 @@ const nextConfig = {
   swcMinify: true,
   images: {
     dangerouslyAllowSVG: true,
-    domains: [
-      "tailwindui.com",
-      "images.unsplash.com",
-      "eincode.com",
-      "thrangra.sirv.com",
-      "cdn.sanity.io",
-      "vercel.com",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "tailwindui.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "eincode.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "thrangra.sirv.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "vercel.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "**",
+      },
     ],
   },
   async rewrites() {
