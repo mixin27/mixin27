@@ -4,9 +4,11 @@ description: E-learning Platform Application.
 company: KUDOS
 companyLogo:
 companyUrl:
-logo: https://github.com/mixin27/mixin27/tree/main/public/projects/kudos-to-you.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526664/portfolio/ic_launcher_kudos_mt25w2.png
 playstoreUrl: https://play.google.com/store/apps/details?id=com.systematic.kudos
 appstoreUrl:
+githubUrl:
+link:
 date: "2022-11-01"
 developers: ["Kyaw Zayar Tun"]
 highlights: ["Flutter", "SQLite"]

@@ -4,9 +4,11 @@ description: Test kits management for Sate Cha clinics.
 company: CPI
 companyLogo:
 companyUrl:
-logo: https://github.com/mixin27/mixin27/tree/main/public/projects/sate-cha-service-hub.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526665/portfolio/ic_launcher_sate_cha_sr1kx0.png
 playstoreUrl: https://apkcombo.com/sate-cha-service-hub/com.systematic.cpi
-appstoreUrl:
+appstoreUrl: https://apps.apple.com/us/app/satecha-service-hub/id1638288355
+githubUrl:
+link:
 date: "2022-11-01"
 developers: ["Kyaw Zayar Tun"]
 highlights: ["Flutter"]

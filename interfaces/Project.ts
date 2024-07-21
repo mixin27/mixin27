@@ -7,6 +7,8 @@ export interface Project extends MarkdownItem {
   logo: string;
   playstoreUrl: string;
   appstoreUrl: string;
+  githubUrl: string;
+  link: string;
   developers: string[];
   highlights: string[];
 }

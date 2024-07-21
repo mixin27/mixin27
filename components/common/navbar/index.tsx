@@ -6,6 +6,7 @@ import { Popover, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { navigation } from "./navigation";
 import { ContentSearch } from "@components/search";
+import homeIcon from "../../../public/home.png";
 
 const Navbar = () => {
   return (
@@ -33,16 +34,11 @@ const Navbar = () => {
                   <a>
                     <span className="sr-only">Home</span>
                     <Image
-                      width={45}
-                      height={45}
+                      width={24}
+                      height={24}
                       alt="Picture of author"
                       className="h-8 w-auto sm:h-10"
-                      // src={profilePic}
-                      src="https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721476442/2x2_2349_moqc1k.jpg"
-                      // style={{
-                      //   maxWidth: "100%",
-                      //   height: "auto",
-                      // }}
+                      src={homeIcon}
                     />
                   </a>
                 </Link>

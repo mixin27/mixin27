@@ -1,10 +1,7 @@
 import Image from "next/image";
 import { PageLayout } from "@components/layout";
 import { Project } from "@interfaces/Project";
-import {
-  getProjectBySlugWithMarkdown,
-  getProjectsSlugs,
-} from "@lib/projects";
+import { getProjectBySlugWithMarkdown, getProjectsSlugs } from "@lib/projects";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next/types";
 import { ParsedUrlQuery } from "querystring";
 
@@ -23,13 +20,62 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
                 {project.title}
               </h1>
             </div>
-            <div className="mt-4 lg:row-span-3 lg:mt-0 relative">
-              <Image
-                fill
-                className="h-56 w-full object-cover sm:h-72 md:h-96 lg:h-full lg:w-full"
-                alt=""
-                src={project.logo}
-              />
+
+            {project.logo && (
+              <div className="mt-4 lg:row-span-3 lg:mt-0 relative">
+                <Image
+                  fill
+                  className="h-56 w-full object-cover sm:h-72 md:h-96 lg:h-full lg:w-full"
+                  alt=""
+                  src={project.logo}
+                />
+              </div>
+            )}
+
+            <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+              {project.playstoreUrl && (
+                <div className="rounded-md shadow mr-4 my-2">
+                  <a
+                    href={project.playstoreUrl}
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-green-600 px-8 py-2 text-base font-medium text-white hover:bg-green-700 md:py-4 md:px-10 md:text-lg"
+                  >
+                    Playstore
+                  </a>
+                </div>
+              )}
+
+              {project.appstoreUrl && (
+                <div className="rounded-md shadow mr-4 my-2">
+                  <a
+                    href={project.appstoreUrl}
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
+                  >
+                    Appstore
+                  </a>
+                </div>
+              )}
+
+              {project.githubUrl && (
+                <div className="rounded-md shadow mr-4 my-2">
+                  <a
+                    href={project.githubUrl}
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
+                  >
+                    Github
+                  </a>
+                </div>
+              )}
+
+              {project.link && (
+                <div className="rounded-md shadow mr-4 my-2">
+                  <a
+                    href={project.link}
+                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-2 text-base font-medium text-white hover:bg-indigo-700 md:py-4 md:px-10 md:text-lg"
+                  >
+                    Link
+                  </a>
+                </div>
+              )}
             </div>
 
             <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pb-16 lg:pr-8">
@@ -45,7 +91,7 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
 
               <div className="mt-10">
                 <h3 className="text-sm font-medium text-gray-900">
-                  Highlights
+                  Technologies
                 </h3>
 
                 <div className="mt-4">
@@ -74,16 +120,18 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
                 </div>
               </div>
 
-              <div className="mt-10">
-                <h2 className="text-sm font-medium text-gray-900">Details</h2>
-                <div className="mt-4 space-y-6">
-                  <article className="text-sm text-gray-600">
-                    <div
-                      dangerouslySetInnerHTML={{ __html: project.content }}
-                    />
-                  </article>
+              {project.content && (
+                <div className="mt-10">
+                  <h2 className="text-sm font-medium text-gray-900">Details</h2>
+                  <div className="mt-4 space-y-6">
+                    <article className="text-sm text-gray-600">
+                      <div
+                        dangerouslySetInnerHTML={{ __html: project.content }}
+                      />
+                    </article>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

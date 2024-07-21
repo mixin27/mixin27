@@ -3,8 +3,8 @@ title: Etrade Myanmar, Hlaing
 description: Junior Android Developer
 employee: Kyaw Zayar Tun
 employmentTime: 6
-employeeImage: https://images.unsplash.com/photo-1622473590773-f588134b6ce7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1370&q=50
-coverImage: https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80
+employeeImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
+coverImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
 date: "2020-03-07"
 highlights:
   [

@@ -4,9 +4,11 @@ description: Mobile application to improve maths calculation skills.
 company: Kids Brain Work
 companyLogo:
 companyUrl:
-logo: https://github.com/mixin27/mixin27/tree/main/public/projects/beads-math.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526710/portfolio/ic_launcher_beads_math_bcq72q.png
 playstoreUrl: https://play.google.com/store/apps/details?id=tech.kbw.beads_math
 appstoreUrl:
+githubUrl:
+link:
 date: "2023-11-01"
 developers: ["Kyaw Zayar Tun"]
 highlights: ["Flutter", "Firebase"]
@@ -29,5 +31,7 @@ Benefits
 (Beads Maths application can be used not only for abacus math calculations but also for other math calculations.)
 
 Contact
+
 Phone or Viber: <a href="tel:+959256199989">+959256199989</a>
+
 Mail: <a href="mailto:kidsbrainwork2022@gmail.com">kidsbrainwork2022@gmail.com</a>

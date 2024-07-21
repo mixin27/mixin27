@@ -4,9 +4,11 @@ description: Useful application for farmers.
 company: Capital Diamond Myanmar
 companyLogo:
 companyUrl:
-logo: https://github.com/mixin27/mixin27/tree/main/public/projects/armo-farmer.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526664/portfolio/ic_launcher_armo_lyzful.png
 playstoreUrl: https://play.google.com/store/apps/details?id=com.cluspedia.armo
-appstoreUrl:
+appstoreUrl: https://apps.apple.com/us/app/armo-farmer/id1549131787
+githubUrl:
+link:
 date: "2022-11-01"
 developers: ["Kyaw Zayar Tun"]
 highlights: ["Flutter", "SQLite"]

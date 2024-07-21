@@ -64,5 +64,71 @@
     "title": "Beads Math",
     "description": "Mobile application to improve maths calculation skills.",
     "category": "projects"
+  },
+  {
+    "slug": "flutter-mmcalendar",
+    "title": "flutter_mmcalendar",
+    "description": "Myanmar calendar flutter package.",
+    "category": "projects"
+  },
+  {
+    "slug": "tivy",
+    "title": "tivy",
+    "description": "Flutter package for getting video quality urls for vimeo and youtube",
+    "category": "projects"
+  },
+  {
+    "slug": "native-id",
+    "title": "native_id",
+    "description": "Flutter unique identifier plugin for android and ios.",
+    "category": "projects"
+  },
+  {
+    "slug": "armo-farmer",
+    "title": "Armo Farmer",
+    "description": "Useful application for farmers.",
+    "category": "projects"
+  },
+  {
+    "slug": "kudos-to-you",
+    "title": "KUDOS TO YOU - E Learning",
+    "description": "E-learning Platform Application.",
+    "category": "projects"
+  },
+  {
+    "slug": "lucky-diamond-myanmar",
+    "title": "Lucky Diamond Myanmar",
+    "description": "Cash request application for staffs.",
+    "category": "projects"
+  },
+  {
+    "slug": "sate-cha-service",
+    "title": "Sate Cha Service Hub",
+    "description": "Test kits management for Sate Cha clinics.",
+    "category": "projects"
+  },
+  {
+    "slug": "sky-cargo-terminal-service",
+    "title": "Sky Cargo Terminal Service",
+    "description": "Forwarder appointment application.",
+    "category": "projects"
+  },
+  {
+    "slug": "sumeer",
+    "title": "Sumeer",
+    "description": "CV and Resume builder application.",
+    "category": "projects"
+  },
+  {
+    "slug": "yoyo-chatt",
+    "title": "Yoyo Chatt",
+    "description": "Simple chat application.",
+    "category": "projects"
+  },
+  {
+    "slug": "speaking-partners",
+    "title": "Speaking Partners",
+    "description": "An android application for people who want to practice foreign language.",
+    "category": "projects"
   }
 ]
