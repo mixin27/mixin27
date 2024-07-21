@@ -10,7 +10,10 @@ const BaseLayout: FunctionComponent<PropsWithChildren> = ({ children }) => {
       <div className="mx-auto max-w-7xl px-4 space-y-8 sm:px-6 lg:px-8">
         <Head>
           <title>Kyaw Zayar Tun - Software Developer</title>
-          <meta name="description" content="Personal portfolio web site." />
+          <meta
+            name="description"
+            content="Portfolio page of Kyaw Zayar Tun."
+          />
           <link rel="icon" href="/favicon.ico" />
           <link
             rel="apple-touch-icon"
