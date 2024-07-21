@@ -28,7 +28,7 @@ const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
     <BaseLayout>
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
         Educations
-        <Link legacyBehavior href="/portfolios">
+        <Link legacyBehavior href="/educations">
           <a className="text-sm ml-1 text-indigo-600">(See All)</a>
         </Link>
       </h2>
@@ -50,7 +50,7 @@ const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
 
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
         Projects
-        <Link legacyBehavior href="/portfolios">
+        <Link legacyBehavior href="/projects">
           <a className="text-sm ml-1 text-indigo-600">(See All)</a>
         </Link>
       </h2>
