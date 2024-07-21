@@ -10,7 +10,7 @@ type Props = {
 
 const ProjectsPage: NextPage<Props> = ({ projects }) => {
   return (
-    <PageLayout pageTitle="All Portfolios">
+    <PageLayout pageTitle="All Projects">
       <h2 className="text-2xl font-bold tracking-tight text-gray-900">
         My Projects
       </h2>
