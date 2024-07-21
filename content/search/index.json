@@ -130,5 +130,17 @@
     "title": "Speaking Partners",
     "description": "An android application for people who want to practice foreign language.",
     "category": "projects"
+  },
+  {
+    "slug": "bachelor-of-computer-science",
+    "title": "Bachelor of Computer Science",
+    "description": "Tertiary school",
+    "category": "educations"
+  },
+  {
+    "slug": "hight-school",
+    "title": "Basic Education High School (1)",
+    "description": "Secondary school",
+    "category": "educations"
   }
 ]

@@ -1,4 +1,5 @@
 import { Blog } from "./Blog";
+import { Education } from "./Education";
 import { Portfolio } from "./Portofolio";
 import { Project } from "./Project";
 
@@ -14,6 +15,7 @@ export interface MarkdownContent {
   blogs: Blog[];
   portfolios: Portfolio[];
   projects: Project[];
+  educations: Education[];
 }
 
 export type ContentItemName = keyof MarkdownContent;
