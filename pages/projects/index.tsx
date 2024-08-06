@@ -11,10 +11,17 @@ type Props = {
 const ProjectsPage: NextPage<Props> = ({ projects }) => {
   return (
     <PageLayout pageTitle="All Projects">
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        My Projects
-      </h2>
-      <ProjectList projects={projects} />
+      <section className="project">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1>My Projects</h1>
+            </div>
+          </div>
+        </div>
+
+        <ProjectList projects={projects} />
+      </section>
     </PageLayout>
   );
 };

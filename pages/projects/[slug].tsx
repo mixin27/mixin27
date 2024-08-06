@@ -21,16 +21,19 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
               </h1>
             </div>
 
-            {project.logo && (
-              <div className="mt-4 lg:row-span-3 lg:mt-0 relative">
-                <Image
-                  fill
-                  className="h-56 w-full object-cover sm:h-72 md:h-96 lg:h-full lg:w-full"
-                  alt=""
-                  src={project.logo}
-                />
-              </div>
-            )}
+            <div className="mt-4 lg:row-span-3 lg:mt-0 relative">
+              {project.logo && (
+                <div>
+                  <Image
+                    className="w-full object-cover py-2"
+                    alt=""
+                    src={project.logo}
+                    width={500}
+                    height={500}
+                  />
+                </div>
+              )}
+            </div>
 
             <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
               {project.playstoreUrl && (
