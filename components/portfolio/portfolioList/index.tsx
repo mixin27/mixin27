@@ -8,10 +8,14 @@ type Props = {
 
 const PortfolioList: FunctionComponent<Props> = ({ portfolios }) => {
   return (
-    <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-      {portfolios.map((portfolio) => (
-        <PortfolioItem key={portfolio.slug} portfolio={portfolio} />
-      ))}
+    <div className="row">
+      <div className="timeline-box p-4">
+        <div className="timeline">
+          {portfolios.map((portfolio) => (
+            <PortfolioItem key={portfolio.slug} portfolio={portfolio} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

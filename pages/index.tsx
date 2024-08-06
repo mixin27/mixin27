@@ -26,47 +26,72 @@ type Props = {
 const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
   return (
     <BaseLayout>
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Educations
-        <Link legacyBehavior href="/educations">
-          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
-        </Link>
-      </h2>
+      <section className="education">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
+                Educations
+                <Link legacyBehavior href="/educations">
+                  <a className="text-sm ml-1 text-teal-500">(See All)</a>
+                </Link>
+              </h1>
+            </div>
+          </div>
 
-      <EducationList educations={educations} />
+          <EducationList educations={educations} />
+        </div>
+      </section>
 
-      <br></br>
+      <section className="experience">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
+                Work Experiences
+                <Link legacyBehavior href="/portfolios">
+                  <a className="text-sm ml-1 text-teal-500">(See All)</a>
+                </Link>
+              </h1>
+            </div>
+          </div>
 
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Work Experiences
-        <Link legacyBehavior href="/portfolios">
-          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
-        </Link>
-      </h2>
+          <PortfolioList portfolios={portfolios} />
+        </div>
+      </section>
 
-      <PortfolioList portfolios={portfolios} />
+      <section className="project">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
+                My Projects
+                <Link legacyBehavior href="/projects">
+                  <a className="text-sm ml-1 text-teal-500">(See All)</a>
+                </Link>
+              </h1>
+            </div>
+          </div>
 
-      <br></br>
+          <ProjectList projects={projects} />
+        </div>
+      </section>
 
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Projects
-        <Link legacyBehavior href="/projects">
-          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
-        </Link>
-      </h2>
-
-      <ProjectList projects={projects} />
-
-      <br></br>
-
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Newest Blogs
-        <Link legacyBehavior href="/blogs">
-          <a className="text-sm ml-1 text-indigo-600">(See All)</a>
-        </Link>
-      </h2>
-
-      <BlogList blogs={blogs} />
+      <section className="blogs">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900 py-10">
+                Newest Blogs
+                <Link legacyBehavior href="/blogs">
+                  <a className="text-sm ml-1 text-teal-500">(See All)</a>
+                </Link>
+              </h1>
+            </div>
+          </div>
+          <BlogList blogs={blogs} />
+        </div>
+      </section>
     </BaseLayout>
   );
 };

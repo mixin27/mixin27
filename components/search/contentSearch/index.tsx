@@ -69,7 +69,7 @@ const ContentSearch = () => {
           id="search-input"
           autoComplete="off"
           type="text"
-          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
           placeholder="Search for anything"
           onChange={performSearch}
         />
@@ -83,7 +83,7 @@ const ContentSearch = () => {
             <li
               key={result.slug}
               onClick={() => router.push(`/${result.category}/${result.slug}`)}
-              className={`hover:bg-indigo-600 hover:text-white p-3 relative cursor-pointer`}
+              className={`hover:bg-teal-600 hover:text-white p-3 relative cursor-pointer`}
             >
               <div className="font-bold text-sm truncate">{result.title}</div>
               <p className="truncate text-sm">{result.description}</p>

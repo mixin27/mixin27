@@ -11,10 +11,16 @@ type Props = {
 const BlogsPage: NextPage<Props> = ({ blogs }) => {
   return (
     <PageLayout pageTitle="All Blogs">
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        All Blogs
-      </h2>
-      <BlogList blogs={blogs} />
+      <section className="blogs">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1>Blogs</h1>
+            </div>
+          </div>
+          <BlogList blogs={blogs} />
+        </div>
+      </section>
     </PageLayout>
   );
 };

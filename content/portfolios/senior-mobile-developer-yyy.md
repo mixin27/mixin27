@@ -1,18 +1,18 @@
 ---
-title: Etrade Myanmar, Hlaing
-description: Junior Android Developer
+title: Yangon Yinxing Yule
+description: Senior Mobile Application Developer
 employee: Kyaw Zayar Tun
-employmentTime: 6
-employeeImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
-coverImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
-fromDate: "Oct 2019"
-toDate: "Apr 2020"
-date: "2020-03-07"
+employmentTime: 20
+employeeImage: https://placehold.co/350x350/FFF/1A6FCF?text=YYY
+coverImage: https://placehold.co/350x350/FFF/1A6FCF?text=YYY
+date: "2023-10-9"
+fromDate: "Oct 2023"
+toDate: "Nov 2023"
 highlights:
   [
-    "Using Java & Kotlin Programming Languages",
+    "Using Dart Programming Language and Flutter framework",
     "Working on technical department.",
-    "Experience with developing football livescore application",
+    "Experience with developing new flutter application and re-develop old application using flutter",
   ]
 ---
 

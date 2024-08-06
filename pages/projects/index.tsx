@@ -18,9 +18,8 @@ const ProjectsPage: NextPage<Props> = ({ projects }) => {
               <h1>My Projects</h1>
             </div>
           </div>
+          <ProjectList projects={projects} />
         </div>
-
-        <ProjectList projects={projects} />
       </section>
     </PageLayout>
   );

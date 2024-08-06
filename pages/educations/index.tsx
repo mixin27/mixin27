@@ -10,11 +10,20 @@ type Props = {
 
 const EducationsPage: NextPage<Props> = ({ educations }) => {
   return (
-    <PageLayout pageTitle="All Educations">
-      <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-        Educations
-      </h2>
-      <EducationList educations={educations} />
+    <PageLayout pageTitle="Educations">
+      <section className="education">
+        <div className="container">
+          <div className="row">
+            <div className="section-title text-center">
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
+                Educations
+              </h1>
+            </div>
+          </div>
+
+          <EducationList educations={educations} />
+        </div>
+      </section>
     </PageLayout>
   );
 };

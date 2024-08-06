@@ -6,6 +6,8 @@ employmentTime: 3
 employeeImage: https://placehold.co/350x350/white/green?text=IrraHub
 coverImage: https://placehold.co/350x350/white/green?text=IrraHub
 date: "2018-06-01"
+fromDate: "May 2019"
+toDate: "Aug 2019"
 highlights:
   ["Using Javascript Programming Language", "NodeJs, Koa and React", "MySQL"]
 ---

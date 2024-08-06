@@ -8,10 +8,14 @@ type Props = {
 
 const EducationList: FunctionComponent<Props> = ({ educations }) => {
   return (
-    <div className="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-      {educations.map((education) => (
-        <EducationItem key={education.slug} education={education} />
-      ))}
+    <div className="row">
+      <div className="timeline-box p-4">
+        <div className="timeline">
+          {educations.map((education) => (
+            <EducationItem key={education.slug} education={education} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

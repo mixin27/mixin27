@@ -42,6 +42,12 @@
     "category": "blogs"
   },
   {
+    "slug": "senior-mobile-developer-yyy",
+    "title": "Yangon Yinxing Yule",
+    "description": "Senior Mobile Application Developer",
+    "category": "portfolios"
+  },
+  {
     "slug": "flutter-mobile-developer-sbs",
     "title": "SYSTEMATIC Business Solution",
     "description": "Mobile Application Developer",

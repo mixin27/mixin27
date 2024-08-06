@@ -11,6 +11,34 @@ type Props = {
 
 export const BlogItem: FunctionComponent<Props> = ({ blog }) => {
   return (
+    <div className="box">
+      <div className="img">
+        <Image
+          priority
+          src={blog.coverImage}
+          alt={""}
+          width={100}
+          height={100}
+          style={{
+            objectFit: "cover",
+          }}
+        />
+      </div>
+      <div className="info">
+        <span>2 Mar 2020</span> <span>Design</span>
+      </div>
+      <h3>
+        <span aria-hidden="true" className="inset-0" />
+        {shortify(blog.title)}
+      </h3>
+      <p>{shortify(blog.description)}</p>
+      <Link legacyBehavior href={`/blogs/${blog.slug}`}>
+        <a>Read More</a>
+      </Link>
+    </div>
+  );
+
+  return (
     <div className="group">
       <div className="h-80 aspect-w-1 aspect-h-1 w-full rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-40">
         <Link legacyBehavior href={`/blogs/${blog.slug}`}>

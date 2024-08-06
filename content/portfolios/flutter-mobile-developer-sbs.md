@@ -6,6 +6,8 @@ employmentTime: 18
 employeeImage: https://placehold.co/350x350/FFF/1A6FCF?text=SBS
 coverImage: https://placehold.co/350x350/FFF/1A6FCF?text=SBS
 date: "2022-04-1"
+fromDate: "Apr 2022"
+toDate: "Oct 2023"
 highlights:
   [
     "Using Dart Programming Language and Flutter framework",

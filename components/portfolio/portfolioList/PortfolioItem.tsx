@@ -1,7 +1,6 @@
+import { faCalendar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Portfolio } from "@interfaces/Portofolio";
-import { shortify } from "@lib/client/utils";
-import Image from "next/image";
-import Link from "next/link";
 import { FunctionComponent } from "react";
 
 type Props = {
@@ -10,27 +9,22 @@ type Props = {
 
 export const PortfolioItem: FunctionComponent<Props> = ({ portfolio }) => {
   return (
-    <div className="group relative">
-      <div className="relative h-80 w-full overflow-hidden rounded-lg bg-white group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
-        <Image
-          src={portfolio.coverImage}
-          alt={""}
-          className="h-full w-full object-cover object-center"
-          fill
-          sizes="100vw"
-        />
-      </div>
-      <h3 className="mt-6 text-sm text-gray-500">
-        <Link legacyBehavior href={`/portfolios/${portfolio.slug}`}>
-          <a>
-            <span className="absolute inset-0" />
-            {shortify(portfolio.title)}
-          </a>
-        </Link>
-      </h3>
-      <p className="text-base font-semibold text-gray-900">
-        {shortify(portfolio.description)}
-      </p>
+    <div className="timeline-item">
+      <div className="circle-dot"></div>
+      <h6 className="timeline-date">
+        <FontAwesomeIcon className="fa" icon={faCalendar} />{" "}
+        {portfolio.fromDate} - {portfolio.toDate}
+      </h6>
+      <h4 className="timeline-title">{portfolio.title}</h4>
+      <p className="timeline-text">{portfolio.description}</p>
+
+      {portfolio.highlights && (
+        <div className="px-3 py-1">
+          {portfolio.highlights.map((exp, idx) => (
+            <li key={idx}>{exp}</li>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
