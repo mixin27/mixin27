@@ -1,6 +1,7 @@
 import { faCalendar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Portfolio } from "@interfaces/Portofolio";
+import Image from "next/image";
 import { FunctionComponent } from "react";
 
 type Props = {
@@ -11,8 +12,10 @@ export const PortfolioItem: FunctionComponent<Props> = ({ portfolio }) => {
   return (
     <div className="timeline-item">
       <div className="circle-dot"></div>
-      <h6 className="timeline-date">
-        <FontAwesomeIcon className="fa" icon={faCalendar} />{" "}
+
+      <h6 className="timeline-date px-2">
+        <FontAwesomeIcon className="fa" icon={faCalendar} />
+        <span className="px-2" />
         {portfolio.fromDate} - {portfolio.toDate}
       </h6>
       <h4 className="timeline-title">{portfolio.title}</h4>

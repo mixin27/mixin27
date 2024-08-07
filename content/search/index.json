@@ -43,13 +43,13 @@
   },
   {
     "slug": "senior-mobile-developer-yyy",
-    "title": "Yangon Yinxing Yule",
-    "description": "Senior Mobile Application Developer",
+    "title": "Yangon Yinxing Yule, Hlaing Thar Yar",
+    "description": "Senior Mobile Developer",
     "category": "portfolios"
   },
   {
     "slug": "flutter-mobile-developer-sbs",
-    "title": "SYSTEMATIC Business Solution",
+    "title": "SYSTEMATIC Business Solution, Hlaing",
     "description": "Mobile Application Developer",
     "category": "portfolios"
   },
@@ -66,6 +66,12 @@
     "category": "portfolios"
   },
   {
+    "slug": "yoyo-chatt",
+    "title": "Yoyo Chatt",
+    "description": "Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience.",
+    "category": "projects"
+  },
+  {
     "slug": "beads-math",
     "title": "Beads Math",
     "description": "Mobile application to improve maths calculation skills.",
@@ -73,19 +79,25 @@
   },
   {
     "slug": "flutter-mmcalendar",
-    "title": "flutter_mmcalendar",
+    "title": "Flutter MMCalendar",
     "description": "Myanmar calendar flutter package.",
     "category": "projects"
   },
   {
     "slug": "tivy",
-    "title": "tivy",
+    "title": "Tivy",
     "description": "Flutter package for getting video quality urls for vimeo and youtube",
     "category": "projects"
   },
   {
+    "slug": "gng",
+    "title": "G&G",
+    "description": "Branch management system for grab & go.",
+    "category": "projects"
+  },
+  {
     "slug": "native-id",
-    "title": "native_id",
+    "title": "Native ID",
     "description": "Flutter unique identifier plugin for android and ios.",
     "category": "projects"
   },
@@ -126,27 +138,27 @@
     "category": "projects"
   },
   {
-    "slug": "yoyo-chatt",
-    "title": "Yoyo Chatt",
-    "description": "Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience.",
-    "category": "projects"
-  },
-  {
     "slug": "speaking-partners",
     "title": "Speaking Partners",
     "description": "An android application for people who want to practice foreign language.",
     "category": "projects"
   },
   {
+    "slug": "mobile-application-training",
+    "title": "Mobile Application Training 2018",
+    "description": "Smsung Tech Institute",
+    "category": "educations"
+  },
+  {
     "slug": "bachelor-of-computer-science",
     "title": "Bachelor of Computer Science",
-    "description": "Tertiary school",
+    "description": "University of Computer Studies, Yangon",
     "category": "educations"
   },
   {
     "slug": "hight-school",
-    "title": "Basic Education High School (1)",
-    "description": "Secondary school",
+    "title": "Matriculation Certificate",
+    "description": "Basic Education High School - 1, Mingaladon",
     "category": "educations"
   }
 ]

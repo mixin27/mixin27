@@ -4,7 +4,7 @@ description: Cash request application for staffs.
 company: Lucky Diamond Myanmar
 companyLogo:
 companyUrl:
-logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526665/portfolio/ic_launcher_ldm_pnntb7.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995659/projects/8_tpvk22.png
 playstoreUrl: https://play.google.com/store/apps/details?id=com.systematic.lucky_diamond
 appstoreUrl: https://apps.apple.com/us/app/lucky-diamond-myanmar/id6444782470
 githubUrl:

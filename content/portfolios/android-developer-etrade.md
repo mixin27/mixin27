@@ -3,17 +3,16 @@ title: Etrade Myanmar, Hlaing
 description: Junior Android Developer
 employee: Kyaw Zayar Tun
 employmentTime: 6
-employeeImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
-coverImage: https://placehold.co/350x350/white/purple?text=Etrade+Myanmar
-fromDate: "Oct 2019"
-toDate: "Apr 2020"
-date: "2020-03-07"
+employeeImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995849/projects/16_kfyu8v.png
+coverImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995849/projects/16_kfyu8v.png
+website: http://www.etrademyanmar.com.mm/
+fromDate: "October 2019"
+toDate: "April 2020"
+date: "2019-10-01"
 highlights:
   [
-    "Using Java & Kotlin Programming Languages",
-    "Working on technical department.",
-    "Experience with developing football livescore application",
+    "Maintained and developed mobile applications.",
+    "Designed and developed user interfaces and experiences.",
+    "Worked full-time while completing my Bachelor of Computer Science.",
   ]
 ---
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

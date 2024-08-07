@@ -18,7 +18,7 @@ const Header = () => {
         <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
           <div>
             <a
-              href="https://drive.google.com/file/d/1lQyT-zi0XbdCBS7_3ULXZrmcvnWJyRal/view?usp=sharing"
+              href="https://drive.google.com/file/d/1XrAkl9bicz960vvt6OTU-h3nHopWxgU7/view?usp=sharing"
               className="flex w-full items-center justify-center rounded-md border border-transparent bg-teal-600 px-8 py-3 text-base font-medium text-white hover:bg-teal-700 md:py-4 md:px-10 md:text-lg btn"
             >
               Download CV

@@ -4,7 +4,7 @@ description: An android application for people who want to practice foreign lang
 company: Samsung Tech Institute
 companyLogo:
 companyUrl:
-logo:
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722996505/projects/18_uiitph.png
 playstoreUrl:
 appstoreUrl:
 githubUrl: https://github.com/mixin27/speakingpartners

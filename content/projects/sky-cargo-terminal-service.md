@@ -4,7 +4,7 @@ description: Forwarder appointment application.
 company: Mingaladon Cargo Service
 companyLogo:
 companyUrl:
-logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526665/portfolio/ic_launcher_sct_fogviq.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995660/projects/9_rftqdf.png
 playstoreUrl: https://play.google.com/store/apps/details?id=com.systematic.mcs_service
 appstoreUrl: https://apps.apple.com/us/app/mcs-service/id1513511820
 githubUrl:

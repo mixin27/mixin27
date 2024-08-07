@@ -18,13 +18,13 @@ export const EducationItem: FunctionComponent<Props> = ({ education }) => {
       <h4 className="timeline-title">{education.title}</h4>
       <p className="timeline-text">{education.description}</p>
 
-      {education.courses && (
+      {/* {education.courses && (
         <div className="px-3 py-1">
           {education.courses.map((course, idx) => (
             <li key={idx}>{course}</li>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

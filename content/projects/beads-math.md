@@ -4,7 +4,7 @@ description: Mobile application to improve maths calculation skills.
 company: Kids Brain Work
 companyLogo:
 companyUrl:
-logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526710/portfolio/ic_launcher_beads_math_bcq72q.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995662/projects/11_rzvc4g.png
 playstoreUrl: https://play.google.com/store/apps/details?id=tech.kbw.beads_math
 appstoreUrl:
 githubUrl:

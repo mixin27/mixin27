@@ -1,19 +1,20 @@
 ---
-title: SYSTEMATIC Business Solution
+title: SYSTEMATIC Business Solution, Hlaing
 description: Mobile Application Developer
 employee: Kyaw Zayar Tun
 employmentTime: 18
-employeeImage: https://placehold.co/350x350/FFF/1A6FCF?text=SBS
-coverImage: https://placehold.co/350x350/FFF/1A6FCF?text=SBS
+employeeImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995658/projects/4_ztuzx4.png
+coverImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995658/projects/4_ztuzx4.png
+website: https://www.systematic-solution.com/
 date: "2022-04-1"
 fromDate: "Apr 2022"
 toDate: "Oct 2023"
 highlights:
   [
-    "Using Dart Programming Language and Flutter framework",
-    "Working on technical department.",
-    "Experience with developing new flutter application and re-develop old application using flutter",
+    "Lead, maintained, and developed mobile applications in the Flutter team.",
+    "Designed and developed user interfaces and experiences for multiple applications.",
+    "Converting android and xamarine projects to Flutter.",
+    "Successfully researched and developed a base framework for Flutter projects, reducing development time by 20%.",
+    "Collaborated with cross-functional teams to gather and define requirements, leading to the successful delivery of 3 major projects.",
   ]
 ---
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

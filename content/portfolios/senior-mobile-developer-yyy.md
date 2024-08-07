@@ -1,19 +1,18 @@
 ---
-title: Yangon Yinxing Yule
-description: Senior Mobile Application Developer
+title: Yangon Yinxing Yule, Hlaing Thar Yar
+description: Senior Mobile Developer
 employee: Kyaw Zayar Tun
-employmentTime: 20
-employeeImage: https://placehold.co/350x350/FFF/1A6FCF?text=YYY
-coverImage: https://placehold.co/350x350/FFF/1A6FCF?text=YYY
+employmentTime: 2
+employeeImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722996204/projects/17_pfe8s6.png
+coverImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722996204/projects/17_pfe8s6.png
+website:
 date: "2023-10-9"
-fromDate: "Oct 2023"
-toDate: "Nov 2023"
+fromDate: "October 2023"
+toDate: "November 2023"
 highlights:
   [
-    "Using Dart Programming Language and Flutter framework",
-    "Working on technical department.",
-    "Experience with developing new flutter application and re-develop old application using flutter",
+    "Lead the mobile team in developing a multi-vendor e-commerce application.",
+    "Coordinated with stakeholders to ensure project alignment with business objectives.",
+    "Collaborated with cross-functional teams to gather and define requirements.",
   ]
 ---
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

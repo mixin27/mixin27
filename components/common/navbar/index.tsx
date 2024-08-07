@@ -85,7 +85,7 @@ const Navbar = () => {
                     height={20}
                     width={20}
                     className="h-8 w-auto"
-                    src="https://tailwindui.com/img/logos/mark.svg?color=teal&shade=600"
+                    src="https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721476442/2x2_2349_moqc1k.jpg"
                     alt=""
                     style={{
                       maxWidth: "100%",

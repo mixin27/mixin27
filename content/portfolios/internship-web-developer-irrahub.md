@@ -3,13 +3,15 @@ title: IrraHub, Shwe Pyi Thar
 description: Internship Web Developer
 employee: Kyaw Zayar Tun
 employmentTime: 3
-employeeImage: https://placehold.co/350x350/white/green?text=IrraHub
-coverImage: https://placehold.co/350x350/white/green?text=IrraHub
-date: "2018-06-01"
+employeeImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995847/projects/15_ihgjzs.png
+coverImage: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995847/projects/15_ihgjzs.png
+website: https://www.irrahub.com/
+date: "2019-08-01"
 fromDate: "May 2019"
-toDate: "Aug 2019"
+toDate: "August 2019"
 highlights:
-  ["Using Javascript Programming Language", "NodeJs, Koa and React", "MySQL"]
+  [
+    "Worked as a lead developer during my final year of university.",
+    "Developed a software solution, service management system, under the guidance of senior developers.",
+  ]
 ---
-
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.

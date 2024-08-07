@@ -48,7 +48,7 @@ const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
           <div className="row">
             <div className="section-title text-center">
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
-                Work Experiences
+                Experiences
                 <Link legacyBehavior href="/portfolios">
                   <a className="text-sm ml-1 text-teal-500">(See All)</a>
                 </Link>
@@ -65,7 +65,7 @@ const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
           <div className="row">
             <div className="section-title text-center">
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 py-10">
-                My Projects
+                Projects
                 <Link legacyBehavior href="/projects">
                   <a className="text-sm ml-1 text-teal-500">(See All)</a>
                 </Link>
@@ -82,7 +82,7 @@ const Home: NextPage<Props> = ({ blogs, portfolios, projects, educations }) => {
           <div className="row">
             <div className="section-title text-center">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 py-10">
-                Newest Blogs
+                Blogs
                 <Link legacyBehavior href="/blogs">
                   <a className="text-sm ml-1 text-teal-500">(See All)</a>
                 </Link>

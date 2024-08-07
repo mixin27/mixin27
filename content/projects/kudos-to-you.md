@@ -4,7 +4,7 @@ description: E-learning Platform Application.
 company: KUDOS
 companyLogo:
 companyUrl:
-logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1721526664/portfolio/ic_launcher_kudos_mt25w2.png
+logo: https://res.cloudinary.com/ds6vu9ry4/image/upload/w_1000,ar_1:1,c_fill,g_auto,e_art:hokusai/v1722995658/projects/6_ad685j.png
 playstoreUrl: https://play.google.com/store/apps/details?id=com.systematic.kudos
 appstoreUrl:
 githubUrl:

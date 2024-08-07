@@ -5,6 +5,7 @@ export interface Portfolio extends MarkdownItem {
   employmentTime: number;
   employeeImage: string;
   coverImage: string;
+  website: string;
   fromDate: string;
   toDate: String;
   highlights: string[];
