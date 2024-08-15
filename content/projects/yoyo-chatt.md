@@ -1,6 +1,6 @@
 ---
 title: Yoyo Chatt
-description: Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience.
+description: Simple chat application.
 company: Personal
 companyLogo:
 companyUrl:

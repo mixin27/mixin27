@@ -66,6 +66,12 @@
     "category": "portfolios"
   },
   {
+    "slug": "mmcalendar",
+    "title": "Myanmar Calendar",
+    "description": "Useful myanmar calendar application.",
+    "category": "projects"
+  },
+  {
     "slug": "yoyo-chatt",
     "title": "Yoyo Chatt",
     "description": "Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience.",

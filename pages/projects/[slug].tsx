@@ -13,7 +13,7 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
   return (
     <>
       <PageLayout pageTitle={project.title}>
-        <div className="pt-6">
+        <div className="pt-0">
           <div className="mx-auto max-w-2xl px-4 pt-10 pb-16 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pt-16 lg:pb-24">
             <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
               <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
@@ -33,67 +33,9 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
                   />
                 </div>
               )}
-            </div>
 
-            <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-              {project.playstoreUrl && (
-                <div className="rounded-md shadow mr-4 my-2">
-                  <a
-                    href={project.playstoreUrl}
-                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-green-600 px-8 py-2 text-base font-medium text-white hover:bg-green-700 md:py-4 md:px-10 md:text-lg"
-                  >
-                    Playstore
-                  </a>
-                </div>
-              )}
-
-              {project.appstoreUrl && (
-                <div className="rounded-md shadow mr-4 my-2">
-                  <a
-                    href={project.appstoreUrl}
-                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
-                  >
-                    Appstore
-                  </a>
-                </div>
-              )}
-
-              {project.githubUrl && (
-                <div className="rounded-md shadow mr-4 my-2">
-                  <a
-                    href={project.githubUrl}
-                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
-                  >
-                    Github
-                  </a>
-                </div>
-              )}
-
-              {project.link && (
-                <div className="rounded-md shadow mr-4 my-2">
-                  <a
-                    href={project.link}
-                    className="flex w-full items-center justify-center rounded-md border border-transparent bg-teal-600 px-8 py-2 text-base font-medium text-white hover:bg-teal-700 md:py-4 md:px-10 md:text-lg"
-                  >
-                    Link
-                  </a>
-                </div>
-              )}
-            </div>
-
-            <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pb-16 lg:pr-8">
               <div>
-                <h3 className="sr-only">Description</h3>
-
-                <div className="space-y-6">
-                  <p className="text-base text-gray-900">
-                    {project.description}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-10">
-                <h3 className="text-sm font-medium text-gray-900">
+                <h3 className="text-lg font-bold text-gray-900">
                   Technologies
                 </h3>
 
@@ -107,10 +49,8 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
                   </ul>
                 </div>
               </div>
-              <div className="mt-10">
-                <h3 className="text-sm font-medium text-gray-900">
-                  Developers
-                </h3>
+              <div className="mt-4">
+                <h3 className="text-lg font-bold text-gray-900">Developers</h3>
 
                 <div className="mt-4">
                   <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
@@ -122,12 +62,71 @@ const ProjectDetail: NextPage<Props> = ({ project }) => {
                   </ul>
                 </div>
               </div>
+            </div>
+
+            <div className="py-2 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-6 lg:pb-16 lg:pr-8">
+              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                {project.playstoreUrl && (
+                  <div className="rounded-md shadow mr-4 my-2">
+                    <a
+                      href={project.playstoreUrl}
+                      className="flex w-full items-center justify-center rounded-md border border-transparent bg-green-600 px-8 py-2 text-base font-medium text-white hover:bg-green-700 md:py-4 md:px-10 md:text-lg"
+                    >
+                      Playstore
+                    </a>
+                  </div>
+                )}
+
+                {project.appstoreUrl && (
+                  <div className="rounded-md shadow mr-4 my-2">
+                    <a
+                      href={project.appstoreUrl}
+                      className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
+                    >
+                      Appstore
+                    </a>
+                  </div>
+                )}
+
+                {project.githubUrl && (
+                  <div className="rounded-md shadow mr-4 my-2">
+                    <a
+                      href={project.githubUrl}
+                      className="flex w-full items-center justify-center rounded-md border border-transparent bg-black px-8 py-2 text-base font-medium text-white hover:bg-black md:py-4 md:px-10 md:text-lg"
+                    >
+                      Github
+                    </a>
+                  </div>
+                )}
+
+                {project.link && (
+                  <div className="rounded-md shadow mr-4 my-2">
+                    <a
+                      href={project.link}
+                      className="flex w-full items-center justify-center rounded-md border border-transparent bg-teal-600 px-8 py-2 text-base font-medium text-white hover:bg-teal-700 md:py-4 md:px-10 md:text-lg"
+                    >
+                      Link
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pt-2 lg:pb-16 lg:pr-8">
+              {/* <div>
+                <h3 className="sr-only">Description</h3>
+
+                <div className="space-y-6">
+                  <p className="text-base text-gray-900">
+                    {project.description}
+                  </p>
+                </div>
+              </div> */}
 
               {project.content && (
-                <div className="mt-10">
-                  <h2 className="text-sm font-medium text-gray-900">Details</h2>
+                <div>
                   <div className="mt-4 space-y-6">
-                    <article className="text-sm text-gray-600">
+                    <article className="prose lg:prose-lg markdown-image-50 markdown-code">
                       <div
                         dangerouslySetInnerHTML={{ __html: project.content }}
                       />

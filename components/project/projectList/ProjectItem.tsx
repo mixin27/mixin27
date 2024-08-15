@@ -15,7 +15,14 @@ export const ProjectItem: FunctionComponent<Props> = ({ project }) => {
     <div className="item">
       <div className="inner">
         {project.logo && (
-          <Image src={project.logo} alt={""} width={50} height={50} />
+          <Image
+            src={project.logo}
+            alt={""}
+            quality={100}
+            width={500}
+            height={500}
+            layout="responsive"
+          />
         )}
         <div className="overlay">
           <Link legacyBehavior href={`/projects/${project.slug}`}>

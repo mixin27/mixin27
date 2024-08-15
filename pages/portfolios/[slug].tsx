@@ -62,7 +62,7 @@ const PortfolioDetail: NextPage<Props> = ({ portfolio }) => {
               <div className="mt-10">
                 <h2 className="text-sm font-medium text-gray-900">Details</h2>
                 <div className="mt-4 space-y-6">
-                  <article className="text-sm text-gray-600">
+                  <article className="prose lg:prose-lg markdown-image-50 markdown-code">
                     <div
                       dangerouslySetInnerHTML={{ __html: portfolio.content }}
                     />
