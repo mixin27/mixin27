@@ -15,15 +15,16 @@ highlights: ["Flutter"]
 ---
 
 [![License: MIT][license_badge]][license_link]
+
 ![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_mmcalendar?style=flat-square&color=3297D1&link=https%3A%2F%2Fpub.dev%2Fpackages%2Fflutter_mmcalendar)
 
 Package to get **Myanmar** calendar information with `Burmese Astrological Information`, `Holidays` and `Moon phase` widget.
 
 You can check [Myanmar Calendar App](https://github.com/mixin27/mmcalendar) using `flutter_mmcalendar`.
 
-| ![language_sample](../images/flutter_mmcalendar/language_sample.png) | ![astrological_information](../images/flutter_mmcalendar/astrological_information.png) |
-| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| ![moon_phase](../images/flutter_mmcalendar/moon_phase.png)           | ![myanmar_thingyan](../images/flutter_mmcalendar/myanmar_thingyan.png)                 |
+| ![language_sample](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040440/projects/flutter_mmcalendar/language_sample_luvo8t.png) | ![astrological_information](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040443/projects/flutter_mmcalendar/astrological_information_b3whxn.png) |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![moon_phase](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040439/projects/flutter_mmcalendar/moon_phase_qxokf4.png)           | ![myanmar_thingyan](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040440/projects/flutter_mmcalendar/myanmar_thingyan_joqgyg.png)                 |
 
 ## Installation 💻
 

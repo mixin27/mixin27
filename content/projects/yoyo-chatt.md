@@ -24,9 +24,9 @@ highlights:
 
 Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience. The app supports various essential features:
 
-| ![chat_list_page](../images/yoyo_chatt/chat_list_page.PNG) | ![chat_page](../images/yoyo_chatt/chat_page.PNG)       |
-| ---------------------------------------------------------- | ------------------------------------------------------ |
-| ![users_page](../images/yoyo_chatt/users_page.PNG)         | ![profile_page](../images/yoyo_chatt/profile_page.PNG) |
+| ![chat_list_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040526/projects/yoyo_chatt/chat_list_page_fl5afz.png) | ![chat_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040537/projects/yoyo_chatt/chat_page_lga3mn.png)       |
+| ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| ![users_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040512/projects/yoyo_chatt/users_page_wbajze.png)         | ![profile_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040515/projects/yoyo_chatt/profile_page_p8aicl.png) |
 
 #### Features
 

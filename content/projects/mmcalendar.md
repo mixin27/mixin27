@@ -16,9 +16,9 @@ highlights: ["Flutter", "Firebase", "table_calendar", "flutter_mmcalendar"]
 
 The Myanmar Calendar app is a beautifully designed tool that brings the traditional Myanmar calendar to your fingertips. Built with Flutter, this app offers a seamless experience across devices, ensuring you stay connected with Myanmar’s rich cultural heritage.
 
-| ![home_page](../images/mmcalendar/home_page.PNG)                     | ![detail_page](../images/mmcalendar/detail_page.PNG)                     |
-| -------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| ![home_page_landscape](../images/mmcalendar/home_page_landscape.PNG) | ![detail_page_landscape](../images/mmcalendar/detail_page_landscape.PNG) |
+| ![home_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040484/projects/mmcalendar/home_page_zatg0z.png)                     | ![detail_page](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040497/projects/mmcalendar/detail_page_rbe5pv.png)                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![home_page_landscape](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040479/projects/mmcalendar/home_page_landscape_hyarjl.png) | ![detail_page_landscape](https://res.cloudinary.com/ds6vu9ry4/image/upload/v1724040481/projects/mmcalendar/detail_page_landscape_rovegc.png) |
 
 ## Key Features:
 
