@@ -21,9 +21,9 @@ Package to get **Myanmar** calendar information with `Burmese Astrological Infor
 
 You can check [Myanmar Calendar App](https://github.com/mixin27/mmcalendar) using `flutter_mmcalendar`.
 
-| ![language_sample](images/flutter_mmcalendar/language_sample.png) | ![astrological_information](images/flutter_mmcalendar/astrological_information.png) |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| ![moon_phase](images/flutter_mmcalendar/moon_phase.png)           | ![myanmar_thingyan](images/flutter_mmcalendar/myanmar_thingyan.png)                 |
+| ![language_sample](../images/flutter_mmcalendar/language_sample.png) | ![astrological_information](../images/flutter_mmcalendar/astrological_information.png) |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ![moon_phase](../images/flutter_mmcalendar/moon_phase.png)           | ![myanmar_thingyan](../images/flutter_mmcalendar/myanmar_thingyan.png)                 |
 
 ## Installation 💻
 
