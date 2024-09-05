@@ -28,9 +28,11 @@ const Stats = () => {
         <div className="flex flex-wrap gap-6 max-w-[80vw] mx-auto xl:max-w-none">
           {stats.map((stat, index) => {
             return (
-              <div className="flex-1 flex gap-4 justify-center items-center xl:justify-start">
+              <div
+                key={index}
+                className="flex-1 flex gap-4 justify-center items-center xl:justify-start"
+              >
                 <CountUp
-                  key={index}
                   end={stat.num}
                   duration={5}
                   delay={2}
