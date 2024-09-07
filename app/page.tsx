@@ -6,6 +6,21 @@ import { FiDownload } from "react-icons/fi";
 import Social from "@/components/social";
 import Photo from "@/components/photo";
 import Stats from "@/components/stats";
+// import { getBlogList } from "@/lib/blog";
+// import { getProjectList } from "@/lib/project";
+// import { MarkdownContent } from "@/interfaces/markdown";
+// import { saveSearchData } from "@/lib/helpers";
+
+// export function generateStaticParams() {
+//   const blogs = getBlogList();
+//   const projects = getProjectList();
+
+//   const content: MarkdownContent = {
+//     blogs,
+//     projects,
+//   };
+//   saveSearchData(content);
+// }
 
 export default function Home() {
   return (

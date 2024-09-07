@@ -1,4 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/google8f06b5535b3e9018.html",
+      },
+    ];
+  },
+};
 
 export default nextConfig;
