@@ -9,7 +9,7 @@ import StairTransition from "@/components/transitions/StairTransition";
 import PageTransition from "@/components/transitions/PageTransition";
 
 import "./globals.css";
-import "./prism-night-owl.css";
+// import "./prism-night-owl.css";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
