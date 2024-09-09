@@ -17,8 +17,9 @@ const jetBrainsMono = JetBrains_Mono({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
   variable: "--font-jetbrainsMono",
 });
+
 export const metadata: Metadata = {
-  title: "Kyaw Zayar Tun",
+  title: "Kyaw Zayar Tun - Mobile Developer",
   description: "Personal portfolio site.",
 };
 

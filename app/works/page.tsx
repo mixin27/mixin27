@@ -8,6 +8,12 @@ function getProjects() {
   return projects;
 }
 
+export async function generateMetadata() {
+  return {
+    title: "Works - Kyaw Zayar Tun",
+  };
+}
+
 const Page = () => {
   const works = getProjects();
   return (
