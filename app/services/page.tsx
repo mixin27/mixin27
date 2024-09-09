@@ -10,29 +10,22 @@ const services = [
     num: "01",
     title: "Mobile Development",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur vero eum, error laborum.",
-    href: "",
+      "We specialize in creating high-performance mobile applications for iOS and Android, using Flutter and native technologies. Our services include full-cycle development, from design to deployment, ensuring scalable and user-friendly apps tailored to your business need.",
+    href: "/contact",
   },
   {
     num: "02",
     title: "Web Development",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur vero eum, error laborum.",
-    href: "",
+      "We offer end-toend web development solutions, crafting dynamic, responsive, and secure websites. Our team leverages the latest technologies and best practices to build scalable web applications that deliver optimal performance, user enagagement, and business growth.",
+    href: "/contact",
   },
   {
     num: "03",
-    title: "UI/UX Design",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur vero eum, error laborum.",
-    href: "",
-  },
-  {
-    num: "04",
     title: "Playstore Deployment",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Pariatur vero eum, error laborum.",
-    href: "",
+      "We provide seamless app deployment services, ensuring your mobile and web applications are efficiently launched cross platforms. Our team handles the entire process, from configuration to release, optimizing for performance, security, and compliance with platform-specific guidelines.",
+    href: "/contact",
   },
 ];
 
