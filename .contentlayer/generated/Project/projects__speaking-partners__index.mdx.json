@@ -1,0 +1,63 @@
+{
+  "title": "Speaking Partners",
+  "description": "An android application for people who want to practice foreign language.",
+  "image": {
+    "filePath": "../public/assets/images/projects/speaking_partners.png",
+    "relativeFilePath": "../../../public/assets/images/projects/speaking_partners.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAGFBMVEX////8/v+D1Pq86PxtzPiV2vrC6vwbsPWkXYcwAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAK0lEQVR4nFWLuREAMAyDkPztv7HvXCVUFABIEg8iXIEQ5ckT5/ik7ebPb18LIQBPQcxNswAAAABJRU5ErkJggg=="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "https://github.com/mixin27/speakingpartners",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "android",
+    "java",
+    "firebase",
+    "agora.io"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2018-11-01T00:00:00.000Z",
+  "endDate": "2018-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "",
+    "code": "var Component=(()=>{var l=Object.create;var o=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var d=Object.getOwnPropertyNames;var m=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var x=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),j=(t,e)=>{for(var a in e)o(t,a,{get:e[a],enumerable:!0})},s=(t,e,a,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let r of d(e))!f.call(t,r)&&r!==a&&o(t,r,{get:()=>e[r],enumerable:!(i=u(e,r))||i.enumerable});return t};var y=(t,e,a)=>(a=t!=null?l(m(t)):{},s(e||!t||!t.__esModule?o(a,\"default\",{value:t,enumerable:!0}):a,t)),b=t=>s(o({},\"__esModule\",{value:!0}),t);var c=x((v,p)=>{p.exports=_jsx_runtime});var w={};j(w,{default:()=>k,frontmatter:()=>_});var n=y(c()),_={type:\"Project\",title:\"Speaking Partners\",description:\"An android application for people who want to practice foreign language.\",image:\"../../../public/assets/images/projects/speaking_partners.png\",category:\"mobile\",links:[{live:\"\"},{github:\"https://github.com/mixin27/speakingpartners\"},{playstore:\"\"},{appstore:\"\"}],startDate:\"2018-11-01\",endDate:\"2018-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"android\",\"java\",\"firebase\",\"agora.io\"],developers:[\"Kyaw Zayar Tun\"]};function g(t){return(0,n.jsx)(n.Fragment,{})}function h(t={}){let{wrapper:e}=t.components||{};return e?(0,n.jsx)(e,Object.assign({},t,{children:(0,n.jsx)(g,t)})):g(t)}var k=h;return b(w);})();\n;return Component;"
+  },
+  "_id": "projects/speaking-partners/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/speaking-partners/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/speaking-partners",
+    "contentType": "mdx",
+    "flattenedPath": "projects/speaking-partners"
+  },
+  "type": "Project",
+  "url": "/projects/projects/speaking-partners"
+}

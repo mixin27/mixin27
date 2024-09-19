@@ -1,0 +1,65 @@
+{
+  "title": "Yoyo Chatt",
+  "description": "An innovative chat application developed using Flutter and Firebase.",
+  "image": {
+    "filePath": "../public/assets/images/projects/yoyo_chatt.png",
+    "relativeFilePath": "../../../public/assets/images/projects/yoyo_chatt.png",
+    "format": "png",
+    "height": 512,
+    "width": 512,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAFVBMVEVLVItHUIhbY5ZtdKC3utCFi7CXnLza0tlAAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAJElEQVR4nGNgQAaMjBCKgYkJxGJkZmVhhjDYWKAqIDIQVUgAAAblAC+r0oGnAAAAAElFTkSuQmCC"
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "https://github.com/mixin27/yoyo_chatt",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.norm.yoyo_chatt",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter",
+    "firebase",
+    "riverpod",
+    "auto_route",
+    "flutter_chat_ui"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2024-08-05T00:00:00.000Z",
+  "endDate": "2024-08-05T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nYoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience. The app supports various essential features:\r\n\r\n<Image\r\n  src=\"/assets/images/projects/yoyo_chatt/chat_list_page.png\"\r\n  width=\"718\"\r\n  height=\"404\"\r\n  alt=\"Image\"\r\n  sizes=\"100vw\"\r\n/>\r\n\r\n<Image\r\n  src=\"/assets/images/projects/yoyo_chatt/chat_page.png\"\r\n  width=\"718\"\r\n  height=\"404\"\r\n  alt=\"Image\"\r\n  sizes=\"100vw\"\r\n/>\r\n\r\n<Image\r\n  src=\"/assets/images/projects/yoyo_chatt/users_page.png\"\r\n  width=\"718\"\r\n  height=\"404\"\r\n  alt=\"Image\"\r\n  sizes=\"100vw\"\r\n/>\r\n\r\n<Image\r\n  src=\"/assets/images/projects/yoyo_chatt/profile_page.png\"\r\n  width=\"718\"\r\n  height=\"404\"\r\n  alt=\"Image\"\r\n  sizes=\"100vw\"\r\n/>\r\n\r\n#### Features\r\n\r\n- **Direct Chat**: Users can engage in one-on-one conversations, ensuring private and focused communication.\r\n- **Group Chat**: This feature allows users to create and participate in group conversations, facilitating community building and group interactions.\r\n- **Sending Images**: Users can share images directly within the chat, enhancing the expressiveness and engagement of conversations.\r\n- **Attachments**: The app supports the sharing of various attachments, making it easy to send files, documents, and other media.\r\n- **Link Previews**: When users share links, the app automatically generates a preview, providing a quick glimpse of the content and making it more interactive and informative.\r\n\r\n#### Authentication\r\n\r\nYoyo Chatt currently supports email-password sign-in, ensuring secure and straightforward user authentication.\r\n\r\n#### Technology Stack\r\n\r\n- **Frontend**: Flutter\r\n- **Backend**: Firebase\r\n\r\nThe combination of Flutter and Firebase ensures a robust, scalable, and efficient backend infrastructure, coupled with a smooth and responsive user interface.\r\n",
+    "code": "var Component=(()=>{var d=Object.create;var s=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,m=Object.prototype.hasOwnProperty;var f=(n,e)=>()=>(e||n((e={exports:{}}).exports,e),e.exports),y=(n,e)=>{for(var i in e)s(n,i,{get:e[i],enumerable:!0})},o=(n,e,i,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of g(e))!m.call(n,a)&&a!==i&&s(n,a,{get:()=>e[a],enumerable:!(r=p(e,a))||r.enumerable});return n};var v=(n,e,i)=>(i=n!=null?d(u(n)):{},o(e||!n||!n.__esModule?s(i,\"default\",{value:n,enumerable:!0}):i,n)),_=n=>o(s({},\"__esModule\",{value:!0}),n);var h=f((I,c)=>{c.exports=_jsx_runtime});var j={};y(j,{default:()=>x,frontmatter:()=>b});var t=v(h()),b={type:\"Project\",title:\"Yoyo Chatt\",description:\"An innovative chat application developed using Flutter and Firebase.\",image:\"../../../public/assets/images/projects/yoyo_chatt.png\",category:\"mobile\",links:[{live:\"\"},{github:\"https://github.com/mixin27/yoyo_chatt\"},{playstore:\"https://play.google.com/store/apps/details?id=com.norm.yoyo_chatt\"},{appstore:\"\"}],startDate:\"2024-08-05\",endDate:\"2024-08-05\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"firebase\",\"riverpod\",\"auto_route\",\"flutter_chat_ui\"],developers:[\"Kyaw Zayar Tun\"]};function l(n){let e=Object.assign({p:\"p\",h4:\"h4\",a:\"a\",span:\"span\",ul:\"ul\",li:\"li\",strong:\"strong\"},n.components),{Image:i}=e;return i||k(\"Image\",!0),(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(e.p,{children:\"Yoyo Chatt is an innovative chat application developed using Flutter and Firebase, designed to provide a seamless and interactive communication experience. The app supports various essential features:\"}),`\n`,(0,t.jsx)(i,{src:\"/assets/images/projects/yoyo_chatt/chat_list_page.png\",width:\"718\",height:\"404\",alt:\"Image\",sizes:\"100vw\"}),`\n`,(0,t.jsx)(i,{src:\"/assets/images/projects/yoyo_chatt/chat_page.png\",width:\"718\",height:\"404\",alt:\"Image\",sizes:\"100vw\"}),`\n`,(0,t.jsx)(i,{src:\"/assets/images/projects/yoyo_chatt/users_page.png\",width:\"718\",height:\"404\",alt:\"Image\",sizes:\"100vw\"}),`\n`,(0,t.jsx)(i,{src:\"/assets/images/projects/yoyo_chatt/profile_page.png\",width:\"718\",height:\"404\",alt:\"Image\",sizes:\"100vw\"}),`\n`,(0,t.jsxs)(e.h4,{id:\"features\",children:[\"Features\",(0,t.jsx)(e.a,{\"aria-hidden\":\"true\",tabIndex:\"-1\",href:\"#features\",children:(0,t.jsx)(e.span,{className:\"icon icon-link\"})})]}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Direct Chat\"}),\": Users can engage in one-on-one conversations, ensuring private and focused communication.\"]}),`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Group Chat\"}),\": This feature allows users to create and participate in group conversations, facilitating community building and group interactions.\"]}),`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Sending Images\"}),\": Users can share images directly within the chat, enhancing the expressiveness and engagement of conversations.\"]}),`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Attachments\"}),\": The app supports the sharing of various attachments, making it easy to send files, documents, and other media.\"]}),`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Link Previews\"}),\": When users share links, the app automatically generates a preview, providing a quick glimpse of the content and making it more interactive and informative.\"]}),`\n`]}),`\n`,(0,t.jsxs)(e.h4,{id:\"authentication\",children:[\"Authentication\",(0,t.jsx)(e.a,{\"aria-hidden\":\"true\",tabIndex:\"-1\",href:\"#authentication\",children:(0,t.jsx)(e.span,{className:\"icon icon-link\"})})]}),`\n`,(0,t.jsx)(e.p,{children:\"Yoyo Chatt currently supports email-password sign-in, ensuring secure and straightforward user authentication.\"}),`\n`,(0,t.jsxs)(e.h4,{id:\"technology-stack\",children:[\"Technology Stack\",(0,t.jsx)(e.a,{\"aria-hidden\":\"true\",tabIndex:\"-1\",href:\"#technology-stack\",children:(0,t.jsx)(e.span,{className:\"icon icon-link\"})})]}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Frontend\"}),\": Flutter\"]}),`\n`,(0,t.jsxs)(e.li,{children:[(0,t.jsx)(e.strong,{children:\"Backend\"}),\": Firebase\"]}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"The combination of Flutter and Firebase ensures a robust, scalable, and efficient backend infrastructure, coupled with a smooth and responsive user interface.\"})]})}function w(n={}){let{wrapper:e}=n.components||{};return e?(0,t.jsx)(e,Object.assign({},n,{children:(0,t.jsx)(l,n)})):l(n)}var x=w;function k(n,e){throw new Error(\"Expected \"+(e?\"component\":\"object\")+\" `\"+n+\"` to be defined: you likely forgot to import, pass, or provide it.\")}return _(j);})();\n;return Component;"
+  },
+  "_id": "projects/yoyo-chatt/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/yoyo-chatt/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/yoyo-chatt",
+    "contentType": "mdx",
+    "flattenedPath": "projects/yoyo-chatt"
+  },
+  "type": "Project",
+  "url": "/projects/projects/yoyo-chatt"
+}

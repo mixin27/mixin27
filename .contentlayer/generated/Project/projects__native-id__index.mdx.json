@@ -1,0 +1,62 @@
+{
+  "title": "Native ID",
+  "description": "Flutter unique identifier plugin for android and ios.",
+  "image": {
+    "filePath": "../public/assets/images/projects/dart.png",
+    "relativeFilePath": "../../../public/assets/images/projects/dart.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAIVBMVEX////8/f650+YJfcXE6PrG7f+g5P7C5PaCqcsHXJ4rtPRkgnIdAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAKklEQVR4nGNgYGBgZGRAA+wsIJKRgYmZk4mBEcTgYuZgACtjZUNXDdYOAAnqAEdFFvH8AAAAAElFTkSuQmCC"
+  },
+  "links": [
+    {
+      "live": "https://pub.dev/packages/native_id",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "https://github.com/mixin27/flutter_native_id",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "flutter package",
+  "tags": [
+    "dart",
+    "flutter",
+    "package"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2023-01-01T00:00:00.000Z",
+  "endDate": "2023-01-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\n![Pub Version](https://img.shields.io/pub/v/native_id?style=flat-square&color=3297D1&link=https://pub.dev/packages/native_id)\r\n[![License: MIT][license_badge]][license_link]\r\n\r\nGet current device unique id from within the flutter application.\r\n\r\n> **Warning:** In `android`, this plugin use the `ANDROID_ID` that can be change by user for the rooted device.\r\n\r\n## Installation 💻\r\n\r\n**❗ In order to start using `native_id` you must have the [Flutter SDK][flutter_install_link] installed on your machine.**\r\n\r\nAdd `native_id` to your `pubspec.yaml`:\r\n\r\n```yaml\r\ndependencies:\r\n  native_id:\r\n```\r\n\r\nInstall it:\r\n\r\n```sh\r\nflutter packages get\r\n```\r\n\r\n---\r\n\r\n## Usage\r\n\r\nImport `import 'package:native_id/native_id.dart';`, instantiate `NativeId` and use the `getId()` or `getUUID()` methods.\r\n\r\nExample:\r\n\r\n```dart\r\nFuture<String> getNativeId() async {\r\n    final nativeIdPlugin = NativeId();\r\n    try {\r\n      final nativeId = await nativeIdPlugin.getId();\r\n      return nativeId ?? 'Unknown native id';\r\n    } on PlatformException {\r\n      return 'Failed to get nativeId';\r\n    }\r\n}\r\n```\r\n\r\n[flutter_install_link]: https://docs.flutter.dev/get-started/install\r\n[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg\r\n[license_link]: https://opensource.org/licenses/MIT\r\n",
+    "code": "var Component=(()=>{var h=Object.create;var r=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var u=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var E=(l,e)=>()=>(e||l((e={exports:{}}).exports,e),e.exports),m=(l,e)=>{for(var t in e)r(l,t,{get:e[t],enumerable:!0})},d=(l,e,t,i)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let a of g(e))!y.call(l,a)&&a!==t&&r(l,a,{get:()=>e[a],enumerable:!(i=p(e,a))||i.enumerable});return l};var F=(l,e,t)=>(t=l!=null?h(u(l)):{},d(e||!l||!l.__esModule?r(t,\"default\",{value:l,enumerable:!0}):t,l)),f=l=>d(r({},\"__esModule\",{value:!0}),l);var s=E((x,c)=>{c.exports=_jsx_runtime});var k={};m(k,{default:()=>I,frontmatter:()=>b});var n=F(s()),b={type:\"Project\",title:\"Native ID\",description:\"Flutter unique identifier plugin for android and ios.\",image:\"../../../public/assets/images/projects/dart.png\",category:\"flutter package\",links:[{live:\"https://pub.dev/packages/native_id\"},{github:\"https://github.com/mixin27/flutter_native_id\"},{playstore:\"\"},{appstore:\"\"}],startDate:\"2023-01-01\",endDate:\"2023-01-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"package\"],developers:[\"Kyaw Zayar Tun\"]};function o(l){let e=Object.assign({p:\"p\",img:\"img\",a:\"a\",blockquote:\"blockquote\",strong:\"strong\",code:\"code\",h2:\"h2\",span:\"span\",figure:\"figure\",pre:\"pre\",hr:\"hr\"},l.components);return(0,n.jsxs)(n.Fragment,{children:[(0,n.jsxs)(e.p,{children:[(0,n.jsx)(e.img,{src:\"https://img.shields.io/pub/v/native_id?style=flat-square&color=3297D1&link=https://pub.dev/packages/native_id\",alt:\"Pub Version\"}),`\\r\n`,(0,n.jsx)(e.a,{href:\"https://opensource.org/licenses/MIT\",children:(0,n.jsx)(e.img,{src:\"https://img.shields.io/badge/license-MIT-blue.svg\",alt:\"License: MIT\"})})]}),`\n`,(0,n.jsx)(e.p,{children:\"Get current device unique id from within the flutter application.\"}),`\n`,(0,n.jsxs)(e.blockquote,{children:[`\n`,(0,n.jsxs)(e.p,{children:[(0,n.jsx)(e.strong,{children:\"Warning:\"}),\" In \",(0,n.jsx)(e.code,{children:\"android\"}),\", this plugin use the \",(0,n.jsx)(e.code,{children:\"ANDROID_ID\"}),\" that can be change by user for the rooted device.\"]}),`\n`]}),`\n`,(0,n.jsxs)(e.h2,{id:\"installation-\",children:[\"Installation \\u{1F4BB}\",(0,n.jsx)(e.a,{\"aria-hidden\":\"true\",tabIndex:\"-1\",href:\"#installation-\",children:(0,n.jsx)(e.span,{className:\"icon icon-link\"})})]}),`\n`,(0,n.jsx)(e.p,{children:(0,n.jsxs)(e.strong,{children:[\"\\u2757 In order to start using \",(0,n.jsx)(e.code,{children:\"native_id\"}),\" you must have the \",(0,n.jsx)(e.a,{href:\"https://docs.flutter.dev/get-started/install\",children:\"Flutter SDK\"}),\" installed on your machine.\"]})}),`\n`,(0,n.jsxs)(e.p,{children:[\"Add \",(0,n.jsx)(e.code,{children:\"native_id\"}),\" to your \",(0,n.jsx)(e.code,{children:\"pubspec.yaml\"}),\":\"]}),`\n`,(0,n.jsx)(e.figure,{\"data-rehype-pretty-code-figure\":\"\",children:(0,n.jsx)(e.pre,{style:{backgroundColor:\"#24292e\",color:\"#e1e4e8\"},tabIndex:\"0\",\"data-language\":\"yaml\",\"data-theme\":\"github-dark\",children:(0,n.jsxs)(e.code,{\"data-language\":\"yaml\",\"data-theme\":\"github-dark\",style:{display:\"grid\"},children:[(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#85E89D\"},children:\"dependencies\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\":\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#85E89D\"},children:\"  native_id\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\":\"})]})]})})}),`\n`,(0,n.jsx)(e.p,{children:\"Install it:\"}),`\n`,(0,n.jsx)(e.figure,{\"data-rehype-pretty-code-figure\":\"\",children:(0,n.jsx)(e.pre,{style:{backgroundColor:\"#24292e\",color:\"#e1e4e8\"},tabIndex:\"0\",\"data-language\":\"sh\",\"data-theme\":\"github-dark\",children:(0,n.jsx)(e.code,{\"data-language\":\"sh\",\"data-theme\":\"github-dark\",style:{display:\"grid\"},children:(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#B392F0\"},children:\"flutter\"}),(0,n.jsx)(e.span,{style:{color:\"#9ECBFF\"},children:\" packages\"}),(0,n.jsx)(e.span,{style:{color:\"#9ECBFF\"},children:\" get\"})]})})})}),`\n`,(0,n.jsx)(e.hr,{}),`\n`,(0,n.jsxs)(e.h2,{id:\"usage\",children:[\"Usage\",(0,n.jsx)(e.a,{\"aria-hidden\":\"true\",tabIndex:\"-1\",href:\"#usage\",children:(0,n.jsx)(e.span,{className:\"icon icon-link\"})})]}),`\n`,(0,n.jsxs)(e.p,{children:[\"Import \",(0,n.jsx)(e.code,{children:\"import 'package:native_id/native_id.dart';\"}),\", instantiate \",(0,n.jsx)(e.code,{children:\"NativeId\"}),\" and use the \",(0,n.jsx)(e.code,{children:\"getId()\"}),\" or \",(0,n.jsx)(e.code,{children:\"getUUID()\"}),\" methods.\"]}),`\n`,(0,n.jsx)(e.p,{children:\"Example:\"}),`\n`,(0,n.jsx)(e.figure,{\"data-rehype-pretty-code-figure\":\"\",children:(0,n.jsx)(e.pre,{style:{backgroundColor:\"#24292e\",color:\"#e1e4e8\"},tabIndex:\"0\",\"data-language\":\"dart\",\"data-theme\":\"github-dark\",children:(0,n.jsxs)(e.code,{\"data-language\":\"dart\",\"data-theme\":\"github-dark\",style:{display:\"grid\"},children:[(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#79B8FF\"},children:\"Future\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"<\"}),(0,n.jsx)(e.span,{style:{color:\"#79B8FF\"},children:\"String\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"> \"}),(0,n.jsx)(e.span,{style:{color:\"#B392F0\"},children:\"getNativeId\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"() \"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"async\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" {\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"    final\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" nativeIdPlugin \"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"=\"}),(0,n.jsx)(e.span,{style:{color:\"#79B8FF\"},children:\" NativeId\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"();\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"    try\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" {\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"      final\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" nativeId \"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"=\"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\" await\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" nativeIdPlugin.\"}),(0,n.jsx)(e.span,{style:{color:\"#B392F0\"},children:\"getId\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"();\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"      return\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" nativeId \"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"??\"}),(0,n.jsx)(e.span,{style:{color:\"#9ECBFF\"},children:\" 'Unknown native id'\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\";\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"    } \"}),(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"on\"}),(0,n.jsx)(e.span,{style:{color:\"#79B8FF\"},children:\" PlatformException\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\" {\"})]}),`\n`,(0,n.jsxs)(e.span,{\"data-line\":\"\",children:[(0,n.jsx)(e.span,{style:{color:\"#F97583\"},children:\"      return\"}),(0,n.jsx)(e.span,{style:{color:\"#9ECBFF\"},children:\" 'Failed to get nativeId'\"}),(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\";\"})]}),`\n`,(0,n.jsx)(e.span,{\"data-line\":\"\",children:(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"    }\"})}),`\n`,(0,n.jsx)(e.span,{\"data-line\":\"\",children:(0,n.jsx)(e.span,{style:{color:\"#E1E4E8\"},children:\"}\"})})]})})})]})}function v(l={}){let{wrapper:e}=l.components||{};return e?(0,n.jsx)(e,Object.assign({},l,{children:(0,n.jsx)(o,l)})):o(l)}var I=v;return f(k);})();\n;return Component;"
+  },
+  "_id": "projects/native-id/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/native-id/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/native-id",
+    "contentType": "mdx",
+    "flattenedPath": "projects/native-id"
+  },
+  "type": "Project",
+  "url": "/projects/projects/native-id"
+}

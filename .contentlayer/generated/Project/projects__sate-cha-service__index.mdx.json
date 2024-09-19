@@ -1,0 +1,61 @@
+{
+  "title": "Sate Cha Service",
+  "description": "Test kits management for Sate Cha clinics.",
+  "image": {
+    "filePath": "../public/assets/images/projects/sate_cha.png",
+    "relativeFilePath": "../../../public/assets/images/projects/sate_cha.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAJFBMVEX////4/fr7/vpmxWyh1Gaa1HiDz4JIu1iHy1yQzEvz+vFWvU5TNOegAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAALUlEQVR4nGNgQABGRkZGMM3Mzs7MxMDAwMXGxg1hsLJycIAYTCycnCwgBjoAABMZAIaFzLEbAAAAAElFTkSuQmCC"
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.systematic.cpi",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "https://apps.apple.com/us/app/satecha-service-hub/id1638288355",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2022-11-01T00:00:00.000Z",
+  "endDate": "2022-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nSate Cha (“Safe” in English) application is designed merely for the partnered and trained service providers such as pharmacy staff, clinic staff, and outreach workers who will provide HIV/TB services to the targeted populations.\r\n\r\nThrough this application, the providers can do timely client registration, recording, distribution of self-test kits, and referral for linkage care including client monitoring, etc. All users registered through the Sate Cha online platform can get the required HIV and TB related services in a free and confidential way.\r\n\r\nThe app also has a linkage with the automated responding chatbot where the users can examine risk assessment for HIV and TB infection by themselves, get HIV self-testing independently, and seek help from service providers at any point.\r\n\r\nAll authorization and patent rights belong to the owner of the Sate Cha (chatbot) platform.\r\n",
+    "code": "var Component=(()=>{var d=Object.create;var i=Object.defineProperty;var h=Object.getOwnPropertyDescriptor;var g=Object.getOwnPropertyNames;var m=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var u=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),y=(t,e)=>{for(var n in e)i(t,n,{get:e[n],enumerable:!0})},o=(t,e,n,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let r of g(e))!f.call(t,r)&&r!==n&&i(t,r,{get:()=>e[r],enumerable:!(s=h(e,r))||s.enumerable});return t};var v=(t,e,n)=>(n=t!=null?d(m(t)):{},o(e||!t||!t.__esModule?i(n,\"default\",{value:t,enumerable:!0}):n,t)),b=t=>o(i({},\"__esModule\",{value:!0}),t);var l=u((C,c)=>{c.exports=_jsx_runtime});var w={};y(w,{default:()=>k,frontmatter:()=>x});var a=v(l()),x={type:\"Project\",title:\"Sate Cha Service\",description:\"Test kits management for Sate Cha clinics.\",image:\"../../../public/assets/images/projects/sate_cha.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=com.systematic.cpi\"},{appstore:\"https://apps.apple.com/us/app/satecha-service-hub/id1638288355\"}],startDate:\"2022-11-01\",endDate:\"2022-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\"],developers:[\"Kyaw Zayar Tun\"]};function p(t){let e=Object.assign({p:\"p\"},t.components);return(0,a.jsxs)(a.Fragment,{children:[(0,a.jsx)(e.p,{children:\"Sate Cha (\\u201CSafe\\u201D in English) application is designed merely for the partnered and trained service providers such as pharmacy staff, clinic staff, and outreach workers who will provide HIV/TB services to the targeted populations.\"}),`\n`,(0,a.jsx)(e.p,{children:\"Through this application, the providers can do timely client registration, recording, distribution of self-test kits, and referral for linkage care including client monitoring, etc. All users registered through the Sate Cha online platform can get the required HIV and TB related services in a free and confidential way.\"}),`\n`,(0,a.jsx)(e.p,{children:\"The app also has a linkage with the automated responding chatbot where the users can examine risk assessment for HIV and TB infection by themselves, get HIV self-testing independently, and seek help from service providers at any point.\"}),`\n`,(0,a.jsx)(e.p,{children:\"All authorization and patent rights belong to the owner of the Sate Cha (chatbot) platform.\"})]})}function j(t={}){let{wrapper:e}=t.components||{};return e?(0,a.jsx)(e,Object.assign({},t,{children:(0,a.jsx)(p,t)})):p(t)}var k=j;return b(w);})();\n;return Component;"
+  },
+  "_id": "projects/sate-cha-service/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/sate-cha-service/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/sate-cha-service",
+    "contentType": "mdx",
+    "flattenedPath": "projects/sate-cha-service"
+  },
+  "type": "Project",
+  "url": "/projects/projects/sate-cha-service"
+}

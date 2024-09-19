@@ -1,0 +1,62 @@
+{
+  "title": "KUDOS TO YOU - E-learning",
+  "description": "E-learning Platform Application.",
+  "image": {
+    "filePath": "../public/assets/images/projects/kudos_to_you.png",
+    "relativeFilePath": "../../../public/assets/images/projects/kudos_to_you.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAIVBMVEX////18fLCnZnj1Nny2te+xMXhmVvwybvfkmXkxM3o5ORN1wkqAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAIklEQVR4nGNgwAIYWdhZwAxONg5mMIOZiYkLIsXKyohNCwAKmgBIeo9fmwAAAABJRU5ErkJggg=="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.systematic.kudos",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter",
+    "sqlite"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2018-11-01T00:00:00.000Z",
+  "endDate": "2018-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nအောက်စဖိုဒ့်နဲ့ ဟားဗက်စ်လို တက္ကသိုလ်ကြီးမျိုး တွေကနေစလို့ တစ်ကမ္ဘာလုံးရဲ့ ပညာရေးဟာ အွန်လိုင်းပေါ်ကို ဒီနေ့ရောက်လာပါပြီ။ ဒီနေရာမှာ သင်ကြားပုံ နည်းစနစ်က သင်ယူ တတ်မြောက်မှုနဲ့ လုပ်ငန်းခွင် ပြန်လည် အသုံးချနိုင်မှုကို ပံ့ပိုးပေး သွားမှာပါ။ ကျွန်တော်တို့ရဲ့ အွန်လိုင်းသင်တန်းတွေဟာ Kudos To You ရဲ့ ဆောင်ပုဒ်ဖြစ်တဲ့ \" Learn Today, Apply Tomorrow \" ဆိုတဲ့ အတိုင်း စိတ်ကျေနပ်ဖွယ်ရာ အသုံးဝင်မှုတွေ အကြောင်းကိုလည်း သင်တန်းသူ သင်တန်းသား တွေရဲ့ မှတ်ချက်တွေကို ကြည့်ပြီးလည်း လေ့လာနိုင်ပါတယ်။ “ပေးရတာထက် ပြန်ရတာ တန်လွန်းတယ်” ဆိုတာ တတ်ဖူးသူတိုင်း ပြောကြတာကိုမယုံရင် ကိုယ်တိုင်လေ့လာ ကြည့်ဖို့ဖိတ်ခေါ်ပါရစေ။\r\n",
+    "code": "var Component=(()=>{var u=Object.create;var r=Object.defineProperty;var d=Object.getOwnPropertyDescriptor;var m=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var f=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),j=(t,e)=>{for(var o in e)r(t,o,{get:e[o],enumerable:!0})},i=(t,e,o,a)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of m(e))!y.call(t,n)&&n!==o&&r(t,n,{get:()=>e[n],enumerable:!(a=d(e,n))||a.enumerable});return t};var x=(t,e,o)=>(o=t!=null?u(g(t)):{},i(e||!t||!t.__esModule?r(o,\"default\",{value:t,enumerable:!0}):o,t)),_=t=>i(r({},\"__esModule\",{value:!0}),t);var c=f((k,p)=>{p.exports=_jsx_runtime});var T={};j(T,{default:()=>O,frontmatter:()=>b});var s=x(c()),b={type:\"Project\",title:\"KUDOS TO YOU - E-learning\",description:\"E-learning Platform Application.\",image:\"../../../public/assets/images/projects/kudos_to_you.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=com.systematic.kudos\"},{appstore:\"\"}],startDate:\"2018-11-01\",endDate:\"2018-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"sqlite\"],developers:[\"Kyaw Zayar Tun\"]};function l(t){let e=Object.assign({p:\"p\"},t.components);return(0,s.jsx)(e.p,{children:'\\u1021\\u1031\\u102C\\u1000\\u103A\\u1005\\u1016\\u102D\\u102F\\u1012\\u1037\\u103A\\u1014\\u1032\\u1037 \\u101F\\u102C\\u1038\\u1017\\u1000\\u103A\\u1005\\u103A\\u101C\\u102D\\u102F \\u1010\\u1000\\u1039\\u1000\\u101E\\u102D\\u102F\\u101C\\u103A\\u1000\\u103C\\u102E\\u1038\\u1019\\u103B\\u102D\\u102F\\u1038 \\u1010\\u103D\\u1031\\u1000\\u1014\\u1031\\u1005\\u101C\\u102D\\u102F\\u1037 \\u1010\\u1005\\u103A\\u1000\\u1019\\u1039\\u1018\\u102C\\u101C\\u102F\\u1036\\u1038\\u101B\\u1032\\u1037 \\u1015\\u100A\\u102C\\u101B\\u1031\\u1038\\u101F\\u102C \\u1021\\u103D\\u1014\\u103A\\u101C\\u102D\\u102F\\u1004\\u103A\\u1038\\u1015\\u1031\\u102B\\u103A\\u1000\\u102D\\u102F \\u1012\\u102E\\u1014\\u1031\\u1037\\u101B\\u1031\\u102C\\u1000\\u103A\\u101C\\u102C\\u1015\\u102B\\u1015\\u103C\\u102E\\u104B \\u1012\\u102E\\u1014\\u1031\\u101B\\u102C\\u1019\\u103E\\u102C \\u101E\\u1004\\u103A\\u1000\\u103C\\u102C\\u1038\\u1015\\u102F\\u1036 \\u1014\\u100A\\u103A\\u1038\\u1005\\u1014\\u1005\\u103A\\u1000 \\u101E\\u1004\\u103A\\u101A\\u1030 \\u1010\\u1010\\u103A\\u1019\\u103C\\u1031\\u102C\\u1000\\u103A\\u1019\\u103E\\u102F\\u1014\\u1032\\u1037 \\u101C\\u102F\\u1015\\u103A\\u1004\\u1014\\u103A\\u1038\\u1001\\u103D\\u1004\\u103A \\u1015\\u103C\\u1014\\u103A\\u101C\\u100A\\u103A \\u1021\\u101E\\u102F\\u1036\\u1038\\u1001\\u103B\\u1014\\u102D\\u102F\\u1004\\u103A\\u1019\\u103E\\u102F\\u1000\\u102D\\u102F \\u1015\\u1036\\u1037\\u1015\\u102D\\u102F\\u1038\\u1015\\u1031\\u1038 \\u101E\\u103D\\u102C\\u1038\\u1019\\u103E\\u102C\\u1015\\u102B\\u104B \\u1000\\u103B\\u103D\\u1014\\u103A\\u1010\\u1031\\u102C\\u103A\\u1010\\u102D\\u102F\\u1037\\u101B\\u1032\\u1037 \\u1021\\u103D\\u1014\\u103A\\u101C\\u102D\\u102F\\u1004\\u103A\\u1038\\u101E\\u1004\\u103A\\u1010\\u1014\\u103A\\u1038\\u1010\\u103D\\u1031\\u101F\\u102C Kudos To You \\u101B\\u1032\\u1037 \\u1006\\u1031\\u102C\\u1004\\u103A\\u1015\\u102F\\u1012\\u103A\\u1016\\u103C\\u1005\\u103A\\u1010\\u1032\\u1037 \" Learn Today, Apply Tomorrow \" \\u1006\\u102D\\u102F\\u1010\\u1032\\u1037 \\u1021\\u1010\\u102D\\u102F\\u1004\\u103A\\u1038 \\u1005\\u102D\\u1010\\u103A\\u1000\\u103B\\u1031\\u1014\\u1015\\u103A\\u1016\\u103D\\u101A\\u103A\\u101B\\u102C \\u1021\\u101E\\u102F\\u1036\\u1038\\u101D\\u1004\\u103A\\u1019\\u103E\\u102F\\u1010\\u103D\\u1031 \\u1021\\u1000\\u103C\\u1031\\u102C\\u1004\\u103A\\u1038\\u1000\\u102D\\u102F\\u101C\\u100A\\u103A\\u1038 \\u101E\\u1004\\u103A\\u1010\\u1014\\u103A\\u1038\\u101E\\u1030 \\u101E\\u1004\\u103A\\u1010\\u1014\\u103A\\u1038\\u101E\\u102C\\u1038 \\u1010\\u103D\\u1031\\u101B\\u1032\\u1037 \\u1019\\u103E\\u1010\\u103A\\u1001\\u103B\\u1000\\u103A\\u1010\\u103D\\u1031\\u1000\\u102D\\u102F \\u1000\\u103C\\u100A\\u1037\\u103A\\u1015\\u103C\\u102E\\u1038\\u101C\\u100A\\u103A\\u1038 \\u101C\\u1031\\u1037\\u101C\\u102C\\u1014\\u102D\\u102F\\u1004\\u103A\\u1015\\u102B\\u1010\\u101A\\u103A\\u104B \\u201C\\u1015\\u1031\\u1038\\u101B\\u1010\\u102C\\u1011\\u1000\\u103A \\u1015\\u103C\\u1014\\u103A\\u101B\\u1010\\u102C \\u1010\\u1014\\u103A\\u101C\\u103D\\u1014\\u103A\\u1038\\u1010\\u101A\\u103A\\u201D \\u1006\\u102D\\u102F\\u1010\\u102C \\u1010\\u1010\\u103A\\u1016\\u1030\\u1038\\u101E\\u1030\\u1010\\u102D\\u102F\\u1004\\u103A\\u1038 \\u1015\\u103C\\u1031\\u102C\\u1000\\u103C\\u1010\\u102C\\u1000\\u102D\\u102F\\u1019\\u101A\\u102F\\u1036\\u101B\\u1004\\u103A \\u1000\\u102D\\u102F\\u101A\\u103A\\u1010\\u102D\\u102F\\u1004\\u103A\\u101C\\u1031\\u1037\\u101C\\u102C \\u1000\\u103C\\u100A\\u1037\\u103A\\u1016\\u102D\\u102F\\u1037\\u1016\\u102D\\u1010\\u103A\\u1001\\u1031\\u102B\\u103A\\u1015\\u102B\\u101B\\u1005\\u1031\\u104B'})}function D(t={}){let{wrapper:e}=t.components||{};return e?(0,s.jsx)(e,Object.assign({},t,{children:(0,s.jsx)(l,t)})):l(t)}var O=D;return _(T);})();\n;return Component;"
+  },
+  "_id": "projects/kudos-to-you/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/kudos-to-you/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/kudos-to-you",
+    "contentType": "mdx",
+    "flattenedPath": "projects/kudos-to-you"
+  },
+  "type": "Project",
+  "url": "/projects/projects/kudos-to-you"
+}
