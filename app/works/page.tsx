@@ -26,6 +26,7 @@ const Works = () => {
 
   return (
     <motion.section
+      key={project._id}
       initial={{ opacity: 0 }}
       animate={{
         opacity: 1,
@@ -68,7 +69,7 @@ const Works = () => {
               <div className="border border-white/20"></div>
 
               {/* buttons */}
-              <div className="flex justify-between">
+              <div className="flex justify-between mr-4">
                 <div className="flex items-center gap-4">
                   {project.links &&
                     project.links.map((link) => {
