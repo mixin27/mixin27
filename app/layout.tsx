@@ -10,10 +10,10 @@ import StairTransition from "@/components/transitions/StairTransition";
 import PageTransition from "@/components/transitions/PageTransition";
 
 import "./globals.css";
-// import "./prism-night-owl.css";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
+  display: "swap",
   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
   variable: "--font-jetbrainsMono",
 });
@@ -50,7 +50,7 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className={jetBrainsMono.className}>
+      <body className={`${jetBrainsMono.className}`}>
         <Header />
         <StairTransition />
         <PageTransition>{children}</PageTransition>
