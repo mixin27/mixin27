@@ -20,13 +20,15 @@ import Link from "next/link";
 import Image from "next/image";
 import WorkSliderButtons from "@/components/buttons/WorkSliderButtons";
 import { allProjects } from "@/.contentlayer/generated";
+import { usePathname } from "next/navigation";
 
 const Works = () => {
+  const pathname = usePathname();
   const [project, setProject] = useState(allProjects[0]);
 
   return (
     <motion.section
-      key={project._id}
+      key={pathname}
       initial={{ opacity: 0 }}
       animate={{
         opacity: 1,
