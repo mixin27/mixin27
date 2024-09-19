@@ -1,0 +1,63 @@
+{
+  "title": "Beads Math",
+  "description": "Mobile application to improve maths calculation skills.",
+  "image": {
+    "filePath": "../public/assets/images/projects/beads_math.png",
+    "relativeFilePath": "../../../public/assets/images/projects/beads_math.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAJFBMVEX////78f/ji/+uN//+9P/UXf7XOv+8V/7lPf/8+f/PeP/vZf5KD1YKAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAALklEQVR4nGNgQABORkYIg5WZmR1EM7IxcTFzghgcTEzsYEluDjZWiCIWFiStDAAQ1QB4EFmxNwAAAABJRU5ErkJggg=="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=tech.kbw.beads_math",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter",
+    "sqlite",
+    "firebase"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2023-11-01T00:00:00.000Z",
+  "endDate": "2024-02-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nWhat is abacus?\r\nAn abacus is a method of calculation that has been used for centuries before the advent of calculators.\r\n\r\nTypes of abacus\r\nThere are many types of abacus.\r\nThe type of abacus that will be used now is the Japanese abacus.\r\n\r\nUsing abacus as a base, it is a method of simultaneously teaching mental arithmetic.\r\n\r\nBenefits\r\n\r\n- Brain Development\r\n- Improve in Math Skills\r\n\r\n(Beads Maths application can be used not only for abacus math calculations but also for other math calculations.)\r\n\r\nContact\r\n\r\nPhone or Viber: <a href=\"tel:+959256199989\">+959256199989</a>\r\n\r\nMail: <a href=\"mailto:kidsbrainwork2022@gmail.com\">kidsbrainwork2022@gmail.com</a>\r\n",
+    "code": "var Component=(()=>{var d=Object.create;var s=Object.defineProperty;var p=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var m=Object.getPrototypeOf,b=Object.prototype.hasOwnProperty;var f=(a,e)=>()=>(e||a((e={exports:{}}).exports,e),e.exports),g=(a,e)=>{for(var n in e)s(a,n,{get:e[n],enumerable:!0})},o=(a,e,n,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let i of u(e))!b.call(a,i)&&i!==n&&s(a,i,{get:()=>e[i],enumerable:!(r=p(e,i))||r.enumerable});return a};var y=(a,e,n)=>(n=a!=null?d(m(a)):{},o(e||!a||!a.__esModule?s(n,\"default\",{value:a,enumerable:!0}):n,a)),k=a=>o(s({},\"__esModule\",{value:!0}),a);var c=f((v,l)=>{l.exports=_jsx_runtime});var w={};g(w,{default:()=>_,frontmatter:()=>j});var t=y(c()),j={type:\"Project\",title:\"Beads Math\",description:\"Mobile application to improve maths calculation skills.\",image:\"../../../public/assets/images/projects/beads_math.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=tech.kbw.beads_math\"},{appstore:\"\"}],startDate:\"2023-11-01\",endDate:\"2024-02-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"sqlite\",\"firebase\"],developers:[\"Kyaw Zayar Tun\"]};function h(a){let e=Object.assign({p:\"p\",ul:\"ul\",li:\"li\",a:\"a\"},a.components);return(0,t.jsxs)(t.Fragment,{children:[(0,t.jsx)(e.p,{children:`What is abacus?\\r\nAn abacus is a method of calculation that has been used for centuries before the advent of calculators.`}),`\n`,(0,t.jsx)(e.p,{children:`Types of abacus\\r\nThere are many types of abacus.\\r\nThe type of abacus that will be used now is the Japanese abacus.`}),`\n`,(0,t.jsx)(e.p,{children:\"Using abacus as a base, it is a method of simultaneously teaching mental arithmetic.\"}),`\n`,(0,t.jsx)(e.p,{children:\"Benefits\"}),`\n`,(0,t.jsxs)(e.ul,{children:[`\n`,(0,t.jsx)(e.li,{children:\"Brain Development\"}),`\n`,(0,t.jsx)(e.li,{children:\"Improve in Math Skills\"}),`\n`]}),`\n`,(0,t.jsx)(e.p,{children:\"(Beads Maths application can be used not only for abacus math calculations but also for other math calculations.)\"}),`\n`,(0,t.jsx)(e.p,{children:\"Contact\"}),`\n`,(0,t.jsxs)(e.p,{children:[\"Phone or Viber: \",(0,t.jsx)(\"a\",{href:\"tel:+959256199989\",children:\"+959256199989\"})]}),`\n`,(0,t.jsxs)(e.p,{children:[\"Mail: \",(0,t.jsx)(\"a\",{href:\"mailto:kidsbrainwork2022@gmail.com\",children:(0,t.jsx)(e.a,{href:\"mailto:kidsbrainwork2022@gmail.com\",children:\"kidsbrainwork2022@gmail.com\"})})]})]})}function x(a={}){let{wrapper:e}=a.components||{};return e?(0,t.jsx)(e,Object.assign({},a,{children:(0,t.jsx)(h,a)})):h(a)}var _=x;return k(w);})();\n;return Component;"
+  },
+  "_id": "projects/beads-math/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/beads-math/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/beads-math",
+    "contentType": "mdx",
+    "flattenedPath": "projects/beads-math"
+  },
+  "type": "Project",
+  "url": "/projects/projects/beads-math"
+}

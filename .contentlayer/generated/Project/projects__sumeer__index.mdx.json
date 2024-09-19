@@ -1,0 +1,64 @@
+{
+  "title": "Sumeer",
+  "description": "CV and Resume builder application.",
+  "image": {
+    "filePath": "../public/assets/images/projects/sumeer.png",
+    "relativeFilePath": "../../../public/assets/images/projects/sumeer.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAFVBMVEX////S2evb4vC1wd7w8vnj6POPos5HJgb4AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAIElEQVR4nGNgwAYYmSA0KxszC5jBxMwIEWFiZISIoAEABSoAJJaSloEAAAAASUVORK5CYII="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "https://github.com/mixin27/sumeer",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun",
+    "Theint Myat Noe",
+    "Myo Min Latt",
+    "Myat Soe\r"
+  ],
+  "startDate": "2018-11-01T00:00:00.000Z",
+  "endDate": "2018-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "",
+    "code": "var Component=(()=>{var p=Object.create;var o=Object.defineProperty;var l=Object.getOwnPropertyDescriptor;var d=Object.getOwnPropertyNames;var g=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var x=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),f=(t,e)=>{for(var r in e)o(t,r,{get:e[r],enumerable:!0})},i=(t,e,r,s)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of d(e))!y.call(t,n)&&n!==r&&o(t,n,{get:()=>e[n],enumerable:!(s=l(e,n))||s.enumerable});return t};var M=(t,e,r)=>(r=t!=null?p(g(t)):{},i(e||!t||!t.__esModule?o(r,\"default\",{value:t,enumerable:!0}):r,t)),b=t=>i(o({},\"__esModule\",{value:!0}),t);var c=x((k,u)=>{u.exports=_jsx_runtime});var D={};f(D,{default:()=>_,frontmatter:()=>j});var a=M(c()),j={type:\"Project\",title:\"Sumeer\",description:\"CV and Resume builder application.\",image:\"../../../public/assets/images/projects/sumeer.png\",category:\"mobile\",links:[{live:\"\"},{github:\"https://github.com/mixin27/sumeer\"},{playstore:\"\"},{appstore:\"\"}],startDate:\"2018-11-01\",endDate:\"2018-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\"],developers:[\"Kyaw Zayar Tun\",\"Theint Myat Noe\",\"Myo Min Latt\",\"Myat Soe\"]};function m(t){return(0,a.jsx)(a.Fragment,{})}function h(t={}){let{wrapper:e}=t.components||{};return e?(0,a.jsx)(e,Object.assign({},t,{children:(0,a.jsx)(m,t)})):m(t)}var _=h;return b(D);})();\n;return Component;"
+  },
+  "_id": "projects/sumeer/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/sumeer/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/sumeer",
+    "contentType": "mdx",
+    "flattenedPath": "projects/sumeer"
+  },
+  "type": "Project",
+  "url": "/projects/projects/sumeer"
+}

@@ -1,0 +1,62 @@
+{
+  "title": "Lucky Diamond Myanmar",
+  "description": "Cash request application for staffs.",
+  "image": {
+    "filePath": "../public/assets/images/projects/lucky_diamond_myanmar.png",
+    "relativeFilePath": "../../../public/assets/images/projects/lucky_diamond_myanmar.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAFVBMVEX////9/v6etNLT2unH0eTZ7fW9yd/zzH17AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAALElEQVR4nDWLyQ0AMAzCTI7uP3JU0vKyEQBIOBKPuu1kRHLbWkCc2pHl32AACCIAOXObTS8AAAAASUVORK5CYII="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.systematic.lucky_diamond",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "https://apps.apple.com/us/app/lucky-diamond-myanmar/id6444782470",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter",
+    "sqlite"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2022-11-01T00:00:00.000Z",
+  "endDate": "2022-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nThis application is only to use for staffs when they want to request the cash for using internal from Finances and can check whether approved or rejected by Finances.\r\nCash Request Application is the best and easy to use for internal staffs and Finances.\r\n",
+    "code": "var Component=(()=>{var d=Object.create;var s=Object.defineProperty;var m=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var y=Object.getPrototypeOf,f=Object.prototype.hasOwnProperty;var h=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),g=(t,e)=>{for(var a in e)s(t,a,{get:e[a],enumerable:!0})},i=(t,e,a,r)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of u(e))!f.call(t,n)&&n!==a&&s(t,n,{get:()=>e[n],enumerable:!(r=m(e,n))||r.enumerable});return t};var j=(t,e,a)=>(a=t!=null?d(y(t)):{},i(e||!t||!t.__esModule?s(a,\"default\",{value:t,enumerable:!0}):a,t)),_=t=>i(s({},\"__esModule\",{value:!0}),t);var p=h((q,c)=>{c.exports=_jsx_runtime});var w={};g(w,{default:()=>x,frontmatter:()=>b});var o=j(p()),b={type:\"Project\",title:\"Lucky Diamond Myanmar\",description:\"Cash request application for staffs.\",image:\"../../../public/assets/images/projects/lucky_diamond_myanmar.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=com.systematic.lucky_diamond\"},{appstore:\"https://apps.apple.com/us/app/lucky-diamond-myanmar/id6444782470\"}],startDate:\"2022-11-01\",endDate:\"2022-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"sqlite\"],developers:[\"Kyaw Zayar Tun\"]};function l(t){let e=Object.assign({p:\"p\"},t.components);return(0,o.jsx)(e.p,{children:`This application is only to use for staffs when they want to request the cash for using internal from Finances and can check whether approved or rejected by Finances.\\r\nCash Request Application is the best and easy to use for internal staffs and Finances.`})}function k(t={}){let{wrapper:e}=t.components||{};return e?(0,o.jsx)(e,Object.assign({},t,{children:(0,o.jsx)(l,t)})):l(t)}var x=k;return _(w);})();\n;return Component;"
+  },
+  "_id": "projects/lucky-diamond-myanmar/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/lucky-diamond-myanmar/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/lucky-diamond-myanmar",
+    "contentType": "mdx",
+    "flattenedPath": "projects/lucky-diamond-myanmar"
+  },
+  "type": "Project",
+  "url": "/projects/projects/lucky-diamond-myanmar"
+}

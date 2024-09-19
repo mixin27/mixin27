@@ -1,0 +1,62 @@
+{
+  "title": "Armo Farmer",
+  "description": "Useful application for farmers.",
+  "image": {
+    "filePath": "../public/assets/images/projects/armo_farmer.png",
+    "relativeFilePath": "../../../public/assets/images/projects/armo_farmer.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAFVBMVEX////dw8Owt7J9fXTO0c7j5ONOT0JZbFtTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAG0lEQVR4nGNgwAZYWaAMJiYog40ZymBkxKoDAAPyABnQzZYTAAAAAElFTkSuQmCC"
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.cluspedia.armo",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "https://apps.apple.com/us/app/armo-farmer/id1549131787",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter",
+    "sqlite"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2022-11-01T00:00:00.000Z",
+  "endDate": "2022-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "\r\nArmo Farmer app is the best useful application for the Farmer of the Whole Myanmar (Upper & Lower Myanmar).\r\n\r\nThis app includes Farmer News, Agriculture News, Weather Information and Agriculture's knowledge.\r\nAnd, this app contains Ordering system for the Dealers of Armo .\r\n",
+    "code": "var Component=(()=>{var l=Object.create;var n=Object.defineProperty;var u=Object.getOwnPropertyDescriptor;var d=Object.getOwnPropertyNames;var f=Object.getPrototypeOf,g=Object.prototype.hasOwnProperty;var h=(e,t)=>()=>(t||e((t={exports:{}}).exports,t),t.exports),y=(e,t)=>{for(var a in t)n(e,a,{get:t[a],enumerable:!0})},p=(e,t,a,o)=>{if(t&&typeof t==\"object\"||typeof t==\"function\")for(let s of d(t))!g.call(e,s)&&s!==a&&n(e,s,{get:()=>t[s],enumerable:!(o=u(t,s))||o.enumerable});return e};var j=(e,t,a)=>(a=e!=null?l(f(e)):{},p(t||!e||!e.__esModule?n(a,\"default\",{value:e,enumerable:!0}):a,e)),x=e=>p(n({},\"__esModule\",{value:!0}),e);var m=h((D,i)=>{i.exports=_jsx_runtime});var w={};y(w,{default:()=>b,frontmatter:()=>_});var r=j(m()),_={type:\"Project\",title:\"Armo Farmer\",description:\"Useful application for farmers.\",image:\"../../../public/assets/images/projects/armo_farmer.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=com.cluspedia.armo\"},{appstore:\"https://apps.apple.com/us/app/armo-farmer/id1549131787\"}],startDate:\"2022-11-01\",endDate:\"2022-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\",\"sqlite\"],developers:[\"Kyaw Zayar Tun\"]};function c(e){let t=Object.assign({p:\"p\"},e.components);return(0,r.jsxs)(r.Fragment,{children:[(0,r.jsx)(t.p,{children:\"Armo Farmer app is the best useful application for the Farmer of the Whole Myanmar (Upper & Lower Myanmar).\"}),`\n`,(0,r.jsx)(t.p,{children:`This app includes Farmer News, Agriculture News, Weather Information and Agriculture's knowledge.\\r\nAnd, this app contains Ordering system for the Dealers of Armo .`})]})}function A(e={}){let{wrapper:t}=e.components||{};return t?(0,r.jsx)(t,Object.assign({},e,{children:(0,r.jsx)(c,e)})):c(e)}var b=A;return x(w);})();\n;return Component;"
+  },
+  "_id": "projects/armo-farmer/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/armo-farmer/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/armo-farmer",
+    "contentType": "mdx",
+    "flattenedPath": "projects/armo-farmer"
+  },
+  "type": "Project",
+  "url": "/projects/projects/armo-farmer"
+}

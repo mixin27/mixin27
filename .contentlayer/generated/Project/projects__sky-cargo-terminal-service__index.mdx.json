@@ -1,0 +1,61 @@
+{
+  "title": "Sky Cargo Terminal Service",
+  "description": "Forwarder appointment application.",
+  "image": {
+    "filePath": "../public/assets/images/projects/sky_cargo_service.png",
+    "relativeFilePath": "../../../public/assets/images/projects/sky_cargo_service.png",
+    "format": "png",
+    "height": 500,
+    "width": 500,
+    "aspectRatio": 1,
+    "blurhashDataUrl": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAMAAADz0U65AAAAElBMVEX////v8vrm4dfY0MLJ0OTV2+ui2XKVAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAFklEQVR4nGNgwAdYmZkYwQwWGAMXAAADTAAW1AkazAAAAABJRU5ErkJggg=="
+  },
+  "links": [
+    {
+      "live": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "github": "",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "playstore": "https://play.google.com/store/apps/details?id=com.systematic.mcs_service",
+      "type": "Link",
+      "_raw": {}
+    },
+    {
+      "appstore": "https://apps.apple.com/us/app/mcs-service/id1513511820",
+      "type": "Link",
+      "_raw": {}
+    }
+  ],
+  "category": "mobile",
+  "tags": [
+    "dart",
+    "flutter"
+  ],
+  "developers": [
+    "Kyaw Zayar Tun\r"
+  ],
+  "startDate": "2022-11-01T00:00:00.000Z",
+  "endDate": "2022-11-01T00:00:00.000Z",
+  "currentlyWorking": false,
+  "updatedAt": "2024-09-19T00:00:00.000Z",
+  "body": {
+    "raw": "",
+    "code": "var Component=(()=>{var m=Object.create;var o=Object.defineProperty;var g=Object.getOwnPropertyDescriptor;var u=Object.getOwnPropertyNames;var d=Object.getPrototypeOf,y=Object.prototype.hasOwnProperty;var _=(t,e)=>()=>(e||t((e={exports:{}}).exports,e),e.exports),f=(t,e)=>{for(var r in e)o(t,r,{get:e[r],enumerable:!0})},i=(t,e,r,n)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let s of u(e))!y.call(t,s)&&s!==r&&o(t,s,{get:()=>e[s],enumerable:!(n=g(e,s))||n.enumerable});return t};var x=(t,e,r)=>(r=t!=null?m(d(t)):{},i(e||!t||!t.__esModule?o(r,\"default\",{value:t,enumerable:!0}):r,t)),j=t=>i(o({},\"__esModule\",{value:!0}),t);var c=_((w,p)=>{p.exports=_jsx_runtime});var k={};f(k,{default:()=>h,frontmatter:()=>v});var a=x(c()),v={type:\"Project\",title:\"Sky Cargo Terminal Service\",description:\"Forwarder appointment application.\",image:\"../../../public/assets/images/projects/sky_cargo_service.png\",category:\"mobile\",links:[{live:\"\"},{github:\"\"},{playstore:\"https://play.google.com/store/apps/details?id=com.systematic.mcs_service\"},{appstore:\"https://apps.apple.com/us/app/mcs-service/id1513511820\"}],startDate:\"2022-11-01\",endDate:\"2022-11-01\",currentlyWorking:!1,updatedAt:\"2024-09-19\",tags:[\"dart\",\"flutter\"],developers:[\"Kyaw Zayar Tun\"]};function l(t){return(0,a.jsx)(a.Fragment,{})}function b(t={}){let{wrapper:e}=t.components||{};return e?(0,a.jsx)(e,Object.assign({},t,{children:(0,a.jsx)(l,t)})):l(t)}var h=b;return j(k);})();\n;return Component;"
+  },
+  "_id": "projects/sky-cargo-terminal-service/index.mdx",
+  "_raw": {
+    "sourceFilePath": "projects/sky-cargo-terminal-service/index.mdx",
+    "sourceFileName": "index.mdx",
+    "sourceFileDir": "projects/sky-cargo-terminal-service",
+    "contentType": "mdx",
+    "flattenedPath": "projects/sky-cargo-terminal-service"
+  },
+  "type": "Project",
+  "url": "/projects/projects/sky-cargo-terminal-service"
+}

@@ -52,7 +52,7 @@ const Works = () => {
 
               {/* stacks */}
               {project.tags && (
-                <ul className="flex gap-4">
+                <ul className="flex gap-4 flex-wrap">
                   {project.tags.map((tag, index) => {
                     return (
                       <li key={index} className="text-xl text-accent">
@@ -68,91 +68,98 @@ const Works = () => {
               <div className="border border-white/20"></div>
 
               {/* buttons */}
-              {project.links &&
-                project.links.map((link) => {
-                  return (
-                    <div key={link._id} className="flex justify-between">
-                      <div className="flex items-center gap-4">
-                        {/* live button */}
-                        {link.live && (
-                          <Link href={link.live}>
-                            <TooltipProvider delayDuration={100}>
-                              <Tooltip>
-                                <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                                  <BsArrowUpRight className="text-white text-3xl group-hover:text-accent" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Live project</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </Link>
-                        )}
+              <div className="flex justify-between">
+                <div className="flex items-center gap-4">
+                  {project.links &&
+                    project.links.map((link) => {
+                      return (
+                        <div key={link._id}>
+                          {/* live button */}
+                          {link.live && (
+                            <Link href={link.live}>
+                              <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                  <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
+                                    <BsArrowUpRight className="text-white text-3xl group-hover:text-accent" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Live project</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Link>
+                          )}
 
-                        {/* github button */}
-                        {link.github && (
-                          <Link href={link.github}>
-                            <TooltipProvider delayDuration={100}>
-                              <Tooltip>
-                                <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                                  <BsGithub className="text-white text-3xl group-hover:text-accent" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Github repository</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </Link>
-                        )}
+                          {/* github button */}
+                          {link.github && (
+                            <Link href={link.github}>
+                              <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                  <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
+                                    <BsGithub className="text-white text-3xl group-hover:text-accent" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Github repository</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Link>
+                          )}
 
-                        {/* playstore button */}
-                        {link.playstore && (
-                          <Link href={link.playstore}>
-                            <TooltipProvider delayDuration={100}>
-                              <Tooltip>
-                                <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                                  <FaGooglePlay className="text-white text-3xl group-hover:text-accent" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Google playstore</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </Link>
-                        )}
+                          {/* playstore button */}
+                          {link.playstore && (
+                            <Link href={link.playstore}>
+                              <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                  <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
+                                    <FaGooglePlay className="text-white text-3xl group-hover:text-accent" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Google playstore</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Link>
+                          )}
 
-                        {/* appstore button */}
-                        {link.appstore && (
-                          <Link href={link.appstore}>
-                            <TooltipProvider delayDuration={100}>
-                              <Tooltip>
-                                <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                                  <FaAppStore className="text-white text-3xl group-hover:text-accent" />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Appstore</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </Link>
-                        )}
-                      </div>
+                          {/* appstore button */}
+                          {link.appstore && (
+                            <Link href={link.appstore}>
+                              <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                  <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
+                                    <FaAppStore className="text-white text-3xl group-hover:text-accent" />
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>Appstore</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </Link>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
 
-                      <Link href={`${project.url}`}>
-                        <TooltipProvider delayDuration={100}>
-                          <Tooltip>
-                            <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
-                              <FaEye className="text-white text-3xl group-hover:text-accent" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>View details</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </Link>
-                    </div>
-                  );
-                })}
+                <Link
+                  href={`/works/${project._raw.flattenedPath.replace(
+                    "projects/",
+                    ""
+                  )}`}
+                >
+                  <TooltipProvider delayDuration={100}>
+                    <Tooltip>
+                      <TooltipTrigger className="w-[70px] h-[70px] rounded-full bg-white/5 flex justify-center items-center group">
+                        <FaEye className="text-white text-3xl group-hover:text-accent" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>View details</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </Link>
+              </div>
             </div>
           </div>
 
