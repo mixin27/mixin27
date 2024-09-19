@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 // components
 import Header from "@/components/common/header";
-import StairTransition from "@/components/transitions/StairTransition";
+// import StairTransition from "@/components/transitions/StairTransition";
 import PageTransition from "@/components/transitions/PageTransition";
 
 import "./globals.css";
@@ -50,9 +50,9 @@ export default function RootLayout({
         />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
-      <body className={`${jetBrainsMono.className}`}>
+      <body className={`${jetBrainsMono.className} bg-primary text-white`}>
         <Header />
-        <StairTransition />
+        {/* <StairTransition /> */}
         <PageTransition>{children}</PageTransition>
         <Toaster />
         <Analytics />

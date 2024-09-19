@@ -2,17 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+/* :root {
   --background: #ffffff;
   --foreground: #171717;
-}
+} */
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 html {
   scroll-behavior: smooth;
@@ -53,11 +53,11 @@ body {
   }
 
   .h1 {
-    @apply text-[48px] xl:text-[80px] leading-[1.1] font-semibold;
+    @apply text-[48px] xl:text-[70px] leading-[1.1] font-semibold;
   }
 
   .h2 {
-    @apply text-[36px] xl:text-[48px] leading-[1.1] font-semibold;
+    @apply text-[36px] xl:text-[38px] leading-[1.1] font-semibold;
   }
 
   .h3 {
@@ -70,13 +70,6 @@ body {
 
   .text-outline-hover {
     -webkit-text-stroke: 1px #00ff99;
-  }
-}
-
-@layer components {
-  .markdown-image-50 img {
-    max-width: 50%;
-    margin: auto;
   }
 }
 

@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const Blogs = () => {
   return (
-    <section className="w-full my-16 px-32 flex flex-col items-center justify-center">
+    <section className="w-full container mx-auto my-16 flex flex-col items-center justify-center">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{
