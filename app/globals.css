@@ -117,7 +117,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   position: relative;
 }
 
-[data-rehype-pretty-code-title] {
+/* [data-rehype-pretty-code-title] {
   position: absolute;
   right: 0;
   background-color: #7b00d3;
@@ -125,7 +125,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   padding: 4px 8px;
   font-size: 1rem;
   border-end-start-radius: 4px;
-}
+} */
 
 [data-rehype-pretty-code-caption] {
   /* position: absolute; */

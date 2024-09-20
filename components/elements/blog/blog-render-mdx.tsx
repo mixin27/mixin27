@@ -3,13 +3,17 @@
 import { useMDXComponent } from "next-contentlayer/hooks";
 import { Blog } from "@/contentlayer/generated";
 import Image from "next/image";
+import { PreCustom } from "@/components/rehype/pre-custom";
+import { BasicItems } from "@/components/rehype/basic-items";
 
 type Props = {
   blog: Blog;
 };
 
-const mdxComponents = {
+export const mdxComponents = {
   Image,
+  pre: PreCustom,
+  ...BasicItems,
 };
 
 const BlogRenderMdx = ({ blog }: Props) => {

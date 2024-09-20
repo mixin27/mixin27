@@ -9,6 +9,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import GithubSlugger from "github-slugger";
+import { postProcessRehype, preProcessRehype } from "./lib/rehype-pre-raw";
 
 const ProjectLink = defineNestedType(() => ({
   name: "Link",
@@ -155,6 +156,11 @@ const Blog = defineDocumentType(() => ({
 
 const codeOptions = {
   theme: "github-dark",
+  onVisitLine(node) {
+    if (node.children.length === 0) {
+      node.children = [{ type: "text", value: " " }];
+    }
+  },
 };
 
 export default makeSource({
@@ -165,9 +171,11 @@ export default makeSource({
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
+      preProcessRehype,
       rehypeSlug,
       [rehypeAutolinkHeadings, { behavior: "append" }],
       [rehypePrettyCode, codeOptions],
+      postProcessRehype,
     ],
   },
 });

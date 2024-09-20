@@ -33,6 +33,31 @@ The following contents are just a testing my `markdown` content. Have fun!
 </article>
 ```
 
+```javascript
+import { visit } from "unist-util-visit";
+
+export const preProcess = () => (tree) => {
+  visit(tree, (node) => {
+    if (node?.type === "element" && node?.tagName === "pre") {
+      const [codeEl] = node.children;
+
+      if (codeEl.tagName !== "code") return;
+
+      node.raw = codeEl.children?.[0].value;
+    }
+  });
+};
+
+export const postProcess = () => (tree) => {
+  visit(tree, "element", (node) => {
+    if (node?.type === "element" && node?.tagName === "pre") {
+      node.properties["raw"] = node.raw;
+      // console.log(node) here to see if you're getting the raw text
+    }
+  });
+};
+```
+
 ## Welcome to StackEdit!
 
 Hi! I'm your first Markdown file in **StackEdit**. If you want to learn about StackEdit, you can read me. If you want to play with Markdown, you can edit me. Once you have finished with me, you can create new files by opening the **file explorer** on the left corner of the navigation bar.
