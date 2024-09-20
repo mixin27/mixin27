@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/toaster";
@@ -13,11 +13,17 @@ import "./globals.css";
 import Footer from "@/components/common/footer";
 import { siteMetadada } from "@/lib/siteMetadata";
 
-const jetBrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+// const jetBrainsMono = JetBrains_Mono({
+//   subsets: ["latin"],
+//   display: "swap",
+//   weight: ["100", "200", "300", "400", "500", "600", "700", "800"],
+//   variable: "--font-jetbrainsMono",
+// });
+
+const jetBrainsMono = localFont({
+  src: "./fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf",
   variable: "--font-jetbrainsMono",
+  weight: "100 200 300 400 500 600 700 800 900",
 });
 
 export const metadata: Metadata = {

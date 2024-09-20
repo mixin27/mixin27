@@ -60,14 +60,14 @@ const Details = ({ slug: blogSlug, blog }: Props) => {
       <div className="w-full container mx-auto flex flex-col lg:flex-row mt-8">
         <div className="w-full lg:w-[35%] mb-8 lg:mr-8">
           <details
-            className="w-full border-[1px] border-solid border-white text-white rounded-lg p-4 sticky top-6 max-h-[80vh] overflow-hidden "
+            className="w-full border-[1px] border-solid border-white text-white rounded-lg p-4 sticky top-6 overflow-hidden "
             open
           >
             <summary className="text-lg font-semibold capitalize cursor-pointer">
               Table Of Content
             </summary>
 
-            <ScrollArea className="h-[80vh]">
+            <ScrollArea className="lg:h-[80vh]">
               <ul className="mt-4 font-inter text-base">
                 {blog.toc.map(
                   (heading: { level: string; text: string; slug: string }) => {

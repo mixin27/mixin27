@@ -13,7 +13,8 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const project = allProjects.find(
-    (project) => project._raw.flattenedPath === params.slug
+    (project) =>
+      project._raw.flattenedPath.replace("projects/", "") === params.slug
   );
   if (!project) return {};
 

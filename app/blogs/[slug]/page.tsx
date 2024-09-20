@@ -12,7 +12,9 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const blog = allBlogs.find((blog) => blog._raw.flattenedPath === params.slug);
+  const blog = allBlogs.find(
+    (blog) => blog._raw.flattenedPath.replace("blogs/", "") === params.slug
+  );
   if (!blog) return {};
 
   const publishedAt = new Date(blog.publishedAt).toISOString();
