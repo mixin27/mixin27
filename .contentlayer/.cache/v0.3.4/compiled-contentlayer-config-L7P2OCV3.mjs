@@ -71,7 +71,7 @@ var Project = defineDocumentType(() => ({
   computedFields: {
     url: {
       type: "string",
-      resolve: (doc) => `/projects/${doc._raw.flattenedPath}`
+      resolve: (doc) => doc._raw.flattenedPath
     }
   }
 }));
@@ -116,7 +116,7 @@ var Blog = defineDocumentType(() => ({
   computedFields: {
     url: {
       type: "string",
-      resolve: (doc) => `/blogs/${doc._raw.flattenedPath}`
+      resolve: (doc) => doc._raw.flattenedPath
     },
     readingTime: {
       type: "json",
@@ -163,4 +163,4 @@ var contentlayer_config_default = makeSource({
 export {
   contentlayer_config_default as default
 };
-//# sourceMappingURL=compiled-contentlayer-config-BLM5FLHL.mjs.map
+//# sourceMappingURL=compiled-contentlayer-config-L7P2OCV3.mjs.map

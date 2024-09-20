@@ -72,7 +72,7 @@ const Project = defineDocumentType(() => ({
   computedFields: {
     url: {
       type: "string",
-      resolve: (doc) => `/projects/${doc._raw.flattenedPath}`,
+      resolve: (doc) => doc._raw.flattenedPath,
     },
   },
 }));
@@ -118,7 +118,7 @@ const Blog = defineDocumentType(() => ({
   computedFields: {
     url: {
       type: "string",
-      resolve: (doc) => `/blogs/${doc._raw.flattenedPath}`,
+      resolve: (doc) => doc._raw.flattenedPath,
     },
     readingTime: {
       type: "json",

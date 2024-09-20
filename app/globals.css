@@ -22,8 +22,9 @@ h1 > a > .icon.icon-link::before,
 h2 > a > .icon.icon-link::before,
 h3 > a > .icon.icon-link::before {
   content: "#";
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: #ffffff;
+  margin-left: 8px;
 }
 
 h2 > a,

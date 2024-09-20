@@ -1,3 +1,4 @@
+import { siteMetadada } from "@/lib/siteMetadata";
 import Link from "next/link";
 import { FunctionComponent } from "react";
 import {
@@ -16,23 +17,23 @@ export interface SocialType {
 const socials: SocialType[] = [
   {
     icon: <FaGithub />,
-    path: "https://github.com/mixin27",
+    path: siteMetadada.github,
   },
   {
     icon: <FaGooglePlay />,
-    path: "https://play.google.com/store/search?q=pub%3AKyaw%20Zayar%20Tun&c=apps",
+    path: siteMetadada.playstore,
   },
   {
     icon: <FaTwitter />,
-    path: "https://twitter.com/kyawzayartun98",
+    path: siteMetadada.twitter,
   },
   {
     icon: <FaLinkedin />,
-    path: "https://www.linkedin.com/in/kyaw-zayar-tun-7574a917a",
+    path: siteMetadada.linkedin,
   },
   {
     icon: <FaFacebook />,
-    path: "https://www.facebook.com/zy.98727",
+    path: siteMetadada.facebook,
   },
 ];
 

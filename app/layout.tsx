@@ -11,6 +11,7 @@ import PageTransition from "@/components/transitions/PageTransition";
 
 import "./globals.css";
 import Footer from "@/components/common/footer";
+import { siteMetadada } from "@/lib/siteMetadata";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -20,8 +21,39 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Kyaw Zayar Tun - Mobile Developer",
-  description: "Personal portfolio site.",
+  metadataBase: new URL(siteMetadada.siteUrl),
+  title: {
+    template: `%s | ${siteMetadada.title}`,
+    default: siteMetadada.title,
+  },
+  description: siteMetadada.description,
+  openGraph: {
+    title: siteMetadada.title,
+    description: siteMetadada.description,
+    url: siteMetadada.siteUrl,
+    siteName: siteMetadada.title,
+    images: [siteMetadada.socialBanner],
+    locale: siteMetadada.locale,
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: false,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteMetadada.title,
+    description: siteMetadada.description,
+    images: [siteMetadada.socialBanner],
+  },
 };
 
 export default function RootLayout({

@@ -3,13 +3,15 @@ import { format, parseISO } from "date-fns";
 import Link from "next/link";
 import React from "react";
 import { FaTag, FaEye, FaClock, FaCalendarAlt } from "react-icons/fa";
+import ViewCount from "./view-count";
+import { slug } from "github-slugger";
 
 type Props = {
   slug: string;
   blog: Blog;
 };
 
-const BlogDetails = ({ blog }: Props) => {
+const BlogDetails = ({ blog, slug: blogSlug }: Props) => {
   return (
     <div className="container mx-auto flex flex-wrap items-center justify-around gap-2">
       <div className="flex items-center gap-4 text-white/60">
@@ -21,7 +23,9 @@ const BlogDetails = ({ blog }: Props) => {
 
       <div className="flex items-center gap-4 text-white/60">
         <FaEye className="text-accent" />
-        <span className="my-3">10 views</span>
+        <span className="my-3">
+          <ViewCount slug={blogSlug} />
+        </span>
       </div>
 
       <div className="flex items-center gap-4 text-white/60">
@@ -32,7 +36,7 @@ const BlogDetails = ({ blog }: Props) => {
       <div className="flex items-center gap-4 text-white/60">
         <FaTag className="text-accent" />
         {blog.tags && (
-          <Link href={`/categories/${blog.tags[0]}`} className="my-3">
+          <Link href={`/categories/${slug(blog.tags[0])}`} className="my-3">
             #{blog.tags[0]}
           </Link>
         )}
