@@ -154,7 +154,7 @@ const education = {
 const skills = {
   title: "My skills",
   description:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti optio beatae esse voluptas.",
+    "Experienced in Flutter development with a strong focus on building mobile applications, including chat and calendar apps. Skilled in Firebase integration for real-time data handling, authentication, and storage. Proficient in multi-language app development, and implementing custom UI features. Solid foundation in computer science principle and a passion for problem-solving. The followings are some of my expert technologies.",
   skillList: [
     {
       icon: <FaHtml5 />,
