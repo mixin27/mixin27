@@ -258,7 +258,7 @@ const Resume = () => {
                           key={index}
                           className="bg-[#232329]  py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
                         >
-                          <div className="w-full flex items-center justify-center gap-2">
+                          <div className="w-full flex items-center justify-center lg:justify-between gap-2">
                             <span className="text-accent">{exp.duration}</span>
                             <AlertDialog>
                               <AlertDialogTrigger>
@@ -284,7 +284,7 @@ const Resume = () => {
                                     </span>
                                     <div className="flex items-center mt-2 gap-3">
                                       {/* dot */}
-                                      <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                                      <span className="w-[6px] h-[6px] rounded-full bg-accent ml-1"></span>
                                       <p className="text-white/60">
                                         {exp.company}
                                       </p>
@@ -301,7 +301,7 @@ const Resume = () => {
                                     </h3>
 
                                     {exp.highlights && (
-                                      <ul className="list-none">
+                                      <ul className="list-none text-start">
                                         {exp.highlights.map(
                                           (highlight, index) => {
                                             return (
@@ -440,7 +440,7 @@ const Resume = () => {
                         className="flex items-center justify-center xl:justify-start gap-4"
                       >
                         <span className="text-white/60">{item.fieldName}</span>
-                        <span className="text-xl">{item.fieldValue}</span>
+                        <span className="text-base">{item.fieldValue}</span>
                       </li>
                     );
                   })}

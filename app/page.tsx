@@ -6,6 +6,7 @@ import { FiDownload } from "react-icons/fi";
 import Social from "@/components/social";
 import Photo from "@/components/photo";
 import Stats from "@/components/stats";
+import { siteMetadada } from "../lib/siteMetadata";
 
 export default function Home() {
   return (
@@ -14,16 +15,13 @@ export default function Home() {
         <div className="flex flex-col xl:flex-row items-center justify-between xl:pt-8 xl:pb-24">
           {/* text */}
           <div className="text-center xl:text-left order-2 xl:order-none">
-            <span className="text-xl">Software Developer</span>
+            <span className="text-xl">{siteMetadada.heroPosition}</span>
             <h1 className="h1 mb-6">
               Hello I&apos;m <br />{" "}
-              <span className="text-accent">Kyaw Zayar Yun</span>
+              <span className="text-accent">{siteMetadada.author}</span>
             </h1>
             <p className="max-w-[500px] mb-9 text-white/80">
-              I&apos;m a passionate and experienced mobile developer dedicated
-              to creating seamless, user-friendly applications. Explore my works
-              and see how I bring ideas to life through innovative mobile
-              solutions.
+              {siteMetadada.heroDescription}
             </p>
 
             {/* button and socials */}
