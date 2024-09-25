@@ -17,7 +17,18 @@ import {
   SiSqlite,
   SiMongodb,
 } from "react-icons/si";
-import { SlLocationPin, SlInfo } from "react-icons/sl";
+import { SlLocationPin } from "react-icons/sl";
+import { BsArrowDownRight } from "react-icons/bs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // components
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -247,46 +258,74 @@ const Resume = () => {
                           key={index}
                           className="bg-[#232329]  py-6 px-10 rounded-xl flex flex-col justify-center items-center lg:items-start gap-1"
                         >
-                          <div className="flex gap-4">
+                          <div className="w-full flex items-center justify-center gap-2">
                             <span className="text-accent">{exp.duration}</span>
-                            <div className="flex justify-center items-center">
-                              <TooltipProvider delayDuration={100}>
-                                <Tooltip>
-                                  <TooltipTrigger className="w-full h-[20px] bg-[#232329] rounded-xl flex justify-center items-center group">
-                                    <div className="text-xl group-hover:text-accent transition-all duration-300">
-                                      <SlInfo />
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent className="bg-primary border-primary max-w-[240px] md:max-w-max">
-                                    {exp.description && (
-                                      <p className="text-white/60 py-1 text-left">
-                                        {exp.description}
+                            <AlertDialog>
+                              <AlertDialogTrigger>
+                                <TooltipProvider delayDuration={100}>
+                                  <Tooltip>
+                                    <TooltipTrigger className="w-[35px] h-[35px] rounded-full bg-white/5 flex justify-center items-center group">
+                                      <BsArrowDownRight className="text-white text-xl group-hover:text-accent transition-all duration-500 flex justify-center items-center hover:-rotate-45" />
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <p>View details</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    {exp.position}
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    <span className="text-accent">
+                                      {exp.duration}
+                                    </span>
+                                    <div className="flex items-center mt-2 gap-3">
+                                      {/* dot */}
+                                      <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                                      <p className="text-white/60">
+                                        {exp.company}
                                       </p>
-                                    )}
-                                    <h3 className="text-accent pb-2 text-left">
+                                    </div>
+                                    {/* location */}
+                                    <div className="flex items-center gap-3">
+                                      <SlLocationPin className="text-accent w-[12px] h-[12px]" />
+                                      <p className="text-white/60">
+                                        {exp.location}
+                                      </p>
+                                    </div>
+                                    <h3 className="text-accent py-2">
                                       Highlights
                                     </h3>
-                                    <ul className="px-2 text-left ">
-                                      {exp.highlights.map(
-                                        (highlight, index) => {
-                                          return (
-                                            <li key={index}>
-                                              <div className="flex items-center gap-3">
-                                                {/* dot */}
-                                                <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
-                                                <p className="text-white/60 bg-primary">
-                                                  {highlight}
-                                                </p>
-                                              </div>
-                                            </li>
-                                          );
-                                        }
-                                      )}
-                                    </ul>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
+
+                                    {exp.highlights && (
+                                      <ul className="list-none">
+                                        {exp.highlights.map(
+                                          (highlight, index) => {
+                                            return (
+                                              <li key={index} className="ml-4">
+                                                <div className="flex items-center gap-3">
+                                                  {/* dot */}
+                                                  <span className="w-[6px] h-[6px] rounded-full bg-accent"></span>
+                                                  <p className="text-white/60">
+                                                    {highlight}
+                                                  </p>
+                                                </div>
+                                              </li>
+                                            );
+                                          }
+                                        )}
+                                      </ul>
+                                    )}
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogAction>OK</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
                           </div>
 
                           <h3 className="text-xl max-w-[260px] min-h-[60px] text-center lg:text-left">
