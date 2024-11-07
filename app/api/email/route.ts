@@ -1,6 +1,5 @@
-import EmailTemplateClient from "@/templates/EmailTemplateClient";
+import { sendEmail } from "@/lib/mail/send-mail";
 import { type NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 
 export async function POST(request: NextRequest) {
   const { email, message, name, phone } = await request.json();
@@ -14,25 +13,119 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  // const resend = new Resend(process.env.RESEND_API_KEY);
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: `Kyaw Zayar Tun <info@kyawzayartun.com>`,
+    // const { data, error } = await resend.emails.send({
+    //   from: `Kyaw Zayar Tun <info@kyawzayartun.com>`,
+    //   to: email,
+    //   subject: `Message from Kyaw Zayar Tun`,
+    //   react: EmailTemplateClient({ name }),
+    // });
+
+    // if (error) {
+    //   return NextResponse.json(
+    //     { message: "Email sending failed", error },
+    //     { status: 400 }
+    //   );
+    // }
+    await sendEmail({
       to: email,
       subject: `Message from Kyaw Zayar Tun`,
-      react: EmailTemplateClient({ name }),
+      html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        .header h1 {
+            margin: 0;
+            color: #333;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px 0;
+            background-color: #28a745;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Thank You</h1>
+        </div>
+        <div class="content">
+            <p>Hi ${name},</p>
+            <p>
+              Thanks you for contacting us regarding software services. We appreciate your interest and would be happy to discuss how we can assit you with your project.
+            </p>
+
+            <p>
+              Could you please provide more details about your requirements, such as type of software you&apos;re looking for, the features you&apos;d like included, and any specific goals or deadlines? This will help us better understand your needs and propose an ideal solution.
+            </p>
+
+            <p>
+              Once we have this information, we can schedule a call or meeting to explore further.
+            </p>
+
+            <p>
+              Looking forward to hearing from you!
+            </p>
+
+            <p>Best regards,<br>Kyaw Zayar Tun</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Kyaw Zayar Tun. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+      `,
     });
 
-    if (error) {
-      return NextResponse.json(
-        { message: "Email sending failed", error },
-        { status: 400 }
-      );
-    }
-
     return NextResponse.json(
-      { message: "Email sent successfully", data },
+      { message: "Email sent successfully" },
       { status: 200 }
     );
   } catch (error) {
@@ -43,60 +136,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-// const { email, name } = await request.json();
-
-//   const transport = nodemailer.createTransport({
-//     service: "gmail",
-//     /*
-//       setting service as 'gmail' is same as providing these setings:
-//       host: "smtp.gmail.com",
-//       port: 465,
-//       secure: true
-//       If you want to use a different email provider other than gmail, you need to provide these manually.
-//       Or you can go use these well known services and their settings at
-//       https://github.com/nodemailer/nodemailer/blob/master/lib/well-known/services.json
-//   */
-//     auth: {
-//       user: process.env.MY_EMAIL,
-//       pass: process.env.MY_PASSWORD,
-//     },
-//   });
-
-//   const mailOptions: Mail.Options = {
-//     from: `"Kyaw Zayar Tun 👻" <${process.env.MY_EMAIL}>`,
-//     to: email,
-//     // cc: email, (uncomment this line if you want to send a copy to the sender)
-//     subject: `Message from ${name} (${email})`,
-//     text: `
-//     Hello ${name},
-
-//     We received your message. We will contact you soon.
-
-//     Thanks for your consideration.
-
-//     Best regards,
-//     Kyaw Zayar Tun,
-//     ${process.env.MY_EMAIL}
-//     +95 979 996 7189
-//     `,
-//   };
-
-//   const sendMailPromise = () =>
-//     new Promise<string>((resolve, reject) => {
-//       transport.sendMail(mailOptions, function (err) {
-//         if (!err) {
-//           resolve("Email sent");
-//         } else {
-//           console.log(err);
-//           reject(err.message);
-//         }
-//       });
-//     });
-
-//   try {
-//     await sendMailPromise();
-//     return NextResponse.json({ message: "Email sent" });
-//   } catch (err) {
-//     return NextResponse.json({ error: err }, { status: 500 });
-//   }

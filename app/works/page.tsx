@@ -1,7 +1,8 @@
 import { allProjects } from "@/.contentlayer/generated";
-import Works from "./works";
 import { siteMetadada } from "@/lib/siteMetadata";
 import { Metadata } from "next";
+import { parseISO } from "date-fns";
+import WorkList from "./_components/work-list";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -24,7 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Page = () => {
-  return <Works projects={allProjects} />;
+  const projects = allProjects.sort((a, b) => {
+    return parseISO(b.endDate).getTime() - parseISO(a.endDate).getTime();
+  });
+
+  return <WorkList projects={projects} />;
 };
 
 export default Page;

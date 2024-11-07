@@ -56,9 +56,13 @@ const info = [
 
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const Contact = () => {
   const { toast } = useToast();
+
+  const [isSending, setIsSending] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -72,6 +76,7 @@ const Contact = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setIsSending(true);
     const { email, firstname, lastname, message, phone, service } = values;
     const apiEndpoint = "/api/email";
 
@@ -116,6 +121,8 @@ const Contact = () => {
         //   <ToastAction altText="Goto schedule to undo">OK</ToastAction>
         // ),
       });
+    } finally {
+      setIsSending(false);
     }
   };
   return (
@@ -272,8 +279,16 @@ const Contact = () => {
                 />
 
                 {/* button */}
-                <Button type="submit" size="lg" className="max-w-50 h-[48px]">
-                  Send message
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="max-w-50 h-[48px]"
+                  disabled={isSending}
+                >
+                  {isSending && (
+                    <Loader2 className="animate-spin stroke-white" />
+                  )}
+                  {!isSending && <>Send message</>}
                 </Button>
               </form>
             </Form>

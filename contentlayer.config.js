@@ -60,6 +60,7 @@ const Project = defineDocumentType(() => ({
     },
     endDate: {
       type: "date",
+      required: true,
     },
     currentlyWorking: {
       type: "boolean",
