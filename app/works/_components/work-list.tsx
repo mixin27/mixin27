@@ -23,8 +23,8 @@ function WorkList({ projects }: { projects: Project[] }) {
         </p>
 
         <ul className="flex flex-col w-full">
-          {projects.map((project, index) => (
-            <WorkItem key={index} project={project} />
+          {projects.map((project) => (
+            <WorkItem key={project._raw.flattenedPath} project={project} />
           ))}
         </ul>
       </div>

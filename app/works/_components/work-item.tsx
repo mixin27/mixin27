@@ -20,9 +20,11 @@ function WorkItem({
   className?: string;
 }) {
   return (
-    <div className={cn("flex flex-col md:flex-row md:gap-[30px]", className)}>
+    <div
+      className={cn("flex flex-col md:flex-row md:gap-[30px] gap-2", className)}
+    >
       <div className="w-full md:w-[35%]">
-        <div className="h-[460px] md:h-[300px] relative group flex justify-center items-center bg-pink-50/20">
+        <div className="h-[400px] md:h-[400px] relative group flex justify-center items-center bg-pink-50/20">
           {/* overlay */}
           <div className="absolute top-0 bottom-0 w-full h-full bg-black/10 z-10"></div>
 
@@ -38,7 +40,7 @@ function WorkItem({
         </div>
       </div>
 
-      <div className="w-full md:w-[65%] md:h-[460px] flex flex-col md:justify-between order-2 md:order-none justify-center">
+      <div className="w-full md:w-[65%] md:h-[460px] flex flex-col md:justify-between order-2 md:order-none justify-center py-4 md:py-0">
         <div className="flex flex-col gap-[20px] h-[50%]">
           {/* category */}
           <div className="text-xl leading-none font-extrabold text-white/60">
