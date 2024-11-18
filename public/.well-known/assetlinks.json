@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.billion.sport_live",
+      "sha256_cert_fingerprints": [
+        "83:22:7C:D1:B7:10:A9:49:6A:BD:7B:1F:95:92:04:89:8E:42:01:C2:D3:D5:0D:35:7D:05:C6:68:CA:90:EA:F2"
+      ]
+    }
+  }
+]
