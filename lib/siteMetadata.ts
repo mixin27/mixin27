@@ -13,7 +13,7 @@ export const siteMetadada = {
   twitter: "https://twitter.com/kyawzayartun98",
   facebook: "https://www.facebook.com/zy.98727",
   playstore:
-    "https://play.google.com/store/search?q=pub%3AKyaw%20Zayar%20Tun&c=apps",
+    "https://play.google.com/store/apps/dev?id=5475419785338290117",
   linkedin: "https://www.linkedin.com/in/kyaw-zayar-tun-7574a917a",
   locale: "en-US",
   heroPosition: "Software developer",
