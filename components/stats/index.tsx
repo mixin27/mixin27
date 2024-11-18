@@ -1,15 +1,21 @@
 "use client";
 
-import { FunctionComponent } from "react";
+import { GetTotalCommits } from "@/actions/get-commits";
+import { FunctionComponent, useEffect, useState } from "react";
 import CountUp from "react-countup";
 
-const stats = [
+type StatsType = {
+  num: number;
+  text: string;
+};
+
+const initialStats: StatsType[] = [
   {
     num: 3,
     text: "+Years of experience",
   },
   {
-    num: 14,
+    num: 15,
     text: "Projects completed",
   },
   {
@@ -17,12 +23,28 @@ const stats = [
     text: "Technologies master",
   },
   {
-    num: 269,
-    text: "Code commits (2024)",
+    num: 0,
+    text: "Code commits (Github)",
   },
 ];
 
 const Stats: FunctionComponent = () => {
+  const [stats, setStats] = useState<StatsType[]>(initialStats);
+
+  useEffect(() => {
+    async function fetchTotalCommit() {
+      const res = await GetTotalCommits();
+      initialStats[3] = {
+        num: res,
+        text: "Code commits (Github)",
+      };
+
+      setStats([...initialStats]);
+    }
+
+    fetchTotalCommit();
+  }, []);
+
   return (
     <section className="pt-4 pb-12 xl:pb-0">
       <div className="container mx-auto">
