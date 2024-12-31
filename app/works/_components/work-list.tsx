@@ -19,7 +19,7 @@ function WorkList({ projects }: { projects: Project[] }) {
       <div className="flex flex-col gap-[30px]">
         <h3 className="text-4xl font-bold">My Works</h3>
         <p className="max-w-[600px] text-white/60 xl:mx-0">
-          You can explore all of my works.
+          Explore all of my works. I have worked on a variety of projects.
         </p>
 
         <ul className="flex flex-col w-full">
