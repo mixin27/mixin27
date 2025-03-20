@@ -13,22 +13,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // const resend = new Resend(process.env.RESEND_API_KEY);
-
   try {
-    // const { data, error } = await resend.emails.send({
-    //   from: `Kyaw Zayar Tun <info@kyawzayartun.com>`,
-    //   to: email,
-    //   subject: `Message from Kyaw Zayar Tun`,
-    //   react: EmailTemplateClient({ name }),
-    // });
-
-    // if (error) {
-    //   return NextResponse.json(
-    //     { message: "Email sending failed", error },
-    //     { status: 400 }
-    //   );
-    // }
     await sendEmail({
       to: email,
       subject: `Message from Kyaw Zayar Tun`,

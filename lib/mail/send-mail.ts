@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { nodemailerConfig } from "./node-mailer-config";
+// import { nodemailerConfig } from "./node-mailer-config";
 
 export async function sendEmail({
   to,
@@ -10,10 +10,17 @@ export async function sendEmail({
   subject: string;
   html: string;
 }) {
-  const transporter = nodemailer.createTransport(nodemailerConfig);
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_SERVER_HOST!,
+    port: parseInt(process.env.EMAIL_SERVER_PORT!) || 587,
+    auth: {
+      user: process.env.EMAIL_SERVER_USER!,
+      pass: process.env.EMAIL_SERVER_PASSWORD!,
+    }
+  });
 
   const info = await transporter.sendMail({
-    from: "Kyaw Zayar Tun <kyawzayartun.dev@gmail.com>",
+    from: `Kyaw Zayar Tun <${process.env.EMAIL_FROM}>`,
     to,
     subject,
     html,
