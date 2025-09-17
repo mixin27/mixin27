@@ -40,17 +40,17 @@ const info = [
   {
     icon: <FaPhoneAlt />,
     title: "Phone",
-    description: "(+95) 9 799 967 180",
+    description: siteMetadada.phone,
   },
   {
     icon: <FaEnvelope />,
     title: "Email",
-    description: "kyawzayartun.dev@gmail.com",
+    description: siteMetadada.email,
   },
   {
     icon: <FaMapMarkerAlt />,
     title: "Address",
-    description: "Yangon, Myanmar",
+    description: siteMetadada.address,
   },
 ];
 
@@ -58,6 +58,7 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { siteMetadada } from "@/lib/siteMetadata";
 
 const Contact = () => {
   const { toast } = useToast();

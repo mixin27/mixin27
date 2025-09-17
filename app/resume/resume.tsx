@@ -39,6 +39,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { siteMetadada } from "@/lib/siteMetadata";
 
 // about data
 const about = {
@@ -48,32 +49,32 @@ const about = {
   info: [
     {
       fieldName: "Name",
-      fieldValue: "Kyaw Zayar Tun",
+      fieldValue: siteMetadada.author,
     },
     {
       fieldName: "Phone",
-      fieldValue: "(+95) 9 799 967 180",
+      fieldValue: siteMetadada.phone,
     },
     {
       fieldName: "Experience",
-      fieldValue: "3+ Years",
+      fieldValue: siteMetadada.experienceYear,
     },
 
     {
       fieldName: "Email",
-      fieldValue: "kyawzayartun.dev@gmail.com",
+      fieldValue: siteMetadada.email,
     },
     {
       fieldName: "Nationality",
-      fieldValue: "Burmese (Myanmar)",
+      fieldValue: siteMetadada.nationality,
     },
     {
       fieldName: "Freelance",
-      fieldValue: "Available",
+      fieldValue: siteMetadada.freelanceStatus,
     },
     {
       fieldName: "Languages",
-      fieldValue: "Burmese, English",
+      fieldValue: siteMetadada.languageSpeak,
     },
   ],
 };
@@ -85,6 +86,18 @@ const experience = {
   description:
     "Flutter developer with expertise in building multilingual apps, chat platforms, and educational tools, leveraging Firebase for dynamic features.",
   items: [
+    {
+      company: "Freelance",
+      position: "Freelance Mobile Developer",
+      duration: "Nov 2023 - Present",
+      location: "Yangon, Myanmar",
+      description: "",
+      highlights: [
+        "Developed the Beads Math app, enhancing abacus learning with interactive features.",
+        "Built the Maun News app, providing up-to-date news in a user-friendly interface.",
+        "Collaborated with the clients to deliver custom mobile solutions and maintain app performance.",
+      ],
+    },
     {
       company: "Yangon Yinxiang Yule",
       position: "Senior Mobile Developer",
@@ -394,7 +407,7 @@ const Resume = () => {
             <TabsContent value="skills" className="w-full h-full">
               <div className="flex flex-col gap-[30px] text-center xl:text-left mb-4">
                 <h3 className="text-4xl font-bold">{skills.title}</h3>
-                <p className="max-w-[600px] text-white/60 xl:mx-0">
+                <p className="max-w-[600px] text-white/60 mx-auto xl:mx-0">
                   {skills.description}
                 </p>
 
