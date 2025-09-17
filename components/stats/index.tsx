@@ -1,5 +1,6 @@
 "use client";
 
+import { allProjects } from "@/.contentlayer/generated";
 import { GetTotalCommits } from "@/actions/get-commits";
 import { FunctionComponent, useEffect, useState } from "react";
 import CountUp from "react-countup";
@@ -11,11 +12,11 @@ type StatsType = {
 
 const initialStats: StatsType[] = [
   {
-    num: 3,
+    num: 4,
     text: "+Years of experience",
   },
   {
-    num: 15,
+    num: allProjects.length,
     text: "Projects completed",
   },
   {
