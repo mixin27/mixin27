@@ -22,7 +22,7 @@ export const siteMetadada = {
     "https://play.google.com/store/apps/dev?id=5475419785338290117",
   linkedin: "https://www.linkedin.com/in/kyaw-zayar-tun-7574a917a",
   locale: "en-US",
-  heroPosition: "Software developer",
+  heroPosition: "Mobile developer",
   heroDescription:
     "I'm a passionate and experienced mobile developer dedicated to creating seamless, user-friendly applications. Explore my works and see how I bring ideas to life through innovative mobile solutions.",
 };

@@ -4,7 +4,6 @@ import { FiDownload } from "react-icons/fi";
 
 // components
 import Social from "@/components/social";
-import Photo from "@/components/photo";
 import Stats from "@/components/stats";
 import { siteMetadada } from "../lib/siteMetadata";
 
@@ -47,9 +46,9 @@ export default function Home() {
           </div>
 
           {/* photo */}
-          <div className="order-1 xl:order-none mb-8 xl:mb-0">
+          {/* <div className="order-1 xl:order-none mb-8 xl:mb-0">
             <Photo />
-          </div>
+          </div> */}
         </div>
       </div>
 
