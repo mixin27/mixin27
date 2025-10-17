@@ -386,7 +386,8 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                       <Image
                         src={project.image}
                         alt={`${project.title} Logo`}
-                        fill
+                        width={320}
+                        height={320}
                       />
                     </div>
                   </div>
