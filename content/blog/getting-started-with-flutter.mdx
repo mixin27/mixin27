@@ -1,0 +1,465 @@
+---
+title: "Getting Started with Flutter: A Comprehensive Guide"
+description: Learn the fundamentals of Flutter and build your first cross-platform mobile app from scratch.
+date: 2025-10-15
+category: tutorial
+tags: [Flutter, Mobile Development, Beginner, Cross-platform]
+featured: true
+published: true
+coverImage: /images/blogs/getting-started-with-flutter/flutter-getting-started.png
+author:
+  name: Kyaw Zayar Tun
+  bio: Passionate mobile developer specializing in Flutter and React Native
+---
+
+# Getting Started with Flutter
+
+Flutter has revolutionized the way we build mobile applications. In this comprehensive guide, we'll walk through everything you need to know to get started with Flutter development.
+
+## What is Flutter?
+
+Flutter is an open-source UI software development kit created by Google. It's used to develop cross-platform applications from a single codebase for Android, iOS, Linux, macOS, Windows, and the web.
+
+### Key Features
+
+- **Fast Development**: Hot reload helps you quickly and easily experiment, build UIs, add features, and fix bugs.
+- **Expressive UIs**: Build beautiful, natively compiled applications with Flutter's rich set of customizable widgets.
+- **Native Performance**: Flutter's widgets incorporate all critical platform differences to deliver full native performance on both iOS and Android.
+
+## Prerequisites
+
+Before we dive in, make sure you have:
+
+- A computer with at least 8GB of RAM
+- Basic programming knowledge (preferably Dart or Java/Kotlin/Swift)
+- An IDE (VS Code, Android Studio, or IntelliJ IDEA)
+- 10GB of free disk space
+
+## Installation
+
+### Step 1: Download Flutter SDK
+
+Visit the official Flutter website and download the SDK for your operating system:
+
+```bash
+# For macOS/Linux
+git clone https://github.com/flutter/flutter.git -b stable
+export PATH="$PATH:`pwd`/flutter/bin"
+
+# Verify installation
+flutter doctor
+```
+
+### Step 2: Install an Editor
+
+I recommend using VS Code with the Flutter extension:
+
+1. Download and install VS Code
+2. Install the Flutter extension from the marketplace
+3. Install the Dart extension
+
+### Step 3: Set Up Your Device
+
+You can use either:
+- An Android emulator
+- An iOS simulator (macOS only)
+- A physical device
+
+## Creating Your First App
+
+Let's create a simple "Hello World" application:
+
+```bash
+flutter create my_first_app
+cd my_first_app
+flutter run
+```
+
+### Understanding the Project Structure
+
+```
+my_first_app/
+├── android/          # Android-specific code
+├── ios/              # iOS-specific code
+├── lib/              # Your Dart code
+│   └── main.dart     # Entry point
+├── test/             # Test files
+└── pubspec.yaml      # Dependencies
+```
+
+## Building a Simple UI
+
+Let's modify `lib/main.dart` to create a simple counter app:
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Flutter Counter'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+## Understanding Widgets
+
+Everything in Flutter is a widget. There are two main types:
+
+### StatelessWidget
+
+Used for UI that doesn't change:
+
+```dart
+class MyStatelessWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('Hello World');
+  }
+}
+```
+
+### StatefulWidget
+
+Used for UI that changes over time:
+
+```dart
+class MyStatefulWidget extends StatefulWidget {
+  @override
+  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
+}
+
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  int counter = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Counter: $counter');
+  }
+}
+```
+
+## Common Widgets
+
+Here are some essential widgets you'll use frequently:
+
+- **Container**: A box for styling and positioning
+- **Row/Column**: For horizontal/vertical layouts
+- **ListView**: Scrollable lists
+- **Stack**: Overlapping widgets
+- **Scaffold**: Basic material design layout
+- **AppBar**: Top app bar
+- **Text**: Display text
+- **Image**: Display images
+- **Button**: Various button widgets
+
+## Hot Reload
+
+One of Flutter's best features is hot reload. When you save changes to your code, they instantly appear in your running app without losing state.
+
+Try it:
+1. Run your app
+2. Change the text in your code
+3. Press `r` in the terminal or save the file
+4. See the changes instantly!
+
+## Layouts in Flutter
+
+### Using Row and Column
+
+```dart
+Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text('First Item'),
+    Text('Second Item'),
+    Text('Third Item'),
+  ],
+)
+```
+
+### Using Container for Styling
+
+```dart
+Container(
+  padding: EdgeInsets.all(16),
+  margin: EdgeInsets.symmetric(horizontal: 20),
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius: BorderRadius.circular(10),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.5),
+        spreadRadius: 2,
+        blurRadius: 5,
+      ),
+    ],
+  ),
+  child: Text('Styled Container'),
+)
+```
+
+## Adding Dependencies
+
+To add packages to your project, edit `pubspec.yaml`:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  provider: ^6.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+## Navigation
+
+Navigate between screens using Navigator:
+
+```dart
+// Navigate to a new screen
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => SecondScreen()),
+);
+
+// Go back
+Navigator.pop(context);
+```
+
+## State Management Basics
+
+For simple apps, use `setState()`. For complex apps, consider:
+
+- **Provider**: Recommended by Flutter team
+- **Riverpod**: Modern alternative to Provider
+- **Bloc**: Business logic component pattern
+- **GetX**: All-in-one solution
+
+Example with Provider:
+
+```dart
+class Counter with ChangeNotifier {
+  int _count = 0;
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+}
+
+// In your widget
+Consumer<Counter>(
+  builder: (context, counter, child) {
+    return Text('Count: ${counter.count}');
+  },
+)
+```
+
+## Working with APIs
+
+Fetch data from the internet:
+
+```dart
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+Future<List<User>> fetchUsers() async {
+  final response = await http.get(
+    Uri.parse('https://api.example.com/users'),
+  );
+
+  if (response.statusCode == 200) {
+    List<dynamic> data = json.decode(response.body);
+    return data.map((json) => User.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load users');
+  }
+}
+```
+
+## Best Practices
+
+1. **Use const constructors** when possible for better performance
+2. **Extract widgets** to keep your code organized
+3. **Follow naming conventions**: Classes in PascalCase, variables in camelCase
+4. **Use meaningful names** for variables and functions
+5. **Keep widgets small** - if a widget is too large, break it down
+6. **Use pub.dev packages** - don't reinvent the wheel
+
+## Testing
+
+Flutter makes testing easy:
+
+```dart
+testWidgets('Counter increments', (WidgetTester tester) async {
+  await tester.pumpWidget(MyApp());
+
+  expect(find.text('0'), findsOneWidget);
+  expect(find.text('1'), findsNothing);
+
+  await tester.tap(find.byIcon(Icons.add));
+  await tester.pump();
+
+  expect(find.text('0'), findsNothing);
+  expect(find.text('1'), findsOneWidget);
+});
+```
+
+## Debugging
+
+Flutter DevTools is your best friend:
+
+```bash
+flutter run
+# Then press 'p' to show the performance overlay
+# Press 'w' to show widget inspector
+```
+
+Common debugging techniques:
+- Use `print()` statements
+- Set breakpoints in your IDE
+- Use Flutter DevTools
+- Check the Flutter logs
+
+## Performance Tips
+
+1. **Use ListView.builder** for long lists instead of ListView
+2. **Avoid rebuilding entire tree** - use const constructors
+3. **Use `const` widgets** wherever possible
+4. **Profile your app** regularly with DevTools
+5. **Lazy load images** and data
+6. **Cache network requests** when appropriate
+
+## Deployment
+
+### Android
+
+```bash
+flutter build apk --release
+# Or for app bundle
+flutter build appbundle
+```
+
+### iOS
+
+```bash
+flutter build ios --release
+```
+
+Then use Xcode to upload to App Store.
+
+## Resources
+
+Here are some excellent resources to continue learning:
+
+- **Official Flutter Documentation**: [flutter.dev](https://flutter.dev)
+- **Flutter YouTube Channel**: Official tutorials and tips
+- **Flutter Community**: Join the conversation on Reddit and Discord
+- **DartPad**: Try Flutter in your browser
+- **Flutter Awesome**: Curated list of packages
+
+## Common Mistakes to Avoid
+
+1. **Not using `const` constructors**: Leads to unnecessary rebuilds
+2. **Putting too much logic in widgets**: Use separate business logic classes
+3. **Not handling errors**: Always handle network errors and exceptions
+4. **Ignoring platform differences**: Test on both iOS and Android
+5. **Not optimizing images**: Use appropriate image sizes and formats
+
+## Next Steps
+
+Now that you have the basics, here's what to learn next:
+
+1. **State Management**: Deep dive into Provider or Riverpod
+2. **Firebase Integration**: Add backend services
+3. **Animations**: Make your UI more engaging
+4. **Platform Channels**: Communicate with native code
+5. **Advanced Layouts**: Master complex UI designs
+6. **Testing**: Write unit, widget, and integration tests
+
+## Conclusion
+
+Flutter is an amazing framework that makes mobile development accessible and fun. With its hot reload, beautiful widgets, and excellent documentation, you can build professional apps quickly.
+
+Remember:
+- Start small and build gradually
+- Practice regularly
+- Join the Flutter community
+- Don't be afraid to experiment
+- Keep learning and improving
+
+Happy coding! If you have any questions or want to share your Flutter journey, feel free to reach out in the comments below.
+
+---
+
+**Ready for more?** Check out my other Flutter tutorials:
+- Building a Complete App with Flutter and Firebase
+- Advanced State Management with Riverpod
+- Creating Custom Animations in Flutter
+
+Follow me for more mobile development content!
