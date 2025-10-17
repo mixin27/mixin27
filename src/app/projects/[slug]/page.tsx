@@ -382,7 +382,12 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 >
                   <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                     <div className="text-4xl font-bold text-primary/10">
-                      {project.title.charAt(0)}
+                      {/* {project.title.charAt(0)} */}
+                      <Image
+                        src={project.image}
+                        alt={`${project.title} Logo`}
+                        fill
+                      />
                     </div>
                   </div>
                   <div className="p-4">
