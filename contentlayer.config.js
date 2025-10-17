@@ -155,6 +155,40 @@ const Blog = defineDocumentType(() => ({
   },
 }));
 
+const Content = defineDocumentType(() => ({
+  name: "Content",
+  filePathPattern: "**/contents/**/*.mdx",
+  contentType: "mdx",
+  fields: {
+    title: {
+      type: "string",
+      required: true,
+    },
+    description: {
+      type: "string",
+      required: true,
+    },
+    author: {
+      type: "string",
+      required: true,
+    },
+    publishedAt: {
+      type: "date",
+      required: true,
+    },
+    updatedAt: {
+      type: "date",
+      required: true,
+    },
+  },
+  computedFields: {
+    url: {
+      type: "string",
+      resolve: (doc) => doc._raw.flattenedPath,
+    }
+  },
+}));
+
 const codeOptions = {
   theme: "github-dark",
   onVisitLine(node) {
@@ -166,8 +200,7 @@ const codeOptions = {
 
 export default makeSource({
   contentDirPath: "./content/",
-  // contentDirInclude: ["blogs", "projects"],
-  documentTypes: [Project, Blog],
+  documentTypes: [Project, Blog, Content],
   disableImportAliasWarning: true,
   mdx: {
     remarkPlugins: [remarkGfm],

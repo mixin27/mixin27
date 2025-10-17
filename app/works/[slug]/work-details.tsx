@@ -48,36 +48,6 @@ const WorkDetails = ({ project, slug }: Props) => {
     incrementView();
   }, [slug]);
 
-  // useEffect(() => {
-  //   const getViewCount = async () => {
-  //     try {
-  //       const { data: views, error } = await supabase
-  //         .from("views")
-  //         .select("count")
-  //         .match({ slug: slug })
-  //         .single();
-
-  //       if (error) {
-  //         console.error(
-  //           "An error has occurred while getting the view count: ",
-  //           error
-  //         );
-  //       } else {
-  //         setViews(views?.count ?? 0);
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         "An error has occurred while getting the view count: ",
-  //         error
-  //       );
-  //     }
-  //   };
-
-  //   getViewCount();
-
-  //   return () => {};
-  // }, [slug]);
-
   return (
     <article className="container mx-auto">
       <div className="flex flex-col gap-6 xl:flex-row">
