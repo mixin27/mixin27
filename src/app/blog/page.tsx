@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, Clock, ArrowRight } from 'lucide-react'
 import { generateMetadata as genMeta, formatDate } from '@/lib/utils'
 import {
@@ -53,7 +54,10 @@ export default async function BlogPage() {
                 <div className="aspect-[2/1] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-6xl font-bold text-primary/10">
-                      {post.title.charAt(0)}
+                      {post.coverImage && (
+                        <Image src={post.coverImage} alt={post.title} fill />
+                      )}
+                      {!post.coverImage && post.title.charAt(0)}
                     </div>
                   </div>
                   <div className="absolute top-3 left-3">

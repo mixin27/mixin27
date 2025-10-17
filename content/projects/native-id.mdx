@@ -1,0 +1,57 @@
+---
+title: "native_id"
+description: Flutter unique identifier plugin for android and ios
+category: "package"
+longDescription: Flutter unique identifier plugin for android and ios
+image: "/images/projects/native-id/logo.png"
+tags: [id, native]
+technologies: [Flutter]
+platform: Android & iOS
+status: completed
+featured: false
+links:
+    demo: https://pub.dev/packages/native_id
+    github: https://github.com/mixin27/flutter_native_id
+date: 2023-01-01
+---
+
+Get current device unique id from within the flutter application.
+
+> **Warning:** In `android`, this plugin use the `ANDROID_ID` that can be change by user for the rooted device.
+
+## Installation 💻
+
+**❗ In order to start using `native_id` you must have the [Flutter SDK][flutter_install_link] installed on your machine.**
+
+Add `native_id` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  native_id:
+```
+
+Install it:
+
+```sh
+flutter packages get
+```
+
+---
+
+## Usage
+
+Import `import 'package:native_id/native_id.dart';`, instantiate `NativeId` and use the `getId()` or `getUUID()` methods.
+
+Example:
+
+```dart
+Future<String> getNativeId() async {
+    final nativeIdPlugin = NativeId();
+    try {
+      final nativeId = await nativeIdPlugin.getId();
+      return nativeId ?? 'Unknown native id';
+    } on PlatformException {
+      return 'Failed to get nativeId';
+    }
+}
+```

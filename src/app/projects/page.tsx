@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ExternalLink, Github, Smartphone, Globe } from 'lucide-react'
 import { generateMetadata as genMeta } from '@/lib/utils'
 import {
@@ -46,14 +47,14 @@ export default async function ProjectsPage() {
               <p className="text-3xl font-bold">{featuredProjects.length}</p>
               <p className="text-sm text-muted-foreground">Featured</p>
             </div>
-            <div className="rounded-lg border bg-card p-4">
+            {/* <div className="rounded-lg border bg-card p-4">
               <p className="text-3xl font-bold">10K+</p>
               <p className="text-sm text-muted-foreground">Downloads</p>
             </div>
             <div className="rounded-lg border bg-card p-4">
               <p className="text-3xl font-bold">4.2</p>
               <p className="text-sm text-muted-foreground">Avg Rating</p>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -71,10 +72,15 @@ export default async function ProjectsPage() {
                 {/* Project Image */}
                 <div className="aspect-video bg-muted relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                    <Smartphone className="size-16 text-primary/40" />
+                    {/* <Smartphone className="size-16 text-primary/40" /> */}
+                    <Image
+                      src={project.image}
+                      alt={`${project.title} Logo`}
+                      fill
+                    />
                   </div>
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-white">
                       Featured
                     </span>
                   </div>
@@ -162,7 +168,12 @@ export default async function ProjectsPage() {
                   {/* Project Image */}
                   <div className="aspect-video bg-muted relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      <Smartphone className="size-16 text-primary/40" />
+                      {/* <Smartphone className="size-16 text-primary/40" /> */}
+                      <Image
+                        src={project.image}
+                        alt={`${project.title} Logo`}
+                        fill
+                      />
                     </div>
                   </div>
 

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowLeft,
   ExternalLink,
@@ -104,13 +105,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             <div className="aspect-video rounded-lg overflow-hidden mb-8 bg-muted">
               <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <div className="text-6xl font-bold text-primary/10">
-                  {projectData.title.charAt(0)}
-                  {/* <Image
+                  {/* {projectData.title.charAt(0)} */}
+                  <Image
                     src={projectData.image}
-                    alt="Myanmar Calendar logo"
+                    alt={`${projectData.title} Logo`}
                     width={320}
                     height={320}
-                  /> */}
+                  />
                 </div>
               </div>
             </div>

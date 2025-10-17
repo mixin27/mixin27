@@ -37,8 +37,8 @@
             "releaseDate": "2024-08-05"
         },
         {
-            "id": "beads-maths",
-            "name": "Beads Maths",
+            "id": "beads-math",
+            "name": "Beads Math",
             "description": "Mobile application to improve maths calculation skills",
             "icon": "/apps/beads-maths/icon.png",
             "category": "productivity",
@@ -52,24 +52,6 @@
             },
             "status": "active",
             "releaseDate": "2024-02-01"
-        },
-        {
-            "id": "armo-farmer",
-            "name": "Armo Farmer",
-            "description": "Useful application for farmers",
-            "icon": "/apps/armo-farmer/icon.png",
-            "category": "productivity",
-            "platform": "both",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.cluspedia.armo",
-                "appStore": "https://apps.apple.com/us/app/armo-farmer/id1549131787"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2022-11-01"
         },
         {
             "id": "billion-sport-live",
@@ -89,41 +71,6 @@
             "releaseDate": "2024-11-07"
         },
         {
-            "id": "kudos-to-you",
-            "name": "KUDOS TO YOU",
-            "description": "E-learning Platform Application",
-            "icon": "/apps/kudos-to-you/icon.png",
-            "category": "other",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.systematic.kudos"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2018-11-01"
-        },
-        {
-            "id": "ldm-myanmar",
-            "name": "Lucky Diamond Myanmar",
-            "description": "Cash request application for staffs",
-            "icon": "/apps/ldm-myanmar/icon.png",
-            "category": "tools",
-            "platform": "both",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.systematic.lucky_diamond",
-                "appStore": "https://apps.apple.com/us/app/lucky-diamond-myanmar/id6444782470"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2022-11-01"
-        },
-        {
             "id": "maun-news",
             "name": "Maun News",
             "description": "Maun News is a news app that provides news from various sources in Myanmar",
@@ -139,93 +86,6 @@
             },
             "status": "active",
             "releaseDate": "2024-11-20"
-        },
-        {
-            "id": "satecha-service",
-            "name": "Sate Cha Service",
-            "description": "Test kits management for Sate Cha clinics",
-            "icon": "/apps/satecha-service/icon.png",
-            "category": "fitness",
-            "platform": "both",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.systematic.cpi",
-                "appStore": "https://apps.apple.com/us/app/satecha-service-hub/id1638288355"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2022-11-01"
-        },
-        {
-            "id": "sky-cargo-terminal-service",
-            "name": "Sky Cargo Terminal Service",
-            "description": "Forwarder appointment application for Sky Cargo Terminal",
-            "icon": "/apps/sky-cargo-terminal-service/icon.png",
-            "category": "tools",
-            "platform": "both",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.systematic.mcs_service",
-                "appStore": "https://apps.apple.com/us/app/mcs-service/id1513511820"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2022-11-01"
-        },
-        {
-            "id": "speaking-partners",
-            "name": "Speaking Partners",
-            "description": "An android application for people who want to practice foreign language",
-            "icon": "/apps/speaking-partners/icon.png",
-            "category": "social",
-            "platform": "android",
-            "storeLinks": {
-                "github": "https://github.com/mixin27/speakingpartners"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "deprecated",
-            "releaseDate": "2018-11-01"
-        },
-        {
-            "id": "sumeer",
-            "name": "Sumeer",
-            "description": "CV and Resume builder application",
-            "icon": "/apps/sumeer/icon.png",
-            "category": "tools",
-            "platform": "both",
-            "storeLinks": {
-                "github": "https://github.com/mixin27/sumeer"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "deprecated",
-            "releaseDate": "2023-09-06"
-        },
-        {
-            "id": "grab-and-go",
-            "name": "G&G",
-            "description": "Branch management system for grab & go",
-            "icon": "/apps/grab-and-go/icon.png",
-            "category": "tools",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.systematic.gng_live"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2023-07-01"
         }
     ],
     "lastUpdated": "2025-10-15T00:00:00Z"
