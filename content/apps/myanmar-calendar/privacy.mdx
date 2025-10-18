@@ -3,7 +3,6 @@ title: Privacy Policy for Myanmar Calendar
 lastUpdated: 2025-10-17
 version: 1.0.0
 ---
-
 # Privacy Policy
 
 **Last Updated: October 17, 2025**
@@ -18,90 +17,134 @@ Thank you for using Myanmar Calendar ("we," "our," or "the App"). We respect you
 
 ### 1. Information We DO NOT Collect
 
-Myanmar Calendar is designed with privacy in mind. **We do NOT collect, store, or transmit any of the following:**
+Myanmar Calendar does not collect:
 
-- ❌ Personal identification information (name, email, phone number)
-- ❌ Location data or GPS coordinates
-- ❌ Device identifiers (IMEI, MAC address, etc.)
-- ❌ Usage analytics or behavioral tracking
-- ❌ Contact lists or social media information
-- ❌ Payment information (app is free)
-- ❌ Any data that leaves your device
+- Personal identification information (name, email, phone number)
+- Location data or GPS coordinates
+- Contact lists or social media information
+- Payment information (app is free)
+- Device identifiers (IMEI, MAC address, etc.) - *except as noted below for Firebase*
 
 ### 2. Information Stored Locally on Your Device
 
 The following data is stored **ONLY** on your device and never transmitted to our servers:
 
-- **App Settings**: Your theme preferences, language selection, calendar configuration
-- **User Events** (Future Feature): Events and reminders you create (Phase 2)
-- **Custom Holidays** (Future Feature): Personal holidays you add (Phase 2)
-- **Notes** (Future Feature): Notes you create (Phase 2)
+- App Settings: Your theme preferences, language selection, calendar configuration
+- User Events: Events and reminders you create (Phase 2)
+- Custom Holidays: Personal holidays you add (Phase 2)
+- Notes: Notes you create (Phase 2)
 
-**Important**: All data is stored locally using secure SQLite database on your device. We have no access to this data.
+All local data is stored using a secure SQLite database on your device. We have no access to this data.
 
----
+### 3. Information Collected by Firebase
 
-## How We Use Information
+We use **Firebase Analytics** and **Firebase Crashlytics** to improve app performance and reliability. These services collect the following information:
 
-Since we don't collect any data, we don't use your information for any purpose. The app functions entirely offline on your device.
+#### Firebase Analytics Collects:
 
-### App Functionality
+- App events and user interactions (e.g., which features you use)
+- App session data (e.g., when you open the app, how long you use it)
+- Device information (device type, OS version, language setting)
+- Approximate location based on IP address (not exact GPS)
+- Performance metrics and app crashes
 
-The app performs calendar calculations locally on your device using:
-- Myanmar calendar algorithms
-- Astrological calculations
-- Date conversions
-- Holiday lookups
+#### Firebase Crashlytics Collects:
 
-**All calculations happen on your device without any network communication.**
+- Crash logs and error reports
+- Stack traces from app crashes
+- Device model and OS version
+- App version information
+- Custom error messages
+
+#### What Firebase Does NOT Collect:
+
+- Your personal identity (name, email, phone number)
+- Your calendar data or events
+- Your precise location
+- Your browsing history outside the app
+
+### 4. How We Use Firebase Data
+
+We use this information to:
+
+- Identify and fix bugs and crashes
+- Improve app performance and stability
+- Understand which features are most popular
+- Monitor app health and reliability
+- Enhance the user experience
 
 ---
 
 ## Data Sharing and Third Parties
 
-### We Do NOT Share Data With:
-- ❌ Third-party analytics services
-- ❌ Advertising networks
-- ❌ Social media platforms
-- ❌ Government agencies (unless legally required)
-- ❌ Any other third parties
+### Firebase Privacy
 
-### Third-Party Services
+Firebase is operated by Google and processes data according to:
 
-Myanmar Calendar does **NOT** use any third-party services that collect data, including:
-- No analytics (Google Analytics, Firebase Analytics, etc.)
-- No crash reporting tools
-- No advertising networks
-- No social media SDKs
-- No cloud services (in current version)
+- Google's Privacy Policy: https://policies.google.com/privacy
+- Firebase Terms of Service: https://firebase.google.com/terms
 
-### Future Cloud Backup Feature (Phase 3)
+Firebase may share aggregated, non-personal information with Google for their services, but they do not share personal identifying information with advertisers.
 
-In a future update, we plan to offer **optional** cloud backup functionality:
-- This will be **opt-in only** (disabled by default)
-- You will be able to choose your backup provider (Firebase, custom server)
-- Data will be encrypted before upload
-- You can delete your cloud data anytime
-- We will update this policy before implementing this feature
+### Third-Party Services We Use
+
+- **Firebase Analytics** (Google) - For app analytics and crash reporting
+- **Firebase Crashlytics** (Google) - For error tracking and reporting
+
+We do NOT use:
+
+- Third-party advertising networks
+- Social media analytics
+- User tracking services
+- Data brokers or marketing platforms
+
+### Data Sharing
+
+We do NOT share your data with:
+
+- Third-party advertisers
+- Marketing companies
+- Social media platforms
+- Data brokers
+- Any other organizations except as required by law
 
 ---
 
 ## Data Storage and Security
 
-### Local Storage
+### Where Your Data is Stored
 
-All data is stored on your device using:
-- **SQLite Database**: Encrypted local database
-- **Secure Storage**: Android/iOS secure storage mechanisms
-- **No Cloud**: Data stays on your device
+- **Local Data**: Stored encrypted on your device using SQLite
+- **Firebase Data**: Stored on Google's secure servers in multiple regions
 
 ### Security Measures
 
-Even though data doesn't leave your device, we implement security best practices:
-- ✅ Secure coding practices
-- ✅ Regular security updates
-- ✅ Input validation and sanitization
-- ✅ Protection against common vulnerabilities
+- Encryption of data in transit and at rest
+- Secure authentication and authorization
+- Regular security audits
+- HTTPS encryption for all network communication
+- Compliance with industry security standards
+
+---
+
+## Your Rights and Choices
+
+### Control Your Data
+
+1. **View Analytics**: You cannot access raw Firebase analytics data, but we use it only to improve the app
+2. **Delete Local Data**: Uninstall the app to remove all local data from your device
+3. **Opt Out of Crashlytics**:
+   - On Android: You can disable Firebase Crashlytics in app settings (future feature)
+   - On iOS: You can disable analytics in System Settings > Privacy > Analytics
+
+### Firebase Opt-Out
+
+To opt out of Firebase Analytics collection:
+
+- **Android**: Open the app, go to Settings > Privacy, and toggle "Analytics" off
+- **iOS**: Go to System Settings > Privacy > Analytics and disable "Share iPhone Analytics"
+
+Note: You cannot fully opt out of Crashlytics while using the app, as it's necessary for stability reporting. Uninstalling the app removes all associated data.
 
 ---
 
@@ -111,32 +154,71 @@ Even though data doesn't leave your device, we implement security best practices
 
 Myanmar Calendar requests **minimal permissions**:
 
-#### Currently Used Permissions:
-- **NONE** - The app requires no permissions in Version 2.0
+#### Current Permissions:
+- **INTERNET**: Required for Firebase Analytics and Crashlytics
 
-#### Future Permissions (Optional Features):
+#### Future Permissions:
 
 **Phase 2 (Events & Notifications):**
 - `VIBRATE`: For haptic feedback and reminder vibrations
-- `POST_NOTIFICATIONS` (Android 13+): For event reminders
+- `POST_NOTIFICATIONS`: For event reminders
 - `SCHEDULE_EXACT_ALARM`: For precise reminder timing
 
 **Phase 3 (Cloud Backup - Optional):**
-- `INTERNET`: Only if you enable cloud backup feature
-- `ACCESS_NETWORK_STATE`: To check internet connectivity for backup
+- `ACCESS_NETWORK_STATE`: To check internet connectivity
 
 ### iOS Permissions
 
+- **Network**: Required for Firebase
 - **Notifications**: Only if you enable event reminders (Phase 2)
-- **Internet**: Only if you enable cloud backup (Phase 3, opt-in)
 
-**All permissions are requested only when needed and with clear explanation.**
+All permissions are requested only when needed with clear explanation.
+
+---
+
+## Information We Collect and How We Use It
+
+### App Usage Analytics
+
+**What we collect**:
+- Which features you use and how often
+- How long you use the app
+- App crashes and errors
+- Device type and OS version
+
+**How we use it**:
+- Improve app performance
+- Fix bugs and crashes
+- Understand user preferences
+- Prioritize feature development
+
+**Examples**:
+- If we see many crashes in a specific feature, we prioritize fixing it
+- If a feature is rarely used, we may redesign it for better usability
+- If crashes spike on certain device types, we investigate compatibility issues
+
+### Error and Crash Reporting
+
+**What we collect**:
+- When the app crashes, what caused it
+- Error logs and stack traces
+- Device information at time of crash
+
+**How we use it**:
+- Identify critical bugs
+- Fix errors quickly
+- Improve app stability
+- Test fixes on various devices
 
 ---
 
 ## Children's Privacy
 
-Myanmar Calendar is suitable for all ages, including children under 13. Since we don't collect any personal information, the app complies with COPPA (Children's Online Privacy Protection Act) and similar international regulations.
+Myanmar Calendar is suitable for all ages, including children under 13. Since we only collect aggregate analytics data (not personal information), the app complies with:
+
+- COPPA (Children's Online Privacy Protection Act)
+- GDPR requirements for children's privacy
+- Similar international regulations
 
 We do not:
 - Collect personal information from children
@@ -145,38 +227,25 @@ We do not:
 
 ---
 
-## Your Rights and Choices
-
-### Data Control
-
-You have full control over your data:
-
-1. **View Data**: All data is stored locally; you control it
-2. **Delete Data**: Uninstall the app to remove all data
-3. **Export Data** (Future): Export your events and notes (Phase 2)
-4. **No Tracking**: We don't track you, so nothing to opt-out of
-
-### App Settings
-
-You can control:
-- Theme and appearance
-- Language preferences
-- Calendar configuration
-- Display settings
-
-These settings are stored locally and can be reset anytime.
-
----
-
 ## Data Retention
 
-### Local Data
-- Stored indefinitely on your device until you delete it
-- Removed completely when you uninstall the app
-- No backup unless you explicitly enable it (Phase 3)
+### Local Data on Your Device
+- Stored indefinitely until you delete it
+- Removed when you uninstall the app
+- You have full control over your local data
 
-### Cloud Data (Future Feature)
-- Only if you opt-in to cloud backup
+### Firebase Analytics Data
+- Retained for 14 months by default
+- Automatically deleted after 14 months of inactivity
+- You can request data deletion at any time
+
+### Firebase Crashlytics Data
+- Retained for 90 days
+- Older data is automatically deleted
+- Critical crash data may be retained longer for analysis
+
+### Cloud Backup Data (Future Feature)
+- Only if you opt-in
 - You can delete anytime from settings
 - Deleted within 30 days of request
 
@@ -184,7 +253,7 @@ These settings are stored locally and can be reset anytime.
 
 ## Changes to This Privacy Policy
 
-We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Last Updated" date at the top of this policy.
+We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Last Updated" date at the top.
 
 ### How We Notify You
 
@@ -200,25 +269,33 @@ Continued use of the app after policy changes constitutes acceptance of those ch
 
 ## International Users
 
-Myanmar Calendar is available worldwide. Since we don't collect data, we automatically comply with international privacy regulations including:
+Myanmar Calendar complies with international privacy regulations:
 
-- 🇪🇺 **GDPR** (European Union General Data Protection Regulation)
-- 🇺🇸 **CCPA** (California Consumer Privacy Act)
-- 🇬🇧 **UK GDPR** (United Kingdom)
-- 🇨🇦 **PIPEDA** (Canada)
-- 🇦🇺 **Privacy Act** (Australia)
-- 🇧🇷 **LGPD** (Brazil)
+- **GDPR** (European Union)
+- **CCPA** (California, USA)
+- **UK GDPR** (United Kingdom)
+- **PIPEDA** (Canada)
+- **Privacy Act** (Australia)
+- **LGPD** (Brazil)
+
+If you are located in the EU, you have additional rights:
+- Right to access your data
+- Right to deletion
+- Right to correct inaccurate data
+- Right to data portability
+- Right to object to processing
 
 ---
 
 ## Open Source Components
 
-Myanmar Calendar uses open-source packages that have their own privacy policies:
+Myanmar Calendar uses open-source packages with their own privacy policies:
 
-- **Flutter Framework**: [flutter.dev/privacy](https://flutter.dev/privacy)
-- **Dart Language**: [dart.dev/privacy](https://dart.dev/privacy)
+- **Flutter Framework**: https://flutter.dev/privacy
+- **Dart Language**: https://dart.dev/privacy
+- **Firebase SDK**: https://firebase.google.com/terms
 
-No open-source component we use collects personal data.
+No open-source components collect personal data without your knowledge.
 
 ---
 
@@ -226,118 +303,115 @@ No open-source component we use collects personal data.
 
 If you have questions or concerns about this Privacy Policy or our privacy practices:
 
-### Email
-kyawzayartun.contact@gmail.com
+**Email**: kyawzayartun.contact@gmail.com
 
-### Website
-https://kyawzayartun.com/apps/myanmar-calendar/privacy
+**Website**: https://kyawzayartun.com/apps/myanmar-calendar/privacy
 
-### Mailing Address
-Personal
+**Mailing Address**:
+Kyaw Zayar Tun
 No.36, Thiri Yadanar 1st Street
 Mingaladon, Yangon 11021
 Myanmar
 
-### Response Time
-We aim to respond to all inquiries within 48 hours.
+**Response Time**: We aim to respond to all inquiries within 48 hours.
 
 ---
 
-## Legal Basis for Processing (GDPR)
+## Your Privacy Rights (GDPR and Similar Laws)
 
-For EU users, even though we don't process personal data, our legal basis would be:
-- **Legitimate Interest**: Providing calendar functionality
-- **Consent**: If you opt-in to future features like cloud backup
-
----
-
-## Your Privacy Rights
-
-Depending on your location, you may have the following rights:
+If you are in a jurisdiction with privacy laws (EU, California, etc.), you have the right to:
 
 ### Right to Access
-You can access all your data anytime (it's on your device)
+- Request a copy of the data we collect about you
+- Submit a request via email with "Data Access Request" as subject
 
 ### Right to Deletion
-Uninstall the app to delete all data
+- Request deletion of your Firebase analytics data
+- Your local data is always under your control
+- Submit a request via email with "Data Deletion Request" as subject
 
 ### Right to Portability
-Future feature will allow data export (Phase 2)
-
-### Right to Rectification
-You can modify all data through the app interface
+- Request your data in a portable format
+- We will provide exported data within 30 days
 
 ### Right to Object
-You can disable any features you don't want to use
+- Object to Firebase analytics collection
+- Disable analytics in app settings
+- Uninstall the app
+
+### Right to Rectification
+- Correct inaccurate information in your local app data
+- Firebase analytics data cannot be individually rectified but is automatically deleted after 14 months
 
 ---
 
 ## Cookies and Tracking
 
-Myanmar Calendar does **NOT** use:
-- ❌ Cookies
-- ❌ Tracking pixels
-- ❌ Web beacons
-- ❌ Fingerprinting
-- ❌ Any tracking technology
+Myanmar Calendar does NOT use:
+- Cookies
+- Tracking pixels
+- Web beacons
+- Device fingerprinting
+- Cross-app tracking
+
+Firebase may use cookies for authentication purposes only.
 
 ---
 
 ## Advertising
 
-Myanmar Calendar is **100% ad-free**. We will never:
+Myanmar Calendar is **100% ad-free** and will always remain ad-free.
+
+We will never:
 - Show advertisements
 - Sell ad space
-- Share data with advertisers
-- Track you for advertising purposes
+- Share data with advertisers for ad targeting
+- Use data for behavioral advertising
 
 ---
 
 ## Updates and Notifications
 
 ### App Updates
-- Downloaded through official app stores (Google Play, App Store)
-- No data collection during updates
+- Downloaded through official app stores
+- No additional data collection during updates
 
 ### Push Notifications
-- Only local notifications (on your device)
-- For event reminders you create
+- Only local notifications for features you enable
 - No marketing or promotional notifications
+- Fully controlled by you
 
 ---
 
-## Commitment to Privacy
+## Transparency and Your Trust
 
-At Myanmar Calendar, **privacy is not an afterthought—it's a fundamental principle.**
+We believe in transparent data practices:
 
-We believe:
-- ✅ Your data belongs to you
-- ✅ Privacy is a human right
-- ✅ Apps can be useful without surveillance
-- ✅ Transparency builds trust
+**What we collect**: App analytics and crash reports (via Firebase)
+**How we use it**: Improve app quality and fix bugs
+**Who has access**: Only our development team and Google Firebase
+**Your control**: You can opt out of analytics anytime
+
+We cannot misuse data we don't need. We collect only what's necessary to provide a stable, high-quality app.
 
 ---
 
 ## Summary
 
-**In plain English:**
-
 Myanmar Calendar:
-- ✅ Works completely offline
-- ✅ Collects zero data
-- ✅ Tracks nothing
-- ✅ No ads, ever
-- ✅ Your data stays on your device
-- ✅ No third-party services
-- ✅ Open and transparent
-
-**We can't misuse data we don't have.**
+- Works completely offline for calendar functions
+- Collects minimal analytics data to improve quality
+- Uses industry-standard Firebase for crash reporting
+- Respects your privacy with local-first data storage
+- Has zero ads and zero tracking
+- Allows you to opt out of analytics
+- Respects international privacy laws
 
 ---
 
-**Last Updated**: 2025/10/17
-**Version**: 1.1
-**Effective Date**: 2025/10/17
+**Last Updated**: October 17, 2025
+**Version**: 2.0
+**Effective Date**: October 17, 2025
 
 ---
 
