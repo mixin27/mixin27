@@ -1,10 +1,10 @@
 import { Metadata } from 'next'
 import { Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react'
-import { generateMetadata as genMeta } from '@/lib/utils'
 import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
 import { ContactForm } from '@/components/contact-form'
+import { generateOGMetadata } from '@/lib/og'
 
-export const metadata: Metadata = genMeta({
+export const metadata: Metadata = generateOGMetadata({
   title: 'Contact Me',
   description:
     'Get in touch with me for project collaborations, job opportunities, or just to say hello.',

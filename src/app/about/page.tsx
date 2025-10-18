@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { Code2, Rocket, Users, Award } from 'lucide-react'
-import { generateMetadata as genMeta } from '@/lib/utils'
+import { generateOGMetadata } from '@/lib/og'
 
-export const metadata: Metadata = genMeta({
+export const metadata: Metadata = generateOGMetadata({
   title: 'About Me',
   description:
     'Learn more about my journey as a mobile developer, my skills, experience, and what drives my passion for creating great apps.',

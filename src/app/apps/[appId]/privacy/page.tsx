@@ -1,9 +1,10 @@
 import { getAllApps, getAppById, getCompiledAppPrivacy } from '@/lib/apps'
 import { Metadata } from 'next'
-import { formatDate, generateMetadata as genMeta } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { ArrowLeft, ExternalLink, Calendar, Shield } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { generateOGMetadata } from '@/lib/og'
 
 interface PageProps {
   params: Promise<{
@@ -32,7 +33,7 @@ export async function generateMetadata({
     }
   }
 
-  return genMeta({
+  return generateOGMetadata({
     title: `Privacy Policy - ${app.name}`,
     description: `Privacy policy for ${app.name}. Learn how we collect, use, and protect your data.`,
     url: `/apps/${appId}/privacy`,

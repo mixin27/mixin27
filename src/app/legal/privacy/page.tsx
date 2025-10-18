@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
-import { formatDate, generateMetadata as genMeta } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { generateOGMetadata } from '@/lib/og'
 
-export const metadata: Metadata = genMeta({
+export const metadata: Metadata = generateOGMetadata({
   title: 'Privacy Policy',
   description:
     'Learn how we collect, use, and protect your personal information.',

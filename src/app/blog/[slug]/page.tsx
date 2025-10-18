@@ -1,15 +1,16 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft, Calendar, Clock, Tag, Share2 } from 'lucide-react'
+import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react'
 import {
   getBlogPostBySlug,
   getCompiledBlogPost,
   getSortedBlogPosts,
   getRelatedBlogPosts,
 } from '@/lib/blog'
-import { formatDate, generateMetadata as genMeta } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
 import { ShareButton } from '@/components/share-button'
+import { generateOGMetadata } from '@/lib/og'
 
 interface PageProps {
   params: Promise<{
@@ -38,7 +39,7 @@ export async function generateMetadata({
     }
   }
 
-  return genMeta({
+  return generateOGMetadata({
     title: post.title,
     description: post.description,
     url: `/blog/${slug}`,

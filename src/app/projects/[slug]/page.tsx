@@ -17,7 +17,8 @@ import {
   getSortedProjects,
   getRelatedProjects,
 } from '@/lib/projects'
-import { formatDate, generateMetadata as genMeta } from '@/lib/utils'
+import { formatDate } from '@/lib/utils'
+import { generateOGMetadata } from '@/lib/og'
 
 interface PageProps {
   params: Promise<{
@@ -46,7 +47,7 @@ export async function generateMetadata({
     }
   }
 
-  return genMeta({
+  return generateOGMetadata({
     title: project.title,
     description: project.description,
     url: `/projects/${slug}`,

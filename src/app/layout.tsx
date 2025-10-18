@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { SITE_CONFIG } from '@/lib/constants'
+import { getOGImageUrl } from '@/lib/og'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -35,6 +36,18 @@ export const metadata: Metadata = {
     description:
       'Passionate mobile developer creating seamless, user-friendly applications.',
     siteName: 'Kyaw Zayar Tun Portfolio',
+    images: [
+      {
+        url: getOGImageUrl({
+          title: 'Kyaw Zayar Tun',
+          description: 'Mobile Developer',
+          type: 'default',
+        }),
+        width: 1200,
+        height: 630,
+        alt: 'Kyaw Zayar Tun - Mobile Developer',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
@@ -42,6 +55,13 @@ export const metadata: Metadata = {
     description:
       'Passionate mobile developer creating seamless, user-friendly applications.',
     creator: '@kyawzayartun98',
+    images: [
+      getOGImageUrl({
+        title: 'Kyaw Zayar Tun',
+        description: 'Mobile Developer',
+        type: 'default',
+      }),
+    ],
   },
   robots: {
     index: true,
