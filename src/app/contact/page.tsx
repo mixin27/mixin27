@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react'
 import { generateMetadata as genMeta } from '@/lib/utils'
 import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
+import { ContactForm } from '@/components/contact-form'
 
 export const metadata: Metadata = genMeta({
   title: 'Contact Me',
@@ -125,96 +126,7 @@ export default function ContactPage() {
 
           {/* Right Column - Contact Form */}
           <div>
-            <div className="rounded-lg border bg-card p-6 md:p-8">
-              <h2 className="text-2xl font-bold mb-6">Send a Message</h2>
-
-              <form className="space-y-6">
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Your name"
-                    required
-                  />
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="your.email@example.com"
-                    required
-                  />
-                </div>
-
-                {/* Subject */}
-                <div>
-                  <label
-                    htmlFor="subject"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="What's this about?"
-                    required
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                    placeholder="Tell me about your project..."
-                    required
-                  />
-                </div>
-
-                {/* Submit Button */}
-                <button
-                  type="submit"
-                  className="w-full rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-                >
-                  Send Message
-                </button>
-              </form>
-
-              <p className="text-xs text-muted-foreground mt-4 text-center">
-                Note: This form is for display purposes. Please use the email
-                address above to contact me directly.
-              </p>
-            </div>
+            <ContactForm />
           </div>
         </div>
       </section>
