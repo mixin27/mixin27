@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Github, Linkedin, Mail, Twitter } from 'lucide-react'
+import { Github, Linkedin, Mail, Rss, Twitter } from 'lucide-react'
 import { FOOTER_LINKS, SOCIAL_LINKS } from '@/lib/constants'
 
 const iconMap: { [key: string]: any } = {
@@ -51,6 +51,10 @@ export function Footer() {
                   </a>
                 )
               })}
+
+              <a href="/feed.xml">
+                <Rss className="size-5" />
+              </a>
             </div>
           </div>
 
