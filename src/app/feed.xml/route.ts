@@ -19,7 +19,7 @@ export async function GET() {
       <pubDate>${pubDate}</pubDate>
       <author>kyawzayartun.contact@gmail.com (Kyaw Zayar Tun)</author>
       ${post.tags.map((tag) => `<category>${tag}</category>`).join('\n      ')}
-      ${post.coverImage ? `<enclosure url="${baseUrl}${post.coverImage}" type="image/jpeg" />` : ''}
+      ${post.coverImage ? `<enclosure url="${baseUrl}${post.coverImage}" type="image/*" />` : ''}
     </item>`
     })
     .join('')
@@ -34,8 +34,8 @@ export async function GET() {
     <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
     <atom:link href="${baseUrl}/feed.xml" rel="self" type="application/rss+xml" />
     <copyright>Copyright ${new Date().getFullYear()} Kyaw Zayar Tun</copyright>
-    <managingEditor>contact@kyawzayartun.com (Kyaw Zayar Tun)</managingEditor>
-    <webMaster>contact@kyawzayartun.com (Kyaw Zayar Tun)</webMaster>
+    <managingEditor>kyawzayartun.contact@gmail.com (Kyaw Zayar Tun)</managingEditor>
+    <webMaster>kyawzayartun.contact@gmail.com (Kyaw Zayar Tun)</webMaster>
     <image>
       <url>${baseUrl}/images/avatar.png</url>
       <title>Kyaw Zayar Tun</title>
