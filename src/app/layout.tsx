@@ -11,6 +11,8 @@ import { getOGImageUrl } from '@/lib/og'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE_CONFIG.url
+
 export const metadata: Metadata = {
   title: {
     default: SITE_CONFIG.title,
@@ -27,7 +29,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: SITE_CONFIG.author }],
   creator: SITE_CONFIG.author,
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || SITE_CONFIG.url),
+  metadataBase: new URL(baseUrl),
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -84,6 +86,26 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* RSS Feed Autodiscovery */}
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="RSS Feed for Kyaw Zayar Tun's Blog"
+          href="/feed.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/atom+xml"
+          title="Atom Feed for Kyaw Zayar Tun's Blog"
+          href="/atom.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/json"
+          title="JSON Feed for Kyaw Zayar Tun's Blog"
+          href="/feed.json"
+        />
+
         <link
           rel="apple-touch-icon"
           sizes="180x180"

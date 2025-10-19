@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Calendar, Clock, ArrowRight } from 'lucide-react'
+import { Calendar, Clock, ArrowRight, Rss } from 'lucide-react'
 import { generateMetadata as genMeta, formatDate } from '@/lib/utils'
 import {
   getSortedBlogPosts,
@@ -32,10 +32,40 @@ export default async function BlogPage() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
               Blog
             </h1>
-            <p className="text-xl text-muted-foreground">
+            <p className="text-xl text-muted-foreground mb-6">
               Thoughts, tutorials, and insights on mobile development, best
               practices, and lessons learned along the way.
             </p>
+            {/* RSS Feed Link */}
+            <div className="flex flex-wrap gap-3">
+              <a
+                href="/feed.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              >
+                <Rss className="size-4" />
+                RSS Feed
+              </a>
+              <a
+                href="/atom.xml"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              >
+                <Rss className="size-4" />
+                Atom Feed
+              </a>
+              <a
+                href="/feed.json"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border bg-card px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              >
+                <Rss className="size-4" />
+                JSON Feed
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -119,12 +149,15 @@ export default async function BlogPage() {
         <div className="container py-16">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-bold">Recent Posts</h2>
-            {/* Category Filter - You can make this interactive later */}
+            {/* Category Filter */}
             <div className="hidden md:flex items-center gap-2">
+              <button className="px-3 py-1.5 rounded-lg text-sm font-medium bg-accent">
+                All
+              </button>
               {categories.map((category) => (
                 <button
                   key={category}
-                  className="px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors"
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-accent transition-colors capitalize"
                 >
                   {category}
                 </button>
@@ -142,7 +175,10 @@ export default async function BlogPage() {
                 <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-5xl font-bold text-primary/10">
-                      {post.title.charAt(0)}
+                      {post.coverImage && (
+                        <Image src={post.coverImage} alt={post.title} fill />
+                      )}
+                      {!post.coverImage && post.title.charAt(0)}
                     </div>
                   </div>
                 </div>

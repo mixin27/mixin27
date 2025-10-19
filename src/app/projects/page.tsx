@@ -72,15 +72,20 @@ export default async function ProjectsPage() {
                 {/* Project Image */}
                 <div className="aspect-video bg-muted relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                    {/* <Smartphone className="size-16 text-primary/40" /> */}
-                    <Image
-                      src={project.image}
-                      alt={`${project.title} Logo`}
-                      fill
-                    />
+                    {!project.image && (
+                      <Smartphone className="size-16 text-primary/40" />
+                    )}
+                    {project.image && (
+                      <Image
+                        src={project.image}
+                        alt={`${project.title} Logo`}
+                        objectFit="cover"
+                        fill
+                      />
+                    )}
                   </div>
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-white">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-300">
                       Featured
                     </span>
                   </div>
@@ -168,12 +173,17 @@ export default async function ProjectsPage() {
                   {/* Project Image */}
                   <div className="aspect-video bg-muted relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      {/* <Smartphone className="size-16 text-primary/40" /> */}
-                      <Image
-                        src={project.image}
-                        alt={`${project.title} Logo`}
-                        fill
-                      />
+                      {!project.image && (
+                        <Smartphone className="size-16 text-primary/40" />
+                      )}
+                      {project.image && (
+                        <Image
+                          src={project.image}
+                          alt={`${project.title} Logo`}
+                          objectFit="cover"
+                          fill
+                        />
+                      )}
                     </div>
                   </div>
 
