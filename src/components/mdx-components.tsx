@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ComponentPropsWithoutRef } from 'react'
+import React, { ComponentPropsWithoutRef } from 'react'
 
 // Custom Image component for MDX
 function MDXImage(props: ComponentPropsWithoutRef<typeof Image>) {
@@ -60,6 +60,7 @@ function MDXCode({
     )
   }
 
+  // For code blocks, return as-is (rehype-pretty-code handles it)
   return (
     <code className={className} {...props}>
       {children}
