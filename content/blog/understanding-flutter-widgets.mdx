@@ -1,0 +1,1057 @@
+---
+title: "Understanding Flutter Widgets: Building Your First UI"
+description: Master Flutter's widget system and learn how to build beautiful, responsive user interfaces from the ground up.
+date: 2025-10-21
+category: tutorial
+tags: [Flutter, Widgets, UI, Beginner, StatelessWidget, StatefulWidget]
+featured: false
+published: true
+coverImage: /images/blogs/getting-started-with-flutter/flutter-getting-started.png
+author:
+  name: Kyaw Zayar Tun
+  bio: Passionate mobile developer specializing in Flutter and Android development.
+---
+
+
+# Understanding Flutter Widgets: Building Your First UI
+
+Welcome to Part 3 of our Flutter development series! Now that you understand Dart fundamentals, it's time to dive into the heart of Flutter: **Widgets**. By the end of this post, you'll understand how Flutter's widget system works and be able to build your own custom UIs.
+
+## Everything is a Widget
+
+This is the most important concept in Flutter. Let me repeat it: **Everything you see in a Flutter app is a widget**.
+
+- The app itself? A widget.
+- A button? A widget.
+- Text? A widget.
+- Padding? A widget.
+- Layout? Made of widgets.
+- Even the app's theme? You guessed it - a widget!
+
+Flutter takes a compositional approach. You build complex UIs by combining simple widgets together, creating a widget tree.
+
+## The Widget Tree
+
+Think of your app as a tree structure:
+
+```
+MaterialApp
+└── Scaffold
+    ├── AppBar
+    │   └── Text
+    └── Body
+        └── Column
+            ├── Text
+            ├── Image
+            └── ElevatedButton
+                └── Text
+```
+
+Each widget can contain child widgets, forming a hierarchy. Understanding this tree structure is crucial to mastering Flutter.
+
+## Types of Widgets
+
+Flutter has two main types of widgets:
+
+### 1. StatelessWidget
+
+A widget that doesn't change over time. Its properties are immutable.
+
+**Use when:**
+- The widget's appearance doesn't depend on anything except configuration
+- No user interaction that changes state
+- Static content like labels, icons, or layout structures
+
+### 2. StatefulWidget
+
+A widget that maintains mutable state that can change over time.
+
+**Use when:**
+- User interactions affect the UI (buttons, forms)
+- Data changes over time (API responses, timers)
+- Animations or dynamic content
+
+## Your First StatelessWidget
+
+Let's build a simple greeting widget:
+
+```dart
+import 'package:flutter/material.dart';
+
+class GreetingWidget extends StatelessWidget {
+  final String name;
+
+  const GreetingWidget({
+    Key? key,
+    required this.name,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Hello, $name!',
+      style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+}
+
+// Usage in another widget
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: GreetingWidget(name: 'Alice'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+**Key Points:**
+- Extends `StatelessWidget`
+- Constructor accepts parameters (immutable)
+- `build()` method returns the widget tree
+- `const` constructor for better performance
+
+## Your First StatefulWidget
+
+Now let's create a counter that changes when clicked:
+
+```dart
+class CounterWidget extends StatefulWidget {
+  const CounterWidget({Key? key}) : super(key: key);
+
+  @override
+  State<CounterWidget> createState() => _CounterWidgetState();
+}
+
+class _CounterWidgetState extends State<CounterWidget> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Count: $_counter',
+          style: TextStyle(fontSize: 32),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _incrementCounter,
+          child: Text('Increment'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+**Key Points:**
+- StatefulWidget creates a State object
+- State holds mutable data
+- `setState()` triggers a rebuild
+- Private state class name convention: `_WidgetNameState`
+
+## The Build Method
+
+The `build()` method is where you describe what your widget looks like. It's called:
+
+- When the widget is first created
+- When `setState()` is called (StatefulWidget)
+- When the parent rebuilds
+- When inherited widgets change
+
+**Important:** The `build()` method should be pure - no side effects! Don't make API calls or modify state here.
+
+## Common Layout Widgets
+
+Let's explore the essential widgets for building layouts:
+
+### Container
+
+The Swiss Army knife of Flutter widgets. Can apply padding, margins, borders, background colors, and more:
+
+```dart
+Container(
+  width: 200,
+  height: 100,
+  padding: EdgeInsets.all(16),
+  margin: EdgeInsets.symmetric(horizontal: 20),
+  decoration: BoxDecoration(
+    color: Colors.blue,
+    borderRadius: BorderRadius.circular(12),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black26,
+        blurRadius: 8,
+        offset: Offset(0, 4),
+      ),
+    ],
+  ),
+  child: Text(
+    'Hello Container',
+    style: TextStyle(color: Colors.white),
+  ),
+)
+```
+
+### Row and Column
+
+Layout widgets that arrange children horizontally (Row) or vertically (Column):
+
+```dart
+// Row - Horizontal layout
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  crossAxisAlignment: CrossAxisAlignment.center,
+  children: [
+    Icon(Icons.star),
+    Text('Rating'),
+    Text('4.5'),
+  ],
+)
+
+// Column - Vertical layout
+Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+    Text('Title'),
+    Text('Subtitle'),
+    ElevatedButton(
+      onPressed: () {},
+      child: Text('Action'),
+    ),
+  ],
+)
+```
+
+**Alignment Properties:**
+- `mainAxisAlignment`: Along the main axis (horizontal for Row, vertical for Column)
+- `crossAxisAlignment`: Perpendicular to main axis
+- Values: `start`, `end`, `center`, `spaceBetween`, `spaceAround`, `spaceEvenly`
+
+### Stack
+
+Layers widgets on top of each other:
+
+```dart
+Stack(
+  children: [
+    Container(
+      width: 300,
+      height: 200,
+      color: Colors.blue,
+    ),
+    Positioned(
+      top: 20,
+      left: 20,
+      child: Text(
+        'Overlay Text',
+        style: TextStyle(color: Colors.white, fontSize: 20),
+      ),
+    ),
+    Positioned(
+      bottom: 10,
+      right: 10,
+      child: Icon(Icons.favorite, color: Colors.red),
+    ),
+  ],
+)
+```
+
+### Expanded and Flexible
+
+Control how children fill available space in Row/Column:
+
+```dart
+Row(
+  children: [
+    Expanded(
+      flex: 2,
+      child: Container(color: Colors.red, height: 50),
+    ),
+    Expanded(
+      flex: 1,
+      child: Container(color: Colors.blue, height: 50),
+    ),
+  ],
+)
+
+// Red takes 2/3 of width, blue takes 1/3
+```
+
+### Padding and SizedBox
+
+Add spacing around or between widgets:
+
+```dart
+// Padding - adds space around a widget
+Padding(
+  padding: EdgeInsets.all(16),
+  child: Text('Padded text'),
+)
+
+// Different padding options
+Padding(
+  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+  child: Text('Asymmetric padding'),
+)
+
+// SizedBox - fixed size spacing
+Column(
+  children: [
+    Text('First'),
+    SizedBox(height: 20),  // Vertical space
+    Text('Second'),
+  ],
+)
+```
+
+## Common UI Widgets
+
+### Text
+
+Display and style text:
+
+```dart
+Text(
+  'Hello Flutter',
+  style: TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.blue,
+    letterSpacing: 2.0,
+    decoration: TextDecoration.underline,
+  ),
+  textAlign: TextAlign.center,
+  maxLines: 2,
+  overflow: TextOverflow.ellipsis,
+)
+```
+
+### Image
+
+Display images from various sources:
+
+```dart
+// Network image
+Image.network(
+  'https://example.com/image.jpg',
+  width: 200,
+  height: 200,
+  fit: BoxFit.cover,
+)
+
+// Asset image (add to pubspec.yaml first)
+Image.asset(
+  'assets/images/logo.png',
+  width: 100,
+)
+
+// With loading and error handling
+Image.network(
+  'https://example.com/image.jpg',
+  loadingBuilder: (context, child, loadingProgress) {
+    if (loadingProgress == null) return child;
+    return CircularProgressIndicator();
+  },
+  errorBuilder: (context, error, stackTrace) {
+    return Icon(Icons.error);
+  },
+)
+```
+
+### Icon
+
+Display Material Design or Cupertino icons:
+
+```dart
+Icon(
+  Icons.favorite,
+  color: Colors.red,
+  size: 32,
+)
+
+// With background
+CircleAvatar(
+  backgroundColor: Colors.blue,
+  child: Icon(Icons.person, color: Colors.white),
+)
+```
+
+### Button Widgets
+
+Flutter provides several button types:
+
+```dart
+// ElevatedButton - raised button with elevation
+ElevatedButton(
+  onPressed: () {
+    print('Elevated button pressed');
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.blue,
+    padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(8),
+    ),
+  ),
+  child: Text('Elevated Button'),
+)
+
+// TextButton - flat button without elevation
+TextButton(
+  onPressed: () {},
+  child: Text('Text Button'),
+)
+
+// OutlinedButton - button with border
+OutlinedButton(
+  onPressed: () {},
+  child: Text('Outlined Button'),
+)
+
+// IconButton - just an icon
+IconButton(
+  icon: Icon(Icons.favorite),
+  onPressed: () {},
+  color: Colors.red,
+)
+
+// FloatingActionButton - circular button
+FloatingActionButton(
+  onPressed: () {},
+  child: Icon(Icons.add),
+  backgroundColor: Colors.blue,
+)
+```
+
+## Input Widgets
+
+### TextField
+
+Accept text input:
+
+```dart
+class TextFieldExample extends StatefulWidget {
+  @override
+  State<TextFieldExample> createState() => _TextFieldExampleState();
+}
+
+class _TextFieldExampleState extends State<TextFieldExample> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+        labelText: 'Enter your name',
+        hintText: 'John Doe',
+        prefixIcon: Icon(Icons.person),
+        border: OutlineInputBorder(),
+        suffixIcon: IconButton(
+          icon: Icon(Icons.clear),
+          onPressed: () {
+            _controller.clear();
+          },
+        ),
+      ),
+      onChanged: (value) {
+        print('Text changed: $value');
+      },
+      onSubmitted: (value) {
+        print('Submitted: $value');
+      },
+    );
+  }
+}
+```
+
+### Checkbox and Switch
+
+```dart
+class CheckboxExample extends StatefulWidget {
+  @override
+  State<CheckboxExample> createState() => _CheckboxExampleState();
+}
+
+class _CheckboxExampleState extends State<CheckboxExample> {
+  bool _isChecked = false;
+  bool _isSwitched = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CheckboxListTile(
+          title: Text('Accept terms'),
+          value: _isChecked,
+          onChanged: (value) {
+            setState(() {
+              _isChecked = value!;
+            });
+          },
+        ),
+        SwitchListTile(
+          title: Text('Enable notifications'),
+          value: _isSwitched,
+          onChanged: (value) {
+            setState(() {
+              _isSwitched = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+
+### Radio Buttons
+
+```dart
+class RadioExample extends StatefulWidget {
+  @override
+  State<RadioExample> createState() => _RadioExampleState();
+}
+
+class _RadioExampleState extends State<RadioExample> {
+  String _selectedOption = 'Option 1';
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        RadioListTile<String>(
+          title: Text('Option 1'),
+          value: 'Option 1',
+          groupValue: _selectedOption,
+          onChanged: (value) {
+            setState(() {
+              _selectedOption = value!;
+            });
+          },
+        ),
+        RadioListTile<String>(
+          title: Text('Option 2'),
+          value: 'Option 2',
+          groupValue: _selectedOption,
+          onChanged: (value) {
+            setState(() {
+              _selectedOption = value!;
+            });
+          },
+        ),
+      ],
+    );
+  }
+}
+```
+
+## ListView - Scrollable Lists
+
+Display scrollable lists of items:
+
+```dart
+// Simple ListView
+ListView(
+  children: [
+    ListTile(
+      leading: Icon(Icons.person),
+      title: Text('John Doe'),
+      subtitle: Text('john@example.com'),
+      trailing: Icon(Icons.arrow_forward),
+      onTap: () {
+        print('Tapped John');
+      },
+    ),
+    ListTile(
+      leading: Icon(Icons.person),
+      title: Text('Jane Smith'),
+      subtitle: Text('jane@example.com'),
+    ),
+  ],
+)
+
+// ListView.builder - for large lists
+ListView.builder(
+  itemCount: 100,
+  itemBuilder: (context, index) {
+    return ListTile(
+      leading: CircleAvatar(
+        child: Text('${index + 1}'),
+      ),
+      title: Text('Item ${index + 1}'),
+      subtitle: Text('Description for item ${index + 1}'),
+    );
+  },
+)
+
+// ListView.separated - with dividers
+ListView.separated(
+  itemCount: 10,
+  separatorBuilder: (context, index) => Divider(),
+  itemBuilder: (context, index) {
+    return ListTile(
+      title: Text('Item ${index + 1}'),
+    );
+  },
+)
+```
+
+## GridView - Grid Layouts
+
+Display items in a grid:
+
+```dart
+// GridView.count - fixed number of columns
+GridView.count(
+  crossAxisCount: 2,
+  mainAxisSpacing: 10,
+  crossAxisSpacing: 10,
+  padding: EdgeInsets.all(10),
+  children: List.generate(20, (index) {
+    return Container(
+      color: Colors.blue[100 * ((index % 9) + 1)],
+      child: Center(
+        child: Text('Item $index'),
+      ),
+    );
+  }),
+)
+
+// GridView.builder - for large grids
+GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+    childAspectRatio: 1.0,
+    crossAxisSpacing: 8,
+    mainAxisSpacing: 8,
+  ),
+  itemCount: 50,
+  itemBuilder: (context, index) {
+    return Card(
+      child: Center(
+        child: Text('$index'),
+      ),
+    );
+  },
+)
+```
+
+## Scaffold - App Structure
+
+Scaffold provides the basic visual structure:
+
+```dart
+Scaffold(
+  appBar: AppBar(
+    title: Text('My App'),
+    actions: [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {},
+      ),
+      IconButton(
+        icon: Icon(Icons.more_vert),
+        onPressed: () {},
+      ),
+    ],
+  ),
+  body: Center(
+    child: Text('Main content'),
+  ),
+  floatingActionButton: FloatingActionButton(
+    onPressed: () {},
+    child: Icon(Icons.add),
+  ),
+  drawer: Drawer(
+    child: ListView(
+      children: [
+        DrawerHeader(
+          decoration: BoxDecoration(color: Colors.blue),
+          child: Text(
+            'Menu',
+            style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
+        ),
+        ListTile(
+          leading: Icon(Icons.home),
+          title: Text('Home'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text('Settings'),
+          onTap: () {},
+        ),
+      ],
+    ),
+  ),
+  bottomNavigationBar: BottomNavigationBar(
+    currentIndex: 0,
+    items: [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.home),
+        label: 'Home',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.search),
+        label: 'Search',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.person),
+        label: 'Profile',
+      ),
+    ],
+  ),
+)
+```
+
+## Building a Complete Example
+
+Let's build a simple profile card combining everything we've learned:
+
+```dart
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Profile Card',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ProfileScreen(),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile'),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: ProfileCard(
+          name: 'John Doe',
+          role: 'Flutter Developer',
+          imageUrl: 'https://via.placeholder.com/150',
+          followers: 1234,
+          following: 567,
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileCard extends StatefulWidget {
+  final String name;
+  final String role;
+  final String imageUrl;
+  final int followers;
+  final int following;
+
+  const ProfileCard({
+    Key? key,
+    required this.name,
+    required this.role,
+    required this.imageUrl,
+    required this.followers,
+    required this.following,
+  }) : super(key: key);
+
+  @override
+  State<ProfileCard> createState() => _ProfileCardState();
+}
+
+class _ProfileCardState extends State<ProfileCard> {
+  bool _isFollowing = false;
+
+  void _toggleFollow() {
+    setState(() {
+      _isFollowing = !_isFollowing;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.all(20),
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Profile Image
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: NetworkImage(widget.imageUrl),
+            ),
+            SizedBox(height: 16),
+
+            // Name
+            Text(
+              widget.name,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+
+            // Role
+            Text(
+              widget.role,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 24),
+
+            // Stats
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildStatColumn('Followers', widget.followers),
+                Container(
+                  height: 40,
+                  width: 1,
+                  color: Colors.grey[300],
+                ),
+                _buildStatColumn('Following', widget.following),
+              ],
+            ),
+            SizedBox(height: 24),
+
+            // Action Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _toggleFollow,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _isFollowing ? Colors.grey : Colors.blue,
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(_isFollowing ? 'Following' : 'Follow'),
+                  ),
+                ),
+                SizedBox(width: 12),
+                OutlinedButton(
+                  onPressed: () {
+                    print('Message pressed');
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text('Message'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatColumn(String label, int count) {
+    return Column(
+      children: [
+        Text(
+          count.toString(),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 14,
+          ),
+        ),
+      ],
+    );
+  }
+}
+```
+
+## Widget Lifecycle
+
+Understanding the widget lifecycle helps you know when to perform certain operations:
+
+### StatelessWidget Lifecycle
+
+1. Constructor called
+2. `build()` called
+
+That's it! Stateless widgets are simple.
+
+### StatefulWidget Lifecycle
+
+1. Constructor called
+2. `createState()` called
+3. `initState()` called (initialization logic here)
+4. `build()` called
+5. `setState()` triggers rebuild → `build()` called again
+6. `dispose()` called (cleanup logic here)
+
+```dart
+class LifecycleDemo extends StatefulWidget {
+  @override
+  State<LifecycleDemo> createState() => _LifecycleDemoState();
+}
+
+class _LifecycleDemoState extends State<LifecycleDemo> {
+  @override
+  void initState() {
+    super.initState();
+    print('initState called');
+    // Initialize data, subscriptions, controllers
+  }
+
+  @override
+  void dispose() {
+    print('dispose called');
+    // Clean up controllers, close streams, cancel timers
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build called');
+    return Container();
+  }
+}
+```
+
+## Best Practices
+
+1. **Extract Widgets**: If your build method is complex, extract sections into separate widgets
+2. **Use const**: Use const constructors when possible for better performance
+3. **Clean Up**: Always dispose controllers and cancel subscriptions in dispose()
+4. **Keep build() Pure**: No side effects in build method
+5. **Minimize setState() Scope**: Only rebuild what's necessary
+6. **Use Keys**: When working with lists, use keys to identify widgets
+
+## Common Mistakes to Avoid
+
+1. **Forgetting to call setState()**: Changes won't appear without it
+2. **Not disposing controllers**: Memory leaks
+3. **Returning null from build()**: Always return a widget
+4. **Too many setState() calls**: Can cause performance issues
+5. **Modifying lists directly**: Always create new lists for setState()
+
+## Practice Projects
+
+Build these to reinforce your learning:
+
+1. **Todo List App**
+   - Add/remove todos
+   - Mark as complete
+   - Use ListView.builder
+
+2. **Contact List**
+   - Display contacts in a list
+   - Each contact has name, phone, email
+   - Add search functionality
+
+3. **Calculator UI**
+   - Create calculator button layout
+   - Display result
+   - Use GridView for number pad
+
+4. **Weather Card**
+   - Display weather info in a card
+   - Show temperature, condition, location
+   - Add icons and styling
+
+## Quick Widget Reference
+
+```dart
+// Layout
+Container, Row, Column, Stack, Expanded, Padding, Center
+
+// Scrolling
+ListView, GridView, SingleChildScrollView
+
+// Input
+TextField, Checkbox, Radio, Switch, Slider
+
+// Display
+Text, Image, Icon, Card, Divider
+
+// Buttons
+ElevatedButton, TextButton, OutlinedButton, IconButton
+
+// Structure
+Scaffold, AppBar, Drawer, BottomNavigationBar
+
+// Material
+Card, ListTile, CircleAvatar, Chip, Badge
+```
+
+## Next Steps
+
+In Part 4, we'll explore:
+- Navigation and routing
+- Passing data between screens
+- Named routes
+- Bottom navigation
+- Tab navigation
+
+## Resources
+
+- [Flutter Widget Catalog](https://docs.flutter.dev/development/ui/widgets)
+- [Material Design Components](https://docs.flutter.dev/development/ui/widgets/material)
+- [Flutter Layout Cheat Sheet](https://medium.com/flutter-community/flutter-layout-cheat-sheet-5363348d037e)
+
+---
+
+Start building UIs and experiment with different widgets. The best way to learn is by doing!
+
+Happy coding! 🎨

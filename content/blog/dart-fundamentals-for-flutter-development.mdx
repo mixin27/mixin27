@@ -1,0 +1,869 @@
+---
+title: "Dart Fundamentals for Flutter Development"
+description: Master the Dart programming language essentials you need to build Flutter applications effectively.
+date: 2025-10-21
+category: tutorial
+tags: [Flutter, Dart, Programming, Beginner, Language Basics]
+featured: false
+published: true
+coverImage: /images/blogs/getting-started-with-flutter/flutter-getting-started.png
+author:
+  name: Kyaw Zayar Tun
+  bio: Passionate mobile developer specializing in Flutter and Android development.
+---
+# Dart Fundamentals for Flutter Development
+
+Welcome to Part 2 of our Flutter development series! Before we dive deeper into Flutter, we need to understand Dart, the programming language that powers Flutter. Don't worry if you're new to Dart - if you've used JavaScript, Java, C#, or Swift, you'll feel right at home.
+
+## Why Dart?
+
+Before we jump into syntax, let's understand why Flutter uses Dart:
+
+- **Optimized for UI**: Dart was designed with UI development in mind
+- **Fast Performance**: Compiles to native code (ARM/x64)
+- **Productive Development**: Hot reload capability
+- **Easy to Learn**: Clean, modern syntax
+- **Strong Typing**: Catches errors at compile time (with null safety)
+- **Async Support**: Built-in features for handling asynchronous operations
+
+## Setting Up for Dart Experiments
+
+You can practice Dart in several ways:
+
+1. **DartPad** (Online): [dartpad.dev](https://dartpad.dev) - No setup required!
+2. **VS Code**: Create a file ending in `.dart` and run it
+3. **Flutter Project**: Practice in your Flutter project's `lib` folder
+
+Let's get started!
+
+## Variables and Data Types
+
+### Declaring Variables
+
+Dart offers multiple ways to declare variables:
+
+```dart
+// Explicitly typed
+String name = 'Flutter';
+int version = 3;
+double price = 99.99;
+bool isAwesome = true;
+
+// Type inference with var
+var language = 'Dart';  // Inferred as String
+var year = 2024;        // Inferred as int
+
+// Final - runtime constant (can only be set once)
+final city = 'Yangon';
+final DateTime now = DateTime.now();
+
+// Const - compile-time constant
+const pi = 3.14159;
+const List<String> colors = ['red', 'green', 'blue'];
+```
+
+**Key Differences:**
+- `var`: Type inferred, can be reassigned
+- `final`: Value set once at runtime, cannot be reassigned
+- `const`: Value set at compile time, deeply immutable
+
+### Basic Data Types
+
+```dart
+// Numbers
+int age = 25;
+double height = 5.9;
+num temperature = 98.6;  // Can be int or double
+
+// Strings
+String greeting = 'Hello';
+String multiline = '''
+This is a
+multi-line string
+''';
+
+// String interpolation
+String message = 'Hello, $name!';
+String calculation = 'Age in 5 years: ${age + 5}';
+
+// Booleans
+bool isLoggedIn = false;
+bool hasPermission = true;
+
+// Lists (Arrays)
+List<int> numbers = [1, 2, 3, 4, 5];
+var fruits = ['Apple', 'Banana', 'Orange'];
+List<String> emptyList = [];
+
+// Sets (unique values)
+Set<String> uniqueNames = {'Alice', 'Bob', 'Charlie'};
+
+// Maps (key-value pairs)
+Map<String, int> ages = {
+  'Alice': 25,
+  'Bob': 30,
+  'Charlie': 35,
+};
+
+// Dynamic type (avoid when possible)
+dynamic anything = 'text';
+anything = 42;  // Can change type
+```
+
+## Null Safety
+
+Dart has sound null safety, meaning variables can't contain null unless you explicitly allow it. This prevents null reference errors!
+
+```dart
+// Non-nullable (default)
+String name = 'John';
+// name = null;  // Error! Can't assign null
+
+// Nullable (add ?)
+String? nickname;  // Can be null
+nickname = null;   // OK
+nickname = 'Johnny';  // Also OK
+
+// Accessing nullable variables
+String? username;
+// print(username.length);  // Error! username might be null
+
+// Safe ways to handle nullables:
+
+// 1. Null check
+if (username != null) {
+  print(username.length);
+}
+
+// 2. Null-aware operator (?.)
+print(username?.length);  // Returns null if username is null
+
+// 3. Null assertion (!)
+// print(username!.length);  // Use only if you're SURE it's not null
+
+// 4. Default value (??)
+String displayName = username ?? 'Guest';
+```
+
+## Functions
+
+Functions are first-class objects in Dart, meaning they can be assigned to variables, passed as arguments, and returned from other functions.
+
+### Basic Functions
+
+```dart
+// Function with return type
+String greet(String name) {
+  return 'Hello, $name!';
+}
+
+// Arrow syntax for single expressions
+String greetShort(String name) => 'Hello, $name!';
+
+// Function without return value
+void printMessage(String message) {
+  print(message);
+}
+
+// Optional positional parameters []
+String buildName(String first, String last, [String? middle]) {
+  if (middle != null) {
+    return '$first $middle $last';
+  }
+  return '$first $last';
+}
+
+// Usage
+print(buildName('John', 'Doe'));           // John Doe
+print(buildName('John', 'Doe', 'Smith'));  // John Smith Doe
+
+// Named parameters {}
+void createUser({
+  required String name,
+  required int age,
+  String? email,
+  bool isAdmin = false,
+}) {
+  print('Name: $name, Age: $age, Admin: $isAdmin');
+}
+
+// Usage
+createUser(name: 'Alice', age: 25);
+createUser(name: 'Bob', age: 30, email: 'bob@example.com', isAdmin: true);
+
+// Anonymous functions (lambdas)
+var numbers = [1, 2, 3, 4, 5];
+var doubled = numbers.map((n) => n * 2);
+print(doubled);  // (2, 4, 6, 8, 10)
+```
+
+## Control Flow
+
+### If-Else Statements
+
+```dart
+int score = 85;
+
+if (score >= 90) {
+  print('Grade: A');
+} else if (score >= 80) {
+  print('Grade: B');
+} else if (score >= 70) {
+  print('Grade: C');
+} else {
+  print('Grade: F');
+}
+
+// Ternary operator
+String result = score >= 60 ? 'Pass' : 'Fail';
+```
+
+### Switch Statements
+
+```dart
+String grade = 'B';
+
+switch (grade) {
+  case 'A':
+    print('Excellent!');
+    break;
+  case 'B':
+    print('Good job!');
+    break;
+  case 'C':
+    print('You passed.');
+    break;
+  default:
+    print('Keep trying!');
+}
+```
+
+### Loops
+
+```dart
+// For loop
+for (int i = 0; i < 5; i++) {
+  print('Count: $i');
+}
+
+// For-in loop
+var fruits = ['Apple', 'Banana', 'Orange'];
+for (var fruit in fruits) {
+  print(fruit);
+}
+
+// While loop
+int count = 0;
+while (count < 3) {
+  print('Count: $count');
+  count++;
+}
+
+// Do-while loop
+int num = 0;
+do {
+  print('Number: $num');
+  num++;
+} while (num < 3);
+
+// ForEach with collections
+fruits.forEach((fruit) {
+  print('I like $fruit');
+});
+```
+
+## Collections and Their Methods
+
+Dart's collections have powerful built-in methods that make data manipulation easy.
+
+### List Operations
+
+```dart
+var numbers = [1, 2, 3, 4, 5];
+
+// Add elements
+numbers.add(6);
+numbers.addAll([7, 8, 9]);
+
+// Remove elements
+numbers.remove(5);
+numbers.removeAt(0);
+
+// Access elements
+print(numbers[0]);
+print(numbers.first);
+print(numbers.last);
+
+// Transform with map
+var squared = numbers.map((n) => n * n).toList();
+
+// Filter with where
+var evenNumbers = numbers.where((n) => n % 2 == 0).toList();
+
+// Check conditions
+bool hasNegative = numbers.any((n) => n < 0);
+bool allPositive = numbers.every((n) => n > 0);
+
+// Reduce
+int sum = numbers.reduce((a, b) => a + b);
+
+// Sort
+numbers.sort();
+numbers.sort((a, b) => b.compareTo(a)); // Descending
+
+// Other useful methods
+print(numbers.length);
+print(numbers.isEmpty);
+print(numbers.contains(3));
+```
+
+### Map Operations
+
+```dart
+var person = {
+  'name': 'Alice',
+  'age': 25,
+  'city': 'Yangon',
+};
+
+// Access values
+print(person['name']);
+
+// Add/update entries
+person['email'] = 'alice@example.com';
+person['age'] = 26;
+
+// Remove entries
+person.remove('city');
+
+// Check keys
+if (person.containsKey('email')) {
+  print('Email exists');
+}
+
+// Iterate
+person.forEach((key, value) {
+  print('$key: $value');
+});
+
+// Keys and values
+print(person.keys);
+print(person.values);
+```
+
+## Classes and Objects
+
+Dart is object-oriented. Everything is an object!
+
+### Basic Class
+
+```dart
+class Person {
+  // Properties
+  String name;
+  int age;
+
+  // Constructor
+  Person(this.name, this.age);
+
+  // Method
+  void introduce() {
+    print('Hi, I\'m $name and I\'m $age years old.');
+  }
+
+  // Getter
+  bool get isAdult => age >= 18;
+
+  // Setter
+  set setAge(int newAge) {
+    if (newAge > 0) {
+      age = newAge;
+    }
+  }
+}
+
+// Usage
+var person = Person('Alice', 25);
+person.introduce();
+print(person.isAdult);
+```
+
+### Named Constructors
+
+```dart
+class User {
+  String username;
+  String email;
+
+  User(this.username, this.email);
+
+  // Named constructor
+  User.guest()
+      : username = 'guest',
+        email = 'guest@example.com';
+
+  // Factory constructor
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(json['username'], json['email']);
+  }
+}
+
+// Usage
+var regularUser = User('alice', 'alice@example.com');
+var guestUser = User.guest();
+var jsonUser = User.fromJson({'username': 'bob', 'email': 'bob@example.com'});
+```
+
+### Private Members
+
+In Dart, privacy is at the library level. Use underscore `_` prefix for private members:
+
+```dart
+class BankAccount {
+  String accountNumber;
+  double _balance;  // Private
+
+  BankAccount(this.accountNumber, this._balance);
+
+  // Public getter
+  double get balance => _balance;
+
+  // Private method
+  void _updateBalance(double amount) {
+    _balance += amount;
+  }
+
+  void deposit(double amount) {
+    if (amount > 0) {
+      _updateBalance(amount);
+    }
+  }
+}
+```
+
+### Inheritance
+
+```dart
+class Animal {
+  String name;
+
+  Animal(this.name);
+
+  void makeSound() {
+    print('Some sound');
+  }
+}
+
+class Dog extends Animal {
+  String breed;
+
+  Dog(String name, this.breed) : super(name);
+
+  @override
+  void makeSound() {
+    print('Woof! Woof!');
+  }
+
+  void fetch() {
+    print('$name is fetching the ball!');
+  }
+}
+
+// Usage
+var dog = Dog('Buddy', 'Golden Retriever');
+dog.makeSound();
+dog.fetch();
+```
+
+### Mixins
+
+Mixins let you reuse code across multiple class hierarchies:
+
+```dart
+mixin Swimming {
+  void swim() {
+    print('Swimming...');
+  }
+}
+
+mixin Flying {
+  void fly() {
+    print('Flying...');
+  }
+}
+
+class Duck extends Animal with Swimming, Flying {
+  Duck(String name) : super(name);
+
+  @override
+  void makeSound() {
+    print('Quack!');
+  }
+}
+
+// Usage
+var duck = Duck('Donald');
+duck.swim();
+duck.fly();
+duck.makeSound();
+```
+
+## Asynchronous Programming
+
+Flutter apps need to handle network requests, file I/O, and other async operations. Dart makes this easy!
+
+### Future
+
+A Future represents a value that will be available at some point:
+
+```dart
+// Simulating an API call
+Future<String> fetchUserData() async {
+  await Future.delayed(Duration(seconds: 2));
+  return 'User data loaded';
+}
+
+// Using async/await
+void loadData() async {
+  print('Loading...');
+  String data = await fetchUserData();
+  print(data);
+  print('Done!');
+}
+
+// Using .then()
+void loadDataWithThen() {
+  print('Loading...');
+  fetchUserData().then((data) {
+    print(data);
+    print('Done!');
+  });
+}
+
+// Error handling
+Future<void> fetchData() async {
+  try {
+    String data = await fetchUserData();
+    print(data);
+  } catch (e) {
+    print('Error: $e');
+  } finally {
+    print('Cleanup');
+  }
+}
+```
+
+### Multiple Futures
+
+```dart
+Future<void> loadMultipleData() async {
+  // Sequential
+  var user = await fetchUser();
+  var posts = await fetchPosts(user.id);
+
+  // Parallel
+  var results = await Future.wait([
+    fetchUser(),
+    fetchPosts(123),
+    fetchComments(456),
+  ]);
+
+  print('All data loaded!');
+}
+```
+
+### Stream
+
+Streams provide a sequence of async events:
+
+```dart
+Stream<int> countStream() async* {
+  for (int i = 1; i <= 5; i++) {
+    await Future.delayed(Duration(seconds: 1));
+    yield i;
+  }
+}
+
+// Listening to a stream
+void listenToStream() async {
+  await for (int value in countStream()) {
+    print('Value: $value');
+  }
+  print('Stream complete!');
+}
+
+// Or using listen
+void listenWithCallback() {
+  countStream().listen(
+    (value) => print('Value: $value'),
+    onError: (error) => print('Error: $error'),
+    onDone: () => print('Stream complete!'),
+  );
+}
+```
+
+## Exception Handling
+
+```dart
+// Throwing exceptions
+void checkAge(int age) {
+  if (age < 0) {
+    throw Exception('Age cannot be negative');
+  }
+}
+
+// Catching exceptions
+void processAge(int age) {
+  try {
+    checkAge(age);
+    print('Age is valid');
+  } on Exception catch (e) {
+    print('Caught exception: $e');
+  } catch (e) {
+    print('Caught unknown error: $e');
+  } finally {
+    print('Cleanup code runs always');
+  }
+}
+
+// Custom exceptions
+class InvalidEmailException implements Exception {
+  final String message;
+  InvalidEmailException(this.message);
+
+  @override
+  String toString() => 'InvalidEmailException: $message';
+}
+```
+
+## Useful Dart Features for Flutter
+
+### Cascade Notation
+
+Chain multiple operations on the same object:
+
+```dart
+var person = Person('Alice', 25)
+  ..introduce()
+  ..setAge = 26
+  ..introduce();
+
+// Useful in Flutter for configuring widgets
+var button = ElevatedButton()
+  ..onPressed = () => print('Clicked')
+  ..child = Text('Click me');
+```
+
+### Spread Operator
+
+```dart
+var list1 = [1, 2, 3];
+var list2 = [4, 5, 6];
+var combined = [...list1, ...list2];  // [1, 2, 3, 4, 5, 6]
+
+// Conditional spread
+var extraItems = [7, 8];
+var conditionalList = [
+  1,
+  2,
+  3,
+  if (condition) ...extraItems,
+];
+```
+
+### Collection If/For
+
+```dart
+// Collection if
+var isLoggedIn = true;
+var navItems = [
+  'Home',
+  'About',
+  if (isLoggedIn) 'Profile',
+  if (isLoggedIn) 'Logout' else 'Login',
+];
+
+// Collection for
+var numbers = [1, 2, 3];
+var multiplied = [
+  for (var num in numbers) num * 2
+];  // [2, 4, 6]
+```
+
+### Extension Methods
+
+Add methods to existing types:
+
+```dart
+extension StringExtension on String {
+  String capitalize() {
+    if (isEmpty) return this;
+    return '${this[0].toUpperCase()}${substring(1)}';
+  }
+}
+
+// Usage
+print('hello'.capitalize());  // Hello
+```
+
+## Practical Flutter Examples
+
+Now let's see how these Dart concepts apply in Flutter:
+
+### Example 1: Model Class
+
+```dart
+class Todo {
+  final String id;
+  final String title;
+  final bool isCompleted;
+
+  Todo({
+    required this.id,
+    required this.title,
+    this.isCompleted = false,
+  });
+
+  // Create a copy with modifications
+  Todo copyWith({
+    String? id,
+    String? title,
+    bool? isCompleted,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      isCompleted: isCompleted ?? this.isCompleted,
+    );
+  }
+
+  // JSON serialization
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'isCompleted': isCompleted,
+    };
+  }
+
+  factory Todo.fromJson(Map<String, dynamic> json) {
+    return Todo(
+      id: json['id'],
+      title: json['title'],
+      isCompleted: json['isCompleted'] ?? false,
+    );
+  }
+}
+```
+
+### Example 2: API Service
+
+```dart
+class ApiService {
+  final String baseUrl = 'https://api.example.com';
+
+  Future<List<Todo>> fetchTodos() async {
+    try {
+      // Simulating HTTP request
+      await Future.delayed(Duration(seconds: 1));
+
+      // Mock data
+      var jsonData = [
+        {'id': '1', 'title': 'Learn Dart', 'isCompleted': true},
+        {'id': '2', 'title': 'Build Flutter app', 'isCompleted': false},
+      ];
+
+      return jsonData.map((json) => Todo.fromJson(json)).toList();
+    } catch (e) {
+      throw Exception('Failed to load todos: $e');
+    }
+  }
+}
+```
+
+## Practice Challenges
+
+Before moving to the next post, try these exercises:
+
+1. **Create a Student Class**
+   - Properties: name, age, grades (`List<double>`)
+   - Method to calculate average grade
+   - Named constructor for honor students
+
+2. **Async Data Fetching**
+   - Create a function that simulates fetching user data
+   - Handle errors with try-catch
+   - Return a `Future<User>`
+
+3. **Collection Manipulation**
+   - Given a list of numbers, filter even numbers
+   - Map them to their squares
+   - Calculate the sum
+
+4. **Build a Simple Calculator**
+   - Create a Calculator class
+   - Methods for add, subtract, multiply, divide
+   - Handle division by zero
+
+## Dart Quick Reference
+
+```dart
+// Variables
+var name = 'Alice';           // Type inference
+final city = 'Yangon';        // Runtime constant
+const pi = 3.14;              // Compile-time constant
+
+// Null safety
+String? nullable;             // Can be null
+String nonNull = 'value';     // Cannot be null
+
+// Functions
+int add(int a, int b) => a + b;
+
+// Classes
+class Person {
+  String name;
+  Person(this.name);
+}
+
+// Async
+Future<String> fetchData() async {
+  return await getData();
+}
+
+// Lists
+var list = [1, 2, 3];
+list.map((x) => x * 2).where((x) => x > 2).toList();
+```
+
+## Key Takeaways
+
+- Dart is type-safe with null safety
+- Everything is an object
+- Async/await makes asynchronous code readable
+- Collections have powerful transformation methods
+- Classes support inheritance and mixins
+- Extension methods add functionality to existing types
+
+## Next Steps
+
+In Part 3, we'll dive into Flutter widgets and start building real UIs! We'll cover:
+
+- Understanding the widget tree
+- StatelessWidget vs StatefulWidget
+- Common widgets (Container, Text, Row, Column)
+- Building layouts
+- Handling user input
+
+## Resources
+
+- [Dart Language Tour](https://dart.dev/guides/language/language-tour)
+- [Dart Cheatsheet](https://dart.dev/codelabs/dart-cheatsheet)
+- [Effective Dart](https://dart.dev/guides/language/effective-dart)
+- [DartPad](https://dartpad.dev) - Practice online
+
+---
+
+Practice the concepts in this post before moving forward. Understanding Dart fundamentals will make learning Flutter much easier!
+
+Happy coding! 🎯

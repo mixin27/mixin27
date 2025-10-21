@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react'
 import {
   getBlogPostBySlug,
@@ -229,7 +230,17 @@ export default async function BlogPostPage({ params }: PageProps) {
                 >
                   <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                     <div className="text-4xl font-bold text-primary/10">
-                      {post.title.charAt(0)}
+                      {!post.coverImage && post.title.charAt(0)}
+                      {post.coverImage && (
+                        <Image
+                          className="aspect-video"
+                          src={post.coverImage}
+                          alt={post.title}
+                          width={320}
+                          height={320}
+                          objectFit="cover"
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="p-4">
