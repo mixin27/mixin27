@@ -12,58 +12,82 @@ import {
   ArrowLeft,
 } from 'lucide-react'
 import {
-  getInvoices,
-  getInvoiceStats,
-  deleteInvoice,
+  getQuotations,
+  deleteQuotation,
+  getClients,
 } from '@/lib/invoice-storage'
-import { Invoice } from '@/types/invoice'
+import { Quotation } from '@/types/invoice'
 import { formatDate } from '@/lib/utils'
 
-export default function InvoicesPage() {
-  const [invoices, setInvoices] = useState<Invoice[]>([])
-  const [stats, setStats] = useState<any>(null)
+export default function QuotationsPage() {
+  const [quotations, setQuotations] = useState<Quotation[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [stats, setStats] = useState({
+    total: 0,
+    draft: 0,
+    sent: 0,
+    accepted: 0,
+    rejected: 0,
+    expired: 0,
+    totalValue: 0,
+  })
 
   useEffect(() => {
     loadData()
   }, [])
 
   const loadData = () => {
-    setInvoices(getInvoices())
-    setStats(getInvoiceStats())
+    const loadedQuotations = getQuotations()
+    setQuotations(loadedQuotations)
+
+    // Calculate stats
+    const newStats = {
+      total: loadedQuotations.length,
+      draft: loadedQuotations.filter((q) => q.status === 'draft').length,
+      sent: loadedQuotations.filter((q) => q.status === 'sent').length,
+      accepted: loadedQuotations.filter((q) => q.status === 'accepted').length,
+      rejected: loadedQuotations.filter((q) => q.status === 'rejected').length,
+      expired: loadedQuotations.filter((q) => q.status === 'expired').length,
+      totalValue: loadedQuotations
+        .filter((q) => q.status === 'accepted')
+        .reduce((sum, q) => sum + q.total, 0),
+    }
+    setStats(newStats)
   }
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this invoice?')) {
-      deleteInvoice(id)
+    if (confirm('Are you sure you want to delete this quotation?')) {
+      deleteQuotation(id)
       loadData()
     }
   }
 
-  const filteredInvoices = invoices.filter((invoice) => {
+  const filteredQuotations = quotations.filter((quotation) => {
     const matchesSearch =
-      invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      invoice.client.name.toLowerCase().includes(searchQuery.toLowerCase())
+      quotation.invoiceNumber
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()) ||
+      quotation.client.name.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus =
-      statusFilter === 'all' || invoice.status === statusFilter
+      statusFilter === 'all' || quotation.status === statusFilter
 
     return matchesSearch && matchesStatus
   })
 
-  const getStatusColor = (status: Invoice['status']) => {
+  const getStatusColor = (status: Quotation['status']) => {
     switch (status) {
-      case 'paid':
+      case 'accepted':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
       case 'sent':
         return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'overdue':
+      case 'rejected':
         return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'expired':
+        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
       case 'draft':
         return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
-      case 'cancelled':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
     }
   }
 
@@ -81,18 +105,18 @@ export default function InvoicesPage() {
                 <ArrowLeft className="size-5" />
               </Link>
               <div>
-                <h1 className="text-3xl font-bold mb-2">Invoices</h1>
+                <h1 className="text-3xl font-bold mb-2">Quotations</h1>
                 <p className="text-muted-foreground">
-                  Manage your invoices and track payments
+                  Create and manage professional quotations
                 </p>
               </div>
             </div>
             <Link
-              href="/tools/invoices/new"
+              href="/tools/quotations/new"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <Plus className="size-4" />
-              New Invoice
+              New Quotation
             </Link>
           </div>
         </div>
@@ -100,63 +124,59 @@ export default function InvoicesPage() {
 
       <div className="container py-8">
         {/* Stats */}
-        {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div className="rounded-lg border bg-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="size-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                  <FileText className="size-6 text-blue-600 dark:text-blue-200" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.total}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Total Invoices
-                  </p>
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="rounded-lg border bg-card p-6">
+            <div className="flex items-center gap-4">
+              <div className="size-12 rounded-lg bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                <FileText className="size-6 text-blue-600 dark:text-blue-200" />
               </div>
-            </div>
-
-            <div className="rounded-lg border bg-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="size-12 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
-                  <span className="text-2xl">💰</span>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">
-                    ${stats.totalRevenue.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Total Revenue</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg border bg-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="size-12 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-                  <span className="text-2xl">⏳</span>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">
-                    ${stats.pendingRevenue.toLocaleString()}
-                  </p>
-                  <p className="text-sm text-muted-foreground">Pending</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-lg border bg-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="size-12 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
-                  <span className="text-2xl">✓</span>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.paid}</p>
-                  <p className="text-sm text-muted-foreground">Paid Invoices</p>
-                </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.total}</p>
+                <p className="text-sm text-muted-foreground">
+                  Total Quotations
+                </p>
               </div>
             </div>
           </div>
-        )}
+
+          <div className="rounded-lg border bg-card p-6">
+            <div className="flex items-center gap-4">
+              <div className="size-12 rounded-lg bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                <span className="text-2xl">✓</span>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.accepted}</p>
+                <p className="text-sm text-muted-foreground">Accepted</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-card p-6">
+            <div className="flex items-center gap-4">
+              <div className="size-12 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                <span className="text-2xl">💰</span>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">
+                  ${stats.totalValue.toLocaleString()}
+                </p>
+                <p className="text-sm text-muted-foreground">Total Value</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border bg-card p-6">
+            <div className="flex items-center gap-4">
+              <div className="size-12 rounded-lg bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                <span className="text-2xl">📤</span>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{stats.sent}</p>
+                <p className="text-sm text-muted-foreground">Pending</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -164,7 +184,7 @@ export default function InvoicesPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search invoices..."
+              placeholder="Search quotations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
@@ -178,28 +198,28 @@ export default function InvoicesPage() {
             <option value="all">All Status</option>
             <option value="draft">Draft</option>
             <option value="sent">Sent</option>
-            <option value="paid">Paid</option>
-            <option value="overdue">Overdue</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="accepted">Accepted</option>
+            <option value="rejected">Rejected</option>
+            <option value="expired">Expired</option>
           </select>
         </div>
 
-        {/* Invoices List */}
-        {filteredInvoices.length === 0 ? (
+        {/* Quotations List */}
+        {filteredQuotations.length === 0 ? (
           <div className="text-center py-12 rounded-lg border bg-card">
             <FileText className="size-16 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-xl font-semibold mb-2">No invoices found</h3>
+            <h3 className="text-xl font-semibold mb-2">No quotations found</h3>
             <p className="text-muted-foreground mb-6">
               {searchQuery || statusFilter !== 'all'
                 ? 'Try adjusting your filters'
-                : 'Get started by creating your first invoice'}
+                : 'Get started by creating your first quotation'}
             </p>
             <Link
-              href="/tools/invoices/new"
+              href="/tools/quotations/new"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <Plus className="size-4" />
-              Create Invoice
+              Create Quotation
             </Link>
           </div>
         ) : (
@@ -209,16 +229,16 @@ export default function InvoicesPage() {
                 <thead className="bg-muted">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold">
-                      Invoice
+                      Quote #
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">
                       Client
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">
-                      Date
+                      Issue Date
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">
-                      Due Date
+                      Valid Until
                     </th>
                     <th className="px-6 py-3 text-left text-sm font-semibold">
                       Amount
@@ -232,58 +252,61 @@ export default function InvoicesPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y">
-                  {filteredInvoices.map((invoice) => (
-                    <tr key={invoice.id} className="hover:bg-muted/50">
+                  {filteredQuotations.map((quotation) => (
+                    <tr key={quotation.id} className="hover:bg-muted/50">
                       <td className="px-6 py-4">
                         <div className="font-medium">
-                          {invoice.invoiceNumber}
+                          {quotation.invoiceNumber}
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="font-medium">{invoice.client.name}</div>
+                        <div className="font-medium">
+                          {quotation.client.name}
+                        </div>
                         <div className="text-sm text-muted-foreground">
-                          {invoice.client.email}
+                          {quotation.client.email}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-sm">
-                        {formatDate(invoice.issueDate)}
+                        {formatDate(quotation.issueDate)}
                       </td>
                       <td className="px-6 py-4 text-sm">
-                        {formatDate(invoice.dueDate)}
+                        {formatDate(quotation.validUntil)}
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium">
-                          {invoice.currency} {invoice.total.toLocaleString()}
+                          {quotation.currency}{' '}
+                          {quotation.total.toLocaleString()}
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(
-                            invoice.status,
+                            quotation.status,
                           )}`}
                         >
-                          {invoice.status.charAt(0).toUpperCase() +
-                            invoice.status.slice(1)}
+                          {quotation.status.charAt(0).toUpperCase() +
+                            quotation.status.slice(1)}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           <Link
-                            href={`/tools/invoices/${invoice.id}`}
+                            href={`/tools/quotations/${quotation.id}`}
                             className="p-2 hover:bg-muted rounded-lg transition-colors"
                             title="View"
                           >
                             <Eye className="size-4" />
                           </Link>
                           <Link
-                            href={`/tools/invoices/${invoice.id}/edit`}
+                            href={`/tools/quotations/${quotation.id}/edit`}
                             className="p-2 hover:bg-muted rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Edit className="size-4" />
                           </Link>
                           <button
-                            onClick={() => handleDelete(invoice.id)}
+                            onClick={() => handleDelete(quotation.id)}
                             className="p-2 hover:bg-destructive/10 text-destructive rounded-lg transition-colors"
                             title="Delete"
                           >

@@ -32,7 +32,7 @@ const tools = [
     href: '/tools/quotations',
     color: 'text-green-600',
     bgColor: 'bg-green-50 dark:bg-green-950',
-    available: false,
+    available: true,
   },
   {
     name: 'Contracts',
@@ -60,6 +60,15 @@ const tools = [
     color: 'text-pink-600',
     bgColor: 'bg-pink-50 dark:bg-pink-950',
     available: false,
+  },
+  {
+    name: 'Clients',
+    description: 'Manage your client information',
+    icon: Clock,
+    href: '/tools/invoices/clients',
+    color: 'text-cyan-600',
+    bgColor: 'bg-cyan-50 dark:bg-cyan-950',
+    available: true,
   },
   {
     name: 'Settings',

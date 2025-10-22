@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Save, User } from 'lucide-react'
 import { Invoice, InvoiceItem, Client } from '@/types/invoice'
 import {
   saveInvoice,
