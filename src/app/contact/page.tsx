@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { Mail, MapPin, Phone, Github, Linkedin, Twitter } from 'lucide-react'
+import { Mail, MapPin, Github, Linkedin, Twitter } from 'lucide-react'
 import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
 import { ContactForm } from '@/components/contact-form'
 import { generateOGMetadata } from '@/lib/og'

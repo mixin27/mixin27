@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
 import {
@@ -10,14 +10,13 @@ import {
   getSettings,
   getNextInvoiceNumber,
   incrementInvoiceNumber,
-  getClientById,
 } from '@/lib/invoice-storage'
 import { Client, InvoiceItem, Quotation } from '@/types/invoice'
 
 export default function NewQuotationPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const preSelectedClientId = searchParams.get('clientId')
+  //   const searchParams = useSearchParams()
+  //   const preSelectedClientId = searchParams.get('clientId')
 
   const [clients, setClients] = useState<Client[]>([])
   const [selectedClientId, setSelectedClientId] = useState<string>('')
@@ -60,13 +59,13 @@ export default function NewQuotationPage() {
     setTerms(settings.defaultPaymentTerms)
 
     // Pre-select client if provided
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
-      }
-    }
-  }, [preSelectedClientId])
+    // if (preSelectedClientId) {
+    //   const client = getClientById(preSelectedClientId)
+    //   if (client) {
+    //     setSelectedClientId(preSelectedClientId)
+    //   }
+    // }
+  }, [])
 
   const addItem = () => {
     setItems([
@@ -317,7 +316,7 @@ export default function NewQuotationPage() {
             </div>
 
             <div className="space-y-4">
-              {items.map((item, index) => (
+              {items.map((item) => (
                 <div
                   key={item.id}
                   className="grid grid-cols-12 gap-4 items-start"

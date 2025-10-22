@@ -11,11 +11,7 @@ import {
   Edit,
   ArrowLeft,
 } from 'lucide-react'
-import {
-  getQuotations,
-  deleteQuotation,
-  getClients,
-} from '@/lib/invoice-storage'
+import { getQuotations, deleteQuotation } from '@/lib/invoice-storage'
 import { Quotation } from '@/types/invoice'
 import { formatDate } from '@/lib/utils'
 

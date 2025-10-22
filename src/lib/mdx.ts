@@ -5,7 +5,6 @@ import { compileMDX } from 'next-mdx-remote/rsc'
 import readingTime from 'reading-time'
 import remarkGfm from 'remark-gfm'
 import rehypePrettyCode from 'rehype-pretty-code'
-import { transformerCopyButton } from '@rehype-pretty/transformers'
 import { mdxComponents } from '@/components/mdx-components'
 
 const contentDirectory = path.join(process.cwd(), 'content')

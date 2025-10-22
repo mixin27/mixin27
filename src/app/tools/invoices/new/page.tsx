@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save, User } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
 import { Invoice, InvoiceItem, Client } from '@/types/invoice'
 import {
   saveInvoice,
@@ -269,7 +269,7 @@ export default function NewInvoicePage() {
               </div>
 
               <div className="space-y-4">
-                {items.map((item, index) => (
+                {items.map((item) => (
                   <div
                     key={item.id}
                     className="grid grid-cols-12 gap-4 items-start"

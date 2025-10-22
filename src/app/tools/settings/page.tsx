@@ -60,6 +60,7 @@ export default function SettingsPage() {
             }
           } catch (error) {
             alert('Invalid file format!')
+            console.error('Error importing data:', error)
           }
         }
         reader.readAsText(file)

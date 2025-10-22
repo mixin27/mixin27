@@ -3,11 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ExternalLink, Github, Smartphone, Globe } from 'lucide-react'
 import { generateMetadata as genMeta } from '@/lib/utils'
-import {
-  getSortedProjects,
-  getFeaturedProjects,
-  getProjectStats,
-} from '@/lib/projects'
+import { getSortedProjects, getFeaturedProjects } from '@/lib/projects'
 
 export const metadata: Metadata = genMeta({
   title: 'Projects',
@@ -18,7 +14,7 @@ export const metadata: Metadata = genMeta({
 export default async function ProjectsPage() {
   const allProjects = await getSortedProjects()
   const featuredProjects = await getFeaturedProjects()
-  const stats = await getProjectStats()
+  //   const stats = await getProjectStats()
 
   const otherProjects = allProjects.filter((p) => !p.featured)
 
