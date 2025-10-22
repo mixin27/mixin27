@@ -1,13 +1,14 @@
-import { SocialLink } from "@/types/app";
+import { SocialLink } from '@/types/app'
 
 export const SITE_CONFIG = {
   name: 'Kyaw Zayar Tun',
   title: 'Kyaw Zayar Tun - Mobile Developer',
-  description: 'Passionate mobile developer dedicated to creating seamless, user-friendly applications.',
+  description:
+    'Passionate mobile developer dedicated to creating seamless, user-friendly applications.',
   url: 'https://kyawzayartun.com',
   author: 'Kyaw Zayar Tun',
   email: 'kyawzayartun.contact@gmail.com',
-};
+}
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
@@ -34,14 +35,14 @@ export const SOCIAL_LINKS: SocialLink[] = [
     icon: 'mail',
     color: 'hover:text-red-400',
   },
-];
+]
 
 export const NAV_LINKS = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about' },
   { name: 'Projects', href: '/projects' },
   { name: 'Contact', href: '/contact' },
-];
+]
 
 export const FOOTER_LINKS = {
   main: [
@@ -51,13 +52,14 @@ export const FOOTER_LINKS = {
     { name: 'Apps', href: '/apps' },
     { name: 'About', href: '/about' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Tools', href: '/tools' },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/legal/privacy' },
     { name: 'Terms of Service', href: '/legal/terms' },
     { name: 'Cookie Policy', href: '/legal/cookie-policy' },
   ],
-};
+}
 
 export const SKILLS = [
   { name: 'Flutter', level: 95, category: 'mobile' as const },
@@ -72,7 +74,7 @@ export const SKILLS = [
   { name: 'PostgreSQL', level: 80, category: 'backend' as const },
   { name: 'Figma', level: 88, category: 'design' as const },
   { name: 'UI/UX Design', level: 85, category: 'design' as const },
-];
+]
 
 export const PROJECT_CATEGORIES = [
   { value: 'all', label: 'All Projects' },
@@ -81,4 +83,4 @@ export const PROJECT_CATEGORIES = [
   { value: 'design', label: 'Design' },
   { value: 'library', label: 'Library' },
   { value: 'package', label: 'Package' },
-];
+]
