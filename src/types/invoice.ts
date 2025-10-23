@@ -64,4 +64,36 @@ export interface Quotation extends Omit<Invoice, 'status'> {
   status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired'
 }
 
+export interface Receipt {
+  id: string
+  receiptNumber: string
+  client: Client
+  paymentDate: string
+  paymentMethod:
+    | 'cash'
+    | 'check'
+    | 'bank_transfer'
+    | 'credit_card'
+    | 'paypal'
+    | 'kbz_pay'
+    | 'aya_pay'
+    | 'wave_pay'
+    | 'uab_pay'
+    | 'cb_pay'
+    | 'other'
+  relatedInvoiceNumber?: string
+  items: InvoiceItem[]
+  subtotal: number
+  taxRate: number
+  taxAmount: number
+  discount: number
+  discountType: 'percentage' | 'fixed'
+  total: number
+  amountPaid: number
+  notes?: string
+  currency: string
+  createdAt: string
+  updatedAt: string
+}
+
 export type DocumentType = 'invoice' | 'quotation' | 'receipt'

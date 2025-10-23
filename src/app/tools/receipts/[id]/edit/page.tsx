@@ -4,23 +4,20 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
-import {
-  saveQuotation,
-  getQuotationById,
-  getClients,
-} from '@/lib/invoice-storage'
-import { Client, InvoiceItem, Quotation } from '@/types/invoice'
+import { saveReceipt, getReceiptById, getClients } from '@/lib/invoice-storage'
+import { Client, InvoiceItem, Receipt } from '@/types/invoice'
 
-export default function EditQuotationPage() {
+export default function EditReceiptPage() {
   const params = useParams()
   const router = useRouter()
 
   const [clients, setClients] = useState<Client[]>([])
   const [selectedClientId, setSelectedClientId] = useState<string>('')
-  const [quotationNumber, setQuotationNumber] = useState<string>('')
-  const [issueDate, setIssueDate] = useState<string>('')
-  const [validUntil, setValidUntil] = useState<string>('')
-  const [status, setStatus] = useState<Quotation['status']>('draft')
+  const [receiptNumber, setReceiptNumber] = useState<string>('')
+  const [paymentDate, setPaymentDate] = useState<string>('')
+  const [paymentMethod, setPaymentMethod] =
+    useState<Receipt['paymentMethod']>('bank_transfer')
+  const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>('')
   const [items, setItems] = useState<InvoiceItem[]>([])
   const [currency, setCurrency] = useState<string>('USD')
   const [taxRate, setTaxRate] = useState<number>(0)
@@ -28,36 +25,34 @@ export default function EditQuotationPage() {
   const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
     'percentage',
   )
+  const [amountPaid, setAmountPaid] = useState<number>(0)
   const [notes, setNotes] = useState<string>('')
-  const [terms, setTerms] = useState<string>('')
-  const [originalQuotation, setOriginalQuotation] = useState<Quotation | null>(
-    null,
-  )
+  const [originalReceipt, setOriginalReceipt] = useState<Receipt | null>(null)
 
   useEffect(() => {
     const id = params.id as string
-    const loadedQuotation = getQuotationById(id)
+    const loadedReceipt = getReceiptById(id)
     const loadedClients = getClients()
 
-    if (!loadedQuotation) {
-      router.push('/tools/quotations')
+    if (!loadedReceipt) {
+      router.push('/tools/receipts')
       return
     }
 
-    setOriginalQuotation(loadedQuotation)
+    setOriginalReceipt(loadedReceipt)
     setClients(loadedClients)
-    setSelectedClientId(loadedQuotation.client.id)
-    setQuotationNumber(loadedQuotation.invoiceNumber)
-    setIssueDate(loadedQuotation.issueDate.split('T')[0])
-    setValidUntil(loadedQuotation.validUntil.split('T')[0])
-    setStatus(loadedQuotation.status)
-    setItems(loadedQuotation.items)
-    setCurrency(loadedQuotation.currency)
-    setTaxRate(loadedQuotation.taxRate)
-    setDiscount(loadedQuotation.discount)
-    setDiscountType(loadedQuotation.discountType)
-    setNotes(loadedQuotation.notes || '')
-    setTerms(loadedQuotation.terms || '')
+    setSelectedClientId(loadedReceipt.client.id)
+    setReceiptNumber(loadedReceipt.receiptNumber)
+    setPaymentDate(loadedReceipt.paymentDate.split('T')[0])
+    setPaymentMethod(loadedReceipt.paymentMethod)
+    setRelatedInvoiceNumber(loadedReceipt.relatedInvoiceNumber || '')
+    setItems(loadedReceipt.items)
+    setCurrency(loadedReceipt.currency)
+    setTaxRate(loadedReceipt.taxRate)
+    setDiscount(loadedReceipt.discount)
+    setDiscountType(loadedReceipt.discountType)
+    setAmountPaid(loadedReceipt.amountPaid)
+    setNotes(loadedReceipt.notes || '')
   }, [params.id, router])
 
   const addItem = () => {
@@ -122,7 +117,7 @@ export default function EditQuotationPage() {
       return
     }
 
-    if (!originalQuotation) {
+    if (!originalReceipt) {
       return
     }
 
@@ -134,14 +129,13 @@ export default function EditQuotationPage() {
 
     const totals = calculateTotals()
 
-    const updatedQuotation: Quotation = {
-      ...originalQuotation,
-      invoiceNumber: quotationNumber,
+    const updatedReceipt: Receipt = {
+      ...originalReceipt,
+      receiptNumber,
       client,
-      issueDate,
-      dueDate: validUntil,
-      validUntil,
-      status,
+      paymentDate,
+      paymentMethod,
+      relatedInvoiceNumber: relatedInvoiceNumber || undefined,
       items: items.filter((item) => item.description.trim() !== ''),
       subtotal: totals.subtotal,
       taxRate,
@@ -149,19 +143,19 @@ export default function EditQuotationPage() {
       discount,
       discountType,
       total: totals.total,
+      amountPaid,
       notes,
-      terms,
       currency,
       updatedAt: new Date().toISOString(),
     }
 
-    saveQuotation(updatedQuotation)
-    router.push(`/tools/quotations/${originalQuotation.id}`)
+    saveReceipt(updatedReceipt)
+    router.push(`/tools/receipts/${originalReceipt.id}`)
   }
 
   const totals = calculateTotals()
 
-  if (!originalQuotation) {
+  if (!originalReceipt) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -178,14 +172,14 @@ export default function EditQuotationPage() {
         <div className="container py-6">
           <div className="flex items-center gap-4">
             <Link
-              href={`/tools/quotations/${originalQuotation.id}`}
+              href={`/tools/receipts/${originalReceipt.id}`}
               className="p-2 hover:bg-muted rounded-lg transition-colors"
             >
               <ArrowLeft className="size-5" />
             </Link>
             <div>
-              <h1 className="text-3xl font-bold">Edit Quotation</h1>
-              <p className="text-muted-foreground">Update quotation details</p>
+              <h1 className="text-3xl font-bold">Edit Receipt</h1>
+              <p className="text-muted-foreground">Update receipt details</p>
             </div>
           </div>
         </div>
@@ -199,57 +193,66 @@ export default function EditQuotationPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Quotation Number <span className="text-destructive">*</span>
+                  Receipt Number <span className="text-destructive">*</span>
                 </label>
                 <input
                   type="text"
-                  value={quotationNumber}
-                  onChange={(e) => setQuotationNumber(e.target.value)}
+                  value={receiptNumber}
+                  onChange={(e) => setReceiptNumber(e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Status</label>
+                <label className="block text-sm font-medium mb-2">
+                  Payment Date <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Payment Method <span className="text-destructive">*</span>
+                </label>
                 <select
-                  value={status}
+                  value={paymentMethod}
                   onChange={(e) =>
-                    setStatus(e.target.value as Quotation['status'])
+                    setPaymentMethod(e.target.value as Receipt['paymentMethod'])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
                 >
-                  <option value="draft">Draft</option>
-                  <option value="sent">Sent</option>
-                  <option value="accepted">Accepted</option>
-                  <option value="rejected">Rejected</option>
-                  <option value="expired">Expired</option>
+                  <option value="cash">Cash</option>
+                  <option value="check">Check</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="credit_card">Credit Card</option>
+                  <option value="paypal">PayPal</option>
+                  <option value="kbz_pay">KBZ KPay</option>
+                  <option value="aya_pay">AYA Pay</option>
+                  <option value="cb_pay">CB Pay</option>
+                  <option value="wave_pay">Wave Pay</option>
+                  <option value="uab_pay">UAB Pay</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Issue Date <span className="text-destructive">*</span>
+                  Related Invoice # (optional)
                 </label>
                 <input
-                  type="date"
-                  value={issueDate}
-                  onChange={(e) => setIssueDate(e.target.value)}
+                  type="text"
+                  value={relatedInvoiceNumber}
+                  onChange={(e) => setRelatedInvoiceNumber(e.target.value)}
+                  placeholder="INV-0001"
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Valid Until <span className="text-destructive">*</span>
-                </label>
-                <input
-                  type="date"
-                  value={validUntil}
-                  onChange={(e) => setValidUntil(e.target.value)}
-                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
                 />
               </div>
 
@@ -299,7 +302,7 @@ export default function EditQuotationPage() {
           {/* Line Items */}
           <div className="rounded-lg border bg-card p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Line Items</h2>
+              <h2 className="text-xl font-semibold">Items Paid</h2>
               <button
                 type="button"
                 onClick={addItem}
@@ -381,7 +384,7 @@ export default function EditQuotationPage() {
 
           {/* Calculations */}
           <div className="rounded-lg border bg-card p-6">
-            <h2 className="text-xl font-semibold mb-6">Calculations</h2>
+            <h2 className="text-xl font-semibold mb-6">Payment Details</h2>
             <div className="max-w-md ml-auto space-y-4">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal:</span>
@@ -459,6 +462,24 @@ export default function EditQuotationPage() {
                   {currency} {totals.total.toFixed(2)}
                 </span>
               </div>
+
+              <div className="pt-4">
+                <label className="block text-sm font-medium mb-2">
+                  Amount Paid <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="number"
+                  value={amountPaid}
+                  onChange={(e) => setAmountPaid(Number(e.target.value))}
+                  min="0"
+                  step="0.01"
+                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  required
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  The actual amount received from the client
+                </p>
+              </div>
             </div>
           </div>
 
@@ -467,39 +488,24 @@ export default function EditQuotationPage() {
             <h2 className="text-xl font-semibold mb-6">
               Additional Information
             </h2>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Notes (optional)
-                </label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  rows={4}
-                  placeholder="Add any additional notes or comments..."
-                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  Terms & Conditions (optional)
-                </label>
-                <textarea
-                  value={terms}
-                  onChange={(e) => setTerms(e.target.value)}
-                  rows={4}
-                  placeholder="Enter payment terms and conditions..."
-                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                />
-              </div>
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Notes (optional)
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows={4}
+                placeholder="Add any additional notes..."
+                className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+              />
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex gap-4 justify-end">
             <Link
-              href={`/tools/quotations/${originalQuotation.id}`}
+              href={`/tools/receipts/${originalReceipt.id}`}
               className="rounded-lg border bg-background px-6 py-3 text-sm font-medium hover:bg-accent transition-colors"
             >
               Cancel

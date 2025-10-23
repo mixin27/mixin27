@@ -1,4 +1,10 @@
-import { Invoice, Client, InvoiceSettings, Quotation } from '@/types/invoice'
+import {
+  Invoice,
+  Client,
+  InvoiceSettings,
+  Quotation,
+  Receipt,
+} from '@/types/invoice'
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -6,6 +12,7 @@ const STORAGE_KEYS = {
   CLIENTS: 'clients',
   SETTINGS: 'invoice_settings',
   QUOTATIONS: 'quotations',
+  RECEIPTS: 'receipts',
 } as const
 
 // Helper functions
@@ -153,6 +160,43 @@ export const deleteQuotation = (id: string): void => {
   saveToStorage(STORAGE_KEYS.QUOTATIONS, quotations)
 }
 
+// Receipt Operations
+export const saveReceipt = (receipt: Receipt): void => {
+  const receipts = getFromStorage<Receipt>(STORAGE_KEYS.RECEIPTS)
+  const existingIndex = receipts.findIndex((r) => r.id === receipt.id)
+
+  if (existingIndex >= 0) {
+    receipts[existingIndex] = {
+      ...receipt,
+      updatedAt: new Date().toISOString(),
+    }
+  } else {
+    receipts.push(receipt)
+  }
+
+  saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
+}
+
+export const getReceipts = (): Receipt[] => {
+  return getFromStorage<Receipt>(STORAGE_KEYS.RECEIPTS)
+}
+
+export const getReceiptById = (id: string): Receipt | null => {
+  const receipts = getReceipts()
+  return receipts.find((r) => r.id === id) || null
+}
+
+export const deleteReceipt = (id: string): void => {
+  const receipts = getReceipts().filter((r) => r.id !== id)
+  saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
+}
+
+export const getNextReceiptNumber = (): string => {
+  const receipts = getReceipts()
+  const nextNumber = receipts.length + 1
+  return `REC-${String(nextNumber).padStart(4, '0')}`
+}
+
 // Statistics
 export const getInvoiceStats = () => {
   const invoices = getInvoices()
@@ -172,12 +216,22 @@ export const getInvoiceStats = () => {
   }
 }
 
+export const getReceiptStats = () => {
+  const receipts = getReceipts()
+
+  return {
+    total: receipts.length,
+    totalAmount: receipts.reduce((sum, r) => sum + r.amountPaid, 0),
+  }
+}
+
 // Export all data (for backup)
 export const exportAllData = () => {
   return {
     invoices: getInvoices(),
     clients: getClients(),
     quotations: getQuotations(),
+    receipts: getReceipts(),
     settings: getSettings(),
     exportedAt: new Date().toISOString(),
   }
@@ -188,5 +242,6 @@ export const importAllData = (data: any) => {
   if (data.invoices) saveToStorage(STORAGE_KEYS.INVOICES, data.invoices)
   if (data.clients) saveToStorage(STORAGE_KEYS.CLIENTS, data.clients)
   if (data.quotations) saveToStorage(STORAGE_KEYS.QUOTATIONS, data.quotations)
+  if (data.receipts) saveToStorage(STORAGE_KEYS.RECEIPTS, data.receipts)
   if (data.settings) saveSettings(data.settings)
 }
