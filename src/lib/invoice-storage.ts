@@ -4,6 +4,7 @@ import {
   InvoiceSettings,
   Quotation,
   Receipt,
+  Contract,
 } from '@/types/invoice'
 
 // Storage keys
@@ -13,6 +14,7 @@ const STORAGE_KEYS = {
   SETTINGS: 'invoice_settings',
   QUOTATIONS: 'quotations',
   RECEIPTS: 'receipts',
+  CONTRACTS: 'contracts',
 } as const
 
 // Helper functions
@@ -225,6 +227,56 @@ export const getReceiptStats = () => {
   }
 }
 
+// Contract Operations
+export const saveContract = (contract: Contract): void => {
+  const contracts = getFromStorage<Contract>(STORAGE_KEYS.CONTRACTS)
+  const existingIndex = contracts.findIndex((c) => c.id === contract.id)
+
+  if (existingIndex >= 0) {
+    contracts[existingIndex] = {
+      ...contract,
+      updatedAt: new Date().toISOString(),
+    }
+  } else {
+    contracts.push(contract)
+  }
+
+  saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
+}
+
+export const getContracts = (): Contract[] => {
+  return getFromStorage<Contract>(STORAGE_KEYS.CONTRACTS)
+}
+
+export const getContractById = (id: string): Contract | null => {
+  const contracts = getContracts()
+  return contracts.find((c) => c.id === id) || null
+}
+
+export const deleteContract = (id: string): void => {
+  const contracts = getContracts().filter((c) => c.id !== id)
+  saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
+}
+
+export const getNextContractNumber = (): string => {
+  const contracts = getContracts()
+  const nextNumber = contracts.length + 1
+  return `CON-${String(nextNumber).padStart(4, '0')}`
+}
+
+export const getContractStats = () => {
+  const contracts = getContracts()
+
+  return {
+    total: contracts.length,
+    draft: contracts.filter((c) => c.status === 'draft').length,
+    sent: contracts.filter((c) => c.status === 'sent').length,
+    signed: contracts.filter((c) => c.status === 'signed').length,
+    active: contracts.filter((c) => c.status === 'active').length,
+    completed: contracts.filter((c) => c.status === 'completed').length,
+  }
+}
+
 // Export all data (for backup)
 export const exportAllData = () => {
   return {
@@ -232,6 +284,7 @@ export const exportAllData = () => {
     clients: getClients(),
     quotations: getQuotations(),
     receipts: getReceipts(),
+    contracts: getContracts(),
     settings: getSettings(),
     exportedAt: new Date().toISOString(),
   }
@@ -243,5 +296,6 @@ export const importAllData = (data: any) => {
   if (data.clients) saveToStorage(STORAGE_KEYS.CLIENTS, data.clients)
   if (data.quotations) saveToStorage(STORAGE_KEYS.QUOTATIONS, data.quotations)
   if (data.receipts) saveToStorage(STORAGE_KEYS.RECEIPTS, data.receipts)
+  if (data.contracts) saveToStorage(STORAGE_KEYS.CONTRACTS, data.contracts)
   if (data.settings) saveSettings(data.settings)
 }

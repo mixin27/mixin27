@@ -50,7 +50,7 @@ const tools = [
     href: '/tools/contracts',
     color: 'text-purple-600',
     bgColor: 'bg-purple-50 dark:bg-purple-950',
-    available: false,
+    available: true,
   },
   {
     name: 'Time Tracking',

@@ -1,6 +1,6 @@
-import Link from 'next/link'
-import { Github, Linkedin, Mail, Rss, Twitter } from 'lucide-react'
-import { FOOTER_LINKS, SOCIAL_LINKS } from '@/lib/constants'
+import Link from "next/link"
+import { Github, Linkedin, Mail, Rss, Twitter } from "lucide-react"
+import { FOOTER_LINKS, SOCIAL_LINKS } from "@/lib/constants"
 
 const iconMap: { [key: string]: any } = {
   github: Github,
@@ -37,11 +37,11 @@ export function Footer() {
                     key={social.name}
                     href={social.url}
                     target={
-                      social.url.startsWith('http') ? '_blank' : undefined
+                      social.url.startsWith("http") ? "_blank" : undefined
                     }
                     rel={
-                      social.url.startsWith('http')
-                        ? 'noopener noreferrer'
+                      social.url.startsWith("http")
+                        ? "noopener noreferrer"
                         : undefined
                     }
                     className="rounded-md p-2 hover:bg-accent transition-colors"

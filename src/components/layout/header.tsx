@@ -1,48 +1,49 @@
-'use client';
+"use client"
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Menu, X, Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Menu, X, Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
+import { cn } from "@/lib/utils"
 
 const navigation = [
-  { name: 'Home', href: '/' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Apps', href: '/apps' },
-  { name: 'About', href: '/about' },
-  { name: 'Contact', href: '/contact' },
-];
+  { name: "Home", href: "/" },
+  { name: "Projects", href: "/projects" },
+  { name: "Blog", href: "/blog" },
+  { name: "Apps", href: "/apps" },
+  { name: "Tools", href: "/tools" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+]
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
-    };
+      setScrolled(window.scrollY > 10)
+    }
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 w-full border-b transition-all duration-300',
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
         scrolled
-          ? 'bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
-          : 'bg-background'
+          ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+          : "bg-background",
       )}
     >
       <nav className="container flex h-16 items-center justify-between">
@@ -61,10 +62,10 @@ export function Header() {
               key={item.name}
               href={item.href}
               className={cn(
-                'text-sm font-medium transition-colors hover:text-primary',
+                "text-sm font-medium transition-colors hover:text-primary",
                 pathname === item.href
-                  ? 'text-foreground'
-                  : 'text-muted-foreground'
+                  ? "text-foreground"
+                  : "text-muted-foreground",
               )}
             >
               {item.name}
@@ -77,11 +78,11 @@ export function Header() {
           {/* Theme Toggle */}
           {mounted && (
             <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               className="rounded-md p-2 hover:bg-accent transition-colors"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? (
+              {theme === "dark" ? (
                 <Sun className="size-5" />
               ) : (
                 <Moon className="size-5" />
@@ -115,10 +116,10 @@ export function Header() {
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={cn(
-                  'block rounded-md px-3 py-2 text-base font-medium transition-colors',
+                  "block rounded-md px-3 py-2 text-base font-medium transition-colors",
                   pathname === item.href
-                    ? 'bg-primary text-primary-foreground'
-                    : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-foreground",
                 )}
               >
                 {item.name}
@@ -128,5 +129,5 @@ export function Header() {
         </div>
       )}
     </header>
-  );
+  )
 }

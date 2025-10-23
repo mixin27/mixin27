@@ -96,4 +96,73 @@ export interface Receipt {
   updatedAt: string
 }
 
-export type DocumentType = 'invoice' | 'quotation' | 'receipt'
+export type DocumentType = 'invoice' | 'quotation' | 'receipt' | 'contract'
+
+export type ContractTemplateType =
+  | 'service_agreement'
+  | 'project_contract'
+  | 'freelance_agreement'
+  | 'consulting_agreement'
+  | 'maintenance_agreement'
+
+export interface ContractTemplate {
+  id: ContractTemplateType
+  name: string
+  description: string
+  content: string // HTML template with {{variables}}
+  requiredFields: string[]
+}
+
+export interface Contract {
+  id: string
+  contractNumber: string
+  templateType: ContractTemplateType
+  templateName: string
+  client: Client
+
+  // Project Details
+  projectName: string
+  projectScope: string
+  deliverables: string
+
+  // Dates
+  startDate: string
+  endDate: string
+  signatureDate: string
+
+  // Payment
+  projectFee: number
+  paymentTerms: string
+  currency: string
+
+  // Signatures
+  clientSignature?: string // Text or data URL for image
+  clientSignatureType: 'text' | 'drawn'
+  businessSignature?: string
+  businessSignatureType: 'text' | 'drawn'
+
+  // Status
+  status: 'draft' | 'sent' | 'signed' | 'active' | 'completed' | 'terminated'
+
+  // Generated content
+  generatedContent: string // Final HTML with variables replaced
+
+  notes?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ContractFormData {
+  templateType: ContractTemplateType
+  clientId: string
+  projectName: string
+  projectScope: string
+  deliverables: string
+  startDate: string
+  endDate: string
+  signatureDate: string
+  projectFee: number
+  paymentTerms: string
+  currency: string
+  notes?: string
+}

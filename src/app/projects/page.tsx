@@ -1,14 +1,14 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ExternalLink, Github, Smartphone, Globe } from 'lucide-react'
-import { generateMetadata as genMeta } from '@/lib/utils'
-import { getSortedProjects, getFeaturedProjects } from '@/lib/projects'
+import { Metadata } from "next"
+import Link from "next/link"
+import Image from "next/image"
+import { ExternalLink, Github, Smartphone, Globe } from "lucide-react"
+import { generateMetadata as genMeta } from "@/lib/utils"
+import { getSortedProjects, getFeaturedProjects } from "@/lib/projects"
 
 export const metadata: Metadata = genMeta({
-  title: 'Projects',
-  description: 'Explore my portfolio of mobile and web applications.',
-  url: '/projects',
+  title: "Projects",
+  description: "Explore my portfolio of mobile and web applications.",
+  url: "/projects",
 })
 
 export default async function ProjectsPage() {
@@ -81,7 +81,7 @@ export default async function ProjectsPage() {
                     )}
                   </div>
                   <div className="absolute top-3 right-3">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-300">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground">
                       Featured
                     </span>
                   </div>
