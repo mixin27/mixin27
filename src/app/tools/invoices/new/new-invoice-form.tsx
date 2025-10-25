@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
-import { Invoice, InvoiceItem, Client } from '@/types/invoice'
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
+import { Invoice, InvoiceItem, Client } from "@/types/invoice"
 import {
   saveInvoice,
   getClients,
@@ -12,31 +12,31 @@ import {
   getNextInvoiceNumber,
   incrementInvoiceNumber,
   getClientById,
-} from '@/lib/invoice-storage'
+} from "@/lib/invoice-storage"
 
 export default function NewInvoiceForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const preSelectedClientId = searchParams.get('clientId')
+  const preSelectedClientId = searchParams.get("clientId")
 
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState('')
-  const [invoiceNumber, setInvoiceNumber] = useState('')
+  const [selectedClientId, setSelectedClientId] = useState("")
+  const [invoiceNumber, setInvoiceNumber] = useState("")
   const [issueDate, setIssueDate] = useState(
-    new Date().toISOString().split('T')[0],
+    new Date().toISOString().split("T")[0],
   )
-  const [dueDate, setDueDate] = useState('')
+  const [dueDate, setDueDate] = useState("")
   const [items, setItems] = useState<InvoiceItem[]>([
-    { id: '1', description: '', quantity: 1, rate: 0, amount: 0 },
+    { id: "1", description: "", quantity: 1, rate: 0, amount: 0 },
   ])
-  const [notes, setNotes] = useState('')
-  const [terms, setTerms] = useState('')
+  const [notes, setNotes] = useState("")
+  const [terms, setTerms] = useState("")
   const [taxRate, setTaxRate] = useState(0)
   const [discount, setDiscount] = useState(0)
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
-    'percentage',
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
   )
-  const [currency, setCurrency] = useState('USD')
+  const [currency, setCurrency] = useState("USD")
 
   useEffect(() => {
     const loadedClients = getClients()
@@ -51,7 +51,7 @@ export default function NewInvoiceForm() {
     // Set due date to 30 days from now
     const due = new Date()
     due.setDate(due.getDate() + 30)
-    setDueDate(due.toISOString().split('T')[0])
+    setDueDate(due.toISOString().split("T")[0])
 
     // Pre-select client if provided
     if (preSelectedClientId) {
@@ -60,14 +60,14 @@ export default function NewInvoiceForm() {
         setSelectedClientId(preSelectedClientId)
       }
     }
-  }, [])
+  }, [preSelectedClientId])
 
   const addItem = () => {
     setItems([
       ...items,
       {
         id: Date.now().toString(),
-        description: '',
+        description: "",
         quantity: 1,
         rate: 0,
         amount: 0,
@@ -86,7 +86,7 @@ export default function NewInvoiceForm() {
       items.map((item) => {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
-          if (field === 'quantity' || field === 'rate') {
+          if (field === "quantity" || field === "rate") {
             updated.amount = updated.quantity * updated.rate
           }
           return updated
@@ -102,7 +102,7 @@ export default function NewInvoiceForm() {
 
   const calculateDiscount = () => {
     const subtotal = calculateSubtotal()
-    if (discountType === 'percentage') {
+    if (discountType === "percentage") {
       return subtotal * (discount / 100)
     }
     return discount
@@ -121,16 +121,16 @@ export default function NewInvoiceForm() {
     return subtotal - discountAmount + taxAmount
   }
 
-  const handleSave = (status: Invoice['status'] = 'draft') => {
+  const handleSave = (status: Invoice["status"] = "draft") => {
     const selectedClient = clients.find((c) => c.id === selectedClientId)
 
     if (!selectedClient) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
     if (items.some((item) => !item.description)) {
-      alert('Please fill in all item descriptions')
+      alert("Please fill in all item descriptions")
       return
     }
 
@@ -157,7 +157,7 @@ export default function NewInvoiceForm() {
 
     saveInvoice(invoice)
     incrementInvoiceNumber()
-    router.push('/tools/invoices')
+    router.push("/tools/invoices")
   }
 
   return (
@@ -181,14 +181,14 @@ export default function NewInvoiceForm() {
           </div>
           <div className="flex gap-3">
             <button
-              onClick={() => handleSave('draft')}
+              onClick={() => handleSave("draft")}
               className="inline-flex items-center gap-2 rounded-lg border bg-background px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
             >
               <Save className="size-4" />
               Save as Draft
             </button>
             <button
-              onClick={() => handleSave('sent')}
+              onClick={() => handleSave("sent")}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               Mark as Sent
@@ -292,7 +292,7 @@ export default function NewInvoiceForm() {
                         placeholder="Description"
                         value={item.description}
                         onChange={(e) =>
-                          updateItem(item.id, 'description', e.target.value)
+                          updateItem(item.id, "description", e.target.value)
                         }
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
@@ -305,7 +305,7 @@ export default function NewInvoiceForm() {
                         onChange={(e) =>
                           updateItem(
                             item.id,
-                            'quantity',
+                            "quantity",
                             parseFloat(e.target.value) || 0,
                           )
                         }
@@ -322,7 +322,7 @@ export default function NewInvoiceForm() {
                         onChange={(e) =>
                           updateItem(
                             item.id,
-                            'rate',
+                            "rate",
                             parseFloat(e.target.value) || 0,
                           )
                         }
@@ -367,7 +367,7 @@ export default function NewInvoiceForm() {
                       value={discountType}
                       onChange={(e) =>
                         setDiscountType(
-                          e.target.value as 'percentage' | 'fixed',
+                          e.target.value as "percentage" | "fixed",
                         )
                       }
                       className="px-2 py-1 text-sm rounded border bg-background"

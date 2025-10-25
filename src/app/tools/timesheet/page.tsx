@@ -9,7 +9,6 @@ import {
   Pause,
   Square,
   Search,
-  Filter,
   ArrowLeft,
   Calendar,
   DollarSign,
@@ -125,7 +124,7 @@ export default function TimeTrackingPage() {
       return
     }
 
-    const settings = { defaultCurrency: "USD" } // Get from settings if needed
+    // const settings = { defaultCurrency: "USD" } // Get from settings if needed
     const hourlyRate = 50 // Default rate, can be customized
 
     const entry: TimeEntry = {

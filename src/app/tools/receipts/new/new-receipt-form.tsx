@@ -1,49 +1,49 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
 import {
   saveReceipt,
   getClients,
   getSettings,
   getNextReceiptNumber,
   getClientById,
-} from '@/lib/invoice-storage'
-import { Client, InvoiceItem, Receipt } from '@/types/invoice'
+} from "@/lib/invoice-storage"
+import { Client, InvoiceItem, Receipt } from "@/types/invoice"
 
 export default function NewReceiptForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const preSelectedClientId = searchParams.get('clientId')
+  const preSelectedClientId = searchParams.get("clientId")
 
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState<string>('')
-  const [receiptNumber, setReceiptNumber] = useState<string>('')
+  const [selectedClientId, setSelectedClientId] = useState<string>("")
+  const [receiptNumber, setReceiptNumber] = useState<string>("")
   const [paymentDate, setPaymentDate] = useState<string>(
-    new Date().toISOString().split('T')[0],
+    new Date().toISOString().split("T")[0],
   )
   const [paymentMethod, setPaymentMethod] =
-    useState<Receipt['paymentMethod']>('bank_transfer')
-  const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>('')
+    useState<Receipt["paymentMethod"]>("bank_transfer")
+  const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>("")
   const [items, setItems] = useState<InvoiceItem[]>([
     {
       id: crypto.randomUUID(),
-      description: '',
+      description: "",
       quantity: 1,
       rate: 0,
       amount: 0,
     },
   ])
-  const [currency, setCurrency] = useState<string>('USD')
+  const [currency, setCurrency] = useState<string>("USD")
   const [taxRate, setTaxRate] = useState<number>(0)
   const [discount, setDiscount] = useState<number>(0)
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
-    'percentage',
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
   )
   const [amountPaid, setAmountPaid] = useState<number>(0)
-  const [notes, setNotes] = useState<string>('')
+  const [notes, setNotes] = useState<string>("")
 
   useEffect(() => {
     const loadedClients = getClients()
@@ -61,7 +61,7 @@ export default function NewReceiptForm() {
         setSelectedClientId(preSelectedClientId)
       }
     }
-  }, [])
+  }, [preSelectedClientId])
 
   // Auto-calculate amount paid when total changes
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function NewReceiptForm() {
       ...items,
       {
         id: crypto.randomUUID(),
-        description: '',
+        description: "",
         quantity: 1,
         rate: 0,
         amount: 0,
@@ -97,7 +97,7 @@ export default function NewReceiptForm() {
       items.map((item) => {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
-          if (field === 'quantity' || field === 'rate') {
+          if (field === "quantity" || field === "rate") {
             updated.amount = updated.quantity * updated.rate
           }
           return updated
@@ -110,7 +110,7 @@ export default function NewReceiptForm() {
   const calculateTotals = () => {
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
     const discountAmount =
-      discountType === 'percentage' ? subtotal * (discount / 100) : discount
+      discountType === "percentage" ? subtotal * (discount / 100) : discount
     const taxableAmount = subtotal - discountAmount
     const taxAmount = taxableAmount * (taxRate / 100)
     const total = taxableAmount + taxAmount
@@ -127,13 +127,13 @@ export default function NewReceiptForm() {
     e.preventDefault()
 
     if (!selectedClientId) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
     const client = clients.find((c) => c.id === selectedClientId)
     if (!client) {
-      alert('Invalid client selected')
+      alert("Invalid client selected")
       return
     }
 
@@ -146,7 +146,7 @@ export default function NewReceiptForm() {
       paymentDate,
       paymentMethod,
       relatedInvoiceNumber: relatedInvoiceNumber || undefined,
-      items: items.filter((item) => item.description.trim() !== ''),
+      items: items.filter((item) => item.description.trim() !== ""),
       subtotal: totals.subtotal,
       taxRate,
       taxAmount: totals.taxAmount,
@@ -161,7 +161,7 @@ export default function NewReceiptForm() {
     }
 
     saveReceipt(receipt)
-    router.push('/tools/receipts')
+    router.push("/tools/receipts")
   }
 
   const totals = calculateTotals()
@@ -227,7 +227,7 @@ export default function NewReceiptForm() {
                 <select
                   value={paymentMethod}
                   onChange={(e) =>
-                    setPaymentMethod(e.target.value as Receipt['paymentMethod'])
+                    setPaymentMethod(e.target.value as Receipt["paymentMethod"])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   required
@@ -336,7 +336,7 @@ export default function NewReceiptForm() {
                       placeholder="Item description"
                       value={item.description}
                       onChange={(e) =>
-                        updateItem(item.id, 'description', e.target.value)
+                        updateItem(item.id, "description", e.target.value)
                       }
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       required
@@ -348,7 +348,7 @@ export default function NewReceiptForm() {
                       placeholder="Qty"
                       value={item.quantity}
                       onChange={(e) =>
-                        updateItem(item.id, 'quantity', Number(e.target.value))
+                        updateItem(item.id, "quantity", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -362,7 +362,7 @@ export default function NewReceiptForm() {
                       placeholder="Rate"
                       value={item.rate}
                       onChange={(e) =>
-                        updateItem(item.id, 'rate', Number(e.target.value))
+                        updateItem(item.id, "rate", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -423,7 +423,7 @@ export default function NewReceiptForm() {
                   <select
                     value={discountType}
                     onChange={(e) =>
-                      setDiscountType(e.target.value as 'percentage' | 'fixed')
+                      setDiscountType(e.target.value as "percentage" | "fixed")
                     }
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   >

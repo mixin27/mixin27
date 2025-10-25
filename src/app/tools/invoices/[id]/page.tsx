@@ -1,18 +1,23 @@
-'use client'
+"use client"
 
-import { useEffect, useState, useRef } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Download, Printer, Edit, Trash2 } from 'lucide-react'
+import { useEffect, useState, useRef } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Download, Printer, Edit, Trash2 } from "lucide-react"
 import {
   getInvoiceById,
   deleteInvoice,
   getSettings,
-} from '@/lib/invoice-storage'
-import { Invoice, InvoiceSettings } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas-pro'
+  saveInvoice,
+} from "@/lib/invoice-storage"
+import { Invoice, InvoiceSettings, Receipt } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
+import {
+  convertInvoiceToReceipt,
+  canConvertInvoiceToReceipt,
+} from "@/lib/document-conversions"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas-pro"
 
 export default function InvoiceViewPage() {
   const params = useParams()
@@ -20,6 +25,13 @@ export default function InvoiceViewPage() {
   const [invoice, setInvoice] = useState<Invoice | null>(null)
   const [settings, setSettings] = useState<InvoiceSettings | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [showReceiptModal, setShowReceiptModal] = useState(false)
+  const [paymentMethod, setPaymentMethod] =
+    useState<Receipt["paymentMethod"]>("bank_transfer")
+  const [paymentDate, setPaymentDate] = useState<string>(
+    new Date().toISOString().split("T")[0],
+  )
+  const [amountPaid, setAmountPaid] = useState<number>(0)
   const invoiceRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -30,16 +42,56 @@ export default function InvoiceViewPage() {
     if (loadedInvoice) {
       setInvoice(loadedInvoice)
       setSettings(loadedSettings)
+      setAmountPaid(loadedInvoice.total)
     } else {
-      router.push('/tools/invoices')
+      router.push("/tools/invoices")
     }
   }, [params.id, router])
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this invoice?')) {
+    if (confirm("Are you sure you want to delete this invoice?")) {
       deleteInvoice(invoice!.id)
-      router.push('/tools/invoices')
+      router.push("/tools/invoices")
     }
+  }
+
+  const handleGenerateReceipt = () => {
+    if (!invoice) return
+
+    if (!canConvertInvoiceToReceipt(invoice)) {
+      alert("Only sent or paid invoices can have receipts generated.")
+      return
+    }
+
+    setShowReceiptModal(true)
+  }
+
+  const confirmGenerateReceipt = () => {
+    if (!invoice) return
+
+    const receipt = convertInvoiceToReceipt(
+      invoice,
+      paymentMethod,
+      paymentDate,
+      amountPaid,
+    )
+
+    // If full amount paid, update invoice status to paid
+    if (amountPaid >= invoice.total && invoice.status !== "paid") {
+      const updatedInvoice = {
+        ...invoice,
+        status: "paid" as Invoice["status"],
+        updatedAt: new Date().toISOString(),
+      }
+      saveInvoice(updatedInvoice)
+      setInvoice(updatedInvoice)
+    }
+
+    setShowReceiptModal(false)
+
+    // Show success message and navigate
+    alert(`Successfully generated Receipt ${receipt.receiptNumber}`)
+    router.push(`/tools/receipts/${receipt.id}`)
   }
 
   const handlePrint = () => {
@@ -58,21 +110,21 @@ export default function InvoiceViewPage() {
         logging: false,
       })
 
-      const imgData = canvas.toDataURL('image/png')
+      const imgData = canvas.toDataURL("image/png")
       const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
       })
 
       const imgWidth = 210
       const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
       pdf.save(`${invoice?.invoiceNumber}.pdf`)
     } catch (error) {
-      console.error('Error generating PDF:', error)
-      alert('Failed to generate PDF. Please try again.')
+      console.error("Error generating PDF:", error)
+      alert("Failed to generate PDF. Please try again.")
     } finally {
       setIsGenerating(false)
     }
@@ -88,18 +140,18 @@ export default function InvoiceViewPage() {
     )
   }
 
-  const getStatusColor = (status: Invoice['status']) => {
+  const getStatusColor = (status: Invoice["status"]) => {
     switch (status) {
-      case 'paid':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'overdue':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'draft':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
-      case 'cancelled':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      case "paid":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "sent":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      case "overdue":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      case "draft":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+      case "cancelled":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
     }
   }
 
@@ -131,13 +183,22 @@ export default function InvoiceViewPage() {
           </div>
 
           <div className="flex gap-3">
+            {canConvertInvoiceToReceipt(invoice) && (
+              <button
+                onClick={handleGenerateReceipt}
+                className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+              >
+                <Download className="size-4" />
+                Generate Receipt
+              </button>
+            )}
             <button
               onClick={handleDownloadPDF}
               disabled={isGenerating}
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Download className="size-4" />
-              {isGenerating ? 'Generating...' : 'Download PDF'}
+              {isGenerating ? "Generating..." : "Download PDF"}
             </button>
             <button
               onClick={handlePrint}
@@ -163,6 +224,95 @@ export default function InvoiceViewPage() {
           </div>
         </div>
       </div>
+
+      {/* Receipt Generation Modal */}
+      {showReceiptModal && invoice && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-lg max-w-md w-full p-6">
+            <h2 className="text-2xl font-bold mb-4">Generate Receipt</h2>
+            <p className="text-muted-foreground mb-6">
+              Create a payment receipt for this invoice.
+            </p>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Payment Date <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={paymentDate}
+                  onChange={(e) => setPaymentDate(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Payment Method <span className="text-destructive">*</span>
+                </label>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) =>
+                    setPaymentMethod(e.target.value as Receipt["paymentMethod"])
+                  }
+                  className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="credit_card">Credit Card</option>
+                  <option value="cash">Cash</option>
+                  <option value="check">Check</option>
+                  <option value="paypal">PayPal</option>
+                  <option value="kbz_pay">KBZ KPay</option>
+                  <option value="aya_pay">AYA Pay</option>
+                  <option value="cb_pay">CB Pay</option>
+                  <option value="wave_pay">Wave Pay</option>
+                  <option value="uab_pay">UAB Pay</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Amount Paid <span className="text-destructive">*</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    {invoice.currency}
+                  </span>
+                  <input
+                    type="number"
+                    value={amountPaid}
+                    onChange={(e) => setAmountPaid(Number(e.target.value))}
+                    min="0"
+                    max={invoice.total}
+                    step="0.01"
+                    className="w-full pl-16 pr-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Invoice total: {invoice.currency} {invoice.total.toFixed(2)}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowReceiptModal(false)}
+                className="px-4 py-2 rounded-lg border bg-background hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmGenerateReceipt}
+                className="px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors"
+              >
+                Generate Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Invoice Preview */}
       <div className="container py-8">
@@ -283,15 +433,15 @@ export default function InvoiceViewPage() {
                 {invoice.discount > 0 && (
                   <div className="flex justify-between py-2 text-sm">
                     <span className="text-gray-600">
-                      Discount{' '}
-                      {invoice.discountType === 'percentage'
+                      Discount{" "}
+                      {invoice.discountType === "percentage"
                         ? `(${invoice.discount}%)`
-                        : ''}
+                        : ""}
                       :
                     </span>
                     <span>
-                      -{invoice.currency}{' '}
-                      {invoice.discountType === 'percentage'
+                      -{invoice.currency}{" "}
+                      {invoice.discountType === "percentage"
                         ? (invoice.subtotal * (invoice.discount / 100)).toFixed(
                             2,
                           )

@@ -1,16 +1,17 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 import { ArrowLeft, Download, ChevronLeft, ChevronRight } from "lucide-react"
 import {
   getTimeEntries,
   getClients,
   formatDuration,
-  getUninvoicedTimeEntries,
 } from "@/lib/invoice-storage"
 import { TimeEntry } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas-pro"
 
 type ViewType = "week" | "month" | "client" | "project"
 
@@ -19,6 +20,8 @@ export default function TimesheetReportsPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [entries, setEntries] = useState<TimeEntry[]>([])
   const [selectedClientId, setSelectedClientId] = useState<string>("all")
+  const [isGenerating, setIsGenerating] = useState(false)
+  const reportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setEntries(getTimeEntries())
@@ -170,6 +173,57 @@ export default function TimesheetReportsPage() {
     return ""
   }
 
+  const handleExportPDF = async () => {
+    if (!reportRef.current) return
+
+    setIsGenerating(true)
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 100))
+
+      const canvas = await html2canvas(reportRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        windowWidth: reportRef.current.scrollWidth,
+        windowHeight: reportRef.current.scrollHeight,
+      })
+
+      const imgData = canvas.toDataURL("image/png")
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      })
+
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = pdf.internal.pageSize.getHeight()
+      const imgWidth = canvas.width
+      const imgHeight = canvas.height
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
+      const imgX = (pdfWidth - imgWidth * ratio) / 2
+      const imgY = 0
+
+      pdf.addImage(
+        imgData,
+        "PNG",
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio,
+      )
+
+      const filename = `Timesheet_${viewType}_${currentDate.toISOString().split("T")[0]}.pdf`
+      pdf.save(filename)
+    } catch (error) {
+      console.error("Error generating PDF:", error)
+      alert("Failed to generate PDF. Please try again.")
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -190,185 +244,195 @@ export default function TimesheetReportsPage() {
                 </p>
               </div>
             </div>
-            <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
+            <button
+              onClick={handleExportPDF}
+              disabled={isGenerating}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
               <Download className="size-4" />
-              Export PDF
+              {isGenerating ? "Generating..." : "Export PDF"}
             </button>
           </div>
         </div>
       </div>
 
       <div className="container py-8">
-        {/* View Controls */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setViewType("week")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                viewType === "week"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border hover:bg-accent"
-              }`}
+        <div ref={reportRef} className="bg-background">
+          {/* View Controls */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6 print:hidden">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewType("week")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  viewType === "week"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border hover:bg-accent"
+                }`}
+              >
+                Week
+              </button>
+              <button
+                onClick={() => setViewType("month")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  viewType === "month"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border hover:bg-accent"
+                }`}
+              >
+                Month
+              </button>
+              <button
+                onClick={() => setViewType("client")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  viewType === "client"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border hover:bg-accent"
+                }`}
+              >
+                By Client
+              </button>
+              <button
+                onClick={() => setViewType("project")}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  viewType === "project"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-card border hover:bg-accent"
+                }`}
+              >
+                By Project
+              </button>
+            </div>
+
+            <select
+              value={selectedClientId}
+              onChange={(e) => setSelectedClientId(e.target.value)}
+              className="px-4 py-2 rounded-lg border bg-card focus:outline-none focus:ring-2 focus:ring-primary"
             >
-              Week
-            </button>
-            <button
-              onClick={() => setViewType("month")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                viewType === "month"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border hover:bg-accent"
-              }`}
-            >
-              Month
-            </button>
-            <button
-              onClick={() => setViewType("client")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                viewType === "client"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border hover:bg-accent"
-              }`}
-            >
-              By Client
-            </button>
-            <button
-              onClick={() => setViewType("project")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                viewType === "project"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card border hover:bg-accent"
-              }`}
-            >
-              By Project
-            </button>
+              <option value="all">All Clients</option>
+              {clients.map((client) => (
+                <option key={client.id} value={client.id}>
+                  {client.name}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <select
-            value={selectedClientId}
-            onChange={(e) => setSelectedClientId(e.target.value)}
-            className="px-4 py-2 rounded-lg border bg-card focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            <option value="all">All Clients</option>
-            {clients.map((client) => (
-              <option key={client.id} value={client.id}>
-                {client.name}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Period Navigation */}
+          {(viewType === "week" || viewType === "month") && (
+            <div className="flex items-center justify-between mb-6 p-4 rounded-lg border bg-card print:hidden">
+              <button
+                onClick={navigatePrevious}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <ChevronLeft className="size-5" />
+              </button>
+              <h2 className="text-xl font-semibold">{getPeriodLabel()}</h2>
+              <button
+                onClick={navigateNext}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <ChevronRight className="size-5" />
+              </button>
+            </div>
+          )}
 
-        {/* Period Navigation */}
-        {(viewType === "week" || viewType === "month") && (
-          <div className="flex items-center justify-between mb-6 p-4 rounded-lg border bg-card">
-            <button
-              onClick={navigatePrevious}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
-            >
-              <ChevronLeft className="size-5" />
-            </button>
-            <h2 className="text-xl font-semibold">{getPeriodLabel()}</h2>
-            <button
-              onClick={navigateNext}
-              className="p-2 hover:bg-muted rounded-lg transition-colors"
-            >
-              <ChevronRight className="size-5" />
-            </button>
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="rounded-lg border bg-card p-6">
+              <p className="text-sm text-muted-foreground mb-1">Total Hours</p>
+              <p className="text-3xl font-bold">
+                {totals.totalHours.toFixed(1)}h
+              </p>
+            </div>
+            <div className="rounded-lg border bg-card p-6">
+              <p className="text-sm text-muted-foreground mb-1">
+                Billable Hours
+              </p>
+              <p className="text-3xl font-bold">
+                {totals.billableHours.toFixed(1)}h
+              </p>
+            </div>
+            <div className="rounded-lg border bg-card p-6">
+              <p className="text-sm text-muted-foreground mb-1">
+                Total Earnings
+              </p>
+              <p className="text-3xl font-bold">
+                ${totals.totalEarnings.toFixed(2)}
+              </p>
+            </div>
           </div>
-        )}
 
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-sm text-muted-foreground mb-1">Total Hours</p>
-            <p className="text-3xl font-bold">
-              {totals.totalHours.toFixed(1)}h
-            </p>
-          </div>
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-sm text-muted-foreground mb-1">Billable Hours</p>
-            <p className="text-3xl font-bold">
-              {totals.billableHours.toFixed(1)}h
-            </p>
-          </div>
-          <div className="rounded-lg border bg-card p-6">
-            <p className="text-sm text-muted-foreground mb-1">Total Earnings</p>
-            <p className="text-3xl font-bold">
-              ${totals.totalEarnings.toFixed(2)}
-            </p>
-          </div>
-        </div>
+          {/* Grouped Entries */}
+          {groupedData.length === 0 ? (
+            <div className="text-center py-12 rounded-lg border bg-card">
+              <p className="text-muted-foreground">
+                No time entries found for this period
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {groupedData.map(([groupKey, groupEntries]) => {
+                const groupTotals = calculateTotals(groupEntries)
 
-        {/* Grouped Entries */}
-        {groupedData.length === 0 ? (
-          <div className="text-center py-12 rounded-lg border bg-card">
-            <p className="text-muted-foreground">
-              No time entries found for this period
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {groupedData.map(([groupKey, groupEntries]) => {
-              const groupTotals = calculateTotals(groupEntries)
-
-              return (
-                <div
-                  key={groupKey}
-                  className="rounded-lg border bg-card overflow-hidden"
-                >
-                  <div className="p-4 bg-muted border-b flex justify-between items-center">
-                    <h3 className="font-semibold">
-                      {viewType === "week" || viewType === "month"
-                        ? formatDate(groupKey)
-                        : groupKey}
-                    </h3>
-                    <div className="text-sm text-muted-foreground">
-                      {groupTotals.totalHours.toFixed(1)}h • $
-                      {groupTotals.totalEarnings.toFixed(2)}
+                return (
+                  <div
+                    key={groupKey}
+                    className="rounded-lg border bg-card overflow-hidden"
+                  >
+                    <div className="p-4 bg-muted border-b flex justify-between items-center">
+                      <h3 className="font-semibold">
+                        {viewType === "week" || viewType === "month"
+                          ? formatDate(groupKey)
+                          : groupKey}
+                      </h3>
+                      <div className="text-sm text-muted-foreground">
+                        {groupTotals.totalHours.toFixed(1)}h • $
+                        {groupTotals.totalEarnings.toFixed(2)}
+                      </div>
                     </div>
-                  </div>
-                  <div className="divide-y">
-                    {groupEntries.map((entry) => (
-                      <Link
-                        key={entry.id}
-                        href={`/tools/timesheet/${entry.id}`}
-                        className="block p-4 hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium">
-                                {entry.projectName}
-                              </span>
-                              {entry.billable && (
-                                <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                                  Billable
+                    <div className="divide-y">
+                      {groupEntries.map((entry) => (
+                        <Link
+                          key={entry.id}
+                          href={`/tools/timesheet/${entry.id}`}
+                          className="block p-4 hover:bg-muted/50 transition-colors"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium">
+                                  {entry.projectName}
                                 </span>
+                                {entry.billable && (
+                                  <span className="text-xs px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                                    Billable
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-sm text-muted-foreground">
+                                {entry.client.name} • {entry.description}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-semibold">
+                                {formatDuration(entry.duration)}
+                              </p>
+                              {entry.billable && (
+                                <p className="text-sm text-muted-foreground">
+                                  ${entry.amount.toFixed(2)}
+                                </p>
                               )}
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                              {entry.client.name} • {entry.description}
-                            </p>
                           </div>
-                          <div className="text-right">
-                            <p className="font-semibold">
-                              {formatDuration(entry.duration)}
-                            </p>
-                            {entry.billable && (
-                              <p className="text-sm text-muted-foreground">
-                                ${entry.amount.toFixed(2)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

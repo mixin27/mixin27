@@ -4,13 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Save } from "lucide-react"
-import {
-  saveTimeEntry,
-  getClients,
-  getSettings,
-  getClientById,
-  calculateDuration,
-} from "@/lib/invoice-storage"
+import { saveTimeEntry, getClients, getClientById } from "@/lib/invoice-storage"
 import { Client, TimeEntry } from "@/types/invoice"
 
 export default function NewTimeEntryForm() {
@@ -33,7 +27,7 @@ export default function NewTimeEntryForm() {
 
   useEffect(() => {
     const loadedClients = getClients()
-    const settings = getSettings()
+    // const settings = getSettings()
 
     setClients(loadedClients)
 
