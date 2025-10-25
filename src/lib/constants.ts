@@ -15,7 +15,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     name: "GitHub",
     url: "https://github.com/mixin27",
     icon: "github",
-    color: "hover:text-gray-900 dark:hover:text-white",
+    color: "",
   },
   {
     name: "LinkedIn",

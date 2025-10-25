@@ -1,28 +1,28 @@
-import { Metadata } from 'next'
-import { Mail, MapPin, Github, Linkedin, Twitter } from 'lucide-react'
-import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
-import { ContactForm } from '@/components/contact-form'
-import { generateOGMetadata } from '@/lib/og'
+import { Metadata } from "next"
+import { Mail, MapPin, Github, Linkedin, Twitter } from "lucide-react"
+import { SITE_CONFIG, SOCIAL_LINKS } from "@/lib/constants"
+import { ContactForm } from "@/components/contact-form"
+import { generateOGMetadata } from "@/lib/og"
 
 export const metadata: Metadata = generateOGMetadata({
-  title: 'Contact Me',
+  title: "Contact Me",
   description:
-    'Get in touch with me for project collaborations, job opportunities, or just to say hello.',
-  url: '/contact',
+    "Get in touch with me for project collaborations, job opportunities, or just to say hello.",
+  url: "/contact",
 })
 
 const email = SITE_CONFIG.email
 const contactInfo = [
   {
     icon: Mail,
-    label: 'Email',
+    label: "Email",
     value: email,
     href: `mailto:${email}`,
   },
   {
     icon: MapPin,
-    label: 'Location',
-    value: 'Myanmar',
+    label: "Location",
+    value: "Myanmar",
     href: null,
   },
 ]

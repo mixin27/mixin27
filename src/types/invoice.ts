@@ -26,13 +26,13 @@ export interface Invoice {
   client: Client
   issueDate: string
   dueDate: string
-  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+  status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
   items: InvoiceItem[]
   subtotal: number
   taxRate: number
   taxAmount: number
   discount: number
-  discountType: 'percentage' | 'fixed'
+  discountType: "percentage" | "fixed"
   total: number
   notes?: string
   terms?: string
@@ -59,9 +59,9 @@ export interface InvoiceSettings {
   nextInvoiceNumber: number
 }
 
-export interface Quotation extends Omit<Invoice, 'status'> {
+export interface Quotation extends Omit<Invoice, "status"> {
   validUntil: string
-  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired'
+  status: "draft" | "sent" | "accepted" | "rejected" | "expired"
 }
 
 export interface Receipt {
@@ -70,24 +70,24 @@ export interface Receipt {
   client: Client
   paymentDate: string
   paymentMethod:
-    | 'cash'
-    | 'check'
-    | 'bank_transfer'
-    | 'credit_card'
-    | 'paypal'
-    | 'kbz_pay'
-    | 'aya_pay'
-    | 'wave_pay'
-    | 'uab_pay'
-    | 'cb_pay'
-    | 'other'
+    | "cash"
+    | "check"
+    | "bank_transfer"
+    | "credit_card"
+    | "paypal"
+    | "kbz_pay"
+    | "aya_pay"
+    | "wave_pay"
+    | "uab_pay"
+    | "cb_pay"
+    | "other"
   relatedInvoiceNumber?: string
   items: InvoiceItem[]
   subtotal: number
   taxRate: number
   taxAmount: number
   discount: number
-  discountType: 'percentage' | 'fixed'
+  discountType: "percentage" | "fixed"
   total: number
   amountPaid: number
   notes?: string
@@ -96,14 +96,14 @@ export interface Receipt {
   updatedAt: string
 }
 
-export type DocumentType = 'invoice' | 'quotation' | 'receipt' | 'contract'
+export type DocumentType = "invoice" | "quotation" | "receipt" | "contract"
 
 export type ContractTemplateType =
-  | 'service_agreement'
-  | 'project_contract'
-  | 'freelance_agreement'
-  | 'consulting_agreement'
-  | 'maintenance_agreement'
+  | "service_agreement"
+  | "project_contract"
+  | "freelance_agreement"
+  | "consulting_agreement"
+  | "maintenance_agreement"
 
 export interface ContractTemplate {
   id: ContractTemplateType
@@ -137,12 +137,12 @@ export interface Contract {
 
   // Signatures
   clientSignature?: string // Text or data URL for image
-  clientSignatureType: 'text' | 'drawn'
+  clientSignatureType: "text" | "drawn"
   businessSignature?: string
-  businessSignatureType: 'text' | 'drawn'
+  businessSignatureType: "text" | "drawn"
 
   // Status
-  status: 'draft' | 'sent' | 'signed' | 'active' | 'completed' | 'terminated'
+  status: "draft" | "sent" | "signed" | "active" | "completed" | "terminated"
 
   // Generated content
   generatedContent: string // Final HTML with variables replaced
@@ -165,4 +165,70 @@ export interface ContractFormData {
   paymentTerms: string
   currency: string
   notes?: string
+}
+
+export interface TimeEntry {
+  id: string
+  clientId: string
+  client: Client
+  projectName: string
+  description: string
+  date: string
+  startTime: string // ISO string or HH:mm format
+  endTime: string // ISO string or HH:mm format
+  duration: number // in minutes
+  hourlyRate: number
+  amount: number // duration * rate
+  billable: boolean
+  invoiced: boolean // has this been added to an invoice?
+  invoiceId?: string // if invoiced, which invoice?
+  tags?: string[]
+  createdAt: string
+  updatedAt: string
+}
+
+export interface TimeTrackingStats {
+  totalEntries: number
+  totalHours: number
+  billableHours: number
+  nonBillableHours: number
+  totalEarnings: number
+  uninvoicedEarnings: number
+  todayHours: number
+  thisWeekHours: number
+  thisMonthHours: number
+}
+
+export interface RunningTimer {
+  id: string
+  clientId: string
+  projectName: string
+  description: string
+  startTime: string // ISO string
+  isPaused: boolean
+  pausedAt?: string
+  totalPausedTime: number // in milliseconds
+}
+
+export interface TimesheetGroup {
+  date: string
+  entries: TimeEntry[]
+  totalHours: number
+  totalEarnings: number
+}
+
+export interface WeeklyTimesheet {
+  weekStart: string
+  weekEnd: string
+  days: TimesheetGroup[]
+  totalHours: number
+  totalEarnings: number
+}
+
+export interface MonthlyTimesheet {
+  month: string
+  year: number
+  weeks: WeeklyTimesheet[]
+  totalHours: number
+  totalEarnings: number
 }

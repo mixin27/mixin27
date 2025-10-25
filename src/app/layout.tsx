@@ -1,15 +1,15 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
-import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
-import { SITE_CONFIG } from '@/lib/constants'
-import { getOGImageUrl } from '@/lib/og'
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Header } from "@/components/layout/header"
+import { Footer } from "@/components/layout/footer"
+import { SITE_CONFIG } from "@/lib/constants"
+import { getOGImageUrl } from "@/lib/og"
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || SITE_CONFIG.url
 
@@ -19,49 +19,49 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.author}`,
   },
   description:
-    'Passionate mobile developer creating seamless, user-friendly applications for iOS and Android.',
+    "Passionate mobile developer creating seamless, user-friendly applications for iOS and Android.",
   keywords: [
-    'mobile developer',
-    'iOS developer',
-    'Android developer',
-    'Flutter developer',
-    'mobile app development',
+    "mobile developer",
+    "iOS developer",
+    "Android developer",
+    "Flutter developer",
+    "mobile app development",
   ],
   authors: [{ name: SITE_CONFIG.author }],
   creator: SITE_CONFIG.author,
   metadataBase: new URL(baseUrl),
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
+    type: "website",
+    locale: "en_US",
     url: SITE_CONFIG.url,
     title: SITE_CONFIG.title,
     description:
-      'Passionate mobile developer creating seamless, user-friendly applications.',
-    siteName: 'Kyaw Zayar Tun Portfolio',
+      "Passionate mobile developer creating seamless, user-friendly applications.",
+    siteName: "Kyaw Zayar Tun Portfolio",
     images: [
       {
         url: getOGImageUrl({
-          title: 'Kyaw Zayar Tun',
-          description: 'Mobile Developer',
-          type: 'default',
+          title: "Kyaw Zayar Tun",
+          description: "Mobile Developer",
+          type: "default",
         }),
         width: 1200,
         height: 630,
-        alt: 'Kyaw Zayar Tun - Mobile Developer',
+        alt: "Kyaw Zayar Tun - Mobile Developer",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: SITE_CONFIG.title,
     description:
-      'Passionate mobile developer creating seamless, user-friendly applications.',
-    creator: '@kyawzayartun98',
+      "Passionate mobile developer creating seamless, user-friendly applications.",
+    creator: "@kyawzayartun98",
     images: [
       getOGImageUrl({
-        title: 'Kyaw Zayar Tun',
-        description: 'Mobile Developer',
-        type: 'default',
+        title: "Kyaw Zayar Tun",
+        description: "Mobile Developer",
+        type: "default",
       }),
     ],
   },
@@ -71,9 +71,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 }

@@ -1,5 +1,5 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
+import { Metadata } from "next"
+import Link from "next/link"
 import {
   FileText,
   FileCheck,
@@ -7,76 +7,76 @@ import {
   Receipt,
   Clock,
   Settings,
-} from 'lucide-react'
+} from "lucide-react"
 
 export const metadata: Metadata = {
-  title: 'Freelance Tools',
+  title: "Freelance Tools",
   description:
-    'Professional tools for freelancers - invoices, quotations, contracts, and more.',
+    "Professional tools for freelancers - invoices, quotations, contracts, and more.",
 }
 
 const tools = [
   {
-    name: 'Invoices',
-    description: 'Create and manage professional invoices for your clients',
+    name: "Invoices",
+    description: "Create and manage professional invoices for your clients",
     icon: FileText,
-    href: '/tools/invoices',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50 dark:bg-blue-950',
+    href: "/tools/invoices",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50 dark:bg-blue-950",
     available: true,
   },
   {
-    name: 'Quotations',
-    description: 'Generate professional quotes and proposals',
+    name: "Quotations",
+    description: "Generate professional quotes and proposals",
     icon: FileCheck,
-    href: '/tools/quotations',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50 dark:bg-green-950',
+    href: "/tools/quotations",
+    color: "text-green-600",
+    bgColor: "bg-green-50 dark:bg-green-950",
     available: true,
   },
   {
-    name: 'Receipts',
-    description: 'Generate payment receipts for your clients',
+    name: "Receipts",
+    description: "Generate payment receipts for your clients",
     icon: Receipt,
-    href: '/tools/receipts',
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-50 dark:bg-orange-950',
+    href: "/tools/receipts",
+    color: "text-orange-600",
+    bgColor: "bg-orange-50 dark:bg-orange-950",
     available: true,
   },
   {
-    name: 'Contracts',
-    description: 'Use pre-made contract templates for your services',
+    name: "Contracts",
+    description: "Use pre-made contract templates for your services",
     icon: FileSignature,
-    href: '/tools/contracts',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50 dark:bg-purple-950',
+    href: "/tools/contracts",
+    color: "text-purple-600",
+    bgColor: "bg-purple-50 dark:bg-purple-950",
     available: true,
   },
   {
-    name: 'Time Tracking',
-    description: 'Track billable hours and generate timesheets',
+    name: "Time Tracking",
+    description: "Track billable hours and generate timesheets",
     icon: Clock,
-    href: '/tools/timesheet',
-    color: 'text-pink-600',
-    bgColor: 'bg-pink-50 dark:bg-pink-950',
-    available: false,
-  },
-  {
-    name: 'Clients',
-    description: 'Manage your client information',
-    icon: Clock,
-    href: '/tools/invoices/clients',
-    color: 'text-cyan-600',
-    bgColor: 'bg-cyan-50 dark:bg-cyan-950',
+    href: "/tools/timesheet",
+    color: "text-pink-600",
+    bgColor: "bg-pink-50 dark:bg-pink-950",
     available: true,
   },
   {
-    name: 'Settings',
-    description: 'Configure your business information and preferences',
+    name: "Clients",
+    description: "Manage your client information",
+    icon: Clock,
+    href: "/tools/invoices/clients",
+    color: "text-cyan-600",
+    bgColor: "bg-cyan-50 dark:bg-cyan-950",
+    available: true,
+  },
+  {
+    name: "Settings",
+    description: "Configure your business information and preferences",
     icon: Settings,
-    href: '/tools/settings',
-    color: 'text-gray-600',
-    bgColor: 'bg-gray-50 dark:bg-gray-950',
+    href: "/tools/settings",
+    color: "text-gray-600",
+    bgColor: "bg-gray-50 dark:bg-gray-950",
     available: true,
   },
 ]
@@ -109,9 +109,9 @@ export default function ToolsPage() {
             return (
               <Link
                 key={tool.name}
-                href={isAvailable ? tool.href : '#'}
+                href={isAvailable ? tool.href : "#"}
                 className={`group relative rounded-lg border bg-card p-6 hover:shadow-lg transition-all ${
-                  !isAvailable ? 'opacity-60 cursor-not-allowed' : ''
+                  !isAvailable ? "opacity-60 cursor-not-allowed" : ""
                 }`}
                 // onClick={(e) => !isAvailable && e.preventDefault()}
               >
