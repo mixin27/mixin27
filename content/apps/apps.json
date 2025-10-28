@@ -4,7 +4,7 @@
             "id": "myanmar-calendar",
             "name": "Myanmar Calendar",
             "description": "A comprehensive Myanmar Calendar application with astrological information, date conversion, and beautiful UI",
-            "icon": "/apps/myanmar-calendar/logo.png",
+            "icon": "/images/projects/myanmar-calendar/myanmar_calendar.png",
             "category": "productivity",
             "platform": "android",
             "storeLinks": {
@@ -22,7 +22,7 @@
             "id": "yoyo-chatt",
             "name": "Yoyo Chatt",
             "description": "An innovative chat application developed using Flutter and Firebase",
-            "icon": "/apps/yoyo-chatt/logo.png",
+            "icon": "/images/projects/yoyo-chatt/logo.png",
             "category": "social",
             "platform": "android",
             "storeLinks": {
@@ -40,7 +40,7 @@
             "id": "beads-math",
             "name": "Beads Math",
             "description": "Mobile application to improve maths calculation skills",
-            "icon": "/apps/beads-maths/icon.png",
+            "icon": "/images/projects/beads-math/logo.png",
             "category": "productivity",
             "platform": "android",
             "storeLinks": {
@@ -57,7 +57,7 @@
             "id": "billion-sport-live",
             "name": "Billion Sport Live",
             "description": "Sport live stream mobile application",
-            "icon": "/apps/billion-sport-live/icon.png",
+            "icon": "/images/projects/billion-sport-live/logo.png",
             "category": "other",
             "platform": "android",
             "storeLinks": {
@@ -74,7 +74,7 @@
             "id": "maun-news",
             "name": "Maun News",
             "description": "Maun News is a news app that provides news from various sources in Myanmar",
-            "icon": "/apps/maun-news/icon.png",
+            "icon": "/images/projects/maun-news/logo.png",
             "category": "other",
             "platform": "android",
             "storeLinks": {

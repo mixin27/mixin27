@@ -1,13 +1,14 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { Shield, ExternalLink, Smartphone, Apple } from 'lucide-react'
-import { getAllApps, getAppStats } from '@/lib/apps'
-import { generateMetadata as genMeta } from '@/lib/utils'
+import { Metadata } from "next"
+import Link from "next/link"
+import { Shield, ExternalLink, Smartphone, Apple } from "lucide-react"
+import { getAllApps, getAppStats } from "@/lib/apps"
+import { generateMetadata as genMeta } from "@/lib/utils"
+import Image from "next/image"
 
 export const metadata: Metadata = genMeta({
-  title: 'My Apps - Privacy Policies',
-  description: 'View privacy policies for all my mobile applications.',
-  url: '/apps',
+  title: "My Apps - Privacy Policies",
+  description: "View privacy policies for all my mobile applications.",
+  url: "/apps",
 })
 
 export default function AppsPage() {
@@ -95,22 +96,30 @@ export default function AppsPage() {
                         <div className="flex items-start gap-4 mb-4">
                           {/* App Icon */}
                           <div className="size-14 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0 group-hover:bg-primary/20 transition-colors">
-                            {app.name.charAt(0)}
+                            {!app.icon && app.name.charAt(0)}
+                            {app.icon && (
+                              <Image
+                                src={app.icon}
+                                alt={`${app.name} icon`}
+                                width={56}
+                                height={56}
+                              />
+                            )}
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-lg mb-1 truncate">
                               {app.name}
                             </h3>
                             <div className="flex items-center gap-2 text-xs">
-                              {(app.platform === 'android' ||
-                                app.platform === 'both') && (
+                              {(app.platform === "android" ||
+                                app.platform === "both") && (
                                 <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-green-600 dark:text-green-400">
                                   <Smartphone className="size-3" />
                                   Android
                                 </span>
                               )}
-                              {(app.platform === 'ios' ||
-                                app.platform === 'both') && (
+                              {(app.platform === "ios" ||
+                                app.platform === "both") && (
                                 <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-600 dark:text-blue-400">
                                   <Apple className="size-3" />
                                   iOS
@@ -128,11 +137,11 @@ export default function AppsPage() {
                         <div className="mb-4">
                           <span
                             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                              app.status === 'active'
-                                ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                                : app.status === 'development'
-                                  ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
-                                  : 'bg-gray-500/10 text-gray-600 dark:text-gray-400'
+                              app.status === "active"
+                                ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                                : app.status === "development"
+                                  ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                                  : "bg-gray-500/10 text-gray-600 dark:text-gray-400"
                             }`}
                           >
                             <span className="size-1.5 rounded-full bg-current" />

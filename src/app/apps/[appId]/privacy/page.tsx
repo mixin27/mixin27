@@ -1,10 +1,11 @@
-import { getAllApps, getAppById, getCompiledAppPrivacy } from '@/lib/apps'
-import { Metadata } from 'next'
-import { formatDate } from '@/lib/utils'
-import Link from 'next/link'
-import { ArrowLeft, ExternalLink, Calendar, Shield } from 'lucide-react'
-import { notFound } from 'next/navigation'
-import { generateOGMetadata } from '@/lib/og'
+import { getAllApps, getAppById, getCompiledAppPrivacy } from "@/lib/apps"
+import { Metadata } from "next"
+import { formatDate } from "@/lib/utils"
+import Link from "next/link"
+import { ArrowLeft, ExternalLink, Calendar, Shield } from "lucide-react"
+import { notFound } from "next/navigation"
+import { generateOGMetadata } from "@/lib/og"
+import Image from "next/image"
 
 interface PageProps {
   params: Promise<{
@@ -29,7 +30,7 @@ export async function generateMetadata({
 
   if (!app) {
     return {
-      title: 'Privacy Policy Not Found',
+      title: "Privacy Policy Not Found",
     }
   }
 
@@ -75,7 +76,15 @@ export default async function AppPrivacyPage({ params }: PageProps) {
                 <div className="flex items-start gap-4">
                   {/* App Icon */}
                   <div className="size-16 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xl shrink-0">
-                    {app.name.charAt(0)}
+                    {!app.icon && app.name.charAt(0)}
+                    {app.icon && (
+                      <Image
+                        src={app.icon}
+                        alt={`${app.name} icon`}
+                        width={64}
+                        height={64}
+                      />
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h2 className="font-semibold text-lg truncate">
