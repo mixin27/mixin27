@@ -1,5 +1,3 @@
-// Create this file: src/lib/document-conversions.ts
-
 import { Quotation, Invoice, Receipt } from "@/types/invoice"
 import {
   saveInvoice,
