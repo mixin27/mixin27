@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
 import {
   submitContactForm,
   type ContactFormState,
-} from '@/actions/contact/actions'
-import { AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
-import { useActionState } from 'react'
+} from "@/actions/contact/actions"
+import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"
+import { useActionState } from "react"
 
 export function ContactForm() {
   const [state, formAction, isPending] = useActionState<
@@ -38,6 +38,9 @@ export function ContactForm() {
       <form action={formAction} className="space-y-6">
         {/* Name */}
         <div>
+          {/* For preventing bo */}
+          <input type="text" className="hidden" name="company" />
+
           <label htmlFor="name" className="block text-sm font-medium mb-2">
             Name <span className="text-destructive">*</span>
           </label>
@@ -51,7 +54,7 @@ export function ContactForm() {
           />
           {state?.errors?.name && (
             <p className="text-sm text-destructive mt-1">
-              {state.errors.name[0]}
+              {state.errors.name.errors[0]}
             </p>
           )}
         </div>
@@ -71,7 +74,7 @@ export function ContactForm() {
           />
           {state?.errors?.email && (
             <p className="text-sm text-destructive mt-1">
-              {state.errors.email[0]}
+              {state.errors.email.errors[0]}
             </p>
           )}
         </div>
@@ -91,7 +94,7 @@ export function ContactForm() {
           />
           {state?.errors?.subject && (
             <p className="text-sm text-destructive mt-1">
-              {state.errors.subject[0]}
+              {state.errors.subject.errors[0]}
             </p>
           )}
         </div>
@@ -111,7 +114,7 @@ export function ContactForm() {
           />
           {state?.errors?.message && (
             <p className="text-sm text-destructive mt-1">
-              {state.errors.message[0]}
+              {state.errors.message.errors[0]}
             </p>
           )}
         </div>
@@ -128,13 +131,13 @@ export function ContactForm() {
               Sending...
             </>
           ) : (
-            'Send Message'
+            "Send Message"
           )}
         </button>
       </form>
 
       <p className="text-xs text-muted-foreground mt-4 text-center">
-        By submitting this form, you agree to our{' '}
+        By submitting this form, you agree to our{" "}
         <a href="/legal/privacy" className="text-primary hover:underline">
           privacy policy
         </a>
