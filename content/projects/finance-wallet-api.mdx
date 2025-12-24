@@ -1,0 +1,509 @@
+---
+title: "Finance Wallet API"
+description: Sprint Boot Web API service for FinWallet application
+category: "web-api"
+longDescription: Sprint Boot Web API service for FinWallet application
+image: "/images/projects/finance-wallet/logo.png"
+tags: [wallet, finance, account, transaction]
+technologies: [kotlin, spring-boot, postgres, docker]
+platform: Web
+status: in-progress
+featured: false
+links:
+    github: "https://github.com/mixin27/finance-wallet-api"
+date: 2025-12-24
+---
+
+A comprehensive RESTful API for personal finance management, built with Spring Boot 4 and Kotlin.
+
+## ✨ Features
+
+### Core Functionality
+- 🔐 **JWT Authentication** - Secure user authentication with refresh tokens
+- 💳 **Multi-Account Management** - Manage multiple accounts (checking, savings, credit cards)
+- 💸 **Transaction Tracking** - Record income, expenses, and transfers
+- 📊 **Smart Categorization** - 15 pre-defined categories + custom categories
+- 🎯 **Budget Management** - Create and track budgets with real-time alerts
+- 🏆 **Financial Goals** - Set and track savings goals with progress monitoring
+- 📎 **Receipt Attachments** - Upload and manage transaction receipts/invoices
+- 📈 **Dashboard Analytics** - Comprehensive financial insights and statistics
+- 🌍 **Multi-Currency Support** - Support for multiple currencies with exchange rates
+
+### Advanced Features
+- 📱 Real-time budget progress tracking
+- 🏷️ Transaction tagging system
+- 📍 Location tracking for transactions
+- 🔄 Automatic goal completion
+- 📊 Category-wise expense breakdown
+- 📅 Daily/weekly/monthly/yearly statistics
+- 🎨 Customizable colors and icons
+- 🔒 Secure file storage with validation
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- JDK 17 or higher
+- PostgreSQL 15 or higher
+- Gradle (wrapper included)
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/mixin27/finance-wallet-api.git
+cd finance-wallet-api
+```
+
+2. **Configure database**
+```bash
+# Create database
+createdb finance_wallet
+
+# Update src/main/resources/application.properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/finance_wallet
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+```
+
+3. **Configure JWT secret**
+```properties
+jwt.secret=your-super-secret-jwt-key-at-least-256-bits-long
+jwt.expiration=86400000
+```
+
+4. **Run the application**
+```bash
+./gradlew bootRun
+```
+
+The API will be available at `http://localhost:8080`
+
+---
+
+## 📖 API Documentation
+
+### Authentication Endpoints
+```
+POST   /api/auth/register    - Register new user
+POST   /api/auth/login       - Login and get JWT token
+POST   /api/auth/refresh     - Refresh access token
+```
+
+### Account Endpoints
+```
+GET    /api/accounts         - Get all accounts
+POST   /api/accounts         - Create new account
+GET    /api/accounts/{id}    - Get account details
+PUT    /api/accounts/{id}    - Update account
+DELETE /api/accounts/{id}    - Delete account
+```
+
+### Transaction Endpoints
+```
+GET    /api/transactions              - Get all transactions
+POST   /api/transactions              - Create transaction
+POST   /api/transactions/transfer     - Transfer between accounts
+GET    /api/transactions/{id}         - Get transaction details
+PUT    /api/transactions/{id}         - Update transaction
+DELETE /api/transactions/{id}         - Delete transaction
+```
+
+### Category Endpoints
+```
+GET    /api/categories         - Get all categories
+GET    /api/categories?type=INCOME   - Get income categories
+POST   /api/categories         - Create custom category
+PUT    /api/categories/{id}    - Update category
+DELETE /api/categories/{id}    - Delete category
+```
+
+### Budget Endpoints
+```
+GET    /api/budgets            - Get all budgets
+GET    /api/budgets/active     - Get active budgets with progress
+POST   /api/budgets            - Create budget
+PUT    /api/budgets/{id}       - Update budget
+DELETE /api/budgets/{id}       - Delete budget
+```
+
+### Goal Endpoints
+```
+GET    /api/goals                    - Get all goals
+GET    /api/goals?activeOnly=true    - Get active goals only
+POST   /api/goals                    - Create goal
+PATCH  /api/goals/{id}/progress      - Update goal progress
+PATCH  /api/goals/{id}/complete      - Mark goal as completed
+PUT    /api/goals/{id}               - Update goal
+DELETE /api/goals/{id}               - Delete goal
+```
+
+### Dashboard Endpoints
+```
+GET    /api/dashboard                          - Get dashboard overview
+GET    /api/dashboard/statistics               - Get statistics (custom range)
+GET    /api/dashboard/statistics/this-month    - This month statistics
+GET    /api/dashboard/statistics/last-month    - Last month statistics
+GET    /api/dashboard/statistics/this-year     - This year statistics
+```
+
+### File Upload Endpoints
+```
+POST   /api/transactions/{id}/attachments           - Upload receipt
+GET    /api/transactions/{id}/attachments           - Get attachments
+DELETE /api/transactions/{id}/attachments/{fileId}  - Delete attachment
+GET    /api/uploads/{subDir}/{filename}             - View/download file
+```
+
+---
+
+## 🔧 Configuration
+
+### Database Configuration
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/finance_wallet
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=false
+```
+
+### JWT Configuration
+```properties
+jwt.secret=your-256-bit-secret-key
+jwt.expiration=86400000
+jwt.refresh-expiration=604800000
+```
+
+### File Upload Configuration
+```properties
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=5MB
+spring.servlet.multipart.max-request-size=10MB
+app.upload.dir=uploads
+app.upload.max-file-size=5242880
+```
+
+### CORS Configuration
+```properties
+# Configured in SecurityConfig.kt
+# Allows localhost with any port for development
+```
+
+---
+
+## 📝 Example Usage
+
+### 1. Register and Login
+```bash
+# Register
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "username": "johndoe",
+    "password": "securePass123",
+    "fullName": "John Doe"
+  }'
+
+# Login
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "securePass123"
+  }'
+```
+
+### 2. Create Account
+```bash
+curl -X POST http://localhost:8080/api/accounts \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Main Checking",
+    "accountTypeId": "account-type-uuid",
+    "currencyId": "currency-uuid",
+    "initialBalance": 5000.00,
+    "color": "#4CAF50",
+    "icon": "💰"
+  }'
+```
+
+### 3. Add Transaction
+```bash
+curl -X POST http://localhost:8080/api/transactions \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "accountId": "account-uuid",
+    "type": "EXPENSE",
+    "amount": 45.99,
+    "transactionDate": "2024-01-15T19:30:00",
+    "description": "Groceries at Whole Foods",
+    "categoryId": "food-category-uuid",
+    "tags": ["groceries", "weekly shopping"]
+  }'
+```
+
+### 4. Create Budget
+```bash
+curl -X POST http://localhost:8080/api/budgets \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Monthly Food Budget",
+    "amount": 600.00,
+    "period": "MONTHLY",
+    "startDate": "2024-01-01",
+    "currencyId": "currency-uuid",
+    "categoryId": "food-category-uuid",
+    "alertThreshold": 80
+  }'
+```
+
+### 5. Create Financial Goal
+```bash
+curl -X POST http://localhost:8080/api/goals \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Emergency Fund",
+    "targetAmount": 10000.00,
+    "initialAmount": 1000.00,
+    "targetDate": "2024-12-31",
+    "currencyId": "currency-uuid",
+    "icon": "💰",
+    "color": "#4CAF50"
+  }'
+```
+
+---
+
+## 🏗️ Project Structure
+
+```
+src/main/kotlin/com/financewallet/api/
+├── config/                   # Configuration classes
+│   ├── SecurityConfig.kt
+│   └── DataInitializer.kt
+├── controller/              # REST controllers
+│   ├── AuthController.kt
+│   ├── AccountController.kt
+│   ├── TransactionController.kt
+│   ├── CategoryController.kt
+│   ├── BudgetController.kt
+│   ├── GoalController.kt
+│   ├── DashboardController.kt
+│   └── FileController.kt
+├── service/                 # Business logic
+│   ├── auth/
+│   ├── account/
+│   ├── transaction/
+│   ├── category/
+│   ├── budget/
+│   ├── goal/
+│   ├── dashboard/
+│   └── file/
+├── repository/              # Data access layer
+├── entity/                  # JPA entities
+├── dto/                     # Data transfer objects
+│   ├── request/
+│   └── response/
+├── security/                # Security components
+├── exception/               # Exception handling
+└── FinanceWalletApiApplication.kt
+```
+
+---
+
+## 🧪 Testing
+
+Comprehensive testing guides available for all endpoints:
+- Category Management API
+- Budget Management API
+- File Upload API
+- Dashboard & Statistics API
+- Goals Management API
+
+Each guide includes:
+- Complete curl examples
+- Expected responses
+- Error handling
+- Common use cases
+- Pro tips
+
+---
+
+## 🔒 Security Features
+
+- ✅ JWT-based authentication
+- ✅ Password encryption (BCrypt)
+- ✅ Refresh token rotation
+- ✅ CORS configuration
+- ✅ Path traversal protection
+- ✅ File type validation
+- ✅ File size limits
+- ✅ User data isolation
+- ✅ SQL injection prevention (JPA)
+- ✅ XSS protection
+
+---
+
+## 📊 Database Schema
+
+### Core Tables
+- `users` - User accounts and authentication
+- `refresh_tokens` - JWT refresh tokens
+- `accounts` - Financial accounts
+- `account_types` - Account type definitions
+- `transactions` - Income/expense/transfer records
+- `transaction_attachments` - Receipt files
+- `categories` - Transaction categories
+- `budgets` - Budget definitions
+- `goals` - Financial goals
+- `currencies` - Currency definitions
+- `exchange_rates` - Currency exchange rates
+- `tags` - Transaction tags
+- `user_preferences` - User settings
+- `sync_log` - Synchronization tracking
+
+---
+
+## 🌟 Features in Detail
+
+### 1. Smart Categorization
+- 15 pre-defined system categories
+- Unlimited custom categories
+- Hierarchical categories (parent/child)
+- Color-coded for easy identification
+- Icon support for visual appeal
+
+### 2. Budget Tracking
+- Multiple budget periods (daily, weekly, monthly, yearly, custom)
+- Category-specific or global budgets
+- Real-time progress tracking
+- Alert thresholds (80%, 90%, etc.)
+- Over-budget warnings
+- Automatic period calculation
+
+### 3. Goal Management
+- Track multiple financial goals
+- Progress percentage calculation
+- Remaining amount tracking
+- Target date support
+- Link to specific accounts
+- Auto-completion when target reached
+- Manual completion option
+
+### 4. Dashboard Analytics
+- Total balance across accounts
+- Monthly income/expense
+- Savings calculation
+- Month-over-month comparison
+- Category breakdown
+- Daily trends for charts
+- Custom date range analysis
+
+### 5. File Attachments
+- Support for images (JPEG, PNG, GIF, WebP)
+- PDF document support
+- 5MB file size limit
+- Secure local storage
+- Path traversal protection
+- Multiple attachments per transaction
+
+---
+
+## 🚀 Deployment
+
+### Docker Deployment
+```bash
+# Build Docker image
+docker build -t finance-wallet-api .
+
+# Run with Docker Compose
+docker-compose up -d
+```
+
+### Cloud Deployment
+- Heroku
+- AWS Elastic Beanstalk
+- Google Cloud Run
+- Azure App Service
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Your Name**
+- GitHub: [@mixin27](https://github.com/mixin27)
+
+---
+
+## 🙏 Acknowledgments
+
+- Spring Boot team for the amazing framework
+- Kotlin team for the modern language
+- PostgreSQL for reliable database
+- All contributors and users of this project
+
+---
+
+## 📞 Support
+
+For support, email kyawzayartun.contact@gmail.com or open an issue on GitHub.
+
+---
+
+## 🗺️ Roadmap
+
+### Version 1.0 (Current) ✅
+- Authentication & Authorization
+- Account Management
+- Transaction Management
+- Category System
+- Budget Tracking
+- Goal Management
+- File Uploads
+- Dashboard Analytics
+
+### Version 1.1 (Planned)
+- [ ] Recurring Transactions
+- [ ] OAuth2 Integration (Google, Apple)
+- [ ] User Preferences
+- [ ] Email Notifications
+- [ ] Live Exchange Rates
+
+### Version 2.0 (Future)
+- [ ] Bill Reminders
+- [ ] Investment Tracking
+- [ ] Report Generation (PDF)
+- [ ] Data Export (CSV, Excel)
+- [ ] Multi-user Support
+- [ ] Mobile App Integration
+- [ ] Webhooks
+- [ ] API Rate Limiting
+
+---
+
+**Made with ❤️ using Spring Boot & Kotlin**

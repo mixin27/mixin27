@@ -1,0 +1,123 @@
+---
+title: "MyCashbook"
+description: Cashbook - Personal Finance Manager
+category: "mobile"
+longDescription: A personal finance manager application with book system
+image: "/images/projects/cashbook-app/logo.png"
+tags: [cashbook, income, expense, transaction, pdf-export, excel-export]
+technologies: [flutter, firebase, drift, sqlite]
+platform: Flutter
+status: in-progress
+featured: false
+links:
+    github: "https://github.com/mixin27/cashbook_app"
+date: 2025-12-17
+---
+
+CashBook is a comprehensive and secure personal finance management application built with Flutter. It helps users track their income, expenses, and debts across multiple "books," providing a clear overview of their financial health. Designed for ease of use and portability, CashBook features multi-device sync and flexible export options.
+
+---
+
+## 🚀 Features
+
+### Core Management
+- **Multi-Book Support**: Manage business and personal expenses separately by creating multiple cashbooks.
+- **Transaction Tracking**: Easily record income and expense entries with categories and payment modes.
+- **Category Management**: Organize transactions with customizable categories and vibrant icons.
+- **Debt & Credit Tracking**: Keep track of money owed by or to contacts (Customer/Supplier).
+
+### Advanced Functionality
+- **Multi-Device Sync**: Synchronize your data across devices using Google Drive backup.
+- **PDF & Excel Exports**: Generate professional reports of your transactions for accounting or personal records.
+- **Biometric Security**: Protect your financial data with fingerprint or face unlock.
+- **Real-time Search**: Quickly find transactions or contacts using the powerful built-in search.
+- **Rich Visualizations**: Gain insights into your spending habits with intuitive charts and reports.
+
+### User Experience
+- **Dark & Light Mode**: A beautiful, adaptive UI that respects your system preferences.
+- **Localization Support**: Built-in support for multiple date and currency formats.
+- **Offline First**: Works perfectly without an internet connection, syncing when you're back online.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework**: [Flutter](https://flutter.dev)
+- **State Management**: [Provider](https://pub.dev/packages/provider)
+- **Database**: [Drift](https://drift.simonbinder.eu/) (High-performance reactive SQLite wrapper)
+- **Navigation**: [GoRouter](https://pub.dev/packages/go_router)
+- **Authentication**: Firebase Auth & Google Sign-In
+- **Local Auth**: Biometric authentication via `local_auth`
+- **Cloud Sync**: Google Drive API integration
+- **Reporting**: `pdf` and `excel` libraries
+
+---
+
+## 🏗 Architecture
+
+The project follows a clean **MVVM (Model-View-ViewModel)** architecture:
+
+- **Data Layer**: Handles local database (Drift), external APIs, and repositories.
+- **Domain Layer**: Contains business logic and core data models.
+- **View-Model Layer**: Manages UI state and business logic using Providers.
+- **UI Layer**: Built with Material Design, focusing on responsiveness and accessibility.
+
+---
+
+## 📂 Project Structure
+
+```text
+lib/
+├── src/
+│   ├── data/       # Database tables, DAOs, and Repositories
+│   ├── ui/         # Screens, Widgets, and ViewModels (grouped by feature)
+│   ├── config/     # App constants, themes, and configuration
+│   ├── routing/    # GoRouter navigation logic
+│   ├── utils/      # Helper functions and extensions
+│   └── domain/     # Core entities and logic
+└── main.dart       # Application entry point
+```
+
+---
+
+## 🏁 Getting Started
+
+### Prerequisites
+- Flutter SDK (v3.10.4 or higher)
+- Android Studio / VS Code
+- CocoaPods (for iOS development)
+
+### Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/mixin27/cashbook_app.git
+   cd cashbook_app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Generate database code**
+   ```bash
+   flutter pub run build_runner build --delete-conflicting-outputs
+   ```
+
+4. **Run the app**
+   ```bash
+   flutter run
+   ```
+
+---
+
+## 🏗 Development Status
+
+> [!NOTE]
+> This project is currently under active development. Some features listed above may be in the final stages of implementation or refinement.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

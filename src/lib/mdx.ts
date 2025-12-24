@@ -1,13 +1,13 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import { compileMDX } from 'next-mdx-remote/rsc'
-import readingTime from 'reading-time'
-import remarkGfm from 'remark-gfm'
-import rehypePrettyCode from 'rehype-pretty-code'
-import { mdxComponents } from '@/components/mdx-components'
+import fs from "fs"
+import path from "path"
+import matter from "gray-matter"
+import { compileMDX } from "next-mdx-remote/rsc"
+import readingTime from "reading-time"
+import remarkGfm from "remark-gfm"
+import rehypePrettyCode from "rehype-pretty-code"
+import { mdxComponents } from "@/components/mdx-components"
 
-const contentDirectory = path.join(process.cwd(), 'content')
+const contentDirectory = path.join(process.cwd(), "content")
 
 export interface MDXContent {
   slug: string
@@ -25,7 +25,7 @@ export interface MDXContent {
 
 export interface CompiledMDX {
   content: React.ReactElement
-  metadata: MDXContent['metadata']
+  metadata: MDXContent["metadata"]
   readingTime?: string
 }
 
@@ -40,7 +40,7 @@ export async function getMDXFiles(dir: string): Promise<string[]> {
   }
 
   const files = fs.readdirSync(fullPath)
-  return files.filter((file) => file.endsWith('.mdx') || file.endsWith('.md'))
+  return files.filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
 }
 
 /**
@@ -49,7 +49,7 @@ export async function getMDXFiles(dir: string): Promise<string[]> {
 export async function getMDXBySlug(
   dir: string,
   slug: string,
-  filename: string = 'index.mdx',
+  filename: string = "index.mdx",
 ): Promise<MDXContent | null> {
   try {
     const filePath = path.join(contentDirectory, dir, slug, filename)
@@ -77,7 +77,7 @@ async function parseMDXFile(
   filePath: string,
   slug: string,
 ): Promise<MDXContent> {
-  const fileContent = fs.readFileSync(filePath, 'utf-8')
+  const fileContent = fs.readFileSync(filePath, "utf-8")
   const { data, content } = matter(fileContent)
   const stats = readingTime(content)
 
@@ -113,7 +113,7 @@ export async function getAllMDX(dir: string): Promise<MDXContent[]> {
       const files = fs.readdirSync(subPath)
 
       const mdxFile = files.find(
-        (f) => f === 'index.mdx' || f === 'privacy.mdx' || f.endsWith('.mdx'),
+        (f) => f === "index.mdx" || f === "privacy.mdx" || f.endsWith(".mdx"),
       )
 
       if (mdxFile) {
@@ -123,8 +123,8 @@ export async function getAllMDX(dir: string): Promise<MDXContent[]> {
         )
         mdxContent.push(content)
       }
-    } else if (entry.name.endsWith('.mdx') || entry.name.endsWith('.md')) {
-      const slug = entry.name.replace(/\.mdx?$/, '')
+    } else if (entry.name.endsWith(".mdx") || entry.name.endsWith(".md")) {
+      const slug = entry.name.replace(/\.mdx?$/, "")
       const content = await parseMDXFile(path.join(fullPath, entry.name), slug)
       mdxContent.push(content)
     }
@@ -135,11 +135,11 @@ export async function getAllMDX(dir: string): Promise<MDXContent[]> {
 
 const options = {
   theme: {
-    dark: 'github-dark-dimmed',
-    light: 'github-light',
+    dark: "github-dark-dimmed",
+    light: "github-light",
   },
   keepBackground: false,
-  defaultLang: 'plaintext',
+  defaultLang: "plaintext",
 }
 
 /**
@@ -170,7 +170,7 @@ export async function compileMDXContent(
       readingTime: stats.text,
     }
   } catch (error) {
-    console.error('Error compiling MDX:', error)
+    console.error("Error compiling MDX:", error)
     throw error
   }
 }
@@ -180,7 +180,7 @@ export async function compileMDXContent(
  */
 export async function getSortedMDX(
   dir: string,
-  sortBy: 'date' | 'lastUpdated' = 'date',
+  sortBy: "date" | "lastUpdated" = "date",
 ): Promise<MDXContent[]> {
   const allContent = await getAllMDX(dir)
 
