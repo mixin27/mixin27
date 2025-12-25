@@ -15,6 +15,15 @@ import { useRouter } from "next/navigation"
 
 const tools = [
   {
+    name: "Resumes",
+    description: "Create and manage professional Resumes/CV",
+    icon: FileText,
+    href: "/tools/resumes",
+    color: "text-purple-600",
+    bgColor: "bg-purple-50 dark:bg-purple-950",
+    available: true,
+  },
+  {
     name: "Invoices",
     description: "Create and manage professional invoices for your clients",
     icon: FileText,
@@ -110,7 +119,7 @@ export default function ToolsContent() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
+      <section className="border-b bg-linear-to-b from-background to-muted/20">
         <div className="container py-16 md:py-24">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
