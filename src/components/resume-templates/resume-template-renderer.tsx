@@ -2,6 +2,8 @@ import { Resume } from "@/types/resume"
 import { ModernTemplate } from "./modern-template"
 import { ClassicTemplate } from "./classic-template"
 import { MinimalTemplate } from "./minimal-template"
+import { CreativeTemplate } from "./creative-template"
+import { ProfessionalTemplate } from "./professional-template"
 
 interface ResumeTemplateRendererProps {
   resume: Resume
@@ -18,11 +20,9 @@ export function ResumeTemplateRenderer({
     case "minimal":
       return <MinimalTemplate resume={resume} />
     case "creative":
-      // TODO: Implement CreativeTemplate
-      return <ModernTemplate resume={resume} />
+      return <CreativeTemplate resume={resume} />
     case "professional":
-      // TODO: Implement ProfessionalTemplate
-      return <ModernTemplate resume={resume} />
+      return <ProfessionalTemplate resume={resume} />
     default:
       return <ModernTemplate resume={resume} />
   }

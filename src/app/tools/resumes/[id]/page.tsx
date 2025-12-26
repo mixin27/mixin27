@@ -6,7 +6,7 @@ import Link from "next/link"
 import { ArrowLeft, Download, Printer, Edit, Share2 } from "lucide-react"
 import { getResumeById } from "@/lib/resume-storage"
 import { Resume } from "@/types/resume"
-import { ModernTemplate } from "@/components/resume-templates/modern-template"
+import { ResumeTemplateRenderer } from "@/components/resume-templates/resume-template-renderer"
 import html2canvas from "html2canvas-pro"
 import jsPDF from "jspdf"
 
@@ -36,27 +36,119 @@ export default function PreviewResumePage() {
 
     setIsGenerating(true)
     try {
-      // Capture the resume as canvas
-      const canvas = await html2canvas(resumeRef.current, {
-        scale: 2,
+      const element = resumeRef.current
+      const originalHeight = element.style.height
+
+      // Set height to auto to capture full content
+      element.style.height = "auto"
+
+      // Wait for layout to settle
+      await new Promise((resolve) => setTimeout(resolve, 200))
+
+      // Calculate dimensions
+      const canvas = await html2canvas(element, {
+        scale: 3,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+        allowTaint: true,
       })
 
-      // Calculate dimensions
-      const imgWidth = 210 // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
+      // Restore original height
+      element.style.height = originalHeight
+
+      // PDF dimensions in mm (A4)
+      const pdfWidth = 210
+      const pdfHeight = 297
+
+      // Calculate image dimensions to fit A4
+      const imgWidth = pdfWidth
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width
 
       // Create PDF
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
+        compress: true,
       })
 
-      const imgData = canvas.toDataURL("image/png")
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
+      const imgData = canvas.toDataURL("image/png", 1.0)
+
+      // If content fits in one page
+      if (imgHeight <= pdfHeight) {
+        pdf.addImage(
+          imgData,
+          "PNG",
+          0,
+          0,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "FAST",
+        )
+      } else {
+        // Multi-page handling
+        let heightLeft = imgHeight
+        let position = 0
+        let page = 0
+
+        while (heightLeft > 0) {
+          if (page > 0) {
+            pdf.addPage()
+          }
+
+          // Calculate source Y position in canvas pixels
+          const sourceY = (page * pdfHeight * canvas.width) / pdfWidth
+          const sourceHeight = Math.min(
+            (pdfHeight * canvas.width) / pdfWidth,
+            canvas.height - sourceY,
+          )
+
+          // Create a temporary canvas for this page
+          const pageCanvas = document.createElement("canvas")
+          const pageCtx = pageCanvas.getContext("2d")
+
+          if (pageCtx) {
+            pageCanvas.width = canvas.width
+            pageCanvas.height = sourceHeight
+
+            // Draw the specific section
+            pageCtx.fillStyle = "#ffffff"
+            pageCtx.fillRect(0, 0, pageCanvas.width, pageCanvas.height)
+            pageCtx.drawImage(
+              canvas,
+              0,
+              sourceY,
+              canvas.width,
+              sourceHeight,
+              0,
+              0,
+              canvas.width,
+              sourceHeight,
+            )
+
+            const pageImgData = pageCanvas.toDataURL("image/png", 1.0)
+            const pageImgHeight = (sourceHeight * pdfWidth) / canvas.width
+
+            pdf.addImage(
+              pageImgData,
+              "PNG",
+              0,
+              0,
+              imgWidth,
+              pageImgHeight,
+              undefined,
+              "FAST",
+            )
+          }
+
+          heightLeft -= pdfHeight
+          page++
+        }
+      }
 
       // Download
       pdf.save(`${resume.name.replace(/\s+/g, "-").toLowerCase()}.pdf`)
@@ -159,10 +251,9 @@ export default function PreviewResumePage() {
         <div className="max-w-4xl mx-auto">
           <div
             ref={resumeRef}
-            className="bg-white rounded-lg shadow-2xl overflow-hidden print:shadow-none print:rounded-none"
-            style={{ minHeight: "1056px" }}
+            className="bg-white rounded-lg shadow-2xl overflow-visible print:shadow-none print:rounded-none"
           >
-            <ModernTemplate resume={resume} />
+            <ResumeTemplateRenderer resume={resume} />
           </div>
         </div>
       </div>

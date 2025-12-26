@@ -28,7 +28,10 @@ import {
   Certification,
   Language,
 } from "@/types/resume"
-import { ResumeTemplateRenderer } from '@/components/resume-templates/resume-template-renderer'
+import { ResumeTemplateRenderer } from "@/components/resume-templates/resume-template-renderer"
+import { SectionManager } from "@/components/section-manager"
+import { ExperienceListManager } from "@/components/experience-list-manager"
+import { EducationListManager } from "@/components/education-list-manager"
 
 type EditSection =
   | "personal"
@@ -40,6 +43,7 @@ type EditSection =
   | "certifications"
   | "languages"
   | "style"
+  | "sections"
 
 export default function EditResumePage() {
   const params = useParams()
@@ -48,6 +52,12 @@ export default function EditResumePage() {
   const [activeSection, setActiveSection] = useState<EditSection>("personal")
   const [showPreview, setShowPreview] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [editingExperience, setEditingExperience] = useState<Experience | null>(
+    null,
+  )
+  const [editingEducation, setEditingEducation] = useState<Education | null>(
+    null,
+  )
 
   useEffect(() => {
     const id = params.id as string
@@ -165,6 +175,7 @@ export default function EditResumePage() {
                 { id: "projects", label: "Projects" },
                 { id: "certifications", label: "Certifications" },
                 { id: "languages", label: "Languages" },
+                { id: "sections", label: "Section Order" },
                 { id: "style", label: "Style" },
               ].map((section) => (
                 <button
@@ -382,10 +393,15 @@ export default function EditResumePage() {
             {/* Experience */}
             {activeSection === "experience" && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Work Experience</h2>
-                  <button
-                    onClick={() => {
+                <h2 className="text-2xl font-bold mb-4">Work Experience</h2>
+
+                {!editingExperience ? (
+                  <ExperienceListManager
+                    items={resume.experience}
+                    onUpdate={(items) =>
+                      setResume({ ...resume, experience: items })
+                    }
+                    onAdd={() => {
                       const newExp: Experience = {
                         id: `exp_${Date.now()}`,
                         company: "",
@@ -396,42 +412,53 @@ export default function EditResumePage() {
                         description: "",
                         highlights: [],
                       }
+                      setEditingExperience(newExp)
+                    }}
+                    onDelete={(id) => {
                       setResume({
                         ...resume,
-                        experience: [...resume.experience, newExp],
+                        experience: resume.experience.filter(
+                          (e) => e.id !== id,
+                        ),
                       })
                     }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
-                  >
-                    <Plus className="size-4" />
-                    Add Experience
-                  </button>
-                </div>
-
-                {resume.experience.map((exp, index) => (
-                  <div
-                    key={exp.id}
-                    className="p-4 rounded-lg border bg-card space-y-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <GripVertical className="size-5 text-muted-foreground cursor-move" />
-                        <span className="font-medium">
-                          Experience #{index + 1}
-                        </span>
-                      </div>
+                    onEdit={(item) => setEditingExperience(item)}
+                  />
+                ) : (
+                  <div className="space-y-4 p-6 rounded-lg border bg-card">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">
+                        {editingExperience.position || "New Experience"}
+                      </h3>
                       <button
                         onClick={() => {
-                          setResume({
-                            ...resume,
-                            experience: resume.experience.filter(
-                              (e) => e.id !== exp.id,
-                            ),
-                          })
+                          // Save the edited experience
+                          const exists = resume.experience.find(
+                            (e) => e.id === editingExperience.id,
+                          )
+                          if (exists) {
+                            setResume({
+                              ...resume,
+                              experience: resume.experience.map((e) =>
+                                e.id === editingExperience.id
+                                  ? editingExperience
+                                  : e,
+                              ),
+                            })
+                          } else {
+                            setResume({
+                              ...resume,
+                              experience: [
+                                ...resume.experience,
+                                editingExperience,
+                              ],
+                            })
+                          }
+                          setEditingExperience(null)
                         }}
-                        className="p-2 hover:bg-destructive/10 text-destructive rounded-lg"
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
                       >
-                        <Trash2 className="size-4" />
+                        Done
                       </button>
                     </div>
 
@@ -442,15 +469,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="text"
-                          value={exp.position}
-                          onChange={(e) => {
-                            const updated = resume.experience.map((item) =>
-                              item.id === exp.id
-                                ? { ...item, position: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, experience: updated })
-                          }}
+                          value={editingExperience.position}
+                          onChange={(e) =>
+                            setEditingExperience({
+                              ...editingExperience,
+                              position: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
@@ -461,15 +486,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="text"
-                          value={exp.company}
-                          onChange={(e) => {
-                            const updated = resume.experience.map((item) =>
-                              item.id === exp.id
-                                ? { ...item, company: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, experience: updated })
-                          }}
+                          value={editingExperience.company}
+                          onChange={(e) =>
+                            setEditingExperience({
+                              ...editingExperience,
+                              company: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
@@ -481,15 +504,13 @@ export default function EditResumePage() {
                       </label>
                       <input
                         type="text"
-                        value={exp.location}
-                        onChange={(e) => {
-                          const updated = resume.experience.map((item) =>
-                            item.id === exp.id
-                              ? { ...item, location: e.target.value }
-                              : item,
-                          )
-                          setResume({ ...resume, experience: updated })
-                        }}
+                        value={editingExperience.location}
+                        onChange={(e) =>
+                          setEditingExperience({
+                            ...editingExperience,
+                            location: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -501,15 +522,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="month"
-                          value={exp.startDate}
-                          onChange={(e) => {
-                            const updated = resume.experience.map((item) =>
-                              item.id === exp.id
-                                ? { ...item, startDate: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, experience: updated })
-                          }}
+                          value={editingExperience.startDate}
+                          onChange={(e) =>
+                            setEditingExperience({
+                              ...editingExperience,
+                              startDate: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
@@ -520,16 +539,14 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="month"
-                          value={exp.endDate || ""}
-                          disabled={exp.current}
-                          onChange={(e) => {
-                            const updated = resume.experience.map((item) =>
-                              item.id === exp.id
-                                ? { ...item, endDate: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, experience: updated })
-                          }}
+                          value={editingExperience.endDate || ""}
+                          disabled={editingExperience.current}
+                          onChange={(e) =>
+                            setEditingExperience({
+                              ...editingExperience,
+                              endDate: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
                         />
                       </div>
@@ -538,19 +555,17 @@ export default function EditResumePage() {
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        id={`current-${exp.id}`}
-                        checked={exp.current}
-                        onChange={(e) => {
-                          const updated = resume.experience.map((item) =>
-                            item.id === exp.id
-                              ? { ...item, current: e.target.checked }
-                              : item,
-                          )
-                          setResume({ ...resume, experience: updated })
-                        }}
+                        id="current-exp"
+                        checked={editingExperience.current}
+                        onChange={(e) =>
+                          setEditingExperience({
+                            ...editingExperience,
+                            current: e.target.checked,
+                          })
+                        }
                         className="rounded"
                       />
-                      <label htmlFor={`current-${exp.id}`} className="text-sm">
+                      <label htmlFor="current-exp" className="text-sm">
                         I currently work here
                       </label>
                     </div>
@@ -560,15 +575,13 @@ export default function EditResumePage() {
                         Description
                       </label>
                       <textarea
-                        value={exp.description}
-                        onChange={(e) => {
-                          const updated = resume.experience.map((item) =>
-                            item.id === exp.id
-                              ? { ...item, description: e.target.value }
-                              : item,
-                          )
-                          setResume({ ...resume, experience: updated })
-                        }}
+                        value={editingExperience.description}
+                        onChange={(e) =>
+                          setEditingExperience({
+                            ...editingExperience,
+                            description: e.target.value,
+                          })
+                        }
                         rows={3}
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
@@ -578,38 +591,31 @@ export default function EditResumePage() {
                       <label className="block text-sm font-medium mb-2">
                         Key Highlights
                       </label>
-                      {exp.highlights.map((highlight, hIndex) => (
+                      {editingExperience.highlights.map((highlight, hIndex) => (
                         <div key={hIndex} className="flex gap-2 mb-2">
                           <input
                             type="text"
                             value={highlight}
                             onChange={(e) => {
-                              const updated = resume.experience.map((item) => {
-                                if (item.id === exp.id) {
-                                  const newHighlights = [...item.highlights]
-                                  newHighlights[hIndex] = e.target.value
-                                  return { ...item, highlights: newHighlights }
-                                }
-                                return item
+                              const newHighlights = [
+                                ...editingExperience.highlights,
+                              ]
+                              newHighlights[hIndex] = e.target.value
+                              setEditingExperience({
+                                ...editingExperience,
+                                highlights: newHighlights,
                               })
-                              setResume({ ...resume, experience: updated })
                             }}
                             className="flex-1 px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                           />
                           <button
                             onClick={() => {
-                              const updated = resume.experience.map((item) => {
-                                if (item.id === exp.id) {
-                                  return {
-                                    ...item,
-                                    highlights: item.highlights.filter(
-                                      (_, i) => i !== hIndex,
-                                    ),
-                                  }
-                                }
-                                return item
+                              setEditingExperience({
+                                ...editingExperience,
+                                highlights: editingExperience.highlights.filter(
+                                  (_, i) => i !== hIndex,
+                                ),
                               })
-                              setResume({ ...resume, experience: updated })
                             }}
                             className="p-2 hover:bg-destructive/10 text-destructive rounded-lg"
                           >
@@ -619,29 +625,16 @@ export default function EditResumePage() {
                       ))}
                       <button
                         onClick={() => {
-                          const updated = resume.experience.map((item) => {
-                            if (item.id === exp.id) {
-                              return {
-                                ...item,
-                                highlights: [...item.highlights, ""],
-                              }
-                            }
-                            return item
+                          setEditingExperience({
+                            ...editingExperience,
+                            highlights: [...editingExperience.highlights, ""],
                           })
-                          setResume({ ...resume, experience: updated })
                         }}
                         className="text-sm text-primary hover:underline"
                       >
                         + Add Highlight
                       </button>
                     </div>
-                  </div>
-                ))}
-
-                {resume.experience.length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground">
-                    No experience added yet. Click "Add Experience" to get
-                    started.
                   </div>
                 )}
               </div>
@@ -650,10 +643,15 @@ export default function EditResumePage() {
             {/* Education - Similar structure to Experience */}
             {activeSection === "education" && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Education</h2>
-                  <button
-                    onClick={() => {
+                <h2 className="text-2xl font-bold mb-4">Education</h2>
+
+                {!editingEducation ? (
+                  <EducationListManager
+                    items={resume.education}
+                    onUpdate={(items) =>
+                      setResume({ ...resume, education: items })
+                    }
+                    onAdd={() => {
                       const newEdu: Education = {
                         id: `edu_${Date.now()}`,
                         institution: "",
@@ -663,42 +661,50 @@ export default function EditResumePage() {
                         startDate: "",
                         current: false,
                       }
+                      setEditingEducation(newEdu)
+                    }}
+                    onDelete={(id) => {
                       setResume({
                         ...resume,
-                        education: [...resume.education, newEdu],
+                        education: resume.education.filter((e) => e.id !== id),
                       })
                     }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
-                  >
-                    <Plus className="size-4" />
-                    Add Education
-                  </button>
-                </div>
-
-                {resume.education.map((edu, index) => (
-                  <div
-                    key={edu.id}
-                    className="p-4 rounded-lg border bg-card space-y-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <GripVertical className="size-5 text-muted-foreground cursor-move" />
-                        <span className="font-medium">
-                          Education #{index + 1}
-                        </span>
-                      </div>
+                    onEdit={(item) => setEditingEducation(item)}
+                  />
+                ) : (
+                  <div className="space-y-4 p-6 rounded-lg border bg-card">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold">
+                        {editingEducation.degree || "New Education"}
+                      </h3>
                       <button
                         onClick={() => {
-                          setResume({
-                            ...resume,
-                            education: resume.education.filter(
-                              (e) => e.id !== edu.id,
-                            ),
-                          })
+                          const exists = resume.education.find(
+                            (e) => e.id === editingEducation.id,
+                          )
+                          if (exists) {
+                            setResume({
+                              ...resume,
+                              education: resume.education.map((e) =>
+                                e.id === editingEducation.id
+                                  ? editingEducation
+                                  : e,
+                              ),
+                            })
+                          } else {
+                            setResume({
+                              ...resume,
+                              education: [
+                                ...resume.education,
+                                editingEducation,
+                              ],
+                            })
+                          }
+                          setEditingEducation(null)
                         }}
-                        className="p-2 hover:bg-destructive/10 text-destructive rounded-lg"
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
                       >
-                        <Trash2 className="size-4" />
+                        Done
                       </button>
                     </div>
 
@@ -709,15 +715,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="text"
-                          value={edu.degree}
-                          onChange={(e) => {
-                            const updated = resume.education.map((item) =>
-                              item.id === edu.id
-                                ? { ...item, degree: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, education: updated })
-                          }}
+                          value={editingEducation.degree}
+                          onChange={(e) =>
+                            setEditingEducation({
+                              ...editingEducation,
+                              degree: e.target.value,
+                            })
+                          }
                           placeholder="e.g., Bachelor of Science"
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
@@ -729,15 +733,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="text"
-                          value={edu.field}
-                          onChange={(e) => {
-                            const updated = resume.education.map((item) =>
-                              item.id === edu.id
-                                ? { ...item, field: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, education: updated })
-                          }}
+                          value={editingEducation.field}
+                          onChange={(e) =>
+                            setEditingEducation({
+                              ...editingEducation,
+                              field: e.target.value,
+                            })
+                          }
                           placeholder="e.g., Computer Science"
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
@@ -750,15 +752,13 @@ export default function EditResumePage() {
                       </label>
                       <input
                         type="text"
-                        value={edu.institution}
-                        onChange={(e) => {
-                          const updated = resume.education.map((item) =>
-                            item.id === edu.id
-                              ? { ...item, institution: e.target.value }
-                              : item,
-                          )
-                          setResume({ ...resume, education: updated })
-                        }}
+                        value={editingEducation.institution}
+                        onChange={(e) =>
+                          setEditingEducation({
+                            ...editingEducation,
+                            institution: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -769,15 +769,13 @@ export default function EditResumePage() {
                       </label>
                       <input
                         type="text"
-                        value={edu.location}
-                        onChange={(e) => {
-                          const updated = resume.education.map((item) =>
-                            item.id === edu.id
-                              ? { ...item, location: e.target.value }
-                              : item,
-                          )
-                          setResume({ ...resume, education: updated })
-                        }}
+                        value={editingEducation.location}
+                        onChange={(e) =>
+                          setEditingEducation({
+                            ...editingEducation,
+                            location: e.target.value,
+                          })
+                        }
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
                     </div>
@@ -789,15 +787,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="month"
-                          value={edu.startDate}
-                          onChange={(e) => {
-                            const updated = resume.education.map((item) =>
-                              item.id === edu.id
-                                ? { ...item, startDate: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, education: updated })
-                          }}
+                          value={editingEducation.startDate}
+                          onChange={(e) =>
+                            setEditingEducation({
+                              ...editingEducation,
+                              startDate: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                       </div>
@@ -808,16 +804,14 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="month"
-                          value={edu.endDate || ""}
-                          disabled={edu.current}
-                          onChange={(e) => {
-                            const updated = resume.education.map((item) =>
-                              item.id === edu.id
-                                ? { ...item, endDate: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, education: updated })
-                          }}
+                          value={editingEducation.endDate || ""}
+                          disabled={editingEducation.current}
+                          onChange={(e) =>
+                            setEditingEducation({
+                              ...editingEducation,
+                              endDate: e.target.value,
+                            })
+                          }
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
                         />
                       </div>
@@ -828,15 +822,13 @@ export default function EditResumePage() {
                         </label>
                         <input
                           type="text"
-                          value={edu.gpa || ""}
-                          onChange={(e) => {
-                            const updated = resume.education.map((item) =>
-                              item.id === edu.id
-                                ? { ...item, gpa: e.target.value }
-                                : item,
-                            )
-                            setResume({ ...resume, education: updated })
-                          }}
+                          value={editingEducation.gpa || ""}
+                          onChange={(e) =>
+                            setEditingEducation({
+                              ...editingEducation,
+                              gpa: e.target.value,
+                            })
+                          }
                           placeholder="3.8/4.0"
                           className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                         />
@@ -846,32 +838,20 @@ export default function EditResumePage() {
                     <div className="flex items-center gap-2">
                       <input
                         type="checkbox"
-                        id={`current-edu-${edu.id}`}
-                        checked={edu.current}
-                        onChange={(e) => {
-                          const updated = resume.education.map((item) =>
-                            item.id === edu.id
-                              ? { ...item, current: e.target.checked }
-                              : item,
-                          )
-                          setResume({ ...resume, education: updated })
-                        }}
+                        id="current-edu"
+                        checked={editingEducation.current}
+                        onChange={(e) =>
+                          setEditingEducation({
+                            ...editingEducation,
+                            current: e.target.checked,
+                          })
+                        }
                         className="rounded"
                       />
-                      <label
-                        htmlFor={`current-edu-${edu.id}`}
-                        className="text-sm"
-                      >
+                      <label htmlFor="current-edu" className="text-sm">
                         Currently studying here
                       </label>
                     </div>
-                  </div>
-                ))}
-
-                {resume.education.length === 0 && (
-                  <div className="text-center py-12 text-muted-foreground">
-                    No education added yet. Click "Add Education" to get
-                    started.
                   </div>
                 )}
               </div>
@@ -1361,6 +1341,16 @@ export default function EditResumePage() {
               </div>
             )}
 
+            {/* Section Order & Visibility */}
+            {activeSection === "sections" && (
+              <SectionManager
+                resume={resume}
+                onUpdate={(sections) => {
+                  setResume({ ...resume, sections })
+                }}
+              />
+            )}
+
             {/* Style Settings */}
             {activeSection === "style" && (
               <div className="space-y-6">
@@ -1548,10 +1538,7 @@ export default function EditResumePage() {
         {showPreview && (
           <div className="w-1/2 bg-muted/30 overflow-y-auto">
             <div className="container py-6">
-              <div
-                className="bg-white rounded-lg shadow-2xl overflow-hidden"
-                style={{ minHeight: "1056px" }}
-              >
+              <div className="bg-white rounded-lg shadow-2xl overflow-visible">
                 <ResumeTemplateRenderer resume={resume} />
               </div>
             </div>

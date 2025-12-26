@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
   Plus,
@@ -13,6 +14,7 @@ import {
   Download,
   ArrowLeft,
   MoreVertical,
+  Upload,
 } from "lucide-react"
 import {
   getResumes,
@@ -23,13 +25,16 @@ import {
 } from "@/lib/resume-storage"
 import { Resume } from "@/types/resume"
 import { formatDate } from "@/lib/utils"
+import { ImportModal } from "@/components/import-modal"
 
 export default function ResumesPage() {
+  const router = useRouter()
   const [resumes, setResumes] = useState<Resume[]>([])
   const [stats, setStats] = useState<any>(null)
   const [searchQuery, setSearchQuery] = useState("")
   const [templateFilter, setTemplateFilter] = useState<string>("all")
   const [showMenu, setShowMenu] = useState<string | null>(null)
+  const [showImportModal, setShowImportModal] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -63,6 +68,11 @@ export default function ResumesPage() {
     a.click()
     URL.revokeObjectURL(url)
     setShowMenu(null)
+  }
+
+  const handleImportSuccess = (resume: Resume) => {
+    loadData()
+    router.push(`/tools/resumes/${resume.id}/edit`)
   }
 
   const filteredResumes = resumes.filter((resume) => {
@@ -114,13 +124,22 @@ export default function ResumesPage() {
                 </p>
               </div>
             </div>
-            <Link
-              href="/tools/resumes/new"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-            >
-              <Plus className="size-4" />
-              New Resume
-            </Link>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors"
+              >
+                <Upload className="size-4" />
+                Import
+              </button>
+              <Link
+                href="/tools/resumes/new"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                <Plus className="size-4" />
+                New Resume
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -304,6 +323,13 @@ export default function ResumesPage() {
           </div>
         )}
       </div>
+
+      {/* Import Modal */}
+      <ImportModal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        onImportSuccess={handleImportSuccess}
+      />
     </div>
   )
 }
