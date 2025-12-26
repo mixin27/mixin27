@@ -92,7 +92,7 @@ export default function PreviewResumePage() {
       } else {
         // Multi-page handling
         let heightLeft = imgHeight
-        let position = 0
+        const position = 0
         let page = 0
 
         while (heightLeft > 0) {
