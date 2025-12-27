@@ -2,7 +2,15 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
-import { Client, Invoice, InvoiceItem } from "@/types/invoice"
+import {
+  Client,
+  Invoice,
+  InvoiceItem,
+  Quotation,
+  Receipt,
+  Contract,
+  TimeEntry,
+} from "@/types/invoice"
 
 export async function POST(request: NextRequest) {
   try {
@@ -160,6 +168,239 @@ export async function POST(request: NextRequest) {
             },
           })
         }
+
+        // 4. Sync Quotations
+        if (data.quotations && Array.isArray(data.quotations)) {
+          await Promise.all(
+            data.quotations.map(async (quotation: Quotation) => {
+              await tx.quotation.upsert({
+                where: { id: quotation.id },
+                update: {
+                  invoiceNumber: quotation.invoiceNumber,
+                  issueDate: new Date(quotation.issueDate),
+                  dueDate: new Date(quotation.dueDate),
+                  validUntil: new Date(quotation.validUntil),
+                  status: quotation.status,
+                  subtotal: quotation.subtotal,
+                  taxRate: quotation.taxRate,
+                  taxAmount: quotation.taxAmount,
+                  discount: quotation.discount,
+                  discountType: quotation.discountType,
+                  total: quotation.total,
+                  notes: quotation.notes,
+                  terms: quotation.terms,
+                  currency: quotation.currency,
+                  updatedAt: new Date(),
+                },
+                create: {
+                  id: quotation.id,
+                  userId,
+                  clientId: quotation.client.id,
+                  invoiceNumber: quotation.invoiceNumber,
+                  issueDate: new Date(quotation.issueDate),
+                  dueDate: new Date(quotation.dueDate),
+                  validUntil: new Date(quotation.validUntil),
+                  status: quotation.status,
+                  subtotal: quotation.subtotal,
+                  taxRate: quotation.taxRate,
+                  taxAmount: quotation.taxAmount,
+                  discount: quotation.discount,
+                  discountType: quotation.discountType,
+                  total: quotation.total,
+                  notes: quotation.notes,
+                  terms: quotation.terms,
+                  currency: quotation.currency,
+                  createdAt: new Date(quotation.createdAt),
+                },
+              })
+
+              // Delete old items and create new ones
+              await tx.invoiceItem.deleteMany({
+                where: { quotationId: quotation.id },
+              })
+
+              if (quotation.items && quotation.items.length > 0) {
+                await tx.invoiceItem.createMany({
+                  data: quotation.items.map((item: InvoiceItem) => ({
+                    id: item.id,
+                    quotationId: quotation.id,
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    amount: item.amount,
+                  })),
+                })
+              }
+            }),
+          )
+        }
+
+        // 5. Sync Receipts
+        if (data.receipts && Array.isArray(data.receipts)) {
+          await Promise.all(
+            data.receipts.map(async (receipt: Receipt) => {
+              await tx.receipt.upsert({
+                where: { id: receipt.id },
+                update: {
+                  receiptNumber: receipt.receiptNumber,
+                  paymentDate: new Date(receipt.paymentDate),
+                  paymentMethod: receipt.paymentMethod,
+                  relatedInvoiceNumber: receipt.relatedInvoiceNumber,
+                  subtotal: receipt.subtotal,
+                  taxRate: receipt.taxRate,
+                  taxAmount: receipt.taxAmount,
+                  discount: receipt.discount,
+                  discountType: receipt.discountType,
+                  total: receipt.total,
+                  amountPaid: receipt.amountPaid,
+                  notes: receipt.notes,
+                  currency: receipt.currency,
+                  updatedAt: new Date(),
+                },
+                create: {
+                  id: receipt.id,
+                  userId,
+                  clientId: receipt.client.id,
+                  receiptNumber: receipt.receiptNumber,
+                  paymentDate: new Date(receipt.paymentDate),
+                  paymentMethod: receipt.paymentMethod,
+                  relatedInvoiceNumber: receipt.relatedInvoiceNumber,
+                  subtotal: receipt.subtotal,
+                  taxRate: receipt.taxRate,
+                  taxAmount: receipt.taxAmount,
+                  discount: receipt.discount,
+                  discountType: receipt.discountType,
+                  total: receipt.total,
+                  amountPaid: receipt.amountPaid,
+                  notes: receipt.notes,
+                  currency: receipt.currency,
+                  createdAt: new Date(receipt.createdAt),
+                },
+              })
+
+              // Delete old items and create new ones
+              await tx.invoiceItem.deleteMany({
+                where: { receiptId: receipt.id },
+              })
+
+              if (receipt.items && receipt.items.length > 0) {
+                await tx.invoiceItem.createMany({
+                  data: receipt.items.map((item: InvoiceItem) => ({
+                    id: item.id,
+                    receiptId: receipt.id,
+                    description: item.description,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    amount: item.amount,
+                  })),
+                })
+              }
+            }),
+          )
+        }
+
+        // 6. Sync Contracts
+        if (data.contracts && Array.isArray(data.contracts)) {
+          await Promise.all(
+            data.contracts.map((contract: Contract) =>
+              tx.contract.upsert({
+                where: { id: contract.id },
+                update: {
+                  contractNumber: contract.contractNumber,
+                  templateType: contract.templateType,
+                  templateName: contract.templateName,
+                  projectName: contract.projectName,
+                  projectScope: contract.projectScope,
+                  deliverables: contract.deliverables,
+                  startDate: new Date(contract.startDate),
+                  endDate: new Date(contract.endDate),
+                  signatureDate: new Date(contract.signatureDate),
+                  projectFee: contract.projectFee,
+                  paymentTerms: contract.paymentTerms,
+                  currency: contract.currency,
+                  clientSignature: contract.clientSignature,
+                  clientSignatureType: contract.clientSignatureType,
+                  businessSignature: contract.businessSignature,
+                  businessSignatureType: contract.businessSignatureType,
+                  status: contract.status,
+                  generatedContent: contract.generatedContent,
+                  notes: contract.notes,
+                  updatedAt: new Date(),
+                },
+                create: {
+                  id: contract.id,
+                  userId,
+                  clientId: contract.client.id,
+                  contractNumber: contract.contractNumber,
+                  templateType: contract.templateType,
+                  templateName: contract.templateName,
+                  projectName: contract.projectName,
+                  projectScope: contract.projectScope,
+                  deliverables: contract.deliverables,
+                  startDate: new Date(contract.startDate),
+                  endDate: new Date(contract.endDate),
+                  signatureDate: new Date(contract.signatureDate),
+                  projectFee: contract.projectFee,
+                  paymentTerms: contract.paymentTerms,
+                  currency: contract.currency,
+                  clientSignature: contract.clientSignature,
+                  clientSignatureType: contract.clientSignatureType,
+                  businessSignature: contract.businessSignature,
+                  businessSignatureType: contract.businessSignatureType,
+                  status: contract.status,
+                  generatedContent: contract.generatedContent,
+                  notes: contract.notes,
+                  createdAt: new Date(contract.createdAt),
+                },
+              }),
+            ),
+          )
+        }
+
+        // 7. Sync Time Entries
+        if (data.timeEntries && Array.isArray(data.timeEntries)) {
+          await Promise.all(
+            data.timeEntries.map((timeEntry: TimeEntry) =>
+              tx.timeEntry.upsert({
+                where: { id: timeEntry.id },
+                update: {
+                  clientId: timeEntry.clientId,
+                  projectName: timeEntry.projectName,
+                  description: timeEntry.description,
+                  date: new Date(timeEntry.date),
+                  startTime: timeEntry.startTime,
+                  endTime: timeEntry.endTime,
+                  duration: timeEntry.duration,
+                  hourlyRate: timeEntry.hourlyRate,
+                  amount: timeEntry.amount,
+                  billable: timeEntry.billable,
+                  invoiced: timeEntry.invoiced,
+                  invoiceId: timeEntry.invoiceId,
+                  tags: timeEntry.tags || [],
+                  updatedAt: new Date(),
+                },
+                create: {
+                  id: timeEntry.id,
+                  userId,
+                  clientId: timeEntry.clientId,
+                  projectName: timeEntry.projectName,
+                  description: timeEntry.description,
+                  date: new Date(timeEntry.date),
+                  startTime: timeEntry.startTime,
+                  endTime: timeEntry.endTime,
+                  duration: timeEntry.duration,
+                  hourlyRate: timeEntry.hourlyRate,
+                  amount: timeEntry.amount,
+                  billable: timeEntry.billable ?? true,
+                  invoiced: timeEntry.invoiced ?? false,
+                  invoiceId: timeEntry.invoiceId,
+                  tags: timeEntry.tags || [],
+                  createdAt: new Date(timeEntry.createdAt),
+                },
+              }),
+            ),
+          )
+        }
       },
       {
         maxWait: 10000, // 10 seconds max wait
@@ -167,7 +408,7 @@ export async function POST(request: NextRequest) {
       },
     )
 
-    // 4. Sync Resumes OUTSIDE transaction to avoid timeout
+    // 8. Sync Resumes OUTSIDE transaction to avoid timeout
     if (data.resumes && Array.isArray(data.resumes)) {
       await syncResumes(userId, data.resumes)
     }

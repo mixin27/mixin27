@@ -1,27 +1,24 @@
 import { NextRequest, NextResponse } from "next/server"
-import {
-  dbSaveClient,
-  dbGetClients,
-  dbGetClientById,
-  dbDeleteClient,
-} from "@/lib/db"
+import prisma from "@/lib/prisma"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 
 // GET /api/clients - Get all clients
 // GET /api/clients?id=xxx - Get single client
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const id = searchParams.get("id")
+    const session = await getServerSession(authOptions)
 
-    if (id) {
-      const client = await dbGetClientById(id)
-      if (!client) {
-        return NextResponse.json({ error: "Client not found" }, { status: 404 })
-      }
-      return NextResponse.json(client)
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const clients = await dbGetClients()
+    const userId = session.user.id
+
+    const clients = await prisma.client.findMany({
+      where: { userId }
+    })
+
     return NextResponse.json(clients)
   } catch (error) {
     console.error("Error fetching clients:", error)
@@ -35,8 +32,44 @@ export async function GET(request: NextRequest) {
 // POST /api/clients - Create or update client
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const userId = session.user.id
+
     const client = await request.json()
-    await dbSaveClient(client)
+    await prisma.client.upsert({
+      where: { userId, id: client.id },
+      update: {
+        name: client.name,
+        email: client.email,
+        phone: client.phone,
+        address: client.address,
+        city: client.city,
+        state: client.state,
+        zipCode: client.zipCode,
+        country: client.country,
+        taxId: client.taxId,
+      },
+      create: {
+        id: client.id,
+        userId,
+        name: client.name,
+        email: client.email,
+        phone: client.phone,
+        address: client.address,
+        city: client.city,
+        state: client.state,
+        zipCode: client.zipCode,
+        country: client.country,
+        taxId: client.taxId,
+        createdAt: new Date(client.createdAt),
+      },
+    })
+
     return NextResponse.json({ success: true, client })
   } catch (error) {
     console.error("Error saving client:", error)
@@ -50,6 +83,14 @@ export async function POST(request: NextRequest) {
 // DELETE /api/clients?id=xxx - Delete client
 export async function DELETE(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const userId = session.user.id
+
     const searchParams = request.nextUrl.searchParams
     const id = searchParams.get("id")
 
@@ -57,7 +98,10 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Client ID required" }, { status: 400 })
     }
 
-    await dbDeleteClient(id)
+    await prisma.client.delete({
+      where: { userId, id }
+    })
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error deleting client:", error)
