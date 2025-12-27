@@ -22,7 +22,7 @@ import {
   deleteResume,
   duplicateResume,
   exportResumeJSON,
-} from "@/lib/resume-storage"
+} from "@/lib/storage/tools-storage"
 import { Resume } from "@/types/resume"
 import { formatDate } from "@/lib/utils"
 import { ImportModal } from "@/components/import-modal"

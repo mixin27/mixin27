@@ -1,35 +1,35 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
 import {
   saveQuotation,
   getQuotationById,
   getClients,
-} from '@/lib/invoice-storage'
-import { Client, InvoiceItem, Quotation } from '@/types/invoice'
+} from "@/lib/storage/tools-storage"
+import { Client, InvoiceItem, Quotation } from "@/types/invoice"
 
 export default function EditQuotationPage() {
   const params = useParams()
   const router = useRouter()
 
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState<string>('')
-  const [quotationNumber, setQuotationNumber] = useState<string>('')
-  const [issueDate, setIssueDate] = useState<string>('')
-  const [validUntil, setValidUntil] = useState<string>('')
-  const [status, setStatus] = useState<Quotation['status']>('draft')
+  const [selectedClientId, setSelectedClientId] = useState<string>("")
+  const [quotationNumber, setQuotationNumber] = useState<string>("")
+  const [issueDate, setIssueDate] = useState<string>("")
+  const [validUntil, setValidUntil] = useState<string>("")
+  const [status, setStatus] = useState<Quotation["status"]>("draft")
   const [items, setItems] = useState<InvoiceItem[]>([])
-  const [currency, setCurrency] = useState<string>('USD')
+  const [currency, setCurrency] = useState<string>("USD")
   const [taxRate, setTaxRate] = useState<number>(0)
   const [discount, setDiscount] = useState<number>(0)
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
-    'percentage',
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
   )
-  const [notes, setNotes] = useState<string>('')
-  const [terms, setTerms] = useState<string>('')
+  const [notes, setNotes] = useState<string>("")
+  const [terms, setTerms] = useState<string>("")
   const [originalQuotation, setOriginalQuotation] = useState<Quotation | null>(
     null,
   )
@@ -40,7 +40,7 @@ export default function EditQuotationPage() {
     const loadedClients = getClients()
 
     if (!loadedQuotation) {
-      router.push('/tools/quotations')
+      router.push("/tools/quotations")
       return
     }
 
@@ -48,16 +48,16 @@ export default function EditQuotationPage() {
     setClients(loadedClients)
     setSelectedClientId(loadedQuotation.client.id)
     setQuotationNumber(loadedQuotation.invoiceNumber)
-    setIssueDate(loadedQuotation.issueDate.split('T')[0])
-    setValidUntil(loadedQuotation.validUntil.split('T')[0])
+    setIssueDate(loadedQuotation.issueDate.split("T")[0])
+    setValidUntil(loadedQuotation.validUntil.split("T")[0])
     setStatus(loadedQuotation.status)
     setItems(loadedQuotation.items)
     setCurrency(loadedQuotation.currency)
     setTaxRate(loadedQuotation.taxRate)
     setDiscount(loadedQuotation.discount)
     setDiscountType(loadedQuotation.discountType)
-    setNotes(loadedQuotation.notes || '')
-    setTerms(loadedQuotation.terms || '')
+    setNotes(loadedQuotation.notes || "")
+    setTerms(loadedQuotation.terms || "")
   }, [params.id, router])
 
   const addItem = () => {
@@ -65,7 +65,7 @@ export default function EditQuotationPage() {
       ...items,
       {
         id: crypto.randomUUID(),
-        description: '',
+        description: "",
         quantity: 1,
         rate: 0,
         amount: 0,
@@ -88,7 +88,7 @@ export default function EditQuotationPage() {
       items.map((item) => {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
-          if (field === 'quantity' || field === 'rate') {
+          if (field === "quantity" || field === "rate") {
             updated.amount = updated.quantity * updated.rate
           }
           return updated
@@ -101,7 +101,7 @@ export default function EditQuotationPage() {
   const calculateTotals = () => {
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
     const discountAmount =
-      discountType === 'percentage' ? subtotal * (discount / 100) : discount
+      discountType === "percentage" ? subtotal * (discount / 100) : discount
     const taxableAmount = subtotal - discountAmount
     const taxAmount = taxableAmount * (taxRate / 100)
     const total = taxableAmount + taxAmount
@@ -118,7 +118,7 @@ export default function EditQuotationPage() {
     e.preventDefault()
 
     if (!selectedClientId) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
@@ -128,7 +128,7 @@ export default function EditQuotationPage() {
 
     const client = clients.find((c) => c.id === selectedClientId)
     if (!client) {
-      alert('Invalid client selected')
+      alert("Invalid client selected")
       return
     }
 
@@ -142,7 +142,7 @@ export default function EditQuotationPage() {
       dueDate: validUntil,
       validUntil,
       status,
-      items: items.filter((item) => item.description.trim() !== ''),
+      items: items.filter((item) => item.description.trim() !== ""),
       subtotal: totals.subtotal,
       taxRate,
       taxAmount: totals.taxAmount,
@@ -215,7 +215,7 @@ export default function EditQuotationPage() {
                 <select
                   value={status}
                   onChange={(e) =>
-                    setStatus(e.target.value as Quotation['status'])
+                    setStatus(e.target.value as Quotation["status"])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                 >
@@ -322,7 +322,7 @@ export default function EditQuotationPage() {
                       placeholder="Item description"
                       value={item.description}
                       onChange={(e) =>
-                        updateItem(item.id, 'description', e.target.value)
+                        updateItem(item.id, "description", e.target.value)
                       }
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       required
@@ -334,7 +334,7 @@ export default function EditQuotationPage() {
                       placeholder="Qty"
                       value={item.quantity}
                       onChange={(e) =>
-                        updateItem(item.id, 'quantity', Number(e.target.value))
+                        updateItem(item.id, "quantity", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -348,7 +348,7 @@ export default function EditQuotationPage() {
                       placeholder="Rate"
                       value={item.rate}
                       onChange={(e) =>
-                        updateItem(item.id, 'rate', Number(e.target.value))
+                        updateItem(item.id, "rate", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -409,7 +409,7 @@ export default function EditQuotationPage() {
                   <select
                     value={discountType}
                     onChange={(e) =>
-                      setDiscountType(e.target.value as 'percentage' | 'fixed')
+                      setDiscountType(e.target.value as "percentage" | "fixed")
                     }
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   >

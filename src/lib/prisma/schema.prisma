@@ -1,0 +1,606 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma-client"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+// ============================================
+// Auth
+// ============================================
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String  @map("user_id")
+    type              String
+    provider          String
+    providerAccountId String  @map("provider_account_id")
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @map("session_token")
+    userId       String   @map("user_id")
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("sessions")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    password      String?
+    emailVerified DateTime? @map("email_verified")
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+
+    // tools relation
+    clients     Client[]
+    invoices    Invoice[]
+    quotations  Quotation[]
+    receipts    Receipt[]
+    contracts   Contract[]
+    timeEntries TimeEntry[]
+    resumes     Resume[]
+    settings    InvoiceSettings?
+
+    @@map("users")
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@unique([identifier, token])
+    @@map("verification_tokens")
+}
+
+// ============================================
+// INVOICE SYSTEM
+// ============================================
+
+model Client {
+    id        String   @id @default(cuid())
+    userId    String
+    name      String
+    email     String
+    phone     String?
+    address   String?
+    city      String?
+    state     String?
+    zipCode   String?
+    country   String?
+    taxId     String?
+    createdAt DateTime @default(now())
+
+    // Relations
+    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    invoices    Invoice[]
+    quotations  Quotation[]
+    receipts    Receipt[]
+    contracts   Contract[]
+    timeEntries TimeEntry[]
+
+    @@index([userId])
+    @@map("clients")
+}
+
+model Invoice {
+    id            String        @id @default(cuid())
+    userId        String
+    clientId      String
+    invoiceNumber String
+    issueDate     DateTime
+    dueDate       DateTime
+    status        InvoiceStatus @default(draft)
+    subtotal      Decimal       @db.Decimal(10, 2)
+    taxRate       Decimal       @db.Decimal(5, 2)
+    taxAmount     Decimal       @db.Decimal(10, 2)
+    discount      Decimal       @db.Decimal(10, 2)
+    discountType  DiscountType  @default(percentage)
+    total         Decimal       @db.Decimal(10, 2)
+    notes         String?       @db.Text
+    terms         String?       @db.Text
+    currency      String        @default("USD")
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
+
+    // Relations
+    user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    client Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+    items  InvoiceItem[]
+
+    @@index([userId])
+    @@index([clientId])
+    @@index([invoiceNumber])
+    @@map("invoices")
+}
+
+model InvoiceItem {
+    id          String  @id @default(cuid())
+    invoiceId   String?
+    quotationId String?
+    receiptId   String?
+    description String
+    quantity    Decimal @db.Decimal(10, 2)
+    rate        Decimal @db.Decimal(10, 2)
+    amount      Decimal @db.Decimal(10, 2)
+
+    // Relations
+    invoice   Invoice?   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+    quotation Quotation? @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+    receipt   Receipt?   @relation(fields: [receiptId], references: [id], onDelete: Cascade)
+
+    @@index([invoiceId])
+    @@index([quotationId])
+    @@index([receiptId])
+    @@map("invoice_items")
+}
+
+model InvoiceSettings {
+    id                  String  @id @default(cuid())
+    userId              String  @unique
+    businessName        String
+    businessEmail       String
+    businessPhone       String?
+    businessAddress     String?
+    businessCity        String?
+    businessState       String?
+    businessZipCode     String?
+    businessCountry     String?
+    taxId               String?
+    logo                String? @db.Text
+    defaultCurrency     String  @default("USD")
+    defaultTaxRate      Decimal @default(0) @db.Decimal(5, 2)
+    defaultPaymentTerms String  @default("Net 30")
+    invoicePrefix       String  @default("INV-")
+    nextInvoiceNumber   Int     @default(1)
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("invoice_settings")
+}
+
+model Quotation {
+    id            String          @id @default(cuid())
+    userId        String
+    clientId      String
+    invoiceNumber String
+    issueDate     DateTime
+    dueDate       DateTime
+    validUntil    DateTime
+    status        QuotationStatus @default(draft)
+    subtotal      Decimal         @db.Decimal(10, 2)
+    taxRate       Decimal         @db.Decimal(5, 2)
+    taxAmount     Decimal         @db.Decimal(10, 2)
+    discount      Decimal         @db.Decimal(10, 2)
+    discountType  DiscountType    @default(percentage)
+    total         Decimal         @db.Decimal(10, 2)
+    notes         String?         @db.Text
+    terms         String?         @db.Text
+    currency      String          @default("USD")
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @updatedAt
+
+    // Relations
+    user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    client Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+    items  InvoiceItem[]
+
+    @@index([userId])
+    @@index([clientId])
+    @@map("quotations")
+}
+
+model Receipt {
+    id                   String        @id @default(cuid())
+    userId               String
+    clientId             String
+    receiptNumber        String
+    paymentDate          DateTime
+    paymentMethod        PaymentMethod
+    relatedInvoiceNumber String?
+    subtotal             Decimal       @db.Decimal(10, 2)
+    taxRate              Decimal       @db.Decimal(5, 2)
+    taxAmount            Decimal       @db.Decimal(10, 2)
+    discount             Decimal       @db.Decimal(10, 2)
+    discountType         DiscountType  @default(percentage)
+    total                Decimal       @db.Decimal(10, 2)
+    amountPaid           Decimal       @db.Decimal(10, 2)
+    notes                String?       @db.Text
+    currency             String        @default("USD")
+    createdAt            DateTime      @default(now())
+    updatedAt            DateTime      @updatedAt
+
+    // Relations
+    user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    client Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+    items  InvoiceItem[]
+
+    @@index([userId])
+    @@index([clientId])
+    @@map("receipts")
+}
+
+// ============================================
+// CONTRACT SYSTEM
+// ============================================
+
+model Contract {
+    id                    String               @id @default(cuid())
+    userId                String
+    clientId              String
+    contractNumber        String
+    templateType          ContractTemplateType
+    templateName          String
+    projectName           String
+    projectScope          String               @db.Text
+    deliverables          String               @db.Text
+    startDate             DateTime
+    endDate               DateTime
+    signatureDate         DateTime
+    projectFee            Decimal              @db.Decimal(10, 2)
+    paymentTerms          String               @db.Text
+    currency              String               @default("USD")
+    clientSignature       String?              @db.Text
+    clientSignatureType   SignatureType        @default(text)
+    businessSignature     String?              @db.Text
+    businessSignatureType SignatureType        @default(text)
+    status                ContractStatus       @default(draft)
+    generatedContent      String               @db.Text
+    notes                 String?              @db.Text
+    createdAt             DateTime             @default(now())
+    updatedAt             DateTime             @updatedAt
+
+    // Relations
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([clientId])
+    @@map("contracts")
+}
+
+// ============================================
+// TIME TRACKING SYSTEM
+// ============================================
+
+model TimeEntry {
+    id          String   @id @default(cuid())
+    userId      String
+    clientId    String
+    projectName String
+    description String   @db.Text
+    date        DateTime
+    startTime   String
+    endTime     String
+    duration    Int // in minutes
+    hourlyRate  Decimal  @db.Decimal(10, 2)
+    amount      Decimal  @db.Decimal(10, 2)
+    billable    Boolean  @default(true)
+    invoiced    Boolean  @default(false)
+    invoiceId   String?
+    tags        String[] // Array of tags
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    // Relations
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([clientId])
+    @@index([date])
+    @@map("time_entries")
+}
+
+// ============================================
+// RESUME SYSTEM
+// ============================================
+
+model Resume {
+    id        String         @id @default(cuid())
+    userId    String
+    name      String
+    template  ResumeTemplate @default(modern)
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+
+    // Personal Info (JSON)
+    personal Json
+
+    // Resume Content (JSON fields for flexibility)
+    summary String? @db.Text
+
+    // Relations
+    user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+    experiences    ResumeExperience[]
+    educations     ResumeEducation[]
+    skills         ResumeSkill[]
+    projects       ResumeProject[]
+    certifications ResumeCertification[]
+    languages      ResumeLanguage[]
+    customSections ResumeCustomSection[]
+    sections       ResumeSection[]
+    style          ResumeStyle?
+
+    @@index([userId])
+    @@map("resumes")
+}
+
+model ResumeExperience {
+    id          String   @id @default(cuid())
+    resumeId    String
+    company     String
+    position    String
+    location    String
+    startDate   String
+    endDate     String?
+    current     Boolean  @default(false)
+    description String   @db.Text
+    highlights  String[] // Array of highlights
+    order       Int      @default(0)
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_experiences")
+}
+
+model ResumeEducation {
+    id          String  @id @default(cuid())
+    resumeId    String
+    institution String
+    degree      String
+    field       String
+    location    String
+    startDate   String
+    endDate     String?
+    current     Boolean @default(false)
+    gpa         String?
+    description String? @db.Text
+    order       Int     @default(0)
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_educations")
+}
+
+model ResumeSkill {
+    id       String      @id @default(cuid())
+    resumeId String
+    name     String
+    category String
+    level    SkillLevel?
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_skills")
+}
+
+model ResumeProject {
+    id           String   @id @default(cuid())
+    resumeId     String
+    name         String
+    description  String   @db.Text
+    technologies String[] // Array of technologies
+    startDate    String
+    endDate      String?
+    current      Boolean  @default(false)
+    url          String?
+    highlights   String[] // Array of highlights
+    order        Int      @default(0)
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_projects")
+}
+
+model ResumeCertification {
+    id           String  @id @default(cuid())
+    resumeId     String
+    name         String
+    issuer       String
+    issueDate    String
+    expiryDate   String?
+    credentialId String?
+    url          String?
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_certifications")
+}
+
+model ResumeLanguage {
+    id          String              @id @default(cuid())
+    resumeId    String
+    name        String
+    proficiency LanguageProficiency
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_languages")
+}
+
+model ResumeCustomSection {
+    id       String @id @default(cuid())
+    resumeId String
+    title    String
+    content  String @db.Text
+    items    Json? // JSON array for flexible items
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_custom_sections")
+}
+
+model ResumeSection {
+    id       String      @id @default(cuid())
+    resumeId String
+    type     SectionType
+    title    String
+    visible  Boolean     @default(true)
+    order    Int         @default(0)
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@index([resumeId])
+    @@map("resume_sections")
+}
+
+model ResumeStyle {
+    id           String         @id @default(cuid())
+    resumeId     String         @unique
+    template     ResumeTemplate @default(modern)
+    primaryColor String         @default("#2563eb")
+    fontFamily   String         @default("Inter")
+    fontSize     FontSize       @default(medium)
+    spacing      Spacing        @default(normal)
+    showPhoto    Boolean        @default(true)
+    showIcons    Boolean        @default(true)
+
+    // Relations
+    resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+    @@map("resume_styles")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum InvoiceStatus {
+    draft
+    sent
+    paid
+    overdue
+    cancelled
+}
+
+enum QuotationStatus {
+    draft
+    sent
+    accepted
+    rejected
+    expired
+}
+
+enum ContractStatus {
+    draft
+    sent
+    signed
+    active
+    completed
+    terminated
+}
+
+enum DiscountType {
+    percentage
+    fixed
+}
+
+enum PaymentMethod {
+    cash
+    check
+    bank_transfer
+    credit_card
+    paypal
+    kbz_pay
+    aya_pay
+    wave_pay
+    uab_pay
+    cb_pay
+    other
+}
+
+enum ContractTemplateType {
+    service_agreement
+    project_contract
+    freelance_agreement
+    consulting_agreement
+    maintenance_agreement
+}
+
+enum SignatureType {
+    text
+    drawn
+}
+
+enum ResumeTemplate {
+    modern
+    classic
+    creative
+    minimal
+    professional
+}
+
+enum SectionType {
+    personal
+    summary
+    experience
+    education
+    skills
+    projects
+    certifications
+    languages
+    custom
+}
+
+enum SkillLevel {
+    beginner
+    intermediate
+    advanced
+    expert
+}
+
+enum LanguageProficiency {
+    basic
+    conversational
+    professional
+    native
+}
+
+enum FontSize {
+    small
+    medium
+    large
+}
+
+enum Spacing {
+    compact
+    normal
+    relaxed
+}

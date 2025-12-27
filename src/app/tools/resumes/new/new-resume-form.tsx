@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Check } from "lucide-react"
-import { createDefaultResume, saveResume } from "@/lib/resume-storage"
+import { createDefaultResume, saveResume } from "@/lib/storage/tools-storage"
 import { ResumeTemplate } from "@/types/resume"
 
 const templates: Array<{

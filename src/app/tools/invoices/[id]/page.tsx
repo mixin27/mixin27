@@ -9,7 +9,7 @@ import {
   deleteInvoice,
   getSettings,
   saveInvoice,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { Invoice, InvoiceSettings, Receipt } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 import {

@@ -17,8 +17,9 @@ import {
 import {
   getResumeById,
   saveResume,
+  exportAllResumes,
   exportResumeJSON,
-} from "@/lib/resume-storage"
+} from "@/lib/storage/tools-storage"
 import {
   Resume,
   Experience,

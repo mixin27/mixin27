@@ -10,7 +10,7 @@ import {
   getSettings,
   getNextReceiptNumber,
   getClientById,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { Client, InvoiceItem, Receipt } from "@/types/invoice"
 
 export default function NewReceiptForm() {

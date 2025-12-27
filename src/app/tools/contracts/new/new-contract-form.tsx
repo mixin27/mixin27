@@ -10,7 +10,7 @@ import {
   getSettings,
   getNextContractNumber,
   getClientById,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { Client, Contract, ContractTemplateType } from "@/types/invoice"
 import { contractTemplates } from "@/lib/contract-templates"
 

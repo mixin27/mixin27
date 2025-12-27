@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Plus,
   FileText,
@@ -10,15 +10,15 @@ import {
   Eye,
   Edit,
   ArrowLeft,
-} from 'lucide-react'
-import { getQuotations, deleteQuotation } from '@/lib/invoice-storage'
-import { Quotation } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
+} from "lucide-react"
+import { getQuotations, deleteQuotation } from "@/lib/storage/tools-storage"
+import { Quotation } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
 
 export default function QuotationsPage() {
   const [quotations, setQuotations] = useState<Quotation[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
   const [stats, setStats] = useState({
     total: 0,
     draft: 0,
@@ -40,20 +40,20 @@ export default function QuotationsPage() {
     // Calculate stats
     const newStats = {
       total: loadedQuotations.length,
-      draft: loadedQuotations.filter((q) => q.status === 'draft').length,
-      sent: loadedQuotations.filter((q) => q.status === 'sent').length,
-      accepted: loadedQuotations.filter((q) => q.status === 'accepted').length,
-      rejected: loadedQuotations.filter((q) => q.status === 'rejected').length,
-      expired: loadedQuotations.filter((q) => q.status === 'expired').length,
+      draft: loadedQuotations.filter((q) => q.status === "draft").length,
+      sent: loadedQuotations.filter((q) => q.status === "sent").length,
+      accepted: loadedQuotations.filter((q) => q.status === "accepted").length,
+      rejected: loadedQuotations.filter((q) => q.status === "rejected").length,
+      expired: loadedQuotations.filter((q) => q.status === "expired").length,
       totalValue: loadedQuotations
-        .filter((q) => q.status === 'accepted')
+        .filter((q) => q.status === "accepted")
         .reduce((sum, q) => sum + q.total, 0),
     }
     setStats(newStats)
   }
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this quotation?')) {
+    if (confirm("Are you sure you want to delete this quotation?")) {
       deleteQuotation(id)
       loadData()
     }
@@ -67,23 +67,23 @@ export default function QuotationsPage() {
       quotation.client.name.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus =
-      statusFilter === 'all' || quotation.status === statusFilter
+      statusFilter === "all" || quotation.status === statusFilter
 
     return matchesSearch && matchesStatus
   })
 
-  const getStatusColor = (status: Quotation['status']) => {
+  const getStatusColor = (status: Quotation["status"]) => {
     switch (status) {
-      case 'accepted':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'rejected':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'expired':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
-      case 'draft':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case "accepted":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "sent":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      case "rejected":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      case "expired":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
+      case "draft":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     }
   }
 
@@ -206,9 +206,9 @@ export default function QuotationsPage() {
             <FileText className="size-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">No quotations found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by creating your first quotation'}
+              {searchQuery || statusFilter !== "all"
+                ? "Try adjusting your filters"
+                : "Get started by creating your first quotation"}
             </p>
             <Link
               href="/tools/quotations/new"
@@ -271,7 +271,7 @@ export default function QuotationsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium">
-                          {quotation.currency}{' '}
+                          {quotation.currency}{" "}
                           {quotation.total.toLocaleString()}
                         </div>
                       </td>

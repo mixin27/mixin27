@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, Save, Download, Upload } from 'lucide-react'
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { ArrowLeft, Save, Download, Upload } from "lucide-react"
 import {
   getSettings,
   saveSettings,
   exportAllData,
   importAllData,
-} from '@/lib/invoice-storage'
-import { InvoiceSettings } from '@/types/invoice'
+} from "@/lib/storage/tools-storage"
+import { InvoiceSettings } from "@/types/invoice"
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<InvoiceSettings | null>(null)
@@ -30,20 +30,20 @@ export default function SettingsPage() {
   const handleExport = () => {
     const data = exportAllData()
     const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
+      type: "application/json",
     })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     a.href = url
-    a.download = `invoice-data-backup-${new Date().toISOString().split('T')[0]}.json`
+    a.download = `invoice-data-backup-${new Date().toISOString().split("T")[0]}.json`
     a.click()
     URL.revokeObjectURL(url)
   }
 
   const handleImport = () => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = 'application/json'
+    const input = document.createElement("input")
+    input.type = "file"
+    input.accept = "application/json"
     input.onchange = (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
       if (file) {
@@ -52,15 +52,15 @@ export default function SettingsPage() {
           try {
             const data = JSON.parse(event.target?.result as string)
             if (
-              confirm('This will replace all your current data. Are you sure?')
+              confirm("This will replace all your current data. Are you sure?")
             ) {
               importAllData(data)
               setSettings(getSettings())
-              alert('Data imported successfully!')
+              alert("Data imported successfully!")
             }
           } catch (error) {
-            alert('Invalid file format!')
-            console.error('Error importing data:', error)
+            alert("Invalid file format!")
+            console.error("Error importing data:", error)
           }
         }
         reader.readAsText(file)
@@ -102,7 +102,7 @@ export default function SettingsPage() {
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               <Save className="size-4" />
-              {saved ? 'Saved!' : 'Save Changes'}
+              {saved ? "Saved!" : "Save Changes"}
             </button>
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium mb-2">Phone</label>
                 <input
                   type="tel"
-                  value={settings.businessPhone || ''}
+                  value={settings.businessPhone || ""}
                   onChange={(e) =>
                     setSettings({ ...settings, businessPhone: e.target.value })
                   }
@@ -162,7 +162,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   type="text"
-                  value={settings.businessAddress || ''}
+                  value={settings.businessAddress || ""}
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -177,7 +177,7 @@ export default function SettingsPage() {
                 <label className="block text-sm font-medium mb-2">City</label>
                 <input
                   type="text"
-                  value={settings.businessCity || ''}
+                  value={settings.businessCity || ""}
                   onChange={(e) =>
                     setSettings({ ...settings, businessCity: e.target.value })
                   }
@@ -191,7 +191,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   type="text"
-                  value={settings.businessState || ''}
+                  value={settings.businessState || ""}
                   onChange={(e) =>
                     setSettings({ ...settings, businessState: e.target.value })
                   }
@@ -205,7 +205,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   type="text"
-                  value={settings.businessZipCode || ''}
+                  value={settings.businessZipCode || ""}
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   type="text"
-                  value={settings.businessCountry || ''}
+                  value={settings.businessCountry || ""}
                   onChange={(e) =>
                     setSettings({
                       ...settings,
@@ -239,7 +239,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   type="text"
-                  value={settings.taxId || ''}
+                  value={settings.taxId || ""}
                   onChange={(e) =>
                     setSettings({ ...settings, taxId: e.target.value })
                   }

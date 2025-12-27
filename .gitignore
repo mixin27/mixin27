@@ -44,3 +44,6 @@ next-env.d.ts
 .env
 .env*.local
 .env.production
+
+# generated Prisma Client
+/src/lib/generated/prisma-client

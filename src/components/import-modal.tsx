@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { Upload, X, FileJson, CheckCircle, AlertCircle } from "lucide-react"
-import { importResumeJSON } from "@/lib/resume-storage"
+import { importResumeJSON } from "@/lib/storage/tools-storage"
 import { Resume } from "@/types/resume"
 
 interface ImportModalProps {

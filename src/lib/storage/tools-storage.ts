@@ -1,3 +1,4 @@
+import { v7 as uuidv7 } from "uuid"
 import {
   Invoice,
   Client,
@@ -9,6 +10,8 @@ import {
   RunningTimer,
   TimeEntry,
 } from "@/types/invoice"
+import { triggerAutoSync } from "./hybrid-storage"
+import { Resume, ResumeStats } from "@/types/resume"
 
 // Storage keys
 const STORAGE_KEYS = {
@@ -20,6 +23,7 @@ const STORAGE_KEYS = {
   CONTRACTS: "contracts",
   TIME_ENTRIES: "time_entries",
   RUNNING_TIMER: "running_timer",
+  RESUMES: "resumes",
 } as const
 
 // Helper functions
@@ -49,6 +53,7 @@ export const saveInvoice = (invoice: Invoice): void => {
   }
 
   saveToStorage(STORAGE_KEYS.INVOICES, invoices)
+  triggerAutoSync()
 }
 
 export const getInvoices = (): Invoice[] => {
@@ -63,6 +68,7 @@ export const getInvoiceById = (id: string): Invoice | null => {
 export const deleteInvoice = (id: string): void => {
   const invoices = getInvoices().filter((i) => i.id !== id)
   saveToStorage(STORAGE_KEYS.INVOICES, invoices)
+  triggerAutoSync()
 }
 
 export const getNextInvoiceNumber = (): string => {
@@ -89,6 +95,7 @@ export const saveClient = (client: Client): void => {
   }
 
   saveToStorage(STORAGE_KEYS.CLIENTS, clients)
+  triggerAutoSync()
 }
 
 export const getClients = (): Client[] => {
@@ -104,6 +111,7 @@ export const getClientById = (id: string): Client | null => {
 export const deleteClient = (id: string): void => {
   const clients = getClients().filter((c) => c.id !== id)
   saveToStorage(STORAGE_KEYS.CLIENTS, clients)
+  triggerAutoSync()
 }
 
 // Settings Operations
@@ -151,6 +159,7 @@ export const saveQuotation = (quotation: Quotation): void => {
   }
 
   saveToStorage(STORAGE_KEYS.QUOTATIONS, quotations)
+  triggerAutoSync()
 }
 
 export const getQuotations = (): Quotation[] => {
@@ -165,6 +174,7 @@ export const getQuotationById = (id: string): Quotation | null => {
 export const deleteQuotation = (id: string): void => {
   const quotations = getQuotations().filter((q) => q.id !== id)
   saveToStorage(STORAGE_KEYS.QUOTATIONS, quotations)
+  triggerAutoSync()
 }
 
 // Receipt Operations
@@ -182,6 +192,7 @@ export const saveReceipt = (receipt: Receipt): void => {
   }
 
   saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
+  triggerAutoSync()
 }
 
 export const getReceipts = (): Receipt[] => {
@@ -196,6 +207,7 @@ export const getReceiptById = (id: string): Receipt | null => {
 export const deleteReceipt = (id: string): void => {
   const receipts = getReceipts().filter((r) => r.id !== id)
   saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
+  triggerAutoSync()
 }
 
 export const getNextReceiptNumber = (): string => {
@@ -247,6 +259,7 @@ export const saveContract = (contract: Contract): void => {
   }
 
   saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
+  triggerAutoSync()
 }
 
 export const getContracts = (): Contract[] => {
@@ -261,6 +274,7 @@ export const getContractById = (id: string): Contract | null => {
 export const deleteContract = (id: string): void => {
   const contracts = getContracts().filter((c) => c.id !== id)
   saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
+  triggerAutoSync()
 }
 
 export const getNextContractNumber = (): string => {
@@ -297,6 +311,7 @@ export const saveTimeEntry = (entry: TimeEntry): void => {
   }
 
   saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
+  triggerAutoSync()
 }
 
 export const getTimeEntries = (): TimeEntry[] => {
@@ -311,6 +326,7 @@ export const getTimeEntryById = (id: string): TimeEntry | null => {
 export const deleteTimeEntry = (id: string): void => {
   const entries = getTimeEntries().filter((e) => e.id !== id)
   saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
+  triggerAutoSync()
 }
 
 export const getTimeEntriesByClient = (clientId: string): TimeEntry[] => {
@@ -346,6 +362,7 @@ export const markTimeEntriesAsInvoiced = (
     }
   })
   saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
+  triggerAutoSync()
 }
 
 // Running Timer Operations
@@ -425,6 +442,209 @@ export const getTimeTrackingStats = (): TimeTrackingStats => {
   }
 }
 
+/** Resume */
+export const saveResume = (resume: Resume): void => {
+  const resumes = getFromStorage<Resume>(STORAGE_KEYS.RESUMES)
+  const existingIndex = resumes.findIndex((r) => r.id === resume.id)
+
+  if (existingIndex >= 0) {
+    resumes[existingIndex] = {
+      ...resume,
+      updatedAt: new Date().toISOString(),
+    }
+  } else {
+    resumes.push(resume)
+  }
+
+  saveToStorage<Resume>(STORAGE_KEYS.RESUMES, resumes)
+
+  triggerAutoSync()
+}
+
+export const getResumes = (): Resume[] => {
+  return getFromStorage<Resume>(STORAGE_KEYS.RESUMES)
+}
+
+export const getResumeById = (id: string): Resume | null => {
+  const resumes = getResumes()
+  return resumes.find((r) => r.id === id) || null
+}
+
+export const deleteResume = (id: string): void => {
+  const resumes = getResumes().filter((r) => r.id !== id)
+  saveToStorage<Resume>(STORAGE_KEYS.RESUMES, resumes)
+  triggerAutoSync()
+}
+
+export const duplicateResume = (id: string): Resume | null => {
+  const original = getResumeById(id)
+  if (!original) return null
+
+  const duplicate: Resume = {
+    ...original,
+    id: uuidv7(),
+    name: `${original.name} (Copy)`,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+
+  saveResume(duplicate)
+  return duplicate
+}
+
+// Statistics
+export const getResumeStats = (): ResumeStats => {
+  const resumes = getResumes()
+
+  const templates = {
+    modern: resumes.filter((r) => r.template === "modern").length,
+    classic: resumes.filter((r) => r.template === "classic").length,
+    creative: resumes.filter((r) => r.template === "creative").length,
+    minimal: resumes.filter((r) => r.template === "minimal").length,
+    professional: resumes.filter((r) => r.template === "professional").length,
+  }
+
+  const recentlyUpdated = resumes
+    .sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+    )
+    .slice(0, 5)
+
+  return {
+    total: resumes.length,
+    templates,
+    recentlyUpdated,
+  }
+}
+
+// Export resume as JSON
+export const exportResumeJSON = (id: string): string => {
+  const resume = getResumeById(id)
+  if (!resume) throw new Error("Resume not found")
+  return JSON.stringify(resume, null, 2)
+}
+
+// Import resume from JSON
+export const importResumeJSON = (jsonString: string): Resume => {
+  const resume = JSON.parse(jsonString) as Resume
+  resume.id = uuidv7()
+  resume.createdAt = new Date().toISOString()
+  resume.updatedAt = new Date().toISOString()
+  saveResume(resume)
+  triggerAutoSync()
+  return resume
+}
+
+// Export all resumes (backup)
+export const exportAllResumes = () => {
+  return {
+    resumes: getResumes(),
+    exportedAt: new Date().toISOString(),
+  }
+}
+
+// Import all resumes (restore from backup)
+export const importAllResumes = (data: { resumes: Resume[] }): void => {
+  if (data.resumes) {
+    saveToStorage<Resume>(STORAGE_KEYS.RESUMES, data.resumes)
+  }
+}
+
+// Default resume template
+export const createDefaultResume = (): Resume => {
+  return {
+    // id: `resume_${Date.now()}`,
+    id: uuidv7(),
+    name: "My Resume",
+    template: "modern",
+    personal: {
+      fullName: "",
+      title: "",
+      email: "",
+      phone: "",
+      location: "",
+    },
+    summary: "",
+    experience: [],
+    education: [],
+    skills: [],
+    projects: [],
+    certifications: [],
+    languages: [],
+    customSections: [],
+    sections: [
+      {
+        id: "personal",
+        type: "personal",
+        title: "Personal Information",
+        visible: true,
+        order: 0,
+      },
+      {
+        id: "summary",
+        type: "summary",
+        title: "Professional Summary",
+        visible: true,
+        order: 1,
+      },
+      {
+        id: "experience",
+        type: "experience",
+        title: "Work Experience",
+        visible: true,
+        order: 2,
+      },
+      {
+        id: "education",
+        type: "education",
+        title: "Education",
+        visible: true,
+        order: 3,
+      },
+      {
+        id: "skills",
+        type: "skills",
+        title: "Skills",
+        visible: true,
+        order: 4,
+      },
+      {
+        id: "projects",
+        type: "projects",
+        title: "Projects",
+        visible: false,
+        order: 5,
+      },
+      {
+        id: "certifications",
+        type: "certifications",
+        title: "Certifications",
+        visible: false,
+        order: 6,
+      },
+      {
+        id: "languages",
+        type: "languages",
+        title: "Languages",
+        visible: false,
+        order: 7,
+      },
+    ],
+    style: {
+      template: "modern",
+      primaryColor: "#2563eb",
+      fontFamily: "Inter",
+      fontSize: "medium",
+      spacing: "normal",
+      showPhoto: true,
+      showIcons: true,
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  }
+}
+
 // Helper: Calculate duration in minutes
 export const calculateDuration = (
   startTime: string,
@@ -457,6 +677,7 @@ export const exportAllData = () => {
     contracts: getContracts(),
     timeEntries: getTimeEntries(),
     settings: getSettings(),
+    resumes: getResumes(),
     exportedAt: new Date().toISOString(),
   }
 }
@@ -470,5 +691,6 @@ export const importAllData = (data: any) => {
   if (data.contracts) saveToStorage(STORAGE_KEYS.CONTRACTS, data.contracts)
   if (data.timeEntries)
     saveToStorage(STORAGE_KEYS.TIME_ENTRIES, data.timeEntries)
+  if (data.resumes) saveToStorage(STORAGE_KEYS.RESUMES, data.resumes)
   if (data.settings) saveSettings(data.settings)
 }

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Plus,
   FileText,
@@ -10,20 +10,20 @@ import {
   Eye,
   Edit,
   ArrowLeft,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   getInvoices,
   getInvoiceStats,
   deleteInvoice,
-} from '@/lib/invoice-storage'
-import { Invoice } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
+} from "@/lib/storage/tools-storage"
+import { Invoice } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [stats, setStats] = useState<any>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
 
   useEffect(() => {
     loadData()
@@ -35,7 +35,7 @@ export default function InvoicesPage() {
   }
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this invoice?')) {
+    if (confirm("Are you sure you want to delete this invoice?")) {
       deleteInvoice(id)
       loadData()
     }
@@ -47,23 +47,23 @@ export default function InvoicesPage() {
       invoice.client.name.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus =
-      statusFilter === 'all' || invoice.status === statusFilter
+      statusFilter === "all" || invoice.status === statusFilter
 
     return matchesSearch && matchesStatus
   })
 
-  const getStatusColor = (status: Invoice['status']) => {
+  const getStatusColor = (status: Invoice["status"]) => {
     switch (status) {
-      case 'paid':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'overdue':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'draft':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
-      case 'cancelled':
-        return 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
+      case "paid":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "sent":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      case "overdue":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      case "draft":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+      case "cancelled":
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
     }
   }
 
@@ -190,9 +190,9 @@ export default function InvoicesPage() {
             <FileText className="size-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">No invoices found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by creating your first invoice'}
+              {searchQuery || statusFilter !== "all"
+                ? "Try adjusting your filters"
+                : "Get started by creating your first invoice"}
             </p>
             <Link
               href="/tools/invoices/new"

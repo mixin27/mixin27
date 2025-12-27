@@ -1,15 +1,19 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Search, Edit, Trash2, FileText } from 'lucide-react'
-import { getClients, deleteClient, getInvoices } from '@/lib/invoice-storage'
-import { Client } from '@/types/invoice'
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { ArrowLeft, Plus, Search, Edit, Trash2, FileText } from "lucide-react"
+import {
+  getClients,
+  deleteClient,
+  getInvoices,
+} from "@/lib/storage/tools-storage"
+import { Client } from "@/types/invoice"
 
 export default function ClientsPage() {
   const [totalInvoices, setTotalInvoices] = useState(0)
   const [clients, setClients] = useState<Client[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     loadClients()
@@ -34,13 +38,13 @@ export default function ClientsPage() {
 
     if (hasInvoices) {
       if (
-        !confirm('This client has invoices. Are you sure you want to delete?')
+        !confirm("This client has invoices. Are you sure you want to delete?")
       ) {
         return
       }
     }
 
-    if (confirm('Are you sure you want to delete this client?')) {
+    if (confirm("Are you sure you want to delete this client?")) {
       deleteClient(id)
       loadClients()
     }
@@ -160,8 +164,8 @@ export default function ClientsPage() {
             <h3 className="text-xl font-semibold mb-2">No clients found</h3>
             <p className="text-muted-foreground mb-6">
               {searchQuery
-                ? 'Try adjusting your search'
-                : 'Get started by adding your first client'}
+                ? "Try adjusting your search"
+                : "Get started by adding your first client"}
             </p>
             {!searchQuery && (
               <Link

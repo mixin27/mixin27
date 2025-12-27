@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from "uuid"
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -12,7 +13,7 @@ import {
   getNextInvoiceNumber,
   incrementInvoiceNumber,
   getClientById,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 
 export default function NewInvoiceForm() {
   const router = useRouter()
@@ -66,7 +67,8 @@ export default function NewInvoiceForm() {
     setItems([
       ...items,
       {
-        id: Date.now().toString(),
+        // id: Date.now().toString(),
+        id: uuidv7(),
         description: "",
         quantity: 1,
         rate: 0,
@@ -135,7 +137,8 @@ export default function NewInvoiceForm() {
     }
 
     const invoice: Invoice = {
-      id: Date.now().toString(),
+      //   id: Date.now().toString(),
+      id: uuidv7(),
       invoiceNumber,
       client: selectedClient,
       issueDate,

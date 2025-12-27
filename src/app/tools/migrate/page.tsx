@@ -1,19 +1,33 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import {
   Download,
   Upload,
   Database,
   AlertCircle,
   CheckCircle,
+  ArrowLeft,
+  Cloud,
+  HardDrive,
+  RefreshCw,
 } from "lucide-react"
+import {
+  syncToCloud,
+  syncFromCloud,
+  isSyncEnabled,
+  setSyncEnabled,
+  getLastSyncTime,
+} from "@/lib/storage/hybrid-storage"
 
 export default function MigratePage() {
   const [status, setStatus] = useState<
-    "idle" | "exporting" | "importing" | "success" | "error"
+    "idle" | "exporting" | "importing" | "syncing" | "success" | "error"
   >("idle")
   const [message, setMessage] = useState("")
+  const [cloudSyncEnabled, setCloudSyncEnabled] = useState(isSyncEnabled())
+  const [lastSync, setLastSync] = useState(getLastSyncTime())
 
   // Export from localStorage
   const handleExportLocalStorage = () => {
@@ -27,6 +41,7 @@ export default function MigratePage() {
         receipts: JSON.parse(localStorage.getItem("receipts") || "[]"),
         contracts: JSON.parse(localStorage.getItem("contracts") || "[]"),
         timeEntries: JSON.parse(localStorage.getItem("time_entries") || "[]"),
+        resumes: JSON.parse(localStorage.getItem("resumes") || "[]"),
         settings: JSON.parse(
           localStorage.getItem("invoice_settings") || "null",
         ),
@@ -40,13 +55,13 @@ export default function MigratePage() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `invoice-data-backup-${new Date().toISOString().split("T")[0]}.json`
+      a.download = `tools-backup-${new Date().toISOString().split("T")[0]}.json`
       a.click()
       URL.revokeObjectURL(url)
 
       setStatus("success")
       setMessage(
-        `Exported ${data.clients.length} clients, ${data.invoices.length} invoices, and more!`,
+        `✓ Exported ${data.clients.length} clients, ${data.invoices.length} invoices, ${data.resumes.length} resumes, and more!`,
       )
     } catch (error) {
       setStatus("error")
@@ -54,8 +69,8 @@ export default function MigratePage() {
     }
   }
 
-  // Import to cloud database
-  const handleImportToCloud = async (
+  // Import to localStorage (and optionally sync to cloud)
+  const handleImportToLocal = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0]
@@ -68,90 +83,94 @@ export default function MigratePage() {
       const text = await file.text()
       const data = JSON.parse(text)
 
-      setMessage("Uploading to cloud database...")
+      // Import to localStorage
+      if (data.clients)
+        localStorage.setItem("clients", JSON.stringify(data.clients))
+      if (data.invoices)
+        localStorage.setItem("invoices", JSON.stringify(data.invoices))
+      if (data.quotations)
+        localStorage.setItem("quotations", JSON.stringify(data.quotations))
+      if (data.receipts)
+        localStorage.setItem("receipts", JSON.stringify(data.receipts))
+      if (data.contracts)
+        localStorage.setItem("contracts", JSON.stringify(data.contracts))
+      if (data.timeEntries)
+        localStorage.setItem("time_entries", JSON.stringify(data.timeEntries))
+      if (data.resumes)
+        localStorage.setItem("resumes", JSON.stringify(data.resumes))
+      if (data.settings)
+        localStorage.setItem("invoice_settings", JSON.stringify(data.settings))
 
-      // Import clients first (foreign key dependency)
-      if (data.clients?.length > 0) {
-        for (const client of data.clients) {
-          await fetch("/api/clients", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(client),
-          })
-        }
-        setMessage(`Imported ${data.clients.length} clients...`)
-      }
-
-      // Import invoices
-      if (data.invoices?.length > 0) {
-        for (const invoice of data.invoices) {
-          await fetch("/api/invoices", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(invoice),
-          })
-        }
-        setMessage(`Imported ${data.invoices.length} invoices...`)
-      }
-
-      // Import quotations
-      if (data.quotations?.length > 0) {
-        for (const quotation of data.quotations) {
-          await fetch("/api/quotations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(quotation),
-          })
-        }
-      }
-
-      // Import receipts
-      if (data.receipts?.length > 0) {
-        for (const receipt of data.receipts) {
-          await fetch("/api/receipts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(receipt),
-          })
-        }
-      }
-
-      // Import contracts
-      if (data.contracts?.length > 0) {
-        for (const contract of data.contracts) {
-          await fetch("/api/contracts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(contract),
-          })
-        }
-      }
-
-      // Import time entries
-      if (data.timeEntries?.length > 0) {
-        for (const entry of data.timeEntries) {
-          await fetch("/api/time-entries", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(entry),
-          })
-        }
-      }
-
-      // Import settings
-      if (data.settings) {
-        await fetch("/api/settings", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data.settings),
-        })
+      const counts = {
+        clients: data.clients?.length || 0,
+        invoices: data.invoices?.length || 0,
+        resumes: data.resumes?.length || 0,
       }
 
       setStatus("success")
-      setMessage("✓ All data imported successfully!")
+      setMessage(
+        `✓ Imported ${counts.clients} clients, ${counts.invoices} invoices, ${counts.resumes} resumes to localStorage!`,
+      )
+
+      // If cloud sync is enabled, sync automatically
+      if (cloudSyncEnabled) {
+        setTimeout(() => handleSyncToCloud(), 1000)
+      }
     } catch (error) {
       setStatus("error")
       setMessage("Failed to import: " + (error as Error).message)
+    }
+  }
+
+  // Sync to cloud
+  const handleSyncToCloud = async () => {
+    try {
+      setStatus("syncing")
+      setMessage("Syncing to cloud...")
+
+      const counts = await syncToCloud()
+      setLastSync(getLastSyncTime())
+
+      setStatus("success")
+      setMessage(
+        `✓ Synced ${counts?.clients} clients, ${counts?.invoices} invoices, ${counts?.resumes} resumes to cloud!`,
+      )
+    } catch (error) {
+      setStatus("error")
+      setMessage("Sync failed: " + (error as Error).message)
+    }
+  }
+
+  // Sync from cloud
+  const handleSyncFromCloud = async () => {
+    try {
+      setStatus("syncing")
+      setMessage("Syncing from cloud...")
+
+      await syncFromCloud()
+      setLastSync(getLastSyncTime())
+
+      setStatus("success")
+      setMessage("✓ Data synced from cloud to localStorage!")
+
+      // Reload the page to refresh all data
+      setTimeout(() => window.location.reload(), 1000)
+    } catch (error) {
+      setStatus("error")
+      setMessage("Sync failed: " + (error as Error).message)
+    }
+  }
+
+  // Toggle cloud sync
+  const handleToggleSync = () => {
+    const newState = !cloudSyncEnabled
+    setSyncEnabled(newState)
+    setCloudSyncEnabled(newState)
+
+    if (newState) {
+      setMessage("Cloud sync enabled! Your changes will auto-sync.")
+    } else {
+      setMessage("Cloud sync disabled. Using localStorage only.")
     }
   }
 
@@ -168,6 +187,7 @@ export default function MigratePage() {
         receipts,
         contracts,
         timeEntries,
+        resumes,
         settings,
       ] = await Promise.all([
         fetch("/api/clients").then((r) => r.json()),
@@ -176,6 +196,7 @@ export default function MigratePage() {
         fetch("/api/receipts").then((r) => r.json()),
         fetch("/api/contracts").then((r) => r.json()),
         fetch("/api/time-entries").then((r) => r.json()),
+        fetch("/api/resumes").then((r) => r.json()),
         fetch("/api/settings").then((r) => r.json()),
       ])
 
@@ -186,6 +207,7 @@ export default function MigratePage() {
         receipts,
         contracts,
         timeEntries,
+        resumes,
         settings,
         exportedAt: new Date().toISOString(),
       }
@@ -197,13 +219,13 @@ export default function MigratePage() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = `invoice-cloud-backup-${new Date().toISOString().split("T")[0]}.json`
+      a.download = `cloud-backup-${new Date().toISOString().split("T")[0]}.json`
       a.click()
       URL.revokeObjectURL(url)
 
       setStatus("success")
       setMessage(
-        `✓ Exported ${clients.length} clients, ${invoices.length} invoices, and more!`,
+        `✓ Exported ${clients.length} clients, ${invoices.length} invoices, ${resumes.length} resumes from cloud!`,
       )
     } catch (error) {
       setStatus("error")
@@ -213,12 +235,30 @@ export default function MigratePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <div className="border-b bg-card">
         <div className="container py-6">
-          <h1 className="text-3xl font-bold">Data Migration</h1>
-          <p className="text-muted-foreground">
-            Transfer your data between localStorage and cloud database
-          </p>
+          <div className="flex items-center gap-4 mb-2">
+            <Link
+              href="/tools"
+              className="p-2 hover:bg-muted rounded-lg transition-colors"
+            >
+              <ArrowLeft className="size-5" />
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold">Data Migration & Sync</h1>
+              <p className="text-muted-foreground">
+                Manage your data between localStorage and cloud
+              </p>
+            </div>
+          </div>
+
+          {/* Sync Status */}
+          {lastSync && (
+            <div className="mt-4 text-sm text-muted-foreground">
+              Last synced: {lastSync.toLocaleString()}
+            </div>
+          )}
         </div>
       </div>
 
@@ -229,24 +269,83 @@ export default function MigratePage() {
             <div
               className={`p-4 rounded-lg border flex items-start gap-3 ${
                 status === "success"
-                  ? "bg-green-50 border-green-200 text-green-800"
+                  ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200"
                   : status === "error"
-                    ? "bg-red-50 border-red-200 text-red-800"
-                    : "bg-blue-50 border-blue-200 text-blue-800"
+                    ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200"
+                    : "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200"
               }`}
             >
               {status === "success" && (
-                <CheckCircle className="size-5 mt-0.5" />
+                <CheckCircle className="size-5 mt-0.5 shrink-0" />
               )}
-              {status === "error" && <AlertCircle className="size-5 mt-0.5" />}
-              {(status === "importing" || status === "exporting") && (
-                <div className="size-5 border-2 border-current border-t-transparent rounded-full animate-spin mt-0.5" />
+              {status === "error" && (
+                <AlertCircle className="size-5 mt-0.5 shrink-0" />
+              )}
+              {(status === "importing" ||
+                status === "exporting" ||
+                status === "syncing") && (
+                <div className="size-5 border-2 border-current border-t-transparent rounded-full animate-spin mt-0.5 shrink-0" />
               )}
               <div className="flex-1">
                 <p className="font-medium">{message}</p>
               </div>
             </div>
           )}
+
+          {/* Cloud Sync Toggle */}
+          <div className="rounded-lg border bg-card p-6">
+            <div className="flex items-start gap-4">
+              <div
+                className={`p-3 rounded-lg ${cloudSyncEnabled ? "bg-green-500/10" : "bg-gray-500/10"}`}
+              >
+                {cloudSyncEnabled ? (
+                  <Cloud className="size-6 text-green-500" />
+                ) : (
+                  <HardDrive className="size-6 text-gray-500" />
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-xl font-semibold">Cloud Sync</h2>
+                  <button
+                    onClick={handleToggleSync}
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                      cloudSyncEnabled
+                        ? "bg-green-500 text-white hover:bg-green-600"
+                        : "bg-gray-500 text-white hover:bg-gray-600"
+                    }`}
+                  >
+                    {cloudSyncEnabled ? "Enabled" : "Disabled"}
+                  </button>
+                </div>
+                <p className="text-muted-foreground mb-4">
+                  {cloudSyncEnabled
+                    ? "Your data automatically syncs to the cloud. Changes are saved locally first for speed."
+                    : "Using localStorage only. Enable cloud sync for backup and multi-device access."}
+                </p>
+                {cloudSyncEnabled && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleSyncToCloud}
+                      disabled={status === "syncing"}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-muted transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw className="size-4" />
+                      Sync to Cloud
+                    </button>
+                    <button
+                      onClick={handleSyncFromCloud}
+                      disabled={status === "syncing"}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-muted transition-colors disabled:opacity-50"
+                    >
+                      <Download className="size-4" />
+                      Sync from Cloud
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
           {/* Export from localStorage */}
           <div className="rounded-lg border bg-card p-6">
@@ -256,24 +355,29 @@ export default function MigratePage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold mb-2">
-                  1. Export from Browser
+                  Export Local Data
                 </h2>
                 <p className="text-muted-foreground mb-4">
-                  Download your current localStorage data as a backup JSON file
+                  Download your localStorage data as a backup JSON file
+                  (includes resumes, invoices, etc.)
                 </p>
                 <button
                   onClick={handleExportLocalStorage}
-                  disabled={status === "importing" || status === "exporting"}
+                  disabled={
+                    status === "importing" ||
+                    status === "exporting" ||
+                    status === "syncing"
+                  }
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
                 >
                   <Download className="size-4" />
-                  Export LocalStorage Data
+                  Export LocalStorage
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Import to Cloud */}
+          {/* Import to Local */}
           <div className="rounded-lg border bg-card p-6">
             <div className="flex items-start gap-4">
               <div className="p-3 rounded-lg bg-blue-500/10">
@@ -281,10 +385,11 @@ export default function MigratePage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold mb-2">
-                  2. Import to Cloud Database
+                  Import Local Data
                 </h2>
                 <p className="text-muted-foreground mb-4">
-                  Upload your backup file to migrate data to Vercel Postgres
+                  Restore from a backup file to localStorage
+                  {cloudSyncEnabled && " (will auto-sync to cloud)"}
                 </p>
                 <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors cursor-pointer disabled:opacity-50">
                   <Upload className="size-4" />
@@ -292,8 +397,12 @@ export default function MigratePage() {
                   <input
                     type="file"
                     accept=".json"
-                    onChange={handleImportToCloud}
-                    disabled={status === "importing" || status === "exporting"}
+                    onChange={handleImportToLocal}
+                    disabled={
+                      status === "importing" ||
+                      status === "exporting" ||
+                      status === "syncing"
+                    }
                     className="hidden"
                   />
                 </label>
@@ -309,7 +418,7 @@ export default function MigratePage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold mb-2">
-                  3. Backup Cloud Data
+                  Backup Cloud Data
                 </h2>
                 <p className="text-muted-foreground mb-4">
                   Download a backup of your cloud database (recommended
@@ -317,7 +426,11 @@ export default function MigratePage() {
                 </p>
                 <button
                   onClick={handleExportFromCloud}
-                  disabled={status === "importing" || status === "exporting"}
+                  disabled={
+                    status === "importing" ||
+                    status === "exporting" ||
+                    status === "syncing"
+                  }
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors disabled:opacity-50"
                 >
                   <Download className="size-4" />
@@ -329,22 +442,53 @@ export default function MigratePage() {
 
           {/* Instructions */}
           <div className="rounded-lg border bg-muted/50 p-6">
-            <h3 className="font-semibold mb-3">Migration Steps:</h3>
-            <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
-              <li>
-                Click "Export LocalStorage Data" to download your current data
-              </li>
-              <li>
-                Click "Select File to Import" and choose the downloaded JSON
-                file
-              </li>
-              <li>Wait for the import to complete (may take a minute)</li>
-              <li>
-                Your data is now in the cloud! You can delete localStorage if
-                desired
-              </li>
-              <li>Use "Backup Cloud Data" regularly to keep safe copies</li>
-            </ol>
+            <h3 className="font-semibold mb-3">How It Works:</h3>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex gap-2">
+                <span className="font-bold text-foreground">
+                  💾 Primary Storage:
+                </span>
+                <span>
+                  All data is stored in localStorage for instant access
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-bold text-foreground">
+                  ☁️ Cloud Sync:
+                </span>
+                <span>
+                  When enabled, changes auto-sync to cloud after 2 seconds
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-bold text-foreground">
+                  🔄 Two-Way Sync:
+                </span>
+                <span>
+                  Sync to cloud (upload) or from cloud (download/restore)
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <span className="font-bold text-foreground">📦 Backup:</span>
+                <span>Export JSON files for manual backups anytime</span>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t">
+              <h3 className="font-semibold mb-3">Migration Steps:</h3>
+              <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
+                <li>Enable "Cloud Sync" to start syncing your data</li>
+                <li>
+                  Click "Sync to Cloud" to upload existing localStorage data
+                </li>
+                <li>
+                  Your data is now backed up! Auto-sync will handle future
+                  changes
+                </li>
+                <li>Use "Backup Cloud Data" regularly for extra safety</li>
+                <li>On another device: Enable sync and "Sync from Cloud"</li>
+              </ol>
+            </div>
           </div>
         </div>
       </div>

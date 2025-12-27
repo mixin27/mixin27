@@ -1,18 +1,18 @@
-'use client'
+"use client"
 
-import { useEffect, useState, useRef } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Download, Printer, Edit, Trash2 } from 'lucide-react'
+import { useEffect, useState, useRef } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Download, Printer, Edit, Trash2 } from "lucide-react"
 import {
   getReceiptById,
   deleteReceipt,
   getSettings,
-} from '@/lib/invoice-storage'
-import { Receipt, InvoiceSettings } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas-pro'
+} from "@/lib/storage/tools-storage"
+import { Receipt, InvoiceSettings } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas-pro"
 
 export default function ReceiptViewPage() {
   const params = useParams()
@@ -31,14 +31,14 @@ export default function ReceiptViewPage() {
       setReceipt(loadedReceipt)
       setSettings(loadedSettings)
     } else {
-      router.push('/tools/receipts')
+      router.push("/tools/receipts")
     }
   }, [params.id, router])
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this receipt?')) {
+    if (confirm("Are you sure you want to delete this receipt?")) {
       deleteReceipt(receipt!.id)
-      router.push('/tools/receipts')
+      router.push("/tools/receipts")
     }
   }
 
@@ -59,16 +59,16 @@ export default function ReceiptViewPage() {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff',
+        backgroundColor: "#ffffff",
         windowWidth: receiptRef.current.scrollWidth,
         windowHeight: receiptRef.current.scrollHeight,
       })
 
-      const imgData = canvas.toDataURL('image/png')
+      const imgData = canvas.toDataURL("image/png")
       const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
       })
 
       const pdfWidth = pdf.internal.pageSize.getWidth()
@@ -81,7 +81,7 @@ export default function ReceiptViewPage() {
 
       pdf.addImage(
         imgData,
-        'PNG',
+        "PNG",
         imgX,
         imgY,
         imgWidth * ratio,
@@ -89,8 +89,8 @@ export default function ReceiptViewPage() {
       )
       pdf.save(`${receipt?.receiptNumber}.pdf`)
     } catch (error) {
-      console.error('Error generating PDF:', error)
-      alert('Failed to generate PDF. Please try again.')
+      console.error("Error generating PDF:", error)
+      alert("Failed to generate PDF. Please try again.")
     } finally {
       setIsGenerating(false)
     }
@@ -106,19 +106,19 @@ export default function ReceiptViewPage() {
     )
   }
 
-  const getPaymentMethodLabel = (method: Receipt['paymentMethod']) => {
+  const getPaymentMethodLabel = (method: Receipt["paymentMethod"]) => {
     const labels = {
-      cash: 'Cash',
-      check: 'Check',
-      bank_transfer: 'Bank Transfer',
-      credit_card: 'Credit Card',
-      paypal: 'PayPal',
-      kbz_pay: 'KBZ Kpay',
-      aya_pay: 'AYA Pay',
-      wave_pay: 'Wave Pay',
-      uab_pay: 'UAB Pay',
-      cb_pay: 'CB Pay',
-      other: 'Other',
+      cash: "Cash",
+      check: "Check",
+      bank_transfer: "Bank Transfer",
+      credit_card: "Credit Card",
+      paypal: "PayPal",
+      kbz_pay: "KBZ Kpay",
+      aya_pay: "AYA Pay",
+      wave_pay: "Wave Pay",
+      uab_pay: "UAB Pay",
+      cb_pay: "CB Pay",
+      other: "Other",
     }
     return labels[method]
   }
@@ -153,7 +153,7 @@ export default function ReceiptViewPage() {
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Download className="size-4" />
-              {isGenerating ? 'Generating...' : 'Download PDF'}
+              {isGenerating ? "Generating..." : "Download PDF"}
             </button>
             <button
               onClick={handlePrint}
@@ -309,15 +309,15 @@ export default function ReceiptViewPage() {
                 {receipt.discount > 0 && (
                   <div className="flex justify-between py-2 text-sm">
                     <span className="text-gray-600">
-                      Discount{' '}
-                      {receipt.discountType === 'percentage'
+                      Discount{" "}
+                      {receipt.discountType === "percentage"
                         ? `(${receipt.discount}%)`
-                        : ''}
+                        : ""}
                       :
                     </span>
                     <span>
-                      -{receipt.currency}{' '}
-                      {receipt.discountType === 'percentage'
+                      -{receipt.currency}{" "}
+                      {receipt.discountType === "percentage"
                         ? (receipt.subtotal * (receipt.discount / 100)).toFixed(
                             2,
                           )
@@ -357,15 +357,15 @@ export default function ReceiptViewPage() {
             {/* Footer */}
             <div className="mt-12 pt-8 border-t-2 border-black text-center">
               <div className="inline-block px-8 py-4 border-4 border-green-700 rounded-lg">
-                <p className="text-xl font-bold" style={{ color: '#065f46' }}>
+                <p className="text-xl font-bold" style={{ color: "#065f46" }}>
                   ✓ PAYMENT RECEIVED
                 </p>
-                <p className="text-base mt-2" style={{ color: '#047857' }}>
+                <p className="text-base mt-2" style={{ color: "#047857" }}>
                   Thank you for your payment
                 </p>
               </div>
-              <p className="text-sm mt-6" style={{ color: '#4b5563' }}>
-                This receipt confirms payment was received on{' '}
+              <p className="text-sm mt-6" style={{ color: "#4b5563" }}>
+                This receipt confirms payment was received on{" "}
                 {formatDate(receipt.paymentDate)}
               </p>
             </div>

@@ -4,7 +4,11 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Save } from "lucide-react"
-import { saveTimeEntry, getClients, getClientById } from "@/lib/invoice-storage"
+import {
+  saveTimeEntry,
+  getClients,
+  getClientById,
+} from "@/lib/storage/tools-storage"
 import { Client, TimeEntry } from "@/types/invoice"
 
 export default function NewTimeEntryForm() {

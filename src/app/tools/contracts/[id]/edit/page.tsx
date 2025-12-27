@@ -1,41 +1,41 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Save } from "lucide-react"
 import {
   saveContract,
   getContractById,
   getClients,
-} from '@/lib/invoice-storage'
-import { Client, Contract } from '@/types/invoice'
+} from "@/lib/storage/tools-storage"
+import { Client, Contract } from "@/types/invoice"
 
 export default function EditContractPage() {
   const params = useParams()
   const router = useRouter()
 
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState<string>('')
-  const [contractNumber, setContractNumber] = useState<string>('')
+  const [selectedClientId, setSelectedClientId] = useState<string>("")
+  const [contractNumber, setContractNumber] = useState<string>("")
 
   // Project Details
-  const [projectName, setProjectName] = useState<string>('')
-  const [projectScope, setProjectScope] = useState<string>('')
-  const [deliverables, setDeliverables] = useState<string>('')
+  const [projectName, setProjectName] = useState<string>("")
+  const [projectScope, setProjectScope] = useState<string>("")
+  const [deliverables, setDeliverables] = useState<string>("")
 
   // Dates
-  const [startDate, setStartDate] = useState<string>('')
-  const [endDate, setEndDate] = useState<string>('')
-  const [signatureDate, setSignatureDate] = useState<string>('')
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
+  const [signatureDate, setSignatureDate] = useState<string>("")
 
   // Payment
   const [projectFee, setProjectFee] = useState<number>(0)
-  const [paymentTerms, setPaymentTerms] = useState<string>('')
-  const [currency, setCurrency] = useState<string>('USD')
+  const [paymentTerms, setPaymentTerms] = useState<string>("")
+  const [currency, setCurrency] = useState<string>("USD")
 
-  const [status, setStatus] = useState<Contract['status']>('draft')
-  const [notes, setNotes] = useState<string>('')
+  const [status, setStatus] = useState<Contract["status"]>("draft")
+  const [notes, setNotes] = useState<string>("")
   const [originalContract, setOriginalContract] = useState<Contract | null>(
     null,
   )
@@ -46,7 +46,7 @@ export default function EditContractPage() {
     const loadedClients = getClients()
 
     if (!loadedContract) {
-      router.push('/tools/contracts')
+      router.push("/tools/contracts")
       return
     }
 
@@ -57,23 +57,23 @@ export default function EditContractPage() {
     setProjectName(loadedContract.projectName)
     setProjectScope(loadedContract.projectScope)
     setDeliverables(loadedContract.deliverables)
-    setStartDate(loadedContract.startDate.split('T')[0])
+    setStartDate(loadedContract.startDate.split("T")[0])
     setEndDate(
-      loadedContract.endDate ? loadedContract.endDate.split('T')[0] : '',
+      loadedContract.endDate ? loadedContract.endDate.split("T")[0] : "",
     )
-    setSignatureDate(loadedContract.signatureDate.split('T')[0])
+    setSignatureDate(loadedContract.signatureDate.split("T")[0])
     setProjectFee(loadedContract.projectFee)
     setPaymentTerms(loadedContract.paymentTerms)
     setCurrency(loadedContract.currency)
     setStatus(loadedContract.status)
-    setNotes(loadedContract.notes || '')
+    setNotes(loadedContract.notes || "")
   }, [params.id, router])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
@@ -83,7 +83,7 @@ export default function EditContractPage() {
 
     const client = clients.find((c) => c.id === selectedClientId)
     if (!client) {
-      alert('Invalid client selected')
+      alert("Invalid client selected")
       return
     }
 
@@ -174,7 +174,7 @@ export default function EditContractPage() {
                 <select
                   value={status}
                   onChange={(e) =>
-                    setStatus(e.target.value as Contract['status'])
+                    setStatus(e.target.value as Contract["status"])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                 >

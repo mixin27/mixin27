@@ -9,7 +9,7 @@ import {
   deleteTimeEntry,
   saveTimeEntry,
   getClients,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { TimeEntry, Client } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 

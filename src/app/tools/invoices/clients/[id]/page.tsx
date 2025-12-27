@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Save, Loader2 } from 'lucide-react'
-import { Client } from '@/types/invoice'
-import { saveClient, getClientById } from '@/lib/invoice-storage'
+import { useEffect, useState } from "react"
+import { useRouter, useParams } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Save, Loader2 } from "lucide-react"
+import { Client } from "@/types/invoice"
+import { saveClient, getClientById } from "@/lib/storage/tools-storage"
 
 export default function EditClientPage() {
   const router = useRouter()
@@ -14,35 +14,35 @@ export default function EditClientPage() {
 
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: '',
-    taxId: '',
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    taxId: "",
   })
 
   useEffect(() => {
     const client = getClientById(clientId)
     if (!client) {
-      alert('Client not found')
-      router.push('/tools/invoices/clients')
+      alert("Client not found")
+      router.push("/tools/invoices/clients")
       return
     }
 
     setFormData({
       name: client.name,
       email: client.email,
-      phone: client.phone || '',
-      address: client.address || '',
-      city: client.city || '',
-      state: client.state || '',
-      zipCode: client.zipCode || '',
-      country: client.country || '',
-      taxId: client.taxId || '',
+      phone: client.phone || "",
+      address: client.address || "",
+      city: client.city || "",
+      state: client.state || "",
+      zipCode: client.zipCode || "",
+      country: client.country || "",
+      taxId: client.taxId || "",
     })
     setLoading(false)
   }, [clientId, router])
@@ -55,26 +55,26 @@ export default function EditClientPage() {
     e.preventDefault()
 
     if (!formData.name.trim()) {
-      alert('Please enter a client name')
+      alert("Please enter a client name")
       return
     }
 
     if (!formData.email.trim()) {
-      alert('Please enter a client email')
+      alert("Please enter a client email")
       return
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address')
+      alert("Please enter a valid email address")
       return
     }
 
     const existingClient = getClientById(clientId)
     if (!existingClient) {
-      alert('Client not found')
-      router.push('/tools/invoices/clients')
+      alert("Client not found")
+      router.push("/tools/invoices/clients")
       return
     }
 
@@ -92,7 +92,7 @@ export default function EditClientPage() {
     }
 
     saveClient(updatedClient)
-    router.push('/tools/invoices/clients')
+    router.push("/tools/invoices/clients")
   }
 
   if (loading) {
@@ -143,7 +143,7 @@ export default function EditClientPage() {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => handleChange('name', e.target.value)}
+                    onChange={(e) => handleChange("name", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Client Name"
                     required
@@ -157,7 +157,7 @@ export default function EditClientPage() {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
+                    onChange={(e) => handleChange("email", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="client@example.com"
                     required
@@ -171,7 +171,7 @@ export default function EditClientPage() {
                   <input
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => handleChange('phone', e.target.value)}
+                    onChange={(e) => handleChange("phone", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="+1 (555) 123-4567"
                   />
@@ -184,7 +184,7 @@ export default function EditClientPage() {
                   <input
                     type="text"
                     value={formData.taxId}
-                    onChange={(e) => handleChange('taxId', e.target.value)}
+                    onChange={(e) => handleChange("taxId", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Optional"
                   />
@@ -205,7 +205,7 @@ export default function EditClientPage() {
                   <input
                     type="text"
                     value={formData.address}
-                    onChange={(e) => handleChange('address', e.target.value)}
+                    onChange={(e) => handleChange("address", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="123 Main Street"
                   />
@@ -219,7 +219,7 @@ export default function EditClientPage() {
                     <input
                       type="text"
                       value={formData.city}
-                      onChange={(e) => handleChange('city', e.target.value)}
+                      onChange={(e) => handleChange("city", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="New York"
                     />
@@ -232,7 +232,7 @@ export default function EditClientPage() {
                     <input
                       type="text"
                       value={formData.state}
-                      onChange={(e) => handleChange('state', e.target.value)}
+                      onChange={(e) => handleChange("state", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="NY"
                     />
@@ -247,7 +247,7 @@ export default function EditClientPage() {
                     <input
                       type="text"
                       value={formData.zipCode}
-                      onChange={(e) => handleChange('zipCode', e.target.value)}
+                      onChange={(e) => handleChange("zipCode", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="10001"
                     />
@@ -260,7 +260,7 @@ export default function EditClientPage() {
                     <input
                       type="text"
                       value={formData.country}
-                      onChange={(e) => handleChange('country', e.target.value)}
+                      onChange={(e) => handleChange("country", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="United States"
                     />

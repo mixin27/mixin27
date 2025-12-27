@@ -1,32 +1,36 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save } from 'lucide-react'
-import { saveReceipt, getReceiptById, getClients } from '@/lib/invoice-storage'
-import { Client, InvoiceItem, Receipt } from '@/types/invoice'
+import { useEffect, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
+import {
+  saveReceipt,
+  getReceiptById,
+  getClients,
+} from "@/lib/storage/tools-storage"
+import { Client, InvoiceItem, Receipt } from "@/types/invoice"
 
 export default function EditReceiptPage() {
   const params = useParams()
   const router = useRouter()
 
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState<string>('')
-  const [receiptNumber, setReceiptNumber] = useState<string>('')
-  const [paymentDate, setPaymentDate] = useState<string>('')
+  const [selectedClientId, setSelectedClientId] = useState<string>("")
+  const [receiptNumber, setReceiptNumber] = useState<string>("")
+  const [paymentDate, setPaymentDate] = useState<string>("")
   const [paymentMethod, setPaymentMethod] =
-    useState<Receipt['paymentMethod']>('bank_transfer')
-  const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>('')
+    useState<Receipt["paymentMethod"]>("bank_transfer")
+  const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>("")
   const [items, setItems] = useState<InvoiceItem[]>([])
-  const [currency, setCurrency] = useState<string>('USD')
+  const [currency, setCurrency] = useState<string>("USD")
   const [taxRate, setTaxRate] = useState<number>(0)
   const [discount, setDiscount] = useState<number>(0)
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
-    'percentage',
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
   )
   const [amountPaid, setAmountPaid] = useState<number>(0)
-  const [notes, setNotes] = useState<string>('')
+  const [notes, setNotes] = useState<string>("")
   const [originalReceipt, setOriginalReceipt] = useState<Receipt | null>(null)
 
   useEffect(() => {
@@ -35,7 +39,7 @@ export default function EditReceiptPage() {
     const loadedClients = getClients()
 
     if (!loadedReceipt) {
-      router.push('/tools/receipts')
+      router.push("/tools/receipts")
       return
     }
 
@@ -43,16 +47,16 @@ export default function EditReceiptPage() {
     setClients(loadedClients)
     setSelectedClientId(loadedReceipt.client.id)
     setReceiptNumber(loadedReceipt.receiptNumber)
-    setPaymentDate(loadedReceipt.paymentDate.split('T')[0])
+    setPaymentDate(loadedReceipt.paymentDate.split("T")[0])
     setPaymentMethod(loadedReceipt.paymentMethod)
-    setRelatedInvoiceNumber(loadedReceipt.relatedInvoiceNumber || '')
+    setRelatedInvoiceNumber(loadedReceipt.relatedInvoiceNumber || "")
     setItems(loadedReceipt.items)
     setCurrency(loadedReceipt.currency)
     setTaxRate(loadedReceipt.taxRate)
     setDiscount(loadedReceipt.discount)
     setDiscountType(loadedReceipt.discountType)
     setAmountPaid(loadedReceipt.amountPaid)
-    setNotes(loadedReceipt.notes || '')
+    setNotes(loadedReceipt.notes || "")
   }, [params.id, router])
 
   const addItem = () => {
@@ -60,7 +64,7 @@ export default function EditReceiptPage() {
       ...items,
       {
         id: crypto.randomUUID(),
-        description: '',
+        description: "",
         quantity: 1,
         rate: 0,
         amount: 0,
@@ -83,7 +87,7 @@ export default function EditReceiptPage() {
       items.map((item) => {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
-          if (field === 'quantity' || field === 'rate') {
+          if (field === "quantity" || field === "rate") {
             updated.amount = updated.quantity * updated.rate
           }
           return updated
@@ -96,7 +100,7 @@ export default function EditReceiptPage() {
   const calculateTotals = () => {
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
     const discountAmount =
-      discountType === 'percentage' ? subtotal * (discount / 100) : discount
+      discountType === "percentage" ? subtotal * (discount / 100) : discount
     const taxableAmount = subtotal - discountAmount
     const taxAmount = taxableAmount * (taxRate / 100)
     const total = taxableAmount + taxAmount
@@ -113,7 +117,7 @@ export default function EditReceiptPage() {
     e.preventDefault()
 
     if (!selectedClientId) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
@@ -123,7 +127,7 @@ export default function EditReceiptPage() {
 
     const client = clients.find((c) => c.id === selectedClientId)
     if (!client) {
-      alert('Invalid client selected')
+      alert("Invalid client selected")
       return
     }
 
@@ -136,7 +140,7 @@ export default function EditReceiptPage() {
       paymentDate,
       paymentMethod,
       relatedInvoiceNumber: relatedInvoiceNumber || undefined,
-      items: items.filter((item) => item.description.trim() !== ''),
+      items: items.filter((item) => item.description.trim() !== ""),
       subtotal: totals.subtotal,
       taxRate,
       taxAmount: totals.taxAmount,
@@ -224,7 +228,7 @@ export default function EditReceiptPage() {
                 <select
                   value={paymentMethod}
                   onChange={(e) =>
-                    setPaymentMethod(e.target.value as Receipt['paymentMethod'])
+                    setPaymentMethod(e.target.value as Receipt["paymentMethod"])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   required
@@ -325,7 +329,7 @@ export default function EditReceiptPage() {
                       placeholder="Item description"
                       value={item.description}
                       onChange={(e) =>
-                        updateItem(item.id, 'description', e.target.value)
+                        updateItem(item.id, "description", e.target.value)
                       }
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       required
@@ -337,7 +341,7 @@ export default function EditReceiptPage() {
                       placeholder="Qty"
                       value={item.quantity}
                       onChange={(e) =>
-                        updateItem(item.id, 'quantity', Number(e.target.value))
+                        updateItem(item.id, "quantity", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -351,7 +355,7 @@ export default function EditReceiptPage() {
                       placeholder="Rate"
                       value={item.rate}
                       onChange={(e) =>
-                        updateItem(item.id, 'rate', Number(e.target.value))
+                        updateItem(item.id, "rate", Number(e.target.value))
                       }
                       min="0"
                       step="0.01"
@@ -412,7 +416,7 @@ export default function EditReceiptPage() {
                   <select
                     value={discountType}
                     onChange={(e) =>
-                      setDiscountType(e.target.value as 'percentage' | 'fixed')
+                      setDiscountType(e.target.value as "percentage" | "fixed")
                     }
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   >

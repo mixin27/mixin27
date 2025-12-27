@@ -1,24 +1,25 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Save } from 'lucide-react'
-import { Client } from '@/types/invoice'
-import { saveClient } from '@/lib/invoice-storage'
+import { v7 as uuidv7 } from "uuid"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Save } from "lucide-react"
+import { Client } from "@/types/invoice"
+import { saveClient } from "@/lib/storage/tools-storage"
 
 export default function NewClientPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    country: '',
-    taxId: '',
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    taxId: "",
   })
 
   const handleChange = (field: string, value: string) => {
@@ -29,24 +30,25 @@ export default function NewClientPage() {
     e.preventDefault()
 
     if (!formData.name.trim()) {
-      alert('Please enter a client name')
+      alert("Please enter a client name")
       return
     }
 
     if (!formData.email.trim()) {
-      alert('Please enter a client email')
+      alert("Please enter a client email")
       return
     }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address')
+      alert("Please enter a valid email address")
       return
     }
 
     const client: Client = {
-      id: Date.now().toString(),
+      //   id: Date.now().toString(),
+      id: uuidv7(),
       name: formData.name.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim() || undefined,
@@ -60,7 +62,7 @@ export default function NewClientPage() {
     }
 
     saveClient(client)
-    router.push('/tools/invoices/clients')
+    router.push("/tools/invoices/clients")
   }
 
   return (
@@ -102,7 +104,7 @@ export default function NewClientPage() {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => handleChange('name', e.target.value)}
+                    onChange={(e) => handleChange("name", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Client Name"
                     required
@@ -116,7 +118,7 @@ export default function NewClientPage() {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => handleChange('email', e.target.value)}
+                    onChange={(e) => handleChange("email", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="client@example.com"
                     required
@@ -130,7 +132,7 @@ export default function NewClientPage() {
                   <input
                     type="tel"
                     value={formData.phone}
-                    onChange={(e) => handleChange('phone', e.target.value)}
+                    onChange={(e) => handleChange("phone", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="+1 (555) 123-4567"
                   />
@@ -143,7 +145,7 @@ export default function NewClientPage() {
                   <input
                     type="text"
                     value={formData.taxId}
-                    onChange={(e) => handleChange('taxId', e.target.value)}
+                    onChange={(e) => handleChange("taxId", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="Optional"
                   />
@@ -164,7 +166,7 @@ export default function NewClientPage() {
                   <input
                     type="text"
                     value={formData.address}
-                    onChange={(e) => handleChange('address', e.target.value)}
+                    onChange={(e) => handleChange("address", e.target.value)}
                     className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                     placeholder="123 Main Street"
                   />
@@ -178,7 +180,7 @@ export default function NewClientPage() {
                     <input
                       type="text"
                       value={formData.city}
-                      onChange={(e) => handleChange('city', e.target.value)}
+                      onChange={(e) => handleChange("city", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="New York"
                     />
@@ -191,7 +193,7 @@ export default function NewClientPage() {
                     <input
                       type="text"
                       value={formData.state}
-                      onChange={(e) => handleChange('state', e.target.value)}
+                      onChange={(e) => handleChange("state", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="NY"
                     />
@@ -206,7 +208,7 @@ export default function NewClientPage() {
                     <input
                       type="text"
                       value={formData.zipCode}
-                      onChange={(e) => handleChange('zipCode', e.target.value)}
+                      onChange={(e) => handleChange("zipCode", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="10001"
                     />
@@ -219,7 +221,7 @@ export default function NewClientPage() {
                     <input
                       type="text"
                       value={formData.country}
-                      onChange={(e) => handleChange('country', e.target.value)}
+                      onChange={(e) => handleChange("country", e.target.value)}
                       className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       placeholder="United States"
                     />

@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Plus,
   Receipt as ReceiptIcon,
@@ -10,19 +10,19 @@ import {
   Eye,
   Edit,
   ArrowLeft,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   getReceipts,
   deleteReceipt,
   getReceiptStats,
-} from '@/lib/invoice-storage'
-import { Receipt } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
+} from "@/lib/storage/tools-storage"
+import { Receipt } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
 
 export default function ReceiptsPage() {
   const [receipts, setReceipts] = useState<Receipt[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState<string>("all")
   const [stats, setStats] = useState({
     total: 0,
     totalAmount: 0,
@@ -39,7 +39,7 @@ export default function ReceiptsPage() {
   }
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this receipt?')) {
+    if (confirm("Are you sure you want to delete this receipt?")) {
       deleteReceipt(id)
       loadData()
     }
@@ -54,25 +54,25 @@ export default function ReceiptsPage() {
         .includes(searchQuery.toLowerCase())
 
     const matchesPaymentMethod =
-      paymentMethodFilter === 'all' ||
+      paymentMethodFilter === "all" ||
       receipt.paymentMethod === paymentMethodFilter
 
     return matchesSearch && matchesPaymentMethod
   })
 
-  const getPaymentMethodLabel = (method: Receipt['paymentMethod']) => {
+  const getPaymentMethodLabel = (method: Receipt["paymentMethod"]) => {
     const labels = {
-      cash: 'Cash',
-      check: 'Check',
-      bank_transfer: 'Bank Transfer',
-      credit_card: 'Credit Card',
-      paypal: 'PayPal',
-      kbz_pay: 'KBZ Kpay',
-      aya_pay: 'AYA Pay',
-      wave_pay: 'Wave Pay',
-      uab_pay: 'UAB Pay',
-      cb_pay: 'CB Pay',
-      other: 'Other',
+      cash: "Cash",
+      check: "Check",
+      bank_transfer: "Bank Transfer",
+      credit_card: "Credit Card",
+      paypal: "PayPal",
+      kbz_pay: "KBZ Kpay",
+      aya_pay: "AYA Pay",
+      wave_pay: "Wave Pay",
+      uab_pay: "UAB Pay",
+      cb_pay: "CB Pay",
+      other: "Other",
     }
     return labels[method]
   }
@@ -148,7 +148,7 @@ export default function ReceiptsPage() {
                 <p className="text-2xl font-bold">
                   {stats.total > 0
                     ? `$${(stats.totalAmount / stats.total).toFixed(2)}`
-                    : '$0'}
+                    : "$0"}
                 </p>
                 <p className="text-sm text-muted-foreground">Average Amount</p>
               </div>
@@ -194,9 +194,9 @@ export default function ReceiptsPage() {
             <ReceiptIcon className="size-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">No receipts found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery || paymentMethodFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by creating your first receipt'}
+              {searchQuery || paymentMethodFilter !== "all"
+                ? "Try adjusting your filters"
+                : "Get started by creating your first receipt"}
             </p>
             <Link
               href="/tools/receipts/new"
@@ -258,11 +258,11 @@ export default function ReceiptsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-sm">
-                        {receipt.relatedInvoiceNumber || '-'}
+                        {receipt.relatedInvoiceNumber || "-"}
                       </td>
                       <td className="px-6 py-4">
                         <div className="font-medium">
-                          {receipt.currency}{' '}
+                          {receipt.currency}{" "}
                           {receipt.amountPaid.toLocaleString()}
                         </div>
                       </td>

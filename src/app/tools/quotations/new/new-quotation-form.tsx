@@ -11,7 +11,7 @@ import {
   getNextInvoiceNumber,
   incrementInvoiceNumber,
   getClientById,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { Client, InvoiceItem, Quotation } from "@/types/invoice"
 
 export default function NewQuotationForm() {

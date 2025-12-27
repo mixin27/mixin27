@@ -1,11 +1,16 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter, useParams } from 'next/navigation'
-import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2, Save, Loader2 } from 'lucide-react'
-import { Invoice, InvoiceItem, Client } from '@/types/invoice'
-import { saveInvoice, getClients, getInvoiceById } from '@/lib/invoice-storage'
+import { v7 as uuidv7 } from "uuid"
+import { useState, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
+import Link from "next/link"
+import { ArrowLeft, Plus, Trash2, Save, Loader2 } from "lucide-react"
+import { Invoice, InvoiceItem, Client } from "@/types/invoice"
+import {
+  saveInvoice,
+  getClients,
+  getInvoiceById,
+} from "@/lib/storage/tools-storage"
 
 export default function EditInvoicePage() {
   const router = useRouter()
@@ -14,28 +19,28 @@ export default function EditInvoicePage() {
 
   const [loading, setLoading] = useState(true)
   const [clients, setClients] = useState<Client[]>([])
-  const [selectedClientId, setSelectedClientId] = useState('')
-  const [invoiceNumber, setInvoiceNumber] = useState('')
-  const [issueDate, setIssueDate] = useState('')
-  const [dueDate, setDueDate] = useState('')
+  const [selectedClientId, setSelectedClientId] = useState("")
+  const [invoiceNumber, setInvoiceNumber] = useState("")
+  const [issueDate, setIssueDate] = useState("")
+  const [dueDate, setDueDate] = useState("")
   const [items, setItems] = useState<InvoiceItem[]>([
-    { id: '1', description: '', quantity: 1, rate: 0, amount: 0 },
+    { id: "1", description: "", quantity: 1, rate: 0, amount: 0 },
   ])
-  const [notes, setNotes] = useState('')
-  const [terms, setTerms] = useState('')
+  const [notes, setNotes] = useState("")
+  const [terms, setTerms] = useState("")
   const [taxRate, setTaxRate] = useState(0)
   const [discount, setDiscount] = useState(0)
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>(
-    'percentage',
+  const [discountType, setDiscountType] = useState<"percentage" | "fixed">(
+    "percentage",
   )
-  const [currency, setCurrency] = useState('USD')
-  const [status, setStatus] = useState<Invoice['status']>('draft')
+  const [currency, setCurrency] = useState("USD")
+  const [status, setStatus] = useState<Invoice["status"]>("draft")
 
   useEffect(() => {
     const invoice = getInvoiceById(invoiceId)
     if (!invoice) {
-      alert('Invoice not found')
-      router.push('/tools/invoices')
+      alert("Invoice not found")
+      router.push("/tools/invoices")
       return
     }
 
@@ -48,8 +53,8 @@ export default function EditInvoicePage() {
     setIssueDate(invoice.issueDate)
     setDueDate(invoice.dueDate)
     setItems(invoice.items)
-    setNotes(invoice.notes || '')
-    setTerms(invoice.terms || '')
+    setNotes(invoice.notes || "")
+    setTerms(invoice.terms || "")
     setTaxRate(invoice.taxRate)
     setDiscount(invoice.discount)
     setDiscountType(invoice.discountType)
@@ -62,8 +67,9 @@ export default function EditInvoicePage() {
     setItems([
       ...items,
       {
-        id: Date.now().toString(),
-        description: '',
+        // id: Date.now().toString(),
+        id: uuidv7(),
+        description: "",
         quantity: 1,
         rate: 0,
         amount: 0,
@@ -82,7 +88,7 @@ export default function EditInvoicePage() {
       items.map((item) => {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
-          if (field === 'quantity' || field === 'rate') {
+          if (field === "quantity" || field === "rate") {
             updated.amount = updated.quantity * updated.rate
           }
           return updated
@@ -98,7 +104,7 @@ export default function EditInvoicePage() {
 
   const calculateDiscount = () => {
     const subtotal = calculateSubtotal()
-    if (discountType === 'percentage') {
+    if (discountType === "percentage") {
       return subtotal * (discount / 100)
     }
     return discount
@@ -117,23 +123,23 @@ export default function EditInvoicePage() {
     return subtotal - discountAmount + taxAmount
   }
 
-  const handleSave = (statusUpdate: Invoice['status'] = 'draft') => {
+  const handleSave = (statusUpdate: Invoice["status"] = "draft") => {
     const selectedClient = clients.find((c) => c.id === selectedClientId)
 
     if (!selectedClient) {
-      alert('Please select a client')
+      alert("Please select a client")
       return
     }
 
     if (items.some((item) => !item.description)) {
-      alert('Please fill in all item descriptions')
+      alert("Please fill in all item descriptions")
       return
     }
 
     const existingInvoice = getInvoiceById(invoiceId)
     if (!existingInvoice) {
-      alert('Invoice not found')
-      router.push('/tools/invoices')
+      alert("Invoice not found")
+      router.push("/tools/invoices")
       return
     }
 
@@ -201,44 +207,44 @@ export default function EditInvoicePage() {
               <Save className="size-4" />
               Save Changes
             </button>
-            {status === 'paid' && (
+            {status === "paid" && (
               <button
                 onClick={() => {
-                  setStatus('draft')
-                  setTimeout(() => handleSave('draft'), 100)
+                  setStatus("draft")
+                  setTimeout(() => handleSave("draft"), 100)
                 }}
                 className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-800 dark:bg-gray-900 dark:text-gray-200 hover:bg-blue-700 transition-colors"
               >
                 Mark as Draft
               </button>
             )}
-            {status === 'draft' && (
+            {status === "draft" && (
               <button
                 onClick={() => {
-                  setStatus('sent')
-                  setTimeout(() => handleSave('sent'), 100)
+                  setStatus("sent")
+                  setTimeout(() => handleSave("sent"), 100)
                 }}
                 className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
               >
                 Mark as Sent
               </button>
             )}
-            {status === 'sent' && (
+            {status === "sent" && (
               <button
                 onClick={() => {
-                  setStatus('paid')
-                  setTimeout(() => handleSave('paid'), 100)
+                  setStatus("paid")
+                  setTimeout(() => handleSave("paid"), 100)
                 }}
                 className="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
               >
                 Mark as Paid
               </button>
             )}
-            {(status === 'sent' || status === 'overdue') && (
+            {(status === "sent" || status === "overdue") && (
               <button
                 onClick={() => {
-                  setStatus('cancelled')
-                  setTimeout(() => handleSave('cancelled'), 100)
+                  setStatus("cancelled")
+                  setTimeout(() => handleSave("cancelled"), 100)
                 }}
                 className="inline-flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 transition-colors"
               >
@@ -274,7 +280,7 @@ export default function EditInvoicePage() {
                 <select
                   value={status}
                   onChange={(e) =>
-                    setStatus(e.target.value as Invoice['status'])
+                    setStatus(e.target.value as Invoice["status"])
                   }
                   className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                   required
@@ -377,7 +383,7 @@ export default function EditInvoicePage() {
                         placeholder="Description"
                         value={item.description}
                         onChange={(e) =>
-                          updateItem(item.id, 'description', e.target.value)
+                          updateItem(item.id, "description", e.target.value)
                         }
                         className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                       />
@@ -390,7 +396,7 @@ export default function EditInvoicePage() {
                         onChange={(e) =>
                           updateItem(
                             item.id,
-                            'quantity',
+                            "quantity",
                             parseFloat(e.target.value) || 0,
                           )
                         }
@@ -407,7 +413,7 @@ export default function EditInvoicePage() {
                         onChange={(e) =>
                           updateItem(
                             item.id,
-                            'rate',
+                            "rate",
                             parseFloat(e.target.value) || 0,
                           )
                         }
@@ -452,7 +458,7 @@ export default function EditInvoicePage() {
                       value={discountType}
                       onChange={(e) =>
                         setDiscountType(
-                          e.target.value as 'percentage' | 'fixed',
+                          e.target.value as "percentage" | "fixed",
                         )
                       }
                       className="px-2 py-1 text-sm rounded border bg-background"

@@ -23,7 +23,7 @@ import {
   getClients,
   calculateDuration,
   formatDuration,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { TimeEntry, RunningTimer, Client } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 

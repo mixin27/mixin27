@@ -5,7 +5,7 @@ import {
   getNextInvoiceNumber,
   incrementInvoiceNumber,
   getNextReceiptNumber,
-} from "./invoice-storage"
+} from "./storage/tools-storage"
 
 /**
  * Convert a Quotation to an Invoice

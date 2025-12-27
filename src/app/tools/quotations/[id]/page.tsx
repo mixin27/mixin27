@@ -16,7 +16,7 @@ import {
   deleteQuotation,
   getSettings,
   saveQuotation,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { Quotation, InvoiceSettings } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 import {

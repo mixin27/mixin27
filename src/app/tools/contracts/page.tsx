@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
+import { useEffect, useState } from "react"
+import Link from "next/link"
 import {
   Plus,
   FileText,
@@ -10,19 +10,19 @@ import {
   Eye,
   Edit,
   ArrowLeft,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   getContracts,
   deleteContract,
   getContractStats,
-} from '@/lib/invoice-storage'
-import { Contract } from '@/types/invoice'
-import { formatDate } from '@/lib/utils'
+} from "@/lib/storage/tools-storage"
+import { Contract } from "@/types/invoice"
+import { formatDate } from "@/lib/utils"
 
 export default function ContractsPage() {
   const [contracts, setContracts] = useState<Contract[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [searchQuery, setSearchQuery] = useState("")
+  const [statusFilter, setStatusFilter] = useState<string>("all")
   const [stats, setStats] = useState({
     total: 0,
     draft: 0,
@@ -43,7 +43,7 @@ export default function ContractsPage() {
   }
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this contract?')) {
+    if (confirm("Are you sure you want to delete this contract?")) {
       deleteContract(id)
       loadData()
     }
@@ -58,24 +58,24 @@ export default function ContractsPage() {
       contract.projectName.toLowerCase().includes(searchQuery.toLowerCase())
 
     const matchesStatus =
-      statusFilter === 'all' || contract.status === statusFilter
+      statusFilter === "all" || contract.status === statusFilter
 
     return matchesSearch && matchesStatus
   })
 
-  const getStatusColor = (status: Contract['status']) => {
+  const getStatusColor = (status: Contract["status"]) => {
     switch (status) {
-      case 'signed':
-      case 'active':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-      case 'sent':
-        return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-      case 'completed':
-        return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-      case 'terminated':
-        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-      case 'draft':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case "signed":
+      case "active":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+      case "sent":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+      case "completed":
+        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+      case "terminated":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      case "draft":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
     }
   }
 
@@ -195,9 +195,9 @@ export default function ContractsPage() {
             <FileText className="size-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-xl font-semibold mb-2">No contracts found</h3>
             <p className="text-muted-foreground mb-6">
-              {searchQuery || statusFilter !== 'all'
-                ? 'Try adjusting your filters'
-                : 'Get started by creating your first contract'}
+              {searchQuery || statusFilter !== "all"
+                ? "Try adjusting your filters"
+                : "Get started by creating your first contract"}
             </p>
             <Link
               href="/tools/contracts/new"

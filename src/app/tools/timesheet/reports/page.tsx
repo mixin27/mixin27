@@ -7,7 +7,7 @@ import {
   getTimeEntries,
   getClients,
   formatDuration,
-} from "@/lib/invoice-storage"
+} from "@/lib/storage/tools-storage"
 import { TimeEntry } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 import jsPDF from "jspdf"

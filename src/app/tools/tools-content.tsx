@@ -8,10 +8,9 @@ import {
   Receipt,
   Clock,
   Settings,
+  Cloud,
 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { LogoutButton } from "@/components/logout-button"
 
 const tools = [
   {
@@ -86,36 +85,18 @@ const tools = [
     bgColor: "bg-gray-50 dark:bg-gray-950",
     available: true,
   },
+  {
+    name: "Sync",
+    description: "Manage your data between localStorage and cloud",
+    icon: Cloud,
+    href: "/tools/migrate",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50 dark:bg-blue-950",
+    available: true,
+  },
 ]
 
 export default function ToolsContent() {
-  const router = useRouter()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-
-  const handleLogout = async () => {
-    setError("")
-    setLoading(true)
-
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        router.refresh()
-      } else {
-        setError(data.error || "Invalid password")
-      }
-    } catch (_) {
-      setError("Login failed. Please try again.")
-    } finally {
-      setLoading(false)
-    }
-  }
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -125,22 +106,11 @@ export default function ToolsContent() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
               Freelance Tools
             </h1>
+            <LogoutButton />
             <p className="text-xl text-muted-foreground">
               Professional tools to manage your freelance business. Create
               invoices, quotations, contracts, and more - all free and private.
             </p>
-
-            {!loading && (
-              <Button className="mt-4" onClick={handleLogout}>
-                Log out
-              </Button>
-            )}
-            {loading && <div className="animate-spin mt-4"></div>}
-            {error && (
-              <div className="p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
-                {error}
-              </div>
-            )}
           </div>
         </div>
       </section>
