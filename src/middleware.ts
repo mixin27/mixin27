@@ -28,15 +28,6 @@ export async function middleware(request: NextRequest) {
         response.headers.set("x-user-email", token.email as string)
 
         return response
-        // Check if user is authenticated
-        // const token = request.cookies.get("tools-auth")?.value
-
-        // if (!token || token !== process.env.TOOLS_AUTH_SECRET) {
-        //     // Redirect to login
-        //     const loginUrl = new URL("/tools/login", request.url)
-        //     loginUrl.searchParams.set("from", pathname)
-        //     return NextResponse.redirect(loginUrl)
-        // }
     }
 
     return NextResponse.next()
