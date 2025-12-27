@@ -32,16 +32,19 @@ export default function ReceiptsPage() {
     loadData()
   }, [])
 
-  const loadData = () => {
-    const loadedReceipts = getReceipts()
+  const loadData = async () => {
+    const [loadedReceipts, stats] = await Promise.all([
+      getReceipts(),
+      getReceiptStats(),
+    ])
     setReceipts(loadedReceipts)
-    setStats(getReceiptStats())
+    setStats(stats)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this receipt?")) {
-      deleteReceipt(id)
-      loadData()
+      await deleteReceipt(id)
+      await loadData()
     }
   }
 

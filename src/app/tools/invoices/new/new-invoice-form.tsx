@@ -40,27 +40,33 @@ export default function NewInvoiceForm() {
   const [currency, setCurrency] = useState("USD")
 
   useEffect(() => {
-    const loadedClients = getClients()
-    setClients(loadedClients)
+    const loadData = async () => {
+      const [loadedClients, settings] = await Promise.all([
+        getClients(),
+        Promise.resolve(getSettings()),
+      ])
+      setClients(loadedClients)
 
-    const settings = getSettings()
-    setInvoiceNumber(getNextInvoiceNumber())
-    setTaxRate(settings.defaultTaxRate)
-    setCurrency(settings.defaultCurrency)
-    setTerms(settings.defaultPaymentTerms)
+      setInvoiceNumber(getNextInvoiceNumber())
+      setTaxRate(settings.defaultTaxRate)
+      setCurrency(settings.defaultCurrency)
+      setTerms(settings.defaultPaymentTerms)
 
-    // Set due date to 30 days from now
-    const due = new Date()
-    due.setDate(due.getDate() + 30)
-    setDueDate(due.toISOString().split("T")[0])
+      // Set due date to 30 days from now
+      const due = new Date()
+      due.setDate(due.getDate() + 30)
+      setDueDate(due.toISOString().split("T")[0])
 
-    // Pre-select client if provided
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
+      // Pre-select client if provided
+      if (preSelectedClientId) {
+        const client = await getClientById(preSelectedClientId)
+        if (client) {
+          setSelectedClientId(preSelectedClientId)
+        }
       }
     }
+
+    loadData()
   }, [preSelectedClientId])
 
   const addItem = () => {
@@ -123,7 +129,7 @@ export default function NewInvoiceForm() {
     return subtotal - discountAmount + taxAmount
   }
 
-  const handleSave = (status: Invoice["status"] = "draft") => {
+  const handleSave = async (status: Invoice["status"] = "draft") => {
     const selectedClient = clients.find((c) => c.id === selectedClientId)
 
     if (!selectedClient) {
@@ -158,8 +164,8 @@ export default function NewInvoiceForm() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveInvoice(invoice)
-    incrementInvoiceNumber()
+    await saveInvoice(invoice)
+    await incrementInvoiceNumber()
     router.push("/tools/invoices")
   }
 

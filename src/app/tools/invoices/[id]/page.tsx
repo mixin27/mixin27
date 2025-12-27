@@ -35,22 +35,28 @@ export default function InvoiceViewPage() {
   const invoiceRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedInvoice = getInvoiceById(id)
-    const loadedSettings = getSettings()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedInvoice, loadedSettings] = await Promise.all([
+        getInvoiceById(id),
+        Promise.resolve(getSettings()),
+      ])
 
-    if (loadedInvoice) {
-      setInvoice(loadedInvoice)
-      setSettings(loadedSettings)
-      setAmountPaid(loadedInvoice.total)
-    } else {
-      router.push("/tools/invoices")
+      if (loadedInvoice) {
+        setInvoice(loadedInvoice)
+        setSettings(loadedSettings)
+        setAmountPaid(loadedInvoice.total)
+      } else {
+        router.push("/tools/invoices")
+      }
     }
+
+    loadData()
   }, [params.id, router])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this invoice?")) {
-      deleteInvoice(invoice!.id)
+      await deleteInvoice(invoice!.id)
       router.push("/tools/invoices")
     }
   }
@@ -66,10 +72,10 @@ export default function InvoiceViewPage() {
     setShowReceiptModal(true)
   }
 
-  const confirmGenerateReceipt = () => {
+  const confirmGenerateReceipt = async () => {
     if (!invoice) return
 
-    const receipt = convertInvoiceToReceipt(
+    const receipt = await convertInvoiceToReceipt(
       invoice,
       paymentMethod,
       paymentDate,
@@ -83,7 +89,7 @@ export default function InvoiceViewPage() {
         status: "paid" as Invoice["status"],
         updatedAt: new Date().toISOString(),
       }
-      saveInvoice(updatedInvoice)
+      await saveInvoice(updatedInvoice)
       setInvoice(updatedInvoice)
     }
 

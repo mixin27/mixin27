@@ -51,12 +51,12 @@ export default function NewResumeForm() {
     useState<ResumeTemplate>("modern")
   const [resumeName, setResumeName] = useState("My Resume")
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     const resume = createDefaultResume()
     resume.name = resumeName
     resume.template = selectedTemplate
     resume.style.template = selectedTemplate
-    saveResume(resume)
+    await saveResume(resume)
     router.push(`/tools/resumes/${resume.id}/edit`)
   }
 

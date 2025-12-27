@@ -26,32 +26,36 @@ export default function EditClientPage() {
   })
 
   useEffect(() => {
-    const client = getClientById(clientId)
-    if (!client) {
-      alert("Client not found")
-      router.push("/tools/invoices/clients")
-      return
+    const loadData = async () => {
+      const client = await getClientById(clientId)
+      if (!client) {
+        alert("Client not found")
+        router.push("/tools/invoices/clients")
+        return
+      }
+
+      setFormData({
+        name: client.name,
+        email: client.email,
+        phone: client.phone || "",
+        address: client.address || "",
+        city: client.city || "",
+        state: client.state || "",
+        zipCode: client.zipCode || "",
+        country: client.country || "",
+        taxId: client.taxId || "",
+      })
+      setLoading(false)
     }
 
-    setFormData({
-      name: client.name,
-      email: client.email,
-      phone: client.phone || "",
-      address: client.address || "",
-      city: client.city || "",
-      state: client.state || "",
-      zipCode: client.zipCode || "",
-      country: client.country || "",
-      taxId: client.taxId || "",
-    })
-    setLoading(false)
+    loadData()
   }, [clientId, router])
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!formData.name.trim()) {
@@ -71,7 +75,7 @@ export default function EditClientPage() {
       return
     }
 
-    const existingClient = getClientById(clientId)
+    const existingClient = await getClientById(clientId)
     if (!existingClient) {
       alert("Client not found")
       router.push("/tools/invoices/clients")
@@ -91,7 +95,7 @@ export default function EditClientPage() {
       taxId: formData.taxId.trim() || undefined,
     }
 
-    saveClient(updatedClient)
+    await saveClient(updatedClient)
     router.push("/tools/invoices/clients")
   }
 

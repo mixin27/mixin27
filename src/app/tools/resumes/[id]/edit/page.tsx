@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
@@ -61,25 +62,29 @@ export default function EditResumePage() {
   )
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedResume = getResumeById(id)
-    if (!loadedResume) {
-      router.push("/tools/resumes")
-      return
+    const loadData = async () => {
+      const id = params.id as string
+      const loadedResume = await getResumeById(id)
+      if (!loadedResume) {
+        router.push("/tools/resumes")
+        return
+      }
+      setResume(loadedResume)
     }
-    setResume(loadedResume)
+
+    loadData()
   }, [params.id, router])
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!resume) return
     setIsSaving(true)
-    saveResume(resume)
-    setTimeout(() => setIsSaving(false), 500)
+    await saveResume(resume)
+    setIsSaving(false)
   }
 
-  const handleExport = () => {
+  const handleExport = async () => {
     if (!resume) return
-    const json = exportResumeJSON(resume.id)
+    const json = await exportResumeJSON(resume.id)
     const blob = new Blob([json], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
@@ -404,7 +409,7 @@ export default function EditResumePage() {
                     }
                     onAdd={() => {
                       const newExp: Experience = {
-                        id: `exp_${Date.now()}`,
+                        id: `exp_${uuidv7()}`,
                         company: "",
                         position: "",
                         location: "",
@@ -654,7 +659,7 @@ export default function EditResumePage() {
                     }
                     onAdd={() => {
                       const newEdu: Education = {
-                        id: `edu_${Date.now()}`,
+                        id: `edu_${uuidv7()}`,
                         institution: "",
                         degree: "",
                         field: "",
@@ -866,7 +871,7 @@ export default function EditResumePage() {
                   <button
                     onClick={() => {
                       const newSkill: Skill = {
-                        id: `skill_${Date.now()}`,
+                        id: `skill_${uuidv7()}`,
                         name: "",
                         category: "Technical",
                         level: "intermediate",
@@ -978,7 +983,7 @@ export default function EditResumePage() {
                   <button
                     onClick={() => {
                       const newProject: Project = {
-                        id: `project_${Date.now()}`,
+                        id: `project_${uuidv7()}`,
                         name: "",
                         description: "",
                         technologies: [],
@@ -1122,7 +1127,7 @@ export default function EditResumePage() {
                   <button
                     onClick={() => {
                       const newCert: Certification = {
-                        id: `cert_${Date.now()}`,
+                        id: `cert_${uuidv7()}`,
                         name: "",
                         issuer: "",
                         issueDate: "",
@@ -1261,7 +1266,7 @@ export default function EditResumePage() {
                   <button
                     onClick={() => {
                       const newLang: Language = {
-                        id: `lang_${Date.now()}`,
+                        id: `lang_${uuidv7()}`,
                         name: "",
                         proficiency: "conversational",
                       }

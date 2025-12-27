@@ -14,26 +14,31 @@ export default function ClientsPage() {
   const [totalInvoices, setTotalInvoices] = useState(0)
   const [clients, setClients] = useState<Client[]>([])
   const [searchQuery, setSearchQuery] = useState("")
+  const [invoiceCounts, setInvoiceCounts] = useState<Record<string, number>>({})
 
   useEffect(() => {
     loadClients()
   }, [])
 
-  const loadClients = () => {
-    setClients(getClients())
+  const loadClients = async () => {
+    const [loadedClients, invoices] = await Promise.all([
+      getClients(),
+      getInvoices(),
+    ])
+    setClients(loadedClients)
+    setTotalInvoices(invoices.length)
+    
+    // Calculate invoice counts per client
+    const counts: Record<string, number> = {}
+    invoices.forEach((inv) => {
+      counts[inv.client.id] = (counts[inv.client.id] || 0) + 1
+    })
+    setInvoiceCounts(counts)
   }
 
-  useEffect(() => {
-    loadInvoices()
-  }, [])
-
-  const loadInvoices = () => {
-    setTotalInvoices(getInvoices().length)
-  }
-
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     // Check if client has invoices
-    const invoices = getInvoices()
+    const invoices = await getInvoices()
     const hasInvoices = invoices.some((inv) => inv.client.id === id)
 
     if (hasInvoices) {
@@ -45,15 +50,11 @@ export default function ClientsPage() {
     }
 
     if (confirm("Are you sure you want to delete this client?")) {
-      deleteClient(id)
-      loadClients()
+      await deleteClient(id)
+      await loadClients()
     }
   }
 
-  const getClientInvoiceCount = (clientId: string) => {
-    const invoices = getInvoices()
-    return invoices.filter((inv) => inv.client.id === clientId).length
-  }
 
   const filteredClients = clients.filter((client) => {
     const query = searchQuery.toLowerCase()
@@ -227,7 +228,7 @@ export default function ClientsPage() {
                 <div className="pt-4 border-t flex items-center justify-between">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <FileText className="size-4" />
-                    <span>{getClientInvoiceCount(client.id)} invoices</span>
+                    <span>{invoiceCounts[client.id] || 0} invoices</span>
                   </div>
                   <Link
                     href={`/tools/invoices/new?clientId=${client.id}`}

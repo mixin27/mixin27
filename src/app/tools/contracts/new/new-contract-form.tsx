@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -54,23 +55,29 @@ export default function NewContractForm() {
   const [notes, setNotes] = useState<string>("")
 
   useEffect(() => {
-    const loadedClients = getClients()
-    const settings = getSettings()
+    const loadData = async () => {
+      const [loadedClients, settings] = await Promise.all([
+        getClients(),
+        Promise.resolve(getSettings()),
+      ])
 
-    setClients(loadedClients)
-    setContractNumber(getNextContractNumber())
-    setCurrency(settings.defaultCurrency)
-    setPaymentTerms(settings.defaultPaymentTerms)
+      setClients(loadedClients)
+      setContractNumber(await getNextContractNumber())
+      setCurrency(settings.defaultCurrency)
+      setPaymentTerms(settings.defaultPaymentTerms)
 
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
+      if (preSelectedClientId) {
+        const client = await getClientById(preSelectedClientId)
+        if (client) {
+          setSelectedClientId(preSelectedClientId)
+        }
       }
     }
+
+    loadData()
   }, [preSelectedClientId])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -91,7 +98,7 @@ export default function NewContractForm() {
     }
 
     const contract: Contract = {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       contractNumber,
       templateType,
       templateName: template.name,
@@ -116,7 +123,7 @@ export default function NewContractForm() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveContract(contract)
+    await saveContract(contract)
     router.push("/tools/contracts")
   }
 
@@ -154,19 +161,17 @@ export default function NewContractForm() {
                 <div
                   key={template.id}
                   onClick={() => setTemplateType(template.id)}
-                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                    selectedTemplate?.id === template.id
+                  className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedTemplate?.id === template.id
                       ? "border-primary/50 bg-primary/5"
                       : "border-border hover:border-primary/50"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start gap-3">
                     <FileText
-                      className={`size-5 mt-1 ${
-                        templateType === template.id
+                      className={`size-5 mt-1 ${templateType === template.id
                           ? "text-primary"
                           : "text-muted-foreground"
-                      }`}
+                        }`}
                     />
                     <div>
                       <h3 className="font-semibold mb-1">{template.name}</h3>

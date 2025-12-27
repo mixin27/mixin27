@@ -36,21 +36,27 @@ export default function QuotationViewPage() {
   const quotationRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedQuotation = getQuotationById(id)
-    const loadedSettings = getSettings()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedQuotation, loadedSettings] = await Promise.all([
+        getQuotationById(id),
+        Promise.resolve(getSettings()),
+      ])
 
-    if (loadedQuotation) {
-      setQuotation(loadedQuotation)
-      setSettings(loadedSettings)
-    } else {
-      router.push("/tools/quotations")
+      if (loadedQuotation) {
+        setQuotation(loadedQuotation)
+        setSettings(loadedSettings)
+      } else {
+        router.push("/tools/quotations")
+      }
     }
+
+    loadData()
   }, [params.id, router])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this quotation?")) {
-      deleteQuotation(quotation!.id)
+      await deleteQuotation(quotation!.id)
       router.push("/tools/quotations")
     }
   }
@@ -68,7 +74,7 @@ export default function QuotationViewPage() {
     setShowConvertModal(true)
   }
 
-  const confirmConvertToInvoice = () => {
+  const confirmConvertToInvoice = async () => {
     if (!quotation) return
 
     const invoice = convertQuotationToInvoice(quotation)
@@ -81,7 +87,7 @@ export default function QuotationViewPage() {
         : `Converted to Invoice: ${invoice.invoiceNumber}`,
       updatedAt: new Date().toISOString(),
     }
-    saveQuotation(updatedQuotation)
+    await saveQuotation(updatedQuotation)
 
     setShowConvertModal(false)
 

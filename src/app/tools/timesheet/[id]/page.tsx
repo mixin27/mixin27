@@ -31,31 +31,37 @@ export default function TimeEntryViewPage() {
   const [billable, setBillable] = useState<boolean>(true)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedEntry = getTimeEntryById(id)
-    const loadedClients = getClients()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedEntry, loadedClients] = await Promise.all([
+        getTimeEntryById(id),
+        getClients(),
+      ])
 
-    if (loadedEntry) {
-      setEntry(loadedEntry)
-      setClients(loadedClients)
+      if (loadedEntry) {
+        setEntry(loadedEntry)
+        setClients(loadedClients)
 
-      // Initialize edit form
-      setSelectedClientId(loadedEntry.clientId)
-      setProjectName(loadedEntry.projectName)
-      setDescription(loadedEntry.description)
-      setDate(loadedEntry.date)
-      setStartTime(new Date(loadedEntry.startTime).toTimeString().slice(0, 5))
-      setEndTime(new Date(loadedEntry.endTime).toTimeString().slice(0, 5))
-      setHourlyRate(loadedEntry.hourlyRate)
-      setBillable(loadedEntry.billable)
-    } else {
-      router.push("/tools/timesheet")
+        // Initialize edit form
+        setSelectedClientId(loadedEntry.clientId)
+        setProjectName(loadedEntry.projectName)
+        setDescription(loadedEntry.description)
+        setDate(loadedEntry.date)
+        setStartTime(new Date(loadedEntry.startTime).toTimeString().slice(0, 5))
+        setEndTime(new Date(loadedEntry.endTime).toTimeString().slice(0, 5))
+        setHourlyRate(loadedEntry.hourlyRate)
+        setBillable(loadedEntry.billable)
+      } else {
+        router.push("/tools/timesheet")
+      }
     }
+
+    loadData()
   }, [params.id, router])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this time entry?")) {
-      deleteTimeEntry(entry!.id)
+      await deleteTimeEntry(entry!.id)
       router.push("/tools/timesheet")
     }
   }
@@ -72,7 +78,7 @@ export default function TimeEntryViewPage() {
     return endMinutes - startMinutes
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!entry) return
 
     const client = clients.find((c) => c.id === selectedClientId)
@@ -105,7 +111,7 @@ export default function TimeEntryViewPage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveTimeEntry(updatedEntry)
+    await saveTimeEntry(updatedEntry)
     setEntry(updatedEntry)
     setIsEditing(false)
   }

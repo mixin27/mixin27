@@ -40,26 +40,30 @@ export default function ResumesPage() {
     loadData()
   }, [])
 
-  const loadData = () => {
-    setResumes(getResumes())
-    setStats(getResumeStats())
+  const loadData = async () => {
+    const [resumes, stats] = await Promise.all([
+      getResumes(),
+      getResumeStats(),
+    ])
+    setResumes(resumes)
+    setStats(stats)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this resume?")) {
-      deleteResume(id)
-      loadData()
+      await deleteResume(id)
+      await loadData()
     }
   }
 
-  const handleDuplicate = (id: string) => {
-    duplicateResume(id)
-    loadData()
+  const handleDuplicate = async (id: string) => {
+    await duplicateResume(id)
+    await loadData()
     setShowMenu(null)
   }
 
-  const handleExport = (id: string) => {
-    const json = exportResumeJSON(id)
+  const handleExport = async (id: string) => {
+    const json = await exportResumeJSON(id)
     const blob = new Blob([json], { type: "application/json" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")

@@ -68,10 +68,10 @@ export function ImportModal({
     reader.readAsText(file)
   }
 
-  const handleImport = () => {
+  const handleImport = async () => {
     try {
       setError(null)
-      const resume = importResumeJSON(jsonContent)
+      const resume = await importResumeJSON(jsonContent)
       setSuccess(true)
       setTimeout(() => {
         onImportSuccess(resume)

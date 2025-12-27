@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
@@ -57,14 +58,17 @@ export default function TimeTrackingPage() {
     return () => clearInterval(interval)
   }, [timer])
 
-  const loadData = () => {
-    const loadedEntries = getTimeEntries()
+  const loadData = async () => {
+    const [loadedEntries, stats] = await Promise.all([
+      getTimeEntries(),
+      getTimeTrackingStats(),
+    ])
     setEntries(
       loadedEntries.sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       ),
     )
-    setStats(getTimeTrackingStats())
+    setStats(stats)
   }
 
   const loadTimer = () => {
@@ -110,7 +114,7 @@ export default function TimeTrackingPage() {
     saveRunningTimer(updatedTimer)
   }
 
-  const stopTimer = () => {
+  const stopTimer = async () => {
     if (!timer) return
 
     const now = new Date()
@@ -118,7 +122,8 @@ export default function TimeTrackingPage() {
     const duration = calculateDuration(timer.startTime, now.toISOString())
 
     // Create time entry from timer
-    const client = getClients().find((c) => c.id === timer.clientId)
+    const clients = await getClients()
+    const client = clients.find((c) => c.id === timer.clientId)
     if (!client) {
       alert("Client not found")
       return
@@ -128,7 +133,7 @@ export default function TimeTrackingPage() {
     const hourlyRate = 50 // Default rate, can be customized
 
     const entry: TimeEntry = {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       clientId: timer.clientId,
       client,
       projectName: timer.projectName,
@@ -147,11 +152,11 @@ export default function TimeTrackingPage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveTimeEntry(entry)
+    await saveTimeEntry(entry)
     clearRunningTimer()
     setTimer(null)
     setElapsedTime(0)
-    loadData()
+    await loadData()
   }
 
   const filteredEntries = entries.filter((entry) => {
@@ -227,8 +232,7 @@ export default function TimeTrackingPage() {
                     {timer.projectName} - {timer.description}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Client:{" "}
-                    {getClients().find((c) => c.id === timer.clientId)?.name}
+                    Client: {timer.clientId}
                   </p>
                 </div>
               )}
@@ -450,7 +454,7 @@ export default function TimeTrackingPage() {
         <TimerStartModal
           onStart={(clientId, projectName, description) => {
             const newTimer: RunningTimer = {
-              id: crypto.randomUUID(),
+              id: uuidv7(),
               clientId,
               projectName,
               description,
@@ -483,7 +487,11 @@ function TimerStartModal({ onStart, onClose }: TimerStartModalProps) {
   const [description, setDescription] = useState("")
 
   useEffect(() => {
-    setClients(getClients())
+    const loadClients = async () => {
+      const loadedClients = await getClients()
+      setClients(loadedClients)
+    }
+    loadClients()
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {

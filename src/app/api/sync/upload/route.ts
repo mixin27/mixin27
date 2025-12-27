@@ -472,6 +472,9 @@ async function syncResumes(userId: string, resumes: any[]) {
                 where: { resumeId: resume.id },
               }),
               tx.resumeLanguage.deleteMany({ where: { resumeId: resume.id } }),
+              tx.resumeCustomSection.deleteMany({
+                where: { resumeId: resume.id },
+              }),
               tx.resumeSection.deleteMany({ where: { resumeId: resume.id } }),
             ])
 
@@ -571,6 +574,19 @@ async function syncResumes(userId: string, resumes: any[]) {
                   resumeId: resume.id,
                   name: lang.name,
                   proficiency: lang.proficiency,
+                })),
+                skipDuplicates: true,
+              })
+            }
+
+            if (resume.customSections?.length > 0) {
+              await tx.resumeCustomSection.createMany({
+                data: resume.customSections.map((section: any) => ({
+                  id: section.id,
+                  resumeId: resume.id,
+                  title: section.title,
+                  content: section.content || "",
+                  items: section.items,
                 })),
                 skipDuplicates: true,
               })

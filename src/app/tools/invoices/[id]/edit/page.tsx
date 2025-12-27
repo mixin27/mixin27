@@ -37,30 +37,37 @@ export default function EditInvoicePage() {
   const [status, setStatus] = useState<Invoice["status"]>("draft")
 
   useEffect(() => {
-    const invoice = getInvoiceById(invoiceId)
-    if (!invoice) {
-      alert("Invoice not found")
-      router.push("/tools/invoices")
-      return
+    const loadData = async () => {
+      const [invoice, loadedClients] = await Promise.all([
+        getInvoiceById(invoiceId),
+        getClients(),
+      ])
+
+      if (!invoice) {
+        alert("Invoice not found")
+        router.push("/tools/invoices")
+        return
+      }
+
+      setClients(loadedClients)
+
+      // Load invoice data
+      setInvoiceNumber(invoice.invoiceNumber)
+      setSelectedClientId(invoice.client.id)
+      setIssueDate(invoice.issueDate)
+      setDueDate(invoice.dueDate)
+      setItems(invoice.items)
+      setNotes(invoice.notes || "")
+      setTerms(invoice.terms || "")
+      setTaxRate(invoice.taxRate)
+      setDiscount(invoice.discount)
+      setDiscountType(invoice.discountType)
+      setCurrency(invoice.currency)
+      setStatus(invoice.status)
+      setLoading(false)
     }
 
-    const loadedClients = getClients()
-    setClients(loadedClients)
-
-    // Load invoice data
-    setInvoiceNumber(invoice.invoiceNumber)
-    setSelectedClientId(invoice.client.id)
-    setIssueDate(invoice.issueDate)
-    setDueDate(invoice.dueDate)
-    setItems(invoice.items)
-    setNotes(invoice.notes || "")
-    setTerms(invoice.terms || "")
-    setTaxRate(invoice.taxRate)
-    setDiscount(invoice.discount)
-    setDiscountType(invoice.discountType)
-    setCurrency(invoice.currency)
-    setStatus(invoice.status)
-    setLoading(false)
+    loadData()
   }, [invoiceId, router])
 
   const addItem = () => {
@@ -123,7 +130,7 @@ export default function EditInvoicePage() {
     return subtotal - discountAmount + taxAmount
   }
 
-  const handleSave = (statusUpdate: Invoice["status"] = "draft") => {
+  const handleSave = async (statusUpdate: Invoice["status"] = "draft") => {
     const selectedClient = clients.find((c) => c.id === selectedClientId)
 
     if (!selectedClient) {
@@ -136,7 +143,7 @@ export default function EditInvoicePage() {
       return
     }
 
-    const existingInvoice = getInvoiceById(invoiceId)
+    const existingInvoice = await getInvoiceById(invoiceId)
     if (!existingInvoice) {
       alert("Invoice not found")
       router.push("/tools/invoices")
@@ -163,7 +170,7 @@ export default function EditInvoicePage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveInvoice(invoice)
+    await saveInvoice(invoice)
     // router.push('/tools/invoices')
   }
 

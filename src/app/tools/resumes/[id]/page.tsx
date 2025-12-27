@@ -18,13 +18,17 @@ export default function PreviewResumePage() {
   const resumeRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedResume = getResumeById(id)
-    if (!loadedResume) {
-      router.push("/tools/resumes")
-      return
+    const loadData = async () => {
+      const id = params.id as string
+      const loadedResume = await getResumeById(id)
+      if (!loadedResume) {
+        router.push("/tools/resumes")
+        return
+      }
+      setResume(loadedResume)
     }
-    setResume(loadedResume)
+
+    loadData()
   }, [params.id, router])
 
   const handlePrint = () => {

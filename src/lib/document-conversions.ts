@@ -6,6 +6,7 @@ import {
   incrementInvoiceNumber,
   getNextReceiptNumber,
 } from "./storage/tools-storage"
+import {v7 as uuidv7} from 'uuid'
 
 /**
  * Convert a Quotation to an Invoice
@@ -15,7 +16,7 @@ export function convertQuotationToInvoice(quotation: Quotation): Invoice {
   const invoiceNumber = getNextInvoiceNumber()
 
   const invoice: Invoice = {
-    id: crypto.randomUUID(),
+    id: uuidv7(),
     invoiceNumber,
     client: quotation.client,
     issueDate: new Date().toISOString().split("T")[0],
@@ -47,16 +48,16 @@ export function convertQuotationToInvoice(quotation: Quotation): Invoice {
  * Convert an Invoice to a Receipt
  * Used when an invoice is paid
  */
-export function convertInvoiceToReceipt(
+export async function convertInvoiceToReceipt(
   invoice: Invoice,
   paymentMethod: Receipt["paymentMethod"],
   paymentDate?: string,
   amountPaid?: number,
-): Receipt {
-  const receiptNumber = getNextReceiptNumber()
+): Promise<Receipt> {
+  const receiptNumber = await getNextReceiptNumber()
 
   const receipt: Receipt = {
-    id: crypto.randomUUID(),
+    id: uuidv7(),
     receiptNumber,
     client: invoice.client,
     paymentDate: paymentDate || new Date().toISOString().split("T")[0],

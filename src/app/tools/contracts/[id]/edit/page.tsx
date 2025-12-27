@@ -41,35 +41,41 @@ export default function EditContractPage() {
   )
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedContract = getContractById(id)
-    const loadedClients = getClients()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedContract, loadedClients] = await Promise.all([
+        getContractById(id),
+        getClients(),
+      ])
 
-    if (!loadedContract) {
-      router.push("/tools/contracts")
-      return
+      if (!loadedContract) {
+        router.push("/tools/contracts")
+        return
+      }
+
+      setOriginalContract(loadedContract)
+      setClients(loadedClients)
+      setSelectedClientId(loadedContract.client.id)
+      setContractNumber(loadedContract.contractNumber)
+      setProjectName(loadedContract.projectName)
+      setProjectScope(loadedContract.projectScope)
+      setDeliverables(loadedContract.deliverables)
+      setStartDate(loadedContract.startDate.split("T")[0])
+      setEndDate(
+        loadedContract.endDate ? loadedContract.endDate.split("T")[0] : "",
+      )
+      setSignatureDate(loadedContract.signatureDate.split("T")[0])
+      setProjectFee(loadedContract.projectFee)
+      setPaymentTerms(loadedContract.paymentTerms)
+      setCurrency(loadedContract.currency)
+      setStatus(loadedContract.status)
+      setNotes(loadedContract.notes || "")
     }
 
-    setOriginalContract(loadedContract)
-    setClients(loadedClients)
-    setSelectedClientId(loadedContract.client.id)
-    setContractNumber(loadedContract.contractNumber)
-    setProjectName(loadedContract.projectName)
-    setProjectScope(loadedContract.projectScope)
-    setDeliverables(loadedContract.deliverables)
-    setStartDate(loadedContract.startDate.split("T")[0])
-    setEndDate(
-      loadedContract.endDate ? loadedContract.endDate.split("T")[0] : "",
-    )
-    setSignatureDate(loadedContract.signatureDate.split("T")[0])
-    setProjectFee(loadedContract.projectFee)
-    setPaymentTerms(loadedContract.paymentTerms)
-    setCurrency(loadedContract.currency)
-    setStatus(loadedContract.status)
-    setNotes(loadedContract.notes || "")
+    loadData()
   }, [params.id, router])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -105,7 +111,7 @@ export default function EditContractPage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveContract(updatedContract)
+    await saveContract(updatedContract)
     router.push(`/tools/contracts/${originalContract.id}`)
   }
 

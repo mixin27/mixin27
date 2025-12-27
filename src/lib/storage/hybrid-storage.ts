@@ -173,3 +173,157 @@ export function triggerAutoSync() {
     syncToCloud().catch(console.error)
   }, 2000)
 }
+
+// API base URL
+const API_BASE = "/api"
+
+// Helper function for API calls
+async function apiCall<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+    },
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(error.error || "API call failed")
+  }
+
+  return response.json()
+}
+
+/**
+ * Hybrid storage operation for saving data
+ * Saves to localStorage first, then syncs to cloud in background
+ */
+export async function hybridSave<T extends { id: string }>(
+  storageKey: string,
+  item: T,
+  apiEndpoint: string,
+): Promise<void> {
+  // Save to localStorage first (fast, offline-first)
+  const items = getFromStorage<T>(storageKey)
+  const existingIndex = items.findIndex((i) => i.id === item.id)
+
+  if (existingIndex >= 0) {
+    items[existingIndex] = {
+      ...item,
+      updatedAt: new Date().toISOString(),
+    }
+  } else {
+    items.push(item)
+  }
+
+  saveToStorage(storageKey, items)
+
+  // Sync to cloud in background if enabled
+  if (isSyncEnabled()) {
+    try {
+      await apiCall(apiEndpoint, {
+        method: "POST",
+        body: JSON.stringify(item),
+      })
+      triggerAutoSync()
+    } catch (error) {
+      console.error(`Failed to sync ${storageKey} to cloud:`, error)
+      // Don't throw - local save succeeded
+    }
+  }
+}
+
+/**
+ * Hybrid storage operation for getting all items
+ * Reads from localStorage first, can optionally sync from cloud
+ */
+export async function hybridGetAll<T>(
+  storageKey: string,
+  apiEndpoint: string,
+  syncFromCloud = false,
+): Promise<T[]> {
+  // If sync is enabled and we want to sync, fetch from cloud first
+  if (isSyncEnabled() && syncFromCloud) {
+    try {
+      const cloudData = await apiCall<T[]>(apiEndpoint)
+      saveToStorage(storageKey, cloudData)
+      return cloudData
+    } catch (error) {
+      console.error(`Failed to sync ${storageKey} from cloud:`, error)
+      // Fall back to localStorage
+    }
+  }
+
+  // Always return from localStorage (fast, works offline)
+  return getFromStorage<T>(storageKey)
+}
+
+/**
+ * Hybrid storage operation for getting a single item
+ */
+export async function hybridGetById<T extends { id: string }>(
+  storageKey: string,
+  id: string,
+  apiEndpoint: string,
+): Promise<T | null> {
+  // Try localStorage first
+  const items = getFromStorage<T>(storageKey)
+  const item = items.find((i) => i.id === id)
+
+  if (item) {
+    return item
+  }
+
+  // If not found locally and sync is enabled, try cloud
+  if (isSyncEnabled()) {
+    try {
+      const cloudItem = await apiCall<T>(`${apiEndpoint}?id=${id}`)
+      // Save to localStorage for next time
+      const items = getFromStorage<T>(storageKey)
+      items.push(cloudItem)
+      saveToStorage(storageKey, items)
+      return cloudItem
+    } catch (error) {
+      console.error(`Failed to get ${storageKey} from cloud:`, error)
+    }
+  }
+
+  return null
+}
+
+/**
+ * Hybrid storage operation for deleting an item
+ */
+export async function hybridDelete<T extends { id: string }>(
+  storageKey: string,
+  id: string,
+  apiEndpoint: string,
+): Promise<void> {
+  // Delete from localStorage first
+  const items = getFromStorage<T>(storageKey).filter((i) => i.id !== id)
+  saveToStorage(storageKey, items)
+
+  // Delete from cloud in background if enabled
+  if (isSyncEnabled()) {
+    try {
+      await apiCall(`${apiEndpoint}?id=${id}`, { method: "DELETE" })
+      triggerAutoSync()
+    } catch (error) {
+      console.error(`Failed to delete ${storageKey} from cloud:`, error)
+      // Don't throw - local delete succeeded
+    }
+  }
+}
+
+// Helper functions for localStorage operations
+function getFromStorage<T>(key: string): T[] {
+  if (typeof window === "undefined") return []
+  const data = localStorage.getItem(key)
+  return data ? JSON.parse(data) : []
+}
+
+function saveToStorage<T>(key: string, data: T[]): void {
+  if (typeof window === "undefined") return
+  localStorage.setItem(key, JSON.stringify(data))
+}

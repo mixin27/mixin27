@@ -23,21 +23,27 @@ export default function ReceiptViewPage() {
   const receiptRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedReceipt = getReceiptById(id)
-    const loadedSettings = getSettings()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedReceipt, loadedSettings] = await Promise.all([
+        getReceiptById(id),
+        Promise.resolve(getSettings()),
+      ])
 
-    if (loadedReceipt) {
-      setReceipt(loadedReceipt)
-      setSettings(loadedSettings)
-    } else {
-      router.push("/tools/receipts")
+      if (loadedReceipt) {
+        setReceipt(loadedReceipt)
+        setSettings(loadedSettings)
+      } else {
+        router.push("/tools/receipts")
+      }
     }
+
+    loadData()
   }, [params.id, router])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this receipt?")) {
-      deleteReceipt(receipt!.id)
+      await deleteReceipt(receipt!.id)
       router.push("/tools/receipts")
     }
   }

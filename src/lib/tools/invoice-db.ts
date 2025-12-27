@@ -1,408 +1,51 @@
-import {
-  Invoice,
-  Client,
-  InvoiceSettings,
-  Quotation,
-  Receipt,
-  Contract,
-  TimeEntry,
-} from "@/types/invoice"
-import { Resume } from "@/types/resume"
+/**
+ * @deprecated Use tools-storage.ts instead for hybrid storage support
+ * This file is kept for backward compatibility but redirects to tools-storage
+ */
 
-// API base URL
-const API_BASE = "/api"
-
-// Helper function for API calls
-async function apiCall<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${endpoint}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-  })
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}))
-    throw new Error(error.error || "API call failed")
-  }
-
-  return response.json()
-}
-
-// Client Operations
-export const saveClient = async (client: Client): Promise<void> => {
-  await apiCall("/clients", {
-    method: "POST",
-    body: JSON.stringify(client),
-  })
-}
-
-export const getClients = async (): Promise<Client[]> => {
-  return apiCall<Client[]>("/clients")
-}
-
-export const getClientById = async (id: string): Promise<Client | null> => {
-  try {
-    return await apiCall<Client>(`/clients?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteClient = async (id: string): Promise<void> => {
-  await apiCall(`/clients?id=${id}`, { method: "DELETE" })
-}
-
-// Invoice Operations
-export const saveInvoice = async (invoice: Invoice): Promise<void> => {
-  await apiCall("/invoices", {
-    method: "POST",
-    body: JSON.stringify(invoice),
-  })
-}
-
-export const getInvoices = async (): Promise<Invoice[]> => {
-  return apiCall<Invoice[]>("/invoices")
-}
-
-export const getInvoiceById = async (id: string): Promise<Invoice | null> => {
-  try {
-    return await apiCall<Invoice>(`/invoices?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteInvoice = async (id: string): Promise<void> => {
-  await apiCall(`/invoices?id=${id}`, { method: "DELETE" })
-}
-
-export const getNextInvoiceNumber = async (): Promise<string> => {
-  const settings = await getSettings()
-  const number = settings.nextInvoiceNumber
-  return `${settings.invoicePrefix}${String(number).padStart(4, "0")}`
-}
-
-export const incrementInvoiceNumber = async (): Promise<void> => {
-  await apiCall("/settings/increment-invoice", { method: "POST" })
-}
-
-// Settings Operations
-export const getSettings = async (): Promise<InvoiceSettings> => {
-  return apiCall<InvoiceSettings>("/settings")
-}
-
-export const saveSettings = async (
-  settings: InvoiceSettings,
-): Promise<void> => {
-  await apiCall("/settings", {
-    method: "POST",
-    body: JSON.stringify(settings),
-  })
-}
-
-// Quotation Operations
-export const saveQuotation = async (quotation: Quotation): Promise<void> => {
-  await apiCall("/quotations", {
-    method: "POST",
-    body: JSON.stringify(quotation),
-  })
-}
-
-export const getQuotations = async (): Promise<Quotation[]> => {
-  return apiCall<Quotation[]>("/quotations")
-}
-
-export const getQuotationById = async (
-  id: string,
-): Promise<Quotation | null> => {
-  try {
-    return await apiCall<Quotation>(`/quotations?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteQuotation = async (id: string): Promise<void> => {
-  await apiCall(`/quotations?id=${id}`, { method: "DELETE" })
-}
-
-// Receipt Operations
-export const saveReceipt = async (receipt: Receipt): Promise<void> => {
-  await apiCall("/receipts", {
-    method: "POST",
-    body: JSON.stringify(receipt),
-  })
-}
-
-export const getReceipts = async (): Promise<Receipt[]> => {
-  return apiCall<Receipt[]>("/receipts")
-}
-
-export const getReceiptById = async (id: string): Promise<Receipt | null> => {
-  try {
-    return await apiCall<Receipt>(`/receipts?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteReceipt = async (id: string): Promise<void> => {
-  await apiCall(`/receipts?id=${id}`, { method: "DELETE" })
-}
-
-export const getNextReceiptNumber = async (): Promise<string> => {
-  const receipts = await getReceipts()
-  const nextNumber = receipts.length + 1
-  return `REC-${String(nextNumber).padStart(4, "0")}`
-}
-
-// Contract Operations
-export const saveContract = async (contract: Contract): Promise<void> => {
-  await apiCall("/contracts", {
-    method: "POST",
-    body: JSON.stringify(contract),
-  })
-}
-
-export const getContracts = async (): Promise<Contract[]> => {
-  return apiCall<Contract[]>("/contracts")
-}
-
-export const getContractById = async (id: string): Promise<Contract | null> => {
-  try {
-    return await apiCall<Contract>(`/contracts?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteContract = async (id: string): Promise<void> => {
-  await apiCall(`/contracts?id=${id}`, { method: "DELETE" })
-}
-
-export const getNextContractNumber = async (): Promise<string> => {
-  const contracts = await getContracts()
-  const nextNumber = contracts.length + 1
-  return `CON-${String(nextNumber).padStart(4, "0")}`
-}
-
-// Time Entry Operations
-export const saveTimeEntry = async (entry: TimeEntry): Promise<void> => {
-  await apiCall("/time-entries", {
-    method: "POST",
-    body: JSON.stringify(entry),
-  })
-}
-
-export const getTimeEntries = async (): Promise<TimeEntry[]> => {
-  return apiCall<TimeEntry[]>("/time-entries")
-}
-
-export const getTimeEntryById = async (
-  id: string,
-): Promise<TimeEntry | null> => {
-  try {
-    return await apiCall<TimeEntry>(`/time-entries?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteTimeEntry = async (id: string): Promise<void> => {
-  await apiCall(`/time-entries?id=${id}`, { method: "DELETE" })
-}
-
-// Statistics (client-side calculations for now)
-export const getInvoiceStats = async () => {
-  const invoices = await getInvoices()
-
-  return {
-    total: invoices.length,
-    draft: invoices.filter((i) => i.status === "draft").length,
-    sent: invoices.filter((i) => i.status === "sent").length,
-    paid: invoices.filter((i) => i.status === "paid").length,
-    overdue: invoices.filter((i) => i.status === "overdue").length,
-    totalRevenue: invoices
-      .filter((i) => i.status === "paid")
-      .reduce((sum, i) => sum + i.total, 0),
-    pendingRevenue: invoices
-      .filter((i) => i.status === "sent" || i.status === "overdue")
-      .reduce((sum, i) => sum + i.total, 0),
-  }
-}
-
-export const getReceiptStats = async () => {
-  const receipts = await getReceipts()
-
-  return {
-    total: receipts.length,
-    totalAmount: receipts.reduce((sum, r) => sum + r.amountPaid, 0),
-  }
-}
-
-export const getContractStats = async () => {
-  const contracts = await getContracts()
-
-  return {
-    total: contracts.length,
-    draft: contracts.filter((c) => c.status === "draft").length,
-    sent: contracts.filter((c) => c.status === "sent").length,
-    signed: contracts.filter((c) => c.status === "signed").length,
-    active: contracts.filter((c) => c.status === "active").length,
-    completed: contracts.filter((c) => c.status === "completed").length,
-  }
-}
-
-// Resume Operations
-export const saveResume = async (resume: Resume): Promise<void> => {
-  await apiCall("/resumes", {
-    method: "POST",
-    body: JSON.stringify(resume),
-  })
-}
-
-export const getResumes = async (): Promise<Resume[]> => {
-  return apiCall<Resume[]>("/resumes")
-}
-
-export const getResumeById = async (id: string): Promise<Resume | null> => {
-  try {
-    return await apiCall<Resume>(`/resumes?id=${id}`)
-  } catch {
-    return null
-  }
-}
-
-export const deleteResume = async (id: string): Promise<void> => {
-  await apiCall(`/resumes?id=${id}`, { method: "DELETE" })
-}
-
-export const duplicateResume = async (id: string): Promise<Resume | null> => {
-  try {
-    return await apiCall<Resume>(`/resumes/duplicate?id=${id}`, {
-      method: "POST",
-    })
-  } catch {
-    return null
-  }
-}
-
-// Statistics
-export const getResumeStats = async () => {
-  const resumes = await getResumes()
-
-  const templates = {
-    modern: resumes.filter((r) => r.template === "modern").length,
-    classic: resumes.filter((r) => r.template === "classic").length,
-    creative: resumes.filter((r) => r.template === "creative").length,
-    minimal: resumes.filter((r) => r.template === "minimal").length,
-    professional: resumes.filter((r) => r.template === "professional").length,
-  }
-
-  const recentlyUpdated = resumes
-    .sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-    )
-    .slice(0, 5)
-
-  return {
-    total: resumes.length,
-    templates,
-    recentlyUpdated,
-  }
-}
-
-// Export resume as JSON
-export const exportResumeJSON = (resume: Resume): string => {
-  return JSON.stringify(resume, null, 2)
-}
-
-// Import resume from JSON
-export const importResumeJSON = async (jsonString: string): Promise<Resume> => {
-  const resume = JSON.parse(jsonString) as Resume
-  resume.id = `resume_${Date.now()}`
-  resume.createdAt = new Date().toISOString()
-  resume.updatedAt = new Date().toISOString()
-  await saveResume(resume)
-  return resume
-}
-
-// Export/Import for migration
-export const exportAllData = async () => {
-  const [
-    invoices,
-    clients,
-    quotations,
-    receipts,
-    contracts,
-    timeEntries,
-    settings,
-    resumes,
-  ] = await Promise.all([
-    getInvoices(),
-    getClients(),
-    getQuotations(),
-    getReceipts(),
-    getContracts(),
-    getTimeEntries(),
-    getSettings(),
-    getResumes(),
-  ])
-
-  return {
-    invoices,
-    clients,
-    quotations,
-    receipts,
-    contracts,
-    timeEntries,
-    settings,
-    exportedAt: new Date().toISOString(),
-    resumes,
-  }
-}
-
-export const importAllData = async (data: any) => {
-  // Import in order to respect foreign key constraints
-  if (data.clients) {
-    for (const client of data.clients) {
-      await saveClient(client)
-    }
-  }
-  if (data.invoices) {
-    for (const invoice of data.invoices) {
-      await saveInvoice(invoice)
-    }
-  }
-  if (data.quotations) {
-    for (const quotation of data.quotations) {
-      await saveQuotation(quotation)
-    }
-  }
-  if (data.receipts) {
-    for (const receipt of data.receipts) {
-      await saveReceipt(receipt)
-    }
-  }
-  if (data.contracts) {
-    for (const contract of data.contracts) {
-      await saveContract(contract)
-    }
-  }
-  if (data.timeEntries) {
-    for (const entry of data.timeEntries) {
-      await saveTimeEntry(entry)
-    }
-  }
-  if (data.settings) {
-    await saveSettings(data.settings)
-  }
-  if (data.resumes) {
-    for (const resume of data.resumes) {
-      await saveResume(resume)
-    }
-  }
-}
+// Re-export all functions from tools-storage for backward compatibility
+export {
+  saveClient,
+  getClients,
+  getClientById,
+  deleteClient,
+  saveInvoice,
+  getInvoices,
+  getInvoiceById,
+  deleteInvoice,
+  getNextInvoiceNumber,
+  incrementInvoiceNumber,
+  getSettings,
+  saveSettings,
+  saveQuotation,
+  getQuotations,
+  getQuotationById,
+  deleteQuotation,
+  saveReceipt,
+  getReceipts,
+  getReceiptById,
+  deleteReceipt,
+  getNextReceiptNumber,
+  saveContract,
+  getContracts,
+  getContractById,
+  deleteContract,
+  getNextContractNumber,
+  saveTimeEntry,
+  getTimeEntries,
+  getTimeEntryById,
+  deleteTimeEntry,
+  getInvoiceStats,
+  getReceiptStats,
+  getContractStats,
+  saveResume,
+  getResumes,
+  getResumeById,
+  deleteResume,
+  duplicateResume,
+  getResumeStats,
+  exportResumeJSON,
+  importResumeJSON,
+  exportAllData,
+  importAllData,
+} from "@/lib/storage/tools-storage"

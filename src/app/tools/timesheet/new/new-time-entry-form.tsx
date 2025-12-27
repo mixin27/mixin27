@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -30,17 +31,21 @@ export default function NewTimeEntryForm() {
   const [tags, setTags] = useState<string>("")
 
   useEffect(() => {
-    const loadedClients = getClients()
-    // const settings = getSettings()
+    const loadData = async () => {
+      const loadedClients = await getClients()
+      // const settings = getSettings()
 
-    setClients(loadedClients)
+      setClients(loadedClients)
 
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
+      if (preSelectedClientId) {
+        const client = await getClientById(preSelectedClientId)
+        if (client) {
+          setSelectedClientId(preSelectedClientId)
+        }
       }
     }
+
+    loadData()
   }, [preSelectedClientId])
 
   const calculateDurationMinutes = () => {
@@ -58,7 +63,7 @@ export default function NewTimeEntryForm() {
   const duration = calculateDurationMinutes()
   const amount = (duration / 60) * hourlyRate
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -78,7 +83,7 @@ export default function NewTimeEntryForm() {
     }
 
     const entry: TimeEntry = {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       clientId: selectedClientId,
       client,
       projectName,
@@ -96,7 +101,7 @@ export default function NewTimeEntryForm() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveTimeEntry(entry)
+    await saveTimeEntry(entry)
     router.push("/tools/timesheet")
   }
 

@@ -33,8 +33,8 @@ export default function QuotationsPage() {
     loadData()
   }, [])
 
-  const loadData = () => {
-    const loadedQuotations = getQuotations()
+  const loadData = async () => {
+    const loadedQuotations = await getQuotations()
     setQuotations(loadedQuotations)
 
     // Calculate stats
@@ -52,10 +52,10 @@ export default function QuotationsPage() {
     setStats(newStats)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this quotation?")) {
-      deleteQuotation(id)
-      loadData()
+      await deleteQuotation(id)
+      await loadData()
     }
   }
 

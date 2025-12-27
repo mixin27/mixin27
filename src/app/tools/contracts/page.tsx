@@ -36,16 +36,19 @@ export default function ContractsPage() {
     loadData()
   }, [])
 
-  const loadData = () => {
-    const loadedContracts = getContracts()
+  const loadData = async () => {
+    const [loadedContracts, stats] = await Promise.all([
+      getContracts(),
+      getContractStats(),
+    ])
     setContracts(loadedContracts)
-    setStats(getContractStats())
+    setStats(stats)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this contract?")) {
-      deleteContract(id)
-      loadData()
+      await deleteContract(id)
+      await loadData()
     }
   }
 

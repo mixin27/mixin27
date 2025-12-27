@@ -29,15 +29,19 @@ export default function InvoicesPage() {
     loadData()
   }, [])
 
-  const loadData = () => {
-    setInvoices(getInvoices())
-    setStats(getInvoiceStats())
+  const loadData = async () => {
+    const [invoices, stats] = await Promise.all([
+      getInvoices(),
+      getInvoiceStats(),
+    ])
+    setInvoices(invoices)
+    setStats(stats)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this invoice?")) {
-      deleteInvoice(id)
-      loadData()
+      await deleteInvoice(id)
+      await loadData()
     }
   }
 

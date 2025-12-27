@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -33,7 +34,7 @@ export default function NewQuotationForm() {
   const [status, setStatus] = useState<Quotation["status"]>("draft")
   const [items, setItems] = useState<InvoiceItem[]>([
     {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       description: "",
       quantity: 1,
       rate: 0,
@@ -50,29 +51,35 @@ export default function NewQuotationForm() {
   const [terms, setTerms] = useState<string>("")
 
   useEffect(() => {
-    const loadedClients = getClients()
-    const settings = getSettings()
+    const loadData = async () => {
+      const [loadedClients, settings] = await Promise.all([
+        getClients(),
+        Promise.resolve(getSettings()),
+      ])
 
-    setClients(loadedClients)
-    setQuotationNumber(getNextInvoiceNumber().replace("INV-", "QUO-"))
-    setCurrency(settings.defaultCurrency)
-    setTaxRate(settings.defaultTaxRate)
-    setTerms(settings.defaultPaymentTerms)
+      setClients(loadedClients)
+      setQuotationNumber(getNextInvoiceNumber().replace("INV-", "QUO-"))
+      setCurrency(settings.defaultCurrency)
+      setTaxRate(settings.defaultTaxRate)
+      setTerms(settings.defaultPaymentTerms)
 
-    // Pre-select client if provided
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
+      // Pre-select client if provided
+      if (preSelectedClientId) {
+        const client = await getClientById(preSelectedClientId)
+        if (client) {
+          setSelectedClientId(preSelectedClientId)
+        }
       }
     }
+
+    loadData()
   }, [preSelectedClientId])
 
   const addItem = () => {
     setItems([
       ...items,
       {
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         description: "",
         quantity: 1,
         rate: 0,
@@ -122,7 +129,7 @@ export default function NewQuotationForm() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -139,7 +146,7 @@ export default function NewQuotationForm() {
     const totals = calculateTotals()
 
     const quotation: Quotation = {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       invoiceNumber: quotationNumber,
       client,
       issueDate,
@@ -160,8 +167,8 @@ export default function NewQuotationForm() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveQuotation(quotation)
-    incrementInvoiceNumber()
+    await saveQuotation(quotation)
+    await incrementInvoiceNumber()
     router.push("/tools/quotations")
   }
 

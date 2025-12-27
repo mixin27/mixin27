@@ -10,7 +10,13 @@ import {
   RunningTimer,
   TimeEntry,
 } from "@/types/invoice"
-import { triggerAutoSync } from "./hybrid-storage"
+import {
+  hybridSave,
+  hybridGetAll,
+  hybridGetById,
+  hybridDelete,
+  triggerAutoSync,
+} from "./hybrid-storage"
 import { Resume, ResumeStats } from "@/types/resume"
 
 // Storage keys
@@ -26,7 +32,7 @@ const STORAGE_KEYS = {
   RESUMES: "resumes",
 } as const
 
-// Helper functions
+// Helper function for localStorage (for settings and running timer)
 const getFromStorage = <T>(key: string): T[] => {
   if (typeof window === "undefined") return []
   const data = localStorage.getItem(key)
@@ -39,36 +45,20 @@ const saveToStorage = <T>(key: string, data: T[]): void => {
 }
 
 // Invoice Operations
-export const saveInvoice = (invoice: Invoice): void => {
-  const invoices = getFromStorage<Invoice>(STORAGE_KEYS.INVOICES)
-  const existingIndex = invoices.findIndex((i) => i.id === invoice.id)
-
-  if (existingIndex >= 0) {
-    invoices[existingIndex] = {
-      ...invoice,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    invoices.push(invoice)
-  }
-
-  saveToStorage(STORAGE_KEYS.INVOICES, invoices)
-  triggerAutoSync()
+export const saveInvoice = async (invoice: Invoice): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.INVOICES, invoice, "/invoices")
 }
 
-export const getInvoices = (): Invoice[] => {
-  return getFromStorage<Invoice>(STORAGE_KEYS.INVOICES)
+export const getInvoices = async (syncFromCloud = false): Promise<Invoice[]> => {
+  return hybridGetAll<Invoice>(STORAGE_KEYS.INVOICES, "/invoices", syncFromCloud)
 }
 
-export const getInvoiceById = (id: string): Invoice | null => {
-  const invoices = getInvoices()
-  return invoices.find((i) => i.id === id) || null
+export const getInvoiceById = async (id: string): Promise<Invoice | null> => {
+  return hybridGetById<Invoice>(STORAGE_KEYS.INVOICES, id, "/invoices")
 }
 
-export const deleteInvoice = (id: string): void => {
-  const invoices = getInvoices().filter((i) => i.id !== id)
-  saveToStorage(STORAGE_KEYS.INVOICES, invoices)
-  triggerAutoSync()
+export const deleteInvoice = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.INVOICES, id, "/invoices")
 }
 
 export const getNextInvoiceNumber = (): string => {
@@ -77,41 +67,27 @@ export const getNextInvoiceNumber = (): string => {
   return `${settings.invoicePrefix}${String(number).padStart(4, "0")}`
 }
 
-export const incrementInvoiceNumber = (): void => {
+export const incrementInvoiceNumber = async (): Promise<void> => {
   const settings = getSettings()
   settings.nextInvoiceNumber += 1
-  saveSettings(settings)
+  await saveSettings(settings)
 }
 
 // Client Operations
-export const saveClient = (client: Client): void => {
-  const clients = getFromStorage<Client>(STORAGE_KEYS.CLIENTS)
-  const existingIndex = clients.findIndex((c) => c.id === client.id)
-
-  if (existingIndex >= 0) {
-    clients[existingIndex] = client
-  } else {
-    clients.push(client)
-  }
-
-  saveToStorage(STORAGE_KEYS.CLIENTS, clients)
-  triggerAutoSync()
+export const saveClient = async (client: Client): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.CLIENTS, client, "/clients")
 }
 
-export const getClients = (): Client[] => {
-  const clients = getFromStorage<Client>(STORAGE_KEYS.CLIENTS)
-  return clients
+export const getClients = async (syncFromCloud = false): Promise<Client[]> => {
+  return hybridGetAll<Client>(STORAGE_KEYS.CLIENTS, "/clients", syncFromCloud)
 }
 
-export const getClientById = (id: string): Client | null => {
-  const clients = getClients()
-  return clients.find((c) => c.id === id) || null
+export const getClientById = async (id: string): Promise<Client | null> => {
+  return hybridGetById<Client>(STORAGE_KEYS.CLIENTS, id, "/clients")
 }
 
-export const deleteClient = (id: string): void => {
-  const clients = getClients().filter((c) => c.id !== id)
-  saveToStorage(STORAGE_KEYS.CLIENTS, clients)
-  triggerAutoSync()
+export const deleteClient = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.CLIENTS, id, "/clients")
 }
 
 // Settings Operations
@@ -139,205 +115,117 @@ export const getSettings = (): InvoiceSettings => {
   return data ? JSON.parse(data) : defaultSettings
 }
 
-export const saveSettings = (settings: InvoiceSettings): void => {
+export const saveSettings = async (settings: InvoiceSettings): Promise<void> => {
   if (typeof window === "undefined") return
   localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
+  
+  // Sync to cloud if enabled
+  if (typeof window !== "undefined") {
+    try {
+      const response = await fetch("/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      })
+      if (response.ok) {
+        triggerAutoSync()
+      }
+    } catch (error) {
+      console.error("Failed to sync settings to cloud:", error)
+    }
+  }
 }
 
 // Quotation Operations
-export const saveQuotation = (quotation: Quotation): void => {
-  const quotations = getFromStorage<Quotation>(STORAGE_KEYS.QUOTATIONS)
-  const existingIndex = quotations.findIndex((q) => q.id === quotation.id)
-
-  if (existingIndex >= 0) {
-    quotations[existingIndex] = {
-      ...quotation,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    quotations.push(quotation)
-  }
-
-  saveToStorage(STORAGE_KEYS.QUOTATIONS, quotations)
-  triggerAutoSync()
+export const saveQuotation = async (quotation: Quotation): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.QUOTATIONS, quotation, "/quotations")
 }
 
-export const getQuotations = (): Quotation[] => {
-  return getFromStorage<Quotation>(STORAGE_KEYS.QUOTATIONS)
+export const getQuotations = async (syncFromCloud = false): Promise<Quotation[]> => {
+  return hybridGetAll<Quotation>(STORAGE_KEYS.QUOTATIONS, "/quotations", syncFromCloud)
 }
 
-export const getQuotationById = (id: string): Quotation | null => {
-  const quotations = getQuotations()
-  return quotations.find((q) => q.id === id) || null
+export const getQuotationById = async (id: string): Promise<Quotation | null> => {
+  return hybridGetById<Quotation>(STORAGE_KEYS.QUOTATIONS, id, "/quotations")
 }
 
-export const deleteQuotation = (id: string): void => {
-  const quotations = getQuotations().filter((q) => q.id !== id)
-  saveToStorage(STORAGE_KEYS.QUOTATIONS, quotations)
-  triggerAutoSync()
+export const deleteQuotation = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.QUOTATIONS, id, "/quotations")
 }
 
 // Receipt Operations
-export const saveReceipt = (receipt: Receipt): void => {
-  const receipts = getFromStorage<Receipt>(STORAGE_KEYS.RECEIPTS)
-  const existingIndex = receipts.findIndex((r) => r.id === receipt.id)
-
-  if (existingIndex >= 0) {
-    receipts[existingIndex] = {
-      ...receipt,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    receipts.push(receipt)
-  }
-
-  saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
-  triggerAutoSync()
+export const saveReceipt = async (receipt: Receipt): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.RECEIPTS, receipt, "/receipts")
 }
 
-export const getReceipts = (): Receipt[] => {
-  return getFromStorage<Receipt>(STORAGE_KEYS.RECEIPTS)
+export const getReceipts = async (syncFromCloud = false): Promise<Receipt[]> => {
+  return hybridGetAll<Receipt>(STORAGE_KEYS.RECEIPTS, "/receipts", syncFromCloud)
 }
 
-export const getReceiptById = (id: string): Receipt | null => {
-  const receipts = getReceipts()
-  return receipts.find((r) => r.id === id) || null
+export const getReceiptById = async (id: string): Promise<Receipt | null> => {
+  return hybridGetById<Receipt>(STORAGE_KEYS.RECEIPTS, id, "/receipts")
 }
 
-export const deleteReceipt = (id: string): void => {
-  const receipts = getReceipts().filter((r) => r.id !== id)
-  saveToStorage(STORAGE_KEYS.RECEIPTS, receipts)
-  triggerAutoSync()
+export const deleteReceipt = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.RECEIPTS, id, "/receipts")
 }
 
-export const getNextReceiptNumber = (): string => {
-  const receipts = getReceipts()
+export const getNextReceiptNumber = async (): Promise<string> => {
+  const receipts = await getReceipts()
   const nextNumber = receipts.length + 1
   return `REC-${String(nextNumber).padStart(4, "0")}`
 }
 
-// Statistics
-export const getInvoiceStats = () => {
-  const invoices = getInvoices()
-
-  return {
-    total: invoices.length,
-    draft: invoices.filter((i) => i.status === "draft").length,
-    sent: invoices.filter((i) => i.status === "sent").length,
-    paid: invoices.filter((i) => i.status === "paid").length,
-    overdue: invoices.filter((i) => i.status === "overdue").length,
-    totalRevenue: invoices
-      .filter((i) => i.status === "paid")
-      .reduce((sum, i) => sum + i.total, 0),
-    pendingRevenue: invoices
-      .filter((i) => i.status === "sent" || i.status === "overdue")
-      .reduce((sum, i) => sum + i.total, 0),
-  }
-}
-
-export const getReceiptStats = () => {
-  const receipts = getReceipts()
-
-  return {
-    total: receipts.length,
-    totalAmount: receipts.reduce((sum, r) => sum + r.amountPaid, 0),
-  }
-}
-
 // Contract Operations
-export const saveContract = (contract: Contract): void => {
-  const contracts = getFromStorage<Contract>(STORAGE_KEYS.CONTRACTS)
-  const existingIndex = contracts.findIndex((c) => c.id === contract.id)
-
-  if (existingIndex >= 0) {
-    contracts[existingIndex] = {
-      ...contract,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    contracts.push(contract)
-  }
-
-  saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
-  triggerAutoSync()
+export const saveContract = async (contract: Contract): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.CONTRACTS, contract, "/contracts")
 }
 
-export const getContracts = (): Contract[] => {
-  return getFromStorage<Contract>(STORAGE_KEYS.CONTRACTS)
+export const getContracts = async (syncFromCloud = false): Promise<Contract[]> => {
+  return hybridGetAll<Contract>(STORAGE_KEYS.CONTRACTS, "/contracts", syncFromCloud)
 }
 
-export const getContractById = (id: string): Contract | null => {
-  const contracts = getContracts()
-  return contracts.find((c) => c.id === id) || null
+export const getContractById = async (id: string): Promise<Contract | null> => {
+  return hybridGetById<Contract>(STORAGE_KEYS.CONTRACTS, id, "/contracts")
 }
 
-export const deleteContract = (id: string): void => {
-  const contracts = getContracts().filter((c) => c.id !== id)
-  saveToStorage(STORAGE_KEYS.CONTRACTS, contracts)
-  triggerAutoSync()
+export const deleteContract = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.CONTRACTS, id, "/contracts")
 }
 
-export const getNextContractNumber = (): string => {
-  const contracts = getContracts()
+export const getNextContractNumber = async (): Promise<string> => {
+  const contracts = await getContracts()
   const nextNumber = contracts.length + 1
   return `CON-${String(nextNumber).padStart(4, "0")}`
 }
 
-export const getContractStats = () => {
-  const contracts = getContracts()
-
-  return {
-    total: contracts.length,
-    draft: contracts.filter((c) => c.status === "draft").length,
-    sent: contracts.filter((c) => c.status === "sent").length,
-    signed: contracts.filter((c) => c.status === "signed").length,
-    active: contracts.filter((c) => c.status === "active").length,
-    completed: contracts.filter((c) => c.status === "completed").length,
-  }
-}
-
 // Time Entry Operations
-export const saveTimeEntry = (entry: TimeEntry): void => {
-  const entries = getFromStorage<TimeEntry>(STORAGE_KEYS.TIME_ENTRIES)
-  const existingIndex = entries.findIndex((e) => e.id === entry.id)
-
-  if (existingIndex >= 0) {
-    entries[existingIndex] = {
-      ...entry,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    entries.push(entry)
-  }
-
-  saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
-  triggerAutoSync()
+export const saveTimeEntry = async (entry: TimeEntry): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.TIME_ENTRIES, entry, "/time-entries")
 }
 
-export const getTimeEntries = (): TimeEntry[] => {
-  return getFromStorage<TimeEntry>(STORAGE_KEYS.TIME_ENTRIES)
+export const getTimeEntries = async (syncFromCloud = false): Promise<TimeEntry[]> => {
+  return hybridGetAll<TimeEntry>(STORAGE_KEYS.TIME_ENTRIES, "/time-entries", syncFromCloud)
 }
 
-export const getTimeEntryById = (id: string): TimeEntry | null => {
-  const entries = getTimeEntries()
-  return entries.find((e) => e.id === id) || null
+export const getTimeEntryById = async (id: string): Promise<TimeEntry | null> => {
+  return hybridGetById<TimeEntry>(STORAGE_KEYS.TIME_ENTRIES, id, "/time-entries")
 }
 
-export const deleteTimeEntry = (id: string): void => {
-  const entries = getTimeEntries().filter((e) => e.id !== id)
-  saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
-  triggerAutoSync()
+export const deleteTimeEntry = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.TIME_ENTRIES, id, "/time-entries")
 }
 
-export const getTimeEntriesByClient = (clientId: string): TimeEntry[] => {
-  return getTimeEntries().filter((e) => e.clientId === clientId)
+export const getTimeEntriesByClient = async (clientId: string): Promise<TimeEntry[]> => {
+  const entries = await getTimeEntries()
+  return entries.filter((e) => e.clientId === clientId)
 }
 
-export const getTimeEntriesByDateRange = (
+export const getTimeEntriesByDateRange = async (
   startDate: string,
   endDate: string,
-): TimeEntry[] => {
-  const entries = getTimeEntries()
+): Promise<TimeEntry[]> => {
+  const entries = await getTimeEntries()
   return entries.filter((e) => {
     const entryDate = new Date(e.date)
     const start = new Date(startDate)
@@ -346,26 +234,32 @@ export const getTimeEntriesByDateRange = (
   })
 }
 
-export const getUninvoicedTimeEntries = (): TimeEntry[] => {
-  return getTimeEntries().filter((e) => e.billable && !e.invoiced)
+export const getUninvoicedTimeEntries = async (): Promise<TimeEntry[]> => {
+  const entries = await getTimeEntries()
+  return entries.filter((e) => e.billable && !e.invoiced)
 }
 
-export const markTimeEntriesAsInvoiced = (
+export const markTimeEntriesAsInvoiced = async (
   entryIds: string[],
   invoiceId: string,
-): void => {
-  const entries = getTimeEntries()
-  entries.forEach((entry) => {
-    if (entryIds.includes(entry.id)) {
-      entry.invoiced = true
-      entry.invoiceId = invoiceId
-    }
-  })
-  saveToStorage(STORAGE_KEYS.TIME_ENTRIES, entries)
-  triggerAutoSync()
+): Promise<void> => {
+  const entries = await getTimeEntries()
+  const updates = entries
+    .filter((entry) => entryIds.includes(entry.id))
+    .map((entry) => ({
+      ...entry,
+      invoiced: true,
+      invoiceId,
+      updatedAt: new Date().toISOString(),
+    }))
+
+  // Save all updated entries
+  for (const entry of updates) {
+    await saveTimeEntry(entry)
+  }
 }
 
-// Running Timer Operations
+// Running Timer Operations (localStorage only - not synced)
 export const saveRunningTimer = (timer: RunningTimer | null): void => {
   if (typeof window === "undefined") return
   if (timer) {
@@ -387,8 +281,8 @@ export const clearRunningTimer = (): void => {
 }
 
 // Time Tracking Statistics
-export const getTimeTrackingStats = (): TimeTrackingStats => {
-  const entries = getTimeEntries()
+export const getTimeTrackingStats = async (): Promise<TimeTrackingStats> => {
+  const entries = await getTimeEntries()
   const now = new Date()
   const today = now.toISOString().split("T")[0]
 
@@ -442,42 +336,66 @@ export const getTimeTrackingStats = (): TimeTrackingStats => {
   }
 }
 
-/** Resume */
-export const saveResume = (resume: Resume): void => {
-  const resumes = getFromStorage<Resume>(STORAGE_KEYS.RESUMES)
-  const existingIndex = resumes.findIndex((r) => r.id === resume.id)
+// Statistics
+export const getInvoiceStats = async () => {
+  const invoices = await getInvoices()
 
-  if (existingIndex >= 0) {
-    resumes[existingIndex] = {
-      ...resume,
-      updatedAt: new Date().toISOString(),
-    }
-  } else {
-    resumes.push(resume)
+  return {
+    total: invoices.length,
+    draft: invoices.filter((i) => i.status === "draft").length,
+    sent: invoices.filter((i) => i.status === "sent").length,
+    paid: invoices.filter((i) => i.status === "paid").length,
+    overdue: invoices.filter((i) => i.status === "overdue").length,
+    totalRevenue: invoices
+      .filter((i) => i.status === "paid")
+      .reduce((sum, i) => sum + i.total, 0),
+    pendingRevenue: invoices
+      .filter((i) => i.status === "sent" || i.status === "overdue")
+      .reduce((sum, i) => sum + i.total, 0),
   }
-
-  saveToStorage<Resume>(STORAGE_KEYS.RESUMES, resumes)
-
-  triggerAutoSync()
 }
 
-export const getResumes = (): Resume[] => {
-  return getFromStorage<Resume>(STORAGE_KEYS.RESUMES)
+export const getReceiptStats = async () => {
+  const receipts = await getReceipts()
+
+  return {
+    total: receipts.length,
+    totalAmount: receipts.reduce((sum, r) => sum + r.amountPaid, 0),
+  }
 }
 
-export const getResumeById = (id: string): Resume | null => {
-  const resumes = getResumes()
-  return resumes.find((r) => r.id === id) || null
+export const getContractStats = async () => {
+  const contracts = await getContracts()
+
+  return {
+    total: contracts.length,
+    draft: contracts.filter((c) => c.status === "draft").length,
+    sent: contracts.filter((c) => c.status === "sent").length,
+    signed: contracts.filter((c) => c.status === "signed").length,
+    active: contracts.filter((c) => c.status === "active").length,
+    completed: contracts.filter((c) => c.status === "completed").length,
+  }
 }
 
-export const deleteResume = (id: string): void => {
-  const resumes = getResumes().filter((r) => r.id !== id)
-  saveToStorage<Resume>(STORAGE_KEYS.RESUMES, resumes)
-  triggerAutoSync()
+/** Resume Operations */
+export const saveResume = async (resume: Resume): Promise<void> => {
+  await hybridSave(STORAGE_KEYS.RESUMES, resume, "/resumes")
 }
 
-export const duplicateResume = (id: string): Resume | null => {
-  const original = getResumeById(id)
+export const getResumes = async (syncFromCloud = false): Promise<Resume[]> => {
+  return hybridGetAll<Resume>(STORAGE_KEYS.RESUMES, "/resumes", syncFromCloud)
+}
+
+export const getResumeById = async (id: string): Promise<Resume | null> => {
+  return hybridGetById<Resume>(STORAGE_KEYS.RESUMES, id, "/resumes")
+}
+
+export const deleteResume = async (id: string): Promise<void> => {
+  await hybridDelete(STORAGE_KEYS.RESUMES, id, "/resumes")
+}
+
+export const duplicateResume = async (id: string): Promise<Resume | null> => {
+  const original = await getResumeById(id)
   if (!original) return null
 
   const duplicate: Resume = {
@@ -488,13 +406,13 @@ export const duplicateResume = (id: string): Resume | null => {
     updatedAt: new Date().toISOString(),
   }
 
-  saveResume(duplicate)
+  await saveResume(duplicate)
   return duplicate
 }
 
 // Statistics
-export const getResumeStats = (): ResumeStats => {
-  const resumes = getResumes()
+export const getResumeStats = async (): Promise<ResumeStats> => {
+  const resumes = await getResumes()
 
   const templates = {
     modern: resumes.filter((r) => r.template === "modern").length,
@@ -519,42 +437,43 @@ export const getResumeStats = (): ResumeStats => {
 }
 
 // Export resume as JSON
-export const exportResumeJSON = (id: string): string => {
-  const resume = getResumeById(id)
+export const exportResumeJSON = async (id: string): Promise<string> => {
+  const resume = await getResumeById(id)
   if (!resume) throw new Error("Resume not found")
   return JSON.stringify(resume, null, 2)
 }
 
 // Import resume from JSON
-export const importResumeJSON = (jsonString: string): Resume => {
+export const importResumeJSON = async (jsonString: string): Promise<Resume> => {
   const resume = JSON.parse(jsonString) as Resume
   resume.id = uuidv7()
   resume.createdAt = new Date().toISOString()
   resume.updatedAt = new Date().toISOString()
-  saveResume(resume)
-  triggerAutoSync()
+  await saveResume(resume)
   return resume
 }
 
 // Export all resumes (backup)
-export const exportAllResumes = () => {
+export const exportAllResumes = async () => {
+  const resumes = await getResumes()
   return {
-    resumes: getResumes(),
+    resumes,
     exportedAt: new Date().toISOString(),
   }
 }
 
 // Import all resumes (restore from backup)
-export const importAllResumes = (data: { resumes: Resume[] }): void => {
+export const importAllResumes = async (data: { resumes: Resume[] }): Promise<void> => {
   if (data.resumes) {
-    saveToStorage<Resume>(STORAGE_KEYS.RESUMES, data.resumes)
+    for (const resume of data.resumes) {
+      await saveResume(resume)
+    }
   }
 }
 
 // Default resume template
 export const createDefaultResume = (): Resume => {
   return {
-    // id: `resume_${Date.now()}`,
     id: uuidv7(),
     name: "My Resume",
     template: "modern",
@@ -575,56 +494,56 @@ export const createDefaultResume = (): Resume => {
     customSections: [],
     sections: [
       {
-        id: "personal",
+        id: uuidv7(),
         type: "personal",
         title: "Personal Information",
         visible: true,
         order: 0,
       },
       {
-        id: "summary",
+        id: uuidv7(),
         type: "summary",
         title: "Professional Summary",
         visible: true,
         order: 1,
       },
       {
-        id: "experience",
+        id: uuidv7(),
         type: "experience",
         title: "Work Experience",
         visible: true,
         order: 2,
       },
       {
-        id: "education",
+        id: uuidv7(),
         type: "education",
         title: "Education",
         visible: true,
         order: 3,
       },
       {
-        id: "skills",
+        id: uuidv7(),
         type: "skills",
         title: "Skills",
         visible: true,
         order: 4,
       },
       {
-        id: "projects",
+        id: uuidv7(),
         type: "projects",
         title: "Projects",
         visible: false,
         order: 5,
       },
       {
-        id: "certifications",
+        id: uuidv7(),
         type: "certifications",
         title: "Certifications",
         visible: false,
         order: 6,
       },
       {
-        id: "languages",
+        id: uuidv7(),
         type: "languages",
         title: "Languages",
         visible: false,
@@ -668,29 +587,79 @@ export const formatDurationDecimal = (minutes: number): string => {
 }
 
 // Export all data (for backup)
-export const exportAllData = () => {
+export const exportAllData = async () => {
+  const [
+    invoices,
+    clients,
+    quotations,
+    receipts,
+    contracts,
+    timeEntries,
+    settings,
+    resumes,
+  ] = await Promise.all([
+    getInvoices(),
+    getClients(),
+    getQuotations(),
+    getReceipts(),
+    getContracts(),
+    getTimeEntries(),
+    Promise.resolve(getSettings()),
+    getResumes(),
+  ])
+
   return {
-    invoices: getInvoices(),
-    clients: getClients(),
-    quotations: getQuotations(),
-    receipts: getReceipts(),
-    contracts: getContracts(),
-    timeEntries: getTimeEntries(),
-    settings: getSettings(),
-    resumes: getResumes(),
+    invoices,
+    clients,
+    quotations,
+    receipts,
+    contracts,
+    timeEntries,
+    settings,
+    resumes,
     exportedAt: new Date().toISOString(),
   }
 }
 
 // Import data (from backup)
-export const importAllData = (data: any) => {
-  if (data.invoices) saveToStorage(STORAGE_KEYS.INVOICES, data.invoices)
-  if (data.clients) saveToStorage(STORAGE_KEYS.CLIENTS, data.clients)
-  if (data.quotations) saveToStorage(STORAGE_KEYS.QUOTATIONS, data.quotations)
-  if (data.receipts) saveToStorage(STORAGE_KEYS.RECEIPTS, data.receipts)
-  if (data.contracts) saveToStorage(STORAGE_KEYS.CONTRACTS, data.contracts)
-  if (data.timeEntries)
-    saveToStorage(STORAGE_KEYS.TIME_ENTRIES, data.timeEntries)
-  if (data.resumes) saveToStorage(STORAGE_KEYS.RESUMES, data.resumes)
-  if (data.settings) saveSettings(data.settings)
+export const importAllData = async (data: any): Promise<void> => {
+  // Import in order to respect foreign key constraints
+  if (data.clients) {
+    for (const client of data.clients) {
+      await saveClient(client)
+    }
+  }
+  if (data.invoices) {
+    for (const invoice of data.invoices) {
+      await saveInvoice(invoice)
+    }
+  }
+  if (data.quotations) {
+    for (const quotation of data.quotations) {
+      await saveQuotation(quotation)
+    }
+  }
+  if (data.receipts) {
+    for (const receipt of data.receipts) {
+      await saveReceipt(receipt)
+    }
+  }
+  if (data.contracts) {
+    for (const contract of data.contracts) {
+      await saveContract(contract)
+    }
+  }
+  if (data.timeEntries) {
+    for (const entry of data.timeEntries) {
+      await saveTimeEntry(entry)
+    }
+  }
+  if (data.settings) {
+    await saveSettings(data.settings)
+  }
+  if (data.resumes) {
+    for (const resume of data.resumes) {
+      await saveResume(resume)
+    }
+  }
 }

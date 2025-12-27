@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
@@ -34,36 +35,42 @@ export default function EditReceiptPage() {
   const [originalReceipt, setOriginalReceipt] = useState<Receipt | null>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedReceipt = getReceiptById(id)
-    const loadedClients = getClients()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedReceipt, loadedClients] = await Promise.all([
+        getReceiptById(id),
+        getClients(),
+      ])
 
-    if (!loadedReceipt) {
-      router.push("/tools/receipts")
-      return
+      if (!loadedReceipt) {
+        router.push("/tools/receipts")
+        return
+      }
+
+      setOriginalReceipt(loadedReceipt)
+      setClients(loadedClients)
+      setSelectedClientId(loadedReceipt.client.id)
+      setReceiptNumber(loadedReceipt.receiptNumber)
+      setPaymentDate(loadedReceipt.paymentDate.split("T")[0])
+      setPaymentMethod(loadedReceipt.paymentMethod)
+      setRelatedInvoiceNumber(loadedReceipt.relatedInvoiceNumber || "")
+      setItems(loadedReceipt.items)
+      setCurrency(loadedReceipt.currency)
+      setTaxRate(loadedReceipt.taxRate)
+      setDiscount(loadedReceipt.discount)
+      setDiscountType(loadedReceipt.discountType)
+      setAmountPaid(loadedReceipt.amountPaid)
+      setNotes(loadedReceipt.notes || "")
     }
 
-    setOriginalReceipt(loadedReceipt)
-    setClients(loadedClients)
-    setSelectedClientId(loadedReceipt.client.id)
-    setReceiptNumber(loadedReceipt.receiptNumber)
-    setPaymentDate(loadedReceipt.paymentDate.split("T")[0])
-    setPaymentMethod(loadedReceipt.paymentMethod)
-    setRelatedInvoiceNumber(loadedReceipt.relatedInvoiceNumber || "")
-    setItems(loadedReceipt.items)
-    setCurrency(loadedReceipt.currency)
-    setTaxRate(loadedReceipt.taxRate)
-    setDiscount(loadedReceipt.discount)
-    setDiscountType(loadedReceipt.discountType)
-    setAmountPaid(loadedReceipt.amountPaid)
-    setNotes(loadedReceipt.notes || "")
+    loadData()
   }, [params.id, router])
 
   const addItem = () => {
     setItems([
       ...items,
       {
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         description: "",
         quantity: 1,
         rate: 0,
@@ -113,7 +120,7 @@ export default function EditReceiptPage() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -153,7 +160,7 @@ export default function EditReceiptPage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveReceipt(updatedReceipt)
+    await saveReceipt(updatedReceipt)
     router.push(`/tools/receipts/${originalReceipt.id}`)
   }
 

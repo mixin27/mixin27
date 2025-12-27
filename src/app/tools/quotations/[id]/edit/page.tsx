@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
@@ -35,36 +36,42 @@ export default function EditQuotationPage() {
   )
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedQuotation = getQuotationById(id)
-    const loadedClients = getClients()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedQuotation, loadedClients] = await Promise.all([
+        getQuotationById(id),
+        getClients(),
+      ])
 
-    if (!loadedQuotation) {
-      router.push("/tools/quotations")
-      return
+      if (!loadedQuotation) {
+        router.push("/tools/quotations")
+        return
+      }
+
+      setOriginalQuotation(loadedQuotation)
+      setClients(loadedClients)
+      setSelectedClientId(loadedQuotation.client.id)
+      setQuotationNumber(loadedQuotation.invoiceNumber)
+      setIssueDate(loadedQuotation.issueDate.split("T")[0])
+      setValidUntil(loadedQuotation.validUntil.split("T")[0])
+      setStatus(loadedQuotation.status)
+      setItems(loadedQuotation.items)
+      setCurrency(loadedQuotation.currency)
+      setTaxRate(loadedQuotation.taxRate)
+      setDiscount(loadedQuotation.discount)
+      setDiscountType(loadedQuotation.discountType)
+      setNotes(loadedQuotation.notes || "")
+      setTerms(loadedQuotation.terms || "")
     }
 
-    setOriginalQuotation(loadedQuotation)
-    setClients(loadedClients)
-    setSelectedClientId(loadedQuotation.client.id)
-    setQuotationNumber(loadedQuotation.invoiceNumber)
-    setIssueDate(loadedQuotation.issueDate.split("T")[0])
-    setValidUntil(loadedQuotation.validUntil.split("T")[0])
-    setStatus(loadedQuotation.status)
-    setItems(loadedQuotation.items)
-    setCurrency(loadedQuotation.currency)
-    setTaxRate(loadedQuotation.taxRate)
-    setDiscount(loadedQuotation.discount)
-    setDiscountType(loadedQuotation.discountType)
-    setNotes(loadedQuotation.notes || "")
-    setTerms(loadedQuotation.terms || "")
+    loadData()
   }, [params.id, router])
 
   const addItem = () => {
     setItems([
       ...items,
       {
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         description: "",
         quantity: 1,
         rate: 0,
@@ -114,7 +121,7 @@ export default function EditQuotationPage() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -155,7 +162,7 @@ export default function EditQuotationPage() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveQuotation(updatedQuotation)
+    await saveQuotation(updatedQuotation)
     router.push(`/tools/quotations/${originalQuotation.id}`)
   }
 

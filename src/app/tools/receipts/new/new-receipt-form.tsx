@@ -1,5 +1,6 @@
 "use client"
 
+import { v7 as uuidv7 } from 'uuid'
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -29,7 +30,7 @@ export default function NewReceiptForm() {
   const [relatedInvoiceNumber, setRelatedInvoiceNumber] = useState<string>("")
   const [items, setItems] = useState<InvoiceItem[]>([
     {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       description: "",
       quantity: 1,
       rate: 0,
@@ -46,21 +47,27 @@ export default function NewReceiptForm() {
   const [notes, setNotes] = useState<string>("")
 
   useEffect(() => {
-    const loadedClients = getClients()
-    const settings = getSettings()
+    const loadData = async () => {
+      const [loadedClients, settings] = await Promise.all([
+        getClients(),
+        Promise.resolve(getSettings()),
+      ])
 
-    setClients(loadedClients)
-    setReceiptNumber(getNextReceiptNumber())
-    setCurrency(settings.defaultCurrency)
-    setTaxRate(settings.defaultTaxRate)
+      setClients(loadedClients)
+      setReceiptNumber(await getNextReceiptNumber())
+      setCurrency(settings.defaultCurrency)
+      setTaxRate(settings.defaultTaxRate)
 
-    // Pre-select client if provided
-    if (preSelectedClientId) {
-      const client = getClientById(preSelectedClientId)
-      if (client) {
-        setSelectedClientId(preSelectedClientId)
+      // Pre-select client if provided
+      if (preSelectedClientId) {
+        const client = await getClientById(preSelectedClientId)
+        if (client) {
+          setSelectedClientId(preSelectedClientId)
+        }
       }
     }
+
+    loadData()
   }, [preSelectedClientId])
 
   // Auto-calculate amount paid when total changes
@@ -73,7 +80,7 @@ export default function NewReceiptForm() {
     setItems([
       ...items,
       {
-        id: crypto.randomUUID(),
+        id: uuidv7(),
         description: "",
         quantity: 1,
         rate: 0,
@@ -123,7 +130,7 @@ export default function NewReceiptForm() {
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!selectedClientId) {
@@ -140,7 +147,7 @@ export default function NewReceiptForm() {
     const totals = calculateTotals()
 
     const receipt: Receipt = {
-      id: crypto.randomUUID(),
+      id: uuidv7(),
       receiptNumber,
       client,
       paymentDate,
@@ -160,7 +167,7 @@ export default function NewReceiptForm() {
       updatedAt: new Date().toISOString(),
     }
 
-    saveReceipt(receipt)
+    await saveReceipt(receipt)
     router.push("/tools/receipts")
   }
 

@@ -36,21 +36,27 @@ export default function ContractViewPage() {
   const contractRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const id = params.id as string
-    const loadedContract = getContractById(id)
-    const loadedSettings = getSettings()
+    const loadData = async () => {
+      const id = params.id as string
+      const [loadedContract, loadedSettings] = await Promise.all([
+        getContractById(id),
+        Promise.resolve(getSettings()),
+      ])
 
-    if (loadedContract) {
-      setContract(loadedContract)
-      setSettings(loadedSettings)
-    } else {
-      router.push("/tools/contracts")
+      if (loadedContract) {
+        setContract(loadedContract)
+        setSettings(loadedSettings)
+      } else {
+        router.push("/tools/contracts")
+      }
     }
+
+    loadData()
   }, [params.id, router])
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this contract?")) {
-      deleteContract(contract!.id)
+      await deleteContract(contract!.id)
       router.push("/tools/contracts")
     }
   }
@@ -292,8 +298,8 @@ export default function ContractViewPage() {
           contract={contract}
           signatureType={signatureType}
           onClose={() => setShowSignatureModal(false)}
-          onSave={(updatedContract) => {
-            saveContract(updatedContract)
+          onSave={async (updatedContract) => {
+            await saveContract(updatedContract)
             setContract(updatedContract)
             setShowSignatureModal(false)
           }}

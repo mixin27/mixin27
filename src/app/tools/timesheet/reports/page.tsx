@@ -8,7 +8,7 @@ import {
   getClients,
   formatDuration,
 } from "@/lib/storage/tools-storage"
-import { TimeEntry } from "@/types/invoice"
+import { TimeEntry, Client } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 import jsPDF from "jspdf"
 import html2canvas from "html2canvas-pro"
@@ -19,12 +19,21 @@ export default function TimesheetReportsPage() {
   const [viewType, setViewType] = useState<ViewType>("week")
   const [currentDate, setCurrentDate] = useState(new Date())
   const [entries, setEntries] = useState<TimeEntry[]>([])
+  const [loadedClients, setLoadedClients] = useState<Client[]>([])
   const [selectedClientId, setSelectedClientId] = useState<string>("all")
   const [isGenerating, setIsGenerating] = useState(false)
   const reportRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setEntries(getTimeEntries())
+    const loadData = async () => {
+      const [loadedEntries, loadedClients] = await Promise.all([
+        getTimeEntries(),
+        getClients(),
+      ])
+      setEntries(loadedEntries)
+      setLoadedClients(loadedClients)
+    }
+    loadData()
   }, [])
 
   const getWeekStart = (date: Date) => {
@@ -309,7 +318,7 @@ export default function TimesheetReportsPage() {
               className="px-4 py-2 rounded-lg border bg-card focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <option value="all">All Clients</option>
-              {clients.map((client) => (
+              {loadedClients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.name}
                 </option>
