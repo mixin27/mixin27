@@ -119,20 +119,21 @@ export const saveSettings = async (settings: InvoiceSettings): Promise<void> => 
   if (typeof window === "undefined") return
   localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
   
-  // Sync to cloud if enabled
+  // Sync to cloud if enabled (in background)
   if (typeof window !== "undefined") {
-    try {
-      const response = await fetch("/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+    fetch("/settings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    })
+      .then((response) => {
+        if (response.ok) {
+          triggerAutoSync()
+        }
       })
-      if (response.ok) {
-        triggerAutoSync()
-      }
-    } catch (error) {
-      console.error("Failed to sync settings to cloud:", error)
-    }
+      .catch((error) => {
+        console.error("Failed to sync settings to cloud:", error)
+      })
   }
 }
 

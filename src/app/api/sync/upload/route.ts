@@ -428,216 +428,199 @@ export async function POST(request: NextRequest) {
 
 // Sync resumes separately with batching
 async function syncResumes(userId: string, resumes: any[]) {
-  // Process resumes in smaller batches to avoid timeouts
-  const batchSize = 3
+  const batchSize = 10; // Increased batch size for better performance
 
   for (let i = 0; i < resumes.length; i += batchSize) {
-    const batch = resumes.slice(i, i + batchSize)
+    const batch = resumes.slice(i, i + batchSize);
 
     await Promise.all(
       batch.map(async (resume) => {
-        // Each resume in its own transaction
-        await prisma.$transaction(
-          async (tx) => {
-            // Upsert resume
-            await tx.resume.upsert({
-              where: { id: resume.id },
-              update: {
-                name: resume.name,
-                template: resume.template,
-                personal: resume.personal,
-                summary: resume.summary,
-                updatedAt: new Date(),
-              },
-              create: {
-                id: resume.id,
-                userId,
-                name: resume.name,
-                template: resume.template,
-                personal: resume.personal,
-                summary: resume.summary,
-                createdAt: new Date(resume.createdAt),
-              },
-            })
-
-            // Delete existing related records in parallel
-            await Promise.all([
-              tx.resumeExperience.deleteMany({
-                where: { resumeId: resume.id },
-              }),
-              tx.resumeEducation.deleteMany({ where: { resumeId: resume.id } }),
-              tx.resumeSkill.deleteMany({ where: { resumeId: resume.id } }),
-              tx.resumeProject.deleteMany({ where: { resumeId: resume.id } }),
-              tx.resumeCertification.deleteMany({
-                where: { resumeId: resume.id },
-              }),
-              tx.resumeLanguage.deleteMany({ where: { resumeId: resume.id } }),
-              tx.resumeCustomSection.deleteMany({
-                where: { resumeId: resume.id },
-              }),
-              tx.resumeSection.deleteMany({ where: { resumeId: resume.id } }),
-            ])
-
-            // Create new records using createMany for better performance
-            // Skip if arrays are empty to avoid errors
-            if (resume.experience?.length > 0) {
-              await tx.resumeExperience.createMany({
-                data: resume.experience.map((exp: any, index: number) => ({
-                  id: exp.id,
-                  resumeId: resume.id,
-                  company: exp.company,
-                  position: exp.position,
-                  location: exp.location,
-                  startDate: exp.startDate,
-                  endDate: exp.endDate,
-                  current: exp.current,
-                  description: exp.description,
-                  highlights: exp.highlights,
-                  order: index,
-                })),
-                skipDuplicates: true, // Skip if ID already exists
-              })
-            }
-
-            if (resume.education?.length > 0) {
-              await tx.resumeEducation.createMany({
-                data: resume.education.map((edu: any, index: number) => ({
-                  id: edu.id,
-                  resumeId: resume.id,
-                  institution: edu.institution,
-                  degree: edu.degree,
-                  field: edu.field,
-                  location: edu.location,
-                  startDate: edu.startDate,
-                  endDate: edu.endDate,
-                  current: edu.current,
-                  gpa: edu.gpa,
-                  description: edu.description,
-                  order: index,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.skills?.length > 0) {
-              await tx.resumeSkill.createMany({
-                data: resume.skills.map((skill: any) => ({
-                  id: skill.id,
-                  resumeId: resume.id,
-                  name: skill.name,
-                  category: skill.category,
-                  level: skill.level,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.projects?.length > 0) {
-              await tx.resumeProject.createMany({
-                data: resume.projects.map((project: any, index: number) => ({
-                  id: project.id,
-                  resumeId: resume.id,
-                  name: project.name,
-                  description: project.description,
-                  technologies: project.technologies,
-                  startDate: project.startDate,
-                  endDate: project.endDate,
-                  current: project.current,
-                  url: project.url,
-                  highlights: project.highlights,
-                  order: index,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.certifications?.length > 0) {
-              await tx.resumeCertification.createMany({
-                data: resume.certifications.map((cert: any) => ({
-                  id: cert.id,
-                  resumeId: resume.id,
-                  name: cert.name,
-                  issuer: cert.issuer,
-                  issueDate: cert.issueDate,
-                  expiryDate: cert.expiryDate,
-                  credentialId: cert.credentialId,
-                  url: cert.url,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.languages?.length > 0) {
-              await tx.resumeLanguage.createMany({
-                data: resume.languages.map((lang: any) => ({
-                  id: lang.id,
-                  resumeId: resume.id,
-                  name: lang.name,
-                  proficiency: lang.proficiency,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.customSections?.length > 0) {
-              await tx.resumeCustomSection.createMany({
-                data: resume.customSections.map((section: any) => ({
-                  id: section.id,
-                  resumeId: resume.id,
-                  title: section.title,
-                  content: section.content || "",
-                  items: section.items,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            if (resume.sections?.length > 0) {
-              await tx.resumeSection.createMany({
-                data: resume.sections.map((section: any) => ({
-                  id: section.id,
-                  resumeId: resume.id,
-                  type: section.type,
-                  title: section.title,
-                  visible: section.visible,
-                  order: section.order,
-                })),
-                skipDuplicates: true,
-              })
-            }
-
-            // Sync style
-            if (resume.style) {
-              await tx.resumeStyle.upsert({
-                where: { resumeId: resume.id },
-                update: {
-                  template: resume.style.template,
-                  primaryColor: resume.style.primaryColor,
-                  fontFamily: resume.style.fontFamily,
-                  fontSize: resume.style.fontSize,
-                  spacing: resume.style.spacing,
-                  showPhoto: resume.style.showPhoto,
-                  showIcons: resume.style.showIcons,
-                },
-                create: {
-                  resumeId: resume.id,
-                  template: resume.style.template,
-                  primaryColor: resume.style.primaryColor,
-                  fontFamily: resume.style.fontFamily,
-                  fontSize: resume.style.fontSize,
-                  spacing: resume.style.spacing,
-                  showPhoto: resume.style.showPhoto,
-                  showIcons: resume.style.showIcons,
-                },
-              })
-            }
+        // Upsert resume
+        await prisma.resume.upsert({
+          where: { id: resume.id },
+          update: {
+            name: resume.name,
+            template: resume.template,
+            personal: resume.personal,
+            summary: resume.summary,
+            updatedAt: new Date(),
           },
-          {
-            maxWait: 8000,
-            timeout: 10000,
+          create: {
+            id: resume.id,
+            userId,
+            name: resume.name,
+            template: resume.template,
+            personal: resume.personal,
+            summary: resume.summary,
+            createdAt: new Date(resume.createdAt),
           },
-        )
-      }),
-    )
+        });
+
+        // Delete existing related records in parallel
+        await Promise.all([
+          prisma.resumeExperience.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeEducation.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeSkill.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeProject.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeCertification.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeLanguage.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeCustomSection.deleteMany({ where: { resumeId: resume.id } }),
+          prisma.resumeSection.deleteMany({ where: { resumeId: resume.id } }),
+        ]);
+
+        // Create new records using createMany for better performance
+        if (resume.experience?.length > 0) {
+          await prisma.resumeExperience.createMany({
+            data: resume.experience.map((exp: any, index: number) => ({
+              id: exp.id,
+              resumeId: resume.id,
+              company: exp.company,
+              position: exp.position,
+              location: exp.location,
+              startDate: exp.startDate,
+              endDate: exp.endDate,
+              current: exp.current,
+              description: exp.description,
+              highlights: exp.highlights,
+              order: index,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.education?.length > 0) {
+          await prisma.resumeEducation.createMany({
+            data: resume.education.map((edu: any, index: number) => ({
+              id: edu.id,
+              resumeId: resume.id,
+              institution: edu.institution,
+              degree: edu.degree,
+              field: edu.field,
+              location: edu.location,
+              startDate: edu.startDate,
+              endDate: edu.endDate,
+              current: edu.current,
+              gpa: edu.gpa,
+              description: edu.description,
+              order: index,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.skills?.length > 0) {
+          await prisma.resumeSkill.createMany({
+            data: resume.skills.map((skill: any) => ({
+              id: skill.id,
+              resumeId: resume.id,
+              name: skill.name,
+              category: skill.category,
+              level: skill.level,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.projects?.length > 0) {
+          await prisma.resumeProject.createMany({
+            data: resume.projects.map((project: any, index: number) => ({
+              id: project.id,
+              resumeId: resume.id,
+              name: project.name,
+              description: project.description,
+              technologies: project.technologies,
+              startDate: project.startDate,
+              endDate: project.endDate,
+              current: project.current,
+              url: project.url,
+              highlights: project.highlights,
+              order: index,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.certifications?.length > 0) {
+          await prisma.resumeCertification.createMany({
+            data: resume.certifications.map((cert: any) => ({
+              id: cert.id,
+              resumeId: resume.id,
+              name: cert.name,
+              issuer: cert.issuer,
+              issueDate: cert.issueDate,
+              expiryDate: cert.expiryDate,
+              credentialId: cert.credentialId,
+              url: cert.url,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.languages?.length > 0) {
+          await prisma.resumeLanguage.createMany({
+            data: resume.languages.map((lang: any) => ({
+              id: lang.id,
+              resumeId: resume.id,
+              name: lang.name,
+              proficiency: lang.proficiency,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.customSections?.length > 0) {
+          await prisma.resumeCustomSection.createMany({
+            data: resume.customSections.map((section: any) => ({
+              id: section.id,
+              resumeId: resume.id,
+              title: section.title,
+              content: section.content || "",
+              items: section.items,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        if (resume.sections?.length > 0) {
+          await prisma.resumeSection.createMany({
+            data: resume.sections.map((section: any) => ({
+              id: section.id,
+              resumeId: resume.id,
+              type: section.type,
+              title: section.title,
+              visible: section.visible,
+              order: section.order,
+            })),
+            skipDuplicates: true,
+          });
+        }
+
+        // Sync style
+        if (resume.style) {
+          await prisma.resumeStyle.upsert({
+            where: { resumeId: resume.id },
+            update: {
+              template: resume.style.template,
+              primaryColor: resume.style.primaryColor,
+              fontFamily: resume.style.fontFamily,
+              fontSize: resume.style.fontSize,
+              spacing: resume.style.spacing,
+              showPhoto: resume.style.showPhoto,
+              showIcons: resume.style.showIcons,
+            },
+            create: {
+              resumeId: resume.id,
+              template: resume.style.template,
+              primaryColor: resume.style.primaryColor,
+              fontFamily: resume.style.fontFamily,
+              fontSize: resume.style.fontSize,
+              spacing: resume.style.spacing,
+              showPhoto: resume.style.showPhoto,
+              showIcons: resume.style.showIcons,
+            },
+          });
+        }
+      })
+    );
   }
 }

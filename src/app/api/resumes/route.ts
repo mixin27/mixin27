@@ -35,10 +35,7 @@ export async function GET(request: NextRequest) {
       })
 
       if (!resume) {
-        return NextResponse.json(
-          { error: "Resume not found" },
-          { status: 404 },
-        )
+        return NextResponse.json({ error: "Resume not found" }, { status: 404 })
       }
 
       // Transform to match frontend Resume interface
@@ -50,58 +47,63 @@ export async function GET(request: NextRequest) {
         summary: resume.summary,
         experience: Array.isArray((resume as any).experiences)
           ? (resume as any).experiences.map((exp: any) => ({
-            id: exp.id,
-            company: exp.company,
-            position: exp.position,
-            location: exp.location,
-            startDate: exp.startDate,
-            endDate: exp.endDate,
-            current: exp.current,
-            description: exp.description,
-            highlights: exp.highlights,
-          })) : [],
+              id: exp.id,
+              company: exp.company,
+              position: exp.position,
+              location: exp.location,
+              startDate: exp.startDate,
+              endDate: exp.endDate,
+              current: exp.current,
+              description: exp.description,
+              highlights: exp.highlights,
+            }))
+          : [],
         education: Array.isArray((resume as any).education)
           ? (resume as any).educations.map((edu: any) => ({
-            id: edu.id,
-            institution: edu.institution,
-            degree: edu.degree,
-            field: edu.field,
-            location: edu.location,
-            startDate: edu.startDate,
-            endDate: edu.endDate,
-            current: edu.current,
-            gpa: edu.gpa,
-            description: edu.description,
-          })) : [],
+              id: edu.id,
+              institution: edu.institution,
+              degree: edu.degree,
+              field: edu.field,
+              location: edu.location,
+              startDate: edu.startDate,
+              endDate: edu.endDate,
+              current: edu.current,
+              gpa: edu.gpa,
+              description: edu.description,
+            }))
+          : [],
         skills: Array.isArray((resume as any).skills)
           ? (resume as any).skills.map((skill: any) => ({
-            id: skill.id,
-            name: skill.name,
-            category: skill.category,
-            level: skill.level,
-          })) : [],
+              id: skill.id,
+              name: skill.name,
+              category: skill.category,
+              level: skill.level,
+            }))
+          : [],
         projects: Array.isArray((resume as any).projects)
           ? (resume as any).projects.map((project: any) => ({
-            id: project.id,
-            name: project.name,
-            description: project.description,
-            technologies: project.technologies,
-            startDate: project.startDate,
-            endDate: project.endDate,
-            current: project.current,
-            url: project.url,
-            highlights: project.highlights,
-          })) : [],
+              id: project.id,
+              name: project.name,
+              description: project.description,
+              technologies: project.technologies,
+              startDate: project.startDate,
+              endDate: project.endDate,
+              current: project.current,
+              url: project.url,
+              highlights: project.highlights,
+            }))
+          : [],
         certifications: Array.isArray((resume as any).certifications)
           ? (resume as any).certifications.map((cert: any) => ({
-            id: cert.id,
-            name: cert.name,
-            issuer: cert.issuer,
-            issueDate: cert.issueDate,
-            expiryDate: cert.expiryDate,
-            credentialId: cert.credentialId,
-            url: cert.url,
-          })) : [],
+              id: cert.id,
+              name: cert.name,
+              issuer: cert.issuer,
+              issueDate: cert.issueDate,
+              expiryDate: cert.expiryDate,
+              credentialId: cert.credentialId,
+              url: cert.url,
+            }))
+          : [],
         languages: (resume as any).languages.map((lang: any) => ({
           id: lang.id,
           name: lang.name,
@@ -122,23 +124,23 @@ export async function GET(request: NextRequest) {
         })),
         style: (resume as any).style
           ? {
-            template: (resume as any).style.template,
-            primaryColor: (resume as any).style.primaryColor,
-            fontFamily: (resume as any).style.fontFamily,
-            fontSize: (resume as any).style.fontSize,
-            spacing: (resume as any).style.spacing,
-            showPhoto: (resume as any).style.showPhoto,
-            showIcons: (resume as any).style.showIcons,
-          }
+              template: (resume as any).style.template,
+              primaryColor: (resume as any).style.primaryColor,
+              fontFamily: (resume as any).style.fontFamily,
+              fontSize: (resume as any).style.fontSize,
+              spacing: (resume as any).style.spacing,
+              showPhoto: (resume as any).style.showPhoto,
+              showIcons: (resume as any).style.showIcons,
+            }
           : {
-            template: resume.template,
-            primaryColor: "#2563eb",
-            fontFamily: "Inter",
-            fontSize: "medium",
-            spacing: "normal",
-            showPhoto: true,
-            showIcons: true,
-          },
+              template: resume.template,
+              primaryColor: "#2563eb",
+              fontFamily: "Inter",
+              fontSize: "medium",
+              spacing: "normal",
+              showPhoto: true,
+              showIcons: true,
+            },
         createdAt: resume.createdAt.toISOString(),
         updatedAt: resume.updatedAt.toISOString(),
       })
@@ -237,23 +239,23 @@ export async function GET(request: NextRequest) {
         })),
         style: (resume as any).style
           ? {
-            template: (resume as any).style.template,
-            primaryColor: (resume as any).style.primaryColor,
-            fontFamily: (resume as any).style.fontFamily,
-            fontSize: (resume as any).style.fontSize,
-            spacing: (resume as any).style.spacing,
-            showPhoto: (resume as any).style.showPhoto,
-            showIcons: (resume as any).style.showIcons,
-          }
+              template: (resume as any).style.template,
+              primaryColor: (resume as any).style.primaryColor,
+              fontFamily: (resume as any).style.fontFamily,
+              fontSize: (resume as any).style.fontSize,
+              spacing: (resume as any).style.spacing,
+              showPhoto: (resume as any).style.showPhoto,
+              showIcons: (resume as any).style.showIcons,
+            }
           : {
-            template: resume.template,
-            primaryColor: "#2563eb",
-            fontFamily: "Inter",
-            fontSize: "medium",
-            spacing: "normal",
-            showPhoto: true,
-            showIcons: true,
-          },
+              template: resume.template,
+              primaryColor: "#2563eb",
+              fontFamily: "Inter",
+              fontSize: "medium",
+              spacing: "normal",
+              showPhoto: true,
+              showIcons: true,
+            },
         createdAt: resume.createdAt.toISOString(),
         updatedAt: resume.updatedAt.toISOString(),
       })),
@@ -474,10 +476,12 @@ export async function POST(request: NextRequest) {
             })),
           })
         }
-      }, {
-      maxWait: 8000,
-      timeout: 10000,
-    })
+      },
+      {
+        maxWait: 10000,
+        timeout: 15000,
+      },
+    )
 
     return NextResponse.json({ success: true, resume })
   } catch (error) {
@@ -504,10 +508,7 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get("id")
 
     if (!id) {
-      return NextResponse.json(
-        { error: "Resume ID required" },
-        { status: 400 },
-      )
+      return NextResponse.json({ error: "Resume ID required" }, { status: 400 })
     }
 
     await prisma.resume.delete({
@@ -522,4 +523,3 @@ export async function DELETE(request: NextRequest) {
     )
   }
 }
-

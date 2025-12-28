@@ -221,16 +221,18 @@ export async function hybridSave<T extends { id: string }>(
 
   // Sync to cloud in background if enabled
   if (isSyncEnabled()) {
-    try {
-      await apiCall(apiEndpoint, {
-        method: "POST",
-        body: JSON.stringify(item),
+    // Perform cloud sync in background
+    apiCall(apiEndpoint, {
+      method: "POST",
+      body: JSON.stringify(item),
+    })
+      .then(() => {
+        triggerAutoSync()
       })
-      triggerAutoSync()
-    } catch (error) {
-      console.error(`Failed to sync ${storageKey} to cloud:`, error)
-      // Don't throw - local save succeeded
-    }
+      .catch((error) => {
+        console.error(`Failed to sync ${storageKey} to cloud:`, error)
+        // Don't throw - local save succeeded
+      })
   }
 }
 
@@ -243,20 +245,22 @@ export async function hybridGetAll<T>(
   apiEndpoint: string,
   syncFromCloud = false,
 ): Promise<T[]> {
-  // If sync is enabled and we want to sync, fetch from cloud first
+  // Always return from localStorage (fast, works offline)
+  const localData = getFromStorage<T>(storageKey)
+
+  // If sync is enabled and we want to sync, initiate cloud fetch in background
   if (isSyncEnabled() && syncFromCloud) {
-    try {
-      const cloudData = await apiCall<T[]>(apiEndpoint)
-      saveToStorage(storageKey, cloudData)
-      return cloudData
-    } catch (error) {
-      console.error(`Failed to sync ${storageKey} from cloud:`, error)
-      // Fall back to localStorage
-    }
+    apiCall<T[]>(apiEndpoint)
+      .then((cloudData) => {
+        saveToStorage(storageKey, cloudData)
+        // Optionally, trigger a UI update here if needed, e.g., via a custom event
+      })
+      .catch((error) => {
+        console.error(`Failed to sync ${storageKey} from cloud:`, error)
+      })
   }
 
-  // Always return from localStorage (fast, works offline)
-  return getFromStorage<T>(storageKey)
+  return localData
 }
 
 /**
@@ -271,22 +275,29 @@ export async function hybridGetById<T extends { id: string }>(
   const items = getFromStorage<T>(storageKey)
   const item = items.find((i) => i.id === id)
 
+  // Always return from localStorage if found (fast, works offline)
   if (item) {
     return item
   }
 
-  // If not found locally and sync is enabled, try cloud
+  // If not found locally and sync is enabled, initiate cloud fetch in background
   if (isSyncEnabled()) {
-    try {
-      const cloudItem = await apiCall<T>(`${apiEndpoint}?id=${id}`)
-      // Save to localStorage for next time
-      const items = getFromStorage<T>(storageKey)
-      items.push(cloudItem)
-      saveToStorage(storageKey, items)
-      return cloudItem
-    } catch (error) {
-      console.error(`Failed to get ${storageKey} from cloud:`, error)
-    }
+    apiCall<T>(`${apiEndpoint}?id=${id}`)
+      .then((cloudItem) => {
+        // Save to localStorage for next time
+        const items = getFromStorage<T>(storageKey)
+        const existingIndex = items.findIndex((i) => i.id === cloudItem.id)
+        if (existingIndex >= 0) {
+          items[existingIndex] = cloudItem
+        } else {
+          items.push(cloudItem)
+        }
+        saveToStorage(storageKey, items)
+        // Optionally, trigger a UI update here if needed
+      })
+      .catch((error) => {
+        console.error(`Failed to get ${storageKey} from cloud:`, error)
+      })
   }
 
   return null
@@ -306,13 +317,15 @@ export async function hybridDelete<T extends { id: string }>(
 
   // Delete from cloud in background if enabled
   if (isSyncEnabled()) {
-    try {
-      await apiCall(`${apiEndpoint}?id=${id}`, { method: "DELETE" })
-      triggerAutoSync()
-    } catch (error) {
-      console.error(`Failed to delete ${storageKey} from cloud:`, error)
-      // Don't throw - local delete succeeded
-    }
+    // Perform cloud delete in background
+    apiCall(`${apiEndpoint}?id=${id}`, { method: "DELETE" })
+      .then(() => {
+        triggerAutoSync()
+      })
+      .catch((error) => {
+        console.error(`Failed to delete ${storageKey} from cloud:`, error)
+        // Don't throw - local delete succeeded
+      })
   }
 }
 
