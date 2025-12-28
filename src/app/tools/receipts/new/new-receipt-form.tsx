@@ -148,6 +148,7 @@ export default function NewReceiptForm() {
 
     const receipt: Receipt = {
       id: uuidv7(),
+      token: uuidv7(),
       receiptNumber,
       client,
       paymentDate,

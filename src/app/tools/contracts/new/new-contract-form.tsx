@@ -99,6 +99,7 @@ export default function NewContractForm() {
 
     const contract: Contract = {
       id: uuidv7(),
+      token: uuidv7(),
       contractNumber,
       templateType,
       templateName: template.name,

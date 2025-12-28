@@ -120,6 +120,7 @@ CREATE TABLE "invoices" (
     "notes" TEXT,
     "terms" TEXT,
     "currency" TEXT NOT NULL DEFAULT 'USD',
+    "token" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -182,6 +183,7 @@ CREATE TABLE "quotations" (
     "notes" TEXT,
     "terms" TEXT,
     "currency" TEXT NOT NULL DEFAULT 'USD',
+    "token" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -206,6 +208,7 @@ CREATE TABLE "receipts" (
     "amountPaid" DECIMAL(10,2) NOT NULL,
     "notes" TEXT,
     "currency" TEXT NOT NULL DEFAULT 'USD',
+    "token" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -236,6 +239,7 @@ CREATE TABLE "contracts" (
     "status" "ContractStatus" NOT NULL DEFAULT 'draft',
     "generatedContent" TEXT NOT NULL,
     "notes" TEXT,
+    "token" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -420,6 +424,9 @@ CREATE UNIQUE INDEX "verification_tokens_identifier_token_key" ON "verification_
 CREATE INDEX "clients_userId_idx" ON "clients"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "invoices_token_key" ON "invoices"("token");
+
+-- CreateIndex
 CREATE INDEX "invoices_userId_idx" ON "invoices"("userId");
 
 -- CreateIndex
@@ -427,6 +434,9 @@ CREATE INDEX "invoices_clientId_idx" ON "invoices"("clientId");
 
 -- CreateIndex
 CREATE INDEX "invoices_invoiceNumber_idx" ON "invoices"("invoiceNumber");
+
+-- CreateIndex
+CREATE INDEX "invoices_token_idx" ON "invoices"("token");
 
 -- CreateIndex
 CREATE INDEX "invoice_items_invoiceId_idx" ON "invoice_items"("invoiceId");
@@ -441,10 +451,19 @@ CREATE INDEX "invoice_items_receiptId_idx" ON "invoice_items"("receiptId");
 CREATE UNIQUE INDEX "invoice_settings_userId_key" ON "invoice_settings"("userId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "quotations_token_key" ON "quotations"("token");
+
+-- CreateIndex
 CREATE INDEX "quotations_userId_idx" ON "quotations"("userId");
 
 -- CreateIndex
 CREATE INDEX "quotations_clientId_idx" ON "quotations"("clientId");
+
+-- CreateIndex
+CREATE INDEX "quotations_token_idx" ON "quotations"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "receipts_token_key" ON "receipts"("token");
 
 -- CreateIndex
 CREATE INDEX "receipts_userId_idx" ON "receipts"("userId");
@@ -453,10 +472,19 @@ CREATE INDEX "receipts_userId_idx" ON "receipts"("userId");
 CREATE INDEX "receipts_clientId_idx" ON "receipts"("clientId");
 
 -- CreateIndex
+CREATE INDEX "receipts_token_idx" ON "receipts"("token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "contracts_token_key" ON "contracts"("token");
+
+-- CreateIndex
 CREATE INDEX "contracts_userId_idx" ON "contracts"("userId");
 
 -- CreateIndex
 CREATE INDEX "contracts_clientId_idx" ON "contracts"("clientId");
+
+-- CreateIndex
+CREATE INDEX "contracts_token_idx" ON "contracts"("token");
 
 -- CreateIndex
 CREATE INDEX "time_entries_userId_idx" ON "time_entries"("userId");

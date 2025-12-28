@@ -120,6 +120,7 @@ model Invoice {
     notes         String?       @db.Text
     terms         String?       @db.Text
     currency      String        @default("USD")
+    token         String        @unique @default(cuid())
     createdAt     DateTime      @default(now())
     updatedAt     DateTime      @updatedAt
 
@@ -131,6 +132,7 @@ model Invoice {
     @@index([userId])
     @@index([clientId])
     @@index([invoiceNumber])
+    @@index([token])
     @@map("invoices")
 }
 
@@ -198,6 +200,7 @@ model Quotation {
     notes         String?         @db.Text
     terms         String?         @db.Text
     currency      String          @default("USD")
+    token         String          @unique @default(cuid())
     createdAt     DateTime        @default(now())
     updatedAt     DateTime        @updatedAt
 
@@ -208,6 +211,7 @@ model Quotation {
 
     @@index([userId])
     @@index([clientId])
+    @@index([token])
     @@map("quotations")
 }
 
@@ -228,6 +232,7 @@ model Receipt {
     amountPaid           Decimal       @db.Decimal(10, 2)
     notes                String?       @db.Text
     currency             String        @default("USD")
+    token                String        @unique @default(cuid())
     createdAt            DateTime      @default(now())
     updatedAt            DateTime      @updatedAt
 
@@ -238,6 +243,7 @@ model Receipt {
 
     @@index([userId])
     @@index([clientId])
+    @@index([token])
     @@map("receipts")
 }
 
@@ -268,6 +274,7 @@ model Contract {
     status                ContractStatus       @default(draft)
     generatedContent      String               @db.Text
     notes                 String?              @db.Text
+    token                 String               @unique @default(cuid())
     createdAt             DateTime             @default(now())
     updatedAt             DateTime             @updatedAt
 
@@ -277,6 +284,7 @@ model Contract {
 
     @@index([userId])
     @@index([clientId])
+    @@index([token])
     @@map("contracts")
 }
 

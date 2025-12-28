@@ -145,6 +145,7 @@ export default function NewInvoiceForm() {
     const invoice: Invoice = {
       //   id: Date.now().toString(),
       id: uuidv7(),
+      token: uuidv7(),
       invoiceNumber,
       client: selectedClient,
       issueDate,
