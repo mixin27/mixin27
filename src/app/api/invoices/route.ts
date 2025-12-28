@@ -194,43 +194,22 @@ export async function POST(request: NextRequest) {
             })
 
             // Delete old items and create new ones
-            // await tx.invoiceItem.deleteMany({
-            //     where: { invoiceId: invoice.id },
-            // })
+            await tx.invoiceItem.deleteMany({
+                where: { invoiceId: invoice.id },
+            })
 
             if (invoice.items && invoice.items.length > 0) {
-                await Promise.all(
-                    invoice.items.map(async (item: InvoiceItem) => {
-                        await tx.invoiceItem.upsert({
-                            where: { id: item.id },
-                            create: {
-                                id: item.id,
-                                invoiceId: invoice.id,
-                                description: item.description,
-                                quantity: Number(item.quantity),
-                                rate: Number(item.rate),
-                                amount: Number(item.amount),
-                            },
-                            update: {
-                                invoiceId: invoice.id,
-                                description: item.description,
-                                quantity: item.quantity,
-                                rate: item.rate,
-                                amount: item.amount,
-                            }
-                        })
-                    })
-                )
-                // await tx.invoiceItem.createMany({
-                //     data: invoice.items.map((item: InvoiceItem) => ({
-                //         id: item.id,
-                //         invoiceId: invoice.id,
-                //         description: item.description,
-                //         quantity: item.quantity,
-                //         rate: item.rate,
-                //         amount: item.amount,
-                //     })),
-                // })
+                await tx.invoiceItem.createMany({
+                    data: invoice.items.map((item: InvoiceItem) => ({
+                        id: item.id,
+                        invoiceId: invoice.id,
+                        description: item.description,
+                        quantity: Number(item.quantity),
+                        rate: Number(item.rate),
+                        amount: Number(item.amount),
+                    })),
+                    skipDuplicates: true,
+                })
             }
         })
         return NextResponse.json({ success: true, invoice })

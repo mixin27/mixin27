@@ -203,33 +203,22 @@ export async function POST(request: NextRequest) {
             })
 
             // Delete old items and create new ones
-            // await tx.invoiceItem.deleteMany({
-            //     where: { quotationId: quotation.id },
-            // })
+            await tx.invoiceItem.deleteMany({
+                where: { quotationId: quotation.id },
+            })
 
             if (quotation.items && quotation.items.length > 0) {
-                await Promise.all(
-                    quotation.items.map(async (item: any) => {
-                        await tx.invoiceItem.upsert({
-                            where: { id: item.id },
-                            create: {
-                                id: item.id,
-                                quotationId: quotation.id,
-                                description: item.description,
-                                quantity: Number(item.quantity),
-                                rate: Number(item.rate),
-                                amount: Number(item.amount),
-                            },
-                            update: {
-                                quotationId: quotation.id,
-                                description: item.description,
-                                quantity: item.quantity,
-                                rate: item.rate,
-                                amount: item.amount,
-                            }
-                        })
-                    })
-                )
+                await tx.invoiceItem.createMany({
+                    data: quotation.items.map((item: any) => ({
+                        id: item.id,
+                        quotationId: quotation.id,
+                        description: item.description,
+                        quantity: Number(item.quantity),
+                        rate: Number(item.rate),
+                        amount: Number(item.amount),
+                    })),
+                    skipDuplicates: true,
+                })
             }
         })
 

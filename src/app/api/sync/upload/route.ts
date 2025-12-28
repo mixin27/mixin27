@@ -98,6 +98,7 @@ export async function POST(request: NextRequest) {
                                     notes: invoice.notes,
                                     terms: invoice.terms,
                                     currency: invoice.currency,
+                                    token: invoice.token,
                                     updatedAt: new Date(),
                                 },
                                 create: {
@@ -117,39 +118,29 @@ export async function POST(request: NextRequest) {
                                     notes: invoice.notes,
                                     terms: invoice.terms,
                                     currency: invoice.currency,
+                                    token: invoice.token,
                                     createdAt: new Date(invoice.createdAt),
                                 },
                             })
 
                             // Delete old items and create new ones
-                            // await tx.invoiceItem.deleteMany({
-                            //     where: { invoiceId: invoice.id },
-                            // })
+                            await tx.invoiceItem.deleteMany({
+                                where: { invoiceId: invoice.id },
+                            })
 
                             if (invoice.items && invoice.items.length > 0) {
                                 const uniqueItems = deduplicateById<InvoiceItem>(invoice.items)
-                                await Promise.all(
-                                    uniqueItems.map(async (item) => {
-                                        await tx.invoiceItem.upsert({
-                                            where: { id: item.id },
-                                            create: {
-                                                id: item.id,
-                                                invoiceId: invoice.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            },
-                                            update: {
-                                                invoiceId: invoice.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            }
-                                        })
-                                    })
-                                )
+                                await tx.invoiceItem.createMany({
+                                    data: uniqueItems.map((item) => ({
+                                        id: item.id,
+                                        invoiceId: invoice.id,
+                                        description: item.description,
+                                        quantity: item.quantity,
+                                        rate: item.rate,
+                                        amount: item.amount,
+                                    })),
+                                    skipDuplicates: true,
+                                })
                             }
                         }),
                     )
@@ -219,6 +210,7 @@ export async function POST(request: NextRequest) {
                                     notes: quotation.notes,
                                     terms: quotation.terms,
                                     currency: quotation.currency,
+                                    token: quotation.token,
                                     updatedAt: new Date(),
                                 },
                                 create: {
@@ -239,39 +231,29 @@ export async function POST(request: NextRequest) {
                                     notes: quotation.notes,
                                     terms: quotation.terms,
                                     currency: quotation.currency,
+                                    token: quotation.token,
                                     createdAt: new Date(quotation.createdAt),
                                 },
                             })
 
                             // Delete old items and create new ones
-                            // await tx.invoiceItem.deleteMany({
-                            //     where: { quotationId: quotation.id },
-                            // })
+                            await tx.invoiceItem.deleteMany({
+                                where: { quotationId: quotation.id },
+                            })
 
                             if (quotation.items && quotation.items.length > 0) {
                                 const uniqueItems = deduplicateById<InvoiceItem>(quotation.items)
-                                await Promise.all(
-                                    uniqueItems.map(async (item) => {
-                                        await tx.invoiceItem.upsert({
-                                            where: { id: item.id },
-                                            create: {
-                                                id: item.id,
-                                                quotationId: quotation.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            },
-                                            update: {
-                                                quotationId: quotation.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            }
-                                        })
-                                    })
-                                )
+                                await tx.invoiceItem.createMany({
+                                    data: uniqueItems.map((item) => ({
+                                        id: item.id,
+                                        quotationId: quotation.id,
+                                        description: item.description,
+                                        quantity: item.quantity,
+                                        rate: item.rate,
+                                        amount: item.amount,
+                                    })),
+                                    skipDuplicates: true,
+                                })
                             }
                         }),
                     )
@@ -298,6 +280,7 @@ export async function POST(request: NextRequest) {
                                     amountPaid: receipt.amountPaid,
                                     notes: receipt.notes,
                                     currency: receipt.currency,
+                                    token: receipt.token,
                                     updatedAt: new Date(),
                                 },
                                 create: {
@@ -317,39 +300,29 @@ export async function POST(request: NextRequest) {
                                     amountPaid: receipt.amountPaid,
                                     notes: receipt.notes,
                                     currency: receipt.currency,
+                                    token: receipt.token,
                                     createdAt: new Date(receipt.createdAt),
                                 },
                             })
 
                             // Delete old items and create new ones
-                            // await tx.invoiceItem.deleteMany({
-                            //     where: { receiptId: receipt.id },
-                            // })
+                            await tx.invoiceItem.deleteMany({
+                                where: { receiptId: receipt.id },
+                            })
 
                             if (receipt.items && receipt.items.length > 0) {
                                 const uniqueItems = deduplicateById<InvoiceItem>(receipt.items)
-                                await Promise.all(
-                                    uniqueItems.map(async (item) => {
-                                        await tx.invoiceItem.upsert({
-                                            where: { id: item.id },
-                                            create: {
-                                                id: item.id,
-                                                receiptId: receipt.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            },
-                                            update: {
-                                                receiptId: receipt.id,
-                                                description: item.description,
-                                                quantity: item.quantity,
-                                                rate: item.rate,
-                                                amount: item.amount,
-                                            }
-                                        })
-                                    })
-                                )
+                                await tx.invoiceItem.createMany({
+                                    data: uniqueItems.map((item) => ({
+                                        id: item.id,
+                                        receiptId: receipt.id,
+                                        description: item.description,
+                                        quantity: item.quantity,
+                                        rate: item.rate,
+                                        amount: item.amount,
+                                    })),
+                                    skipDuplicates: true,
+                                })
                             }
                         }),
                     )

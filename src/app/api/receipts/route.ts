@@ -200,33 +200,22 @@ export async function POST(request: NextRequest) {
             })
 
             // Delete old items and create new ones
-            // await tx.invoiceItem.deleteMany({
-            //     where: { receiptId: receipt.id },
-            // })
+            await tx.invoiceItem.deleteMany({
+                where: { receiptId: receipt.id },
+            })
 
             if (receipt.items && receipt.items.length > 0) {
-                await Promise.all(
-                    receipt.items.map(async (item: InvoiceItem) => {
-                        await tx.invoiceItem.upsert({
-                            where: { id: item.id },
-                            create: {
-                                id: item.id,
-                                receiptId: receipt.id,
-                                description: item.description,
-                                quantity: Number(item.quantity),
-                                rate: Number(item.rate),
-                                amount: Number(item.amount),
-                            },
-                            update: {
-                                receiptId: receipt.id,
-                                description: item.description,
-                                quantity: item.quantity,
-                                rate: item.rate,
-                                amount: item.amount,
-                            }
-                        })
-                    })
-                )
+                await tx.invoiceItem.createMany({
+                    data: receipt.items.map((item: InvoiceItem) => ({
+                        id: item.id,
+                        receiptId: receipt.id,
+                        description: item.description,
+                        quantity: Number(item.quantity),
+                        rate: Number(item.rate),
+                        amount: Number(item.amount),
+                    })),
+                    skipDuplicates: true,
+                })
             }
         })
 
