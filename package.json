@@ -24,6 +24,7 @@
         "bcryptjs": "^3.0.3",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
+        "dotenv": "^17.2.3",
         "framer-motion": "^12.23.26",
         "gray-matter": "^4.0.3",
         "html2canvas-pro": "^1.6.2",
