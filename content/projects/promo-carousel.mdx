@@ -1,0 +1,295 @@
+---
+title: "Promo Carousel"
+description: A flexible, customizable promotional carousel package for Flutter
+category: "package"
+longDescription: A flexible, customizable promotional carousel package for Flutter with support for user-specific widget injection. Perfect for onboarding, feature announcements, and personalized promotions.
+image: "/images/projects/promo-carousel/logo.png"
+tags: [flutter, promo, carousel, onboarding]
+technologies: [flutter, dart]
+platform: Flutter
+status: completed
+featured: false
+links:
+    website: https://pub.dev/packages/promo_carousel
+    github: https://github.com/mixin27/promo_carousel
+date: 2026-01-03
+---
+
+A flexible, production-ready Flutter package for creating beautiful promotional carousels with support for user-specific widget injection. Perfect for onboarding flows, feature announcements, and personalized promotions.
+
+<div className='flex items-center justify-center'>
+<BadgeGroup>
+  <Badge text="pub: v1.0.0" color="blue" href="https://pub.dartlang.org/packages/promo_carousel"/>
+  <Badge text="License: MIT" color="green" />
+  <Badge text="Platform: All" color="gray" />
+</BadgeGroup>
+</div>
+
+
+## ✨ Features
+
+- 🎯 **Modal Overlay** - Beautiful dialog-style presentation with dimmed background
+- 📱 **Swipeable Carousel** - Smooth PageView-based navigation
+- 🎨 **Built-in Visual Types** - Images, animations, search bars, and more
+- 🔧 **Custom Widget Injection** - Inject user-specific widgets without coupling
+- 💾 **Persistent State** - Tracks "show once" slides using SharedPreferences
+- 🌗 **Theme Support** - Automatically adapts to light and dark themes
+- 📊 **Page Indicators** - Shows current position (e.g., "3 / 12")
+- 🎬 **Configurable Actions** - Built-in support for navigation, feature opening, and more
+- ♿ **Accessibility Ready** - Semantic structure for screen readers
+- 🌍 **Localization Friendly** - No hard-coded strings
+
+## 📸 Preview
+
+<Image src="/images/projects/promo-carousel/demo.png" alt="Promo carousel widget demo" width={200} height={300} />
+
+## 🚀 Getting Started
+
+### Installation
+
+Add to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  promo_carousel: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+### Basic Usage
+
+```dart
+import 'package:promo_carousel/promo_carousel.dart';
+
+PromoCarousel.show(
+  context: context,
+  slides: [
+    PromoSlide(
+      id: 'welcome',
+      title: 'Welcome to Our App',
+      subtitle: 'Discover amazing features',
+      visualType: PromoVisualType.featureHighlight,
+      cta: PromoCTA(
+        text: 'Get Started',
+        action: PromoAction.close,
+      ),
+      rules: PromoRules(showOnce: true),
+    ),
+  ],
+  onAction: (action, target) {
+    print('Action: $action');
+  },
+);
+```
+
+## 📖 Documentation
+
+### PromoSlide
+
+The core model representing a single carousel slide:
+
+```dart
+PromoSlide(
+  id: 'unique_id',                    // Unique identifier
+  title: 'Main Title',                // Required title text
+  subtitle: 'Optional description',   // Optional subtitle
+  visualType: PromoVisualType.image,  // Built-in visual type
+  cta: PromoCTA(                      // Call-to-action button
+    text: 'Button Text',
+    action: PromoAction.navigate,
+    target: '/route-name',
+  ),
+  rules: PromoRules(                  // Display rules
+    showOnce: true,
+    minAppVersion: '1.2.0',
+  ),
+  customContentBuilder: (context) {   // Optional custom widget
+    return YourCustomWidget();
+  },
+)
+```
+
+### Visual Types
+
+Built-in visual types available:
+
+- `PromoVisualType.image` - Display an image asset
+- `PromoVisualType.animation` - Show an animated visual
+- `PromoVisualType.searchBar` - Search bar animation
+- `PromoVisualType.featureHighlight` - Gradient highlight
+- `PromoVisualType.custom` - Use with `customContentBuilder`
+
+### Actions
+
+Available CTA actions:
+
+- `PromoAction.navigate` - Navigate to a route
+- `PromoAction.openFeature` - Open a specific feature
+- `PromoAction.openPaywall` - Show paywall/upgrade screen
+- `PromoAction.close` - Simply close the modal
+
+### Configuration
+
+Customize appearance and behavior:
+
+```dart
+PromoCarousel.show(
+  context: context,
+  slides: slides,
+  config: PromoCarouselConfig(
+    borderRadius: 24.0,
+    elevation: 8.0,
+    barrierColor: Color(0x80000000),
+    barrierDismissible: true,
+    showCloseButton: true,
+    showDontShowAgain: false,
+  ),
+);
+```
+
+## 🎯 Advanced Usage
+
+### Custom User-Specific Widgets
+
+The key feature - inject personalized content without coupling the package to your data models:
+
+```dart
+PromoSlide(
+  id: 'zodiac_preview',
+  title: 'Your Personal Insights',
+  subtitle: 'Based on your zodiac sign',
+  visualType: PromoVisualType.custom,
+  cta: PromoCTA(
+    text: 'Reveal',
+    action: PromoAction.openFeature,
+    target: 'zodiac_detail',
+  ),
+  rules: PromoRules(showOnce: true),
+  customContentBuilder: (context) {
+    // Access your app's user data here
+    final user = Provider.of<User>(context);
+
+    return ZodiacPreviewCard(
+      sign: user.zodiacSign,
+      topSearch: user.topSearch,
+    );
+  },
+)
+```
+
+### Filtering and Rules
+
+The package automatically filters slides based on rules:
+
+```dart
+// This will only show slides that haven't been seen (if showOnce: true)
+PromoCarousel.show(
+  context: context,
+  slides: slides,
+  respectRules: true,  // Default: true
+);
+```
+
+### Manual State Management
+
+Reset seen slides:
+
+```dart
+// Reset a specific slide
+await PromoCarousel.resetSlide('welcome');
+
+// Reset all slides
+await PromoCarousel.resetAll();
+```
+
+### Handling Actions
+
+```dart
+PromoCarousel.show(
+  context: context,
+  slides: slides,
+  onAction: (action, target) {
+    switch (action) {
+      case PromoAction.navigate:
+        Navigator.pushNamed(context, target!);
+        break;
+      case PromoAction.openFeature:
+        _openFeature(target);
+        break;
+      case PromoAction.openPaywall:
+        _showPaywall();
+        break;
+      default:
+        break;
+    }
+  },
+  onDismiss: () {
+    print('User dismissed carousel');
+  },
+);
+```
+
+## 🎨 Theming
+
+The carousel automatically adapts to your app's theme:
+
+```dart
+MaterialApp(
+  theme: ThemeData.light(),
+  darkTheme: ThemeData.dark(),
+  // Carousel will adapt to both themes
+)
+```
+
+## 📱 Use Cases
+
+Perfect for:
+
+- ✅ **Onboarding flows** - Welcome new users
+- ✅ **Feature announcements** - Showcase new capabilities
+- ✅ **Personalized promotions** - Zodiac insights, user stats, achievements
+- ✅ **Contextual tips** - Show relevant guidance
+- ✅ **Marketing campaigns** - Promote offers and upgrades
+- ✅ **Product tours** - Guide users through features
+
+## 🏗️ Architecture
+
+The package follows clean architecture principles:
+
+- **Models**: Data structures (PromoSlide, PromoCTA, PromoRules)
+- **Controllers**: State management (PromoCarouselController)
+- **Widgets**: Presentation layer (PromoCarouselModal, PromoSlideContent)
+- **Public API**: Simple entry point (PromoCarousel)
+
+## 🚫 What This Package Does NOT Do
+
+To keep the package generic and reusable:
+
+- ❌ No Firebase or remote config integration
+- ❌ No analytics tracking
+- ❌ No app-specific navigation logic
+- ❌ No user data models or JSON parsing
+- ❌ No network requests
+
+These features should be implemented in your app layer.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read our contributing guidelines and submit pull requests to our repository.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+Built with ❤️ for the Flutter community.
+
+## 📞 Support
+
+- 📧 Email: kyawzayartun.contact@gmail.com
+- 🐛 Issues: [GitHub Issues](https://github.com/mixin27/promo_carousel/issues)
