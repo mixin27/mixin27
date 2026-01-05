@@ -1,0 +1,834 @@
+---
+title: "App Permissions"
+description: Centralized permission management system with automatic requests, status tracking, rationale dialogs, and graceful degradation.
+category: "package"
+longDescription: Centralized permission management system with automatic requests, status tracking, rationale dialogs, and graceful degradation.
+image: "/images/projects/dart.png"
+tags: [flutter, permissions, permissions-handler, permissions-manager]
+technologies: [flutter, dart]
+platform: Flutter
+status: completed
+featured: false
+links:
+    website: https://pub.dev/packages/app_permissions
+    github: https://github.com/mixin27/app_permissions
+date: 2026-01-04
+---
+
+Centralized permission management system with automatic requests, status tracking, rationale dialogs, settings navigation, and graceful degradation.
+
+## Features
+
+- **Centralized Permission Requests** - Single source of truth for all permission handling
+- **Status Tracking** - Track granted, denied, and permanently denied permissions
+- **Rationale Dialogs** - Explain why permissions are needed before requesting
+- **Settings Navigation** - Automatic navigation to app settings for permanently denied permissions
+- **Batch Requests** - Request multiple permissions at once
+- **Permission Groups** - Pre-defined groups for common features (media, storage, etc.)
+- **Platform-Specific Handling** - Automatic iOS vs Android differences
+- **Permission Caching** - Avoid redundant checks with smart caching
+- **Permission Listeners** - React to permission changes in real-time
+- **Graceful Degradation** - App works even without optional permissions
+- **Educational UI** - Show permission benefits before requesting
+- **Analytics Ready** - Built-in logging for permission grant/denial tracking
+
+> Please see [permission_handler](https://pub.dev/packages/permission_handler) for setup instructions of permissions on a specific platform.
+
+## Installation
+
+Add to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  app_permissions: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+## Quick Start
+
+### 1. Initialize Permission Service
+
+```dart
+import 'package:app_permissions/app_permissions.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize permission service
+  await PermissionService.instance.initialize();
+
+  runApp(MyApp());
+}
+```
+
+### 2. Request a Permission
+
+```dart
+// Simple request
+final result = await PermissionService.instance.requestPermission(
+  AppPermission.camera,
+);
+
+if (result.isGranted) {
+  // Permission granted - proceed
+  openCamera();
+} else if (result.isPermanentlyDenied) {
+  // Show settings dialog
+  await PermissionService.instance.handlePermanentlyDenied(
+    context,
+    AppPermission.camera,
+  );
+}
+```
+
+### 3. Use Permission Guard
+
+```dart
+// Automatically handle permissions for a widget
+PermissionGuard(
+  permission: AppPermission.camera,
+  autoRequest: true,
+  rationale: 'Camera needed for profile photo',
+  child: CameraWidget(),
+  fallback: Text('Camera not available'),
+)
+```
+
+## Available Permissions
+
+```dart
+enum AppPermission {
+  // Notifications
+  notifications,
+
+  // Storage & Files
+  storage,
+  photos,
+  videos,
+
+  // Media
+  camera,
+  microphone,
+
+  // Location
+  location,
+  locationAlways,
+  locationWhenInUse,
+
+  // Communication
+  contacts,
+  phone,
+
+  // Calendar
+  calendar,
+
+  // Sensors
+  sensors,
+  activityRecognition,
+
+  // Bluetooth
+  bluetooth,
+  bluetoothScan,
+  bluetoothConnect,
+}
+```
+
+## Permission Groups
+
+Pre-defined permission groups for common features:
+
+```dart
+// Media permissions (camera + microphone + photos)
+final results = await PermissionService.instance.requestGroup(
+  PermissionGroups.media,
+);
+
+// Available groups:
+PermissionGroups.media
+PermissionGroups.storage         // Required
+PermissionGroups.notifications
+PermissionGroups.location
+PermissionGroups.communication
+PermissionGroups.calendar
+PermissionGroups.bluetooth
+
+// Get all groups
+PermissionGroups.all
+
+// Get only required groups
+PermissionGroups.required
+```
+
+## Core API
+
+### PermissionService
+
+```dart
+final service = PermissionService.instance;
+
+// Check permission status (no request)
+final status = await service.checkPermission(AppPermission.camera);
+
+// Check multiple permissions
+final statuses = await service.checkPermissions([
+  AppPermission.camera,
+  AppPermission.microphone,
+]);
+
+// Request permission
+final result = await service.requestPermission(AppPermission.camera);
+
+// Request with custom rationale
+final result = await service.requestWithRationale(
+  context,
+  PermissionRequest(
+    permission: AppPermission.camera,
+    title: 'Camera Access Required',
+    message: 'We need camera access to take photos for assignments',
+    showRationale: true,
+  ),
+);
+
+// Request multiple permissions
+final results = await service.requestPermissions([
+  AppPermission.camera,
+  AppPermission.microphone,
+]);
+
+// Request permission group
+final results = await service.requestGroup(
+  PermissionGroups.media,
+  context: context,
+);
+
+// Open app settings
+await service.openAppSettings();
+
+// Handle permanently denied
+await service.handlePermanentlyDenied(
+  context,
+  AppPermission.camera,
+);
+
+// Get permission state
+final state = service.getPermissionState(AppPermission.camera);
+
+// Watch permission changes
+service.watchPermission(AppPermission.camera).listen((state) {
+  print('Camera permission: ${state.status}');
+});
+
+// Check if all permissions granted
+final hasAll = await service.hasAllPermissions([
+  AppPermission.camera,
+  AppPermission.microphone,
+]);
+
+// Get missing permissions
+final missing = await service.getMissingPermissions([
+  AppPermission.camera,
+  AppPermission.microphone,
+]);
+```
+
+## Widgets
+
+### PermissionGuard
+
+Wraps widgets that require permissions:
+
+```dart
+PermissionGuard(
+  permission: AppPermission.camera,
+  autoRequest: true,
+  rationale: 'Camera needed for profile photo',
+  child: CameraWidget(),
+  fallback: Text('Camera not available'),
+  onPermissionGranted: () => print('Granted!'),
+  onPermissionDenied: () => print('Denied!'),
+)
+```
+
+### PermissionStatusWidget
+
+Shows current permission status:
+
+```dart
+PermissionStatusWidget(
+  permission: AppPermission.camera,
+  title: 'Camera',
+  description: 'Take photos for assignments',
+  showActionButton: true,
+)
+```
+
+### PermissionRequestDialog
+
+Shows rationale before requesting:
+
+```dart
+showDialog(
+  context: context,
+  builder: (_) => PermissionRequestDialog(
+    permission: AppPermission.camera,
+    title: 'Camera Access',
+    message: 'We need camera access for assignments',
+    onAllow: () async {
+      Navigator.pop(context);
+      final result = await PermissionService.instance.requestPermission(
+        AppPermission.camera,
+      );
+      if (result.isGranted) {
+        openCamera();
+      }
+    },
+    onDeny: () => Navigator.pop(context),
+  ),
+);
+```
+
+### PermissionSettingsDialog
+
+Shows when permission is permanently denied:
+
+```dart
+showDialog(
+  context: context,
+  builder: (_) => PermissionSettingsDialog(
+    permission: AppPermission.camera,
+    title: 'Camera Permission Denied',
+    message: 'Please enable camera in Settings',
+  ),
+);
+```
+
+### PermissionOnboardingScreen
+
+Full-screen onboarding for permission groups:
+
+```dart
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (_) => PermissionOnboardingScreen(
+      groups: PermissionGroups.all,
+      onComplete: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomeScreen()),
+        );
+      },
+    ),
+  ),
+);
+```
+
+### PermissionGroupCard
+
+Shows permission group with toggle:
+
+```dart
+PermissionGroupCard(
+  group: PermissionGroups.media,
+  onToggle: () async {
+    await PermissionService.instance.requestGroup(
+      PermissionGroups.media,
+    );
+  },
+)
+```
+
+### PermissionRequiredOverlay
+
+Blocks UI until permission granted:
+
+```dart
+PermissionRequiredOverlay(
+  requiredPermissions: [AppPermission.storage],
+  title: 'Storage Permission Required',
+  message: 'Storage access is required for this app to work',
+  child: MainAppContent(),
+)
+```
+
+## Extensions
+
+### Context Extensions
+
+```dart
+// Quick permission check
+final hasCamera = await context.hasPermission(AppPermission.camera);
+
+// Quick permission request
+final granted = await context.requestPermission(
+  AppPermission.camera,
+  rationale: 'Camera needed for photos',
+);
+```
+
+### AppPermission Extensions
+
+```dart
+final permission = AppPermission.camera;
+
+// User-friendly name
+print(permission.displayName); // "Camera"
+
+// Icon
+Icon(permission.icon)
+
+// Default rationale
+print(permission.defaultRationale);
+
+// Detailed description
+print(permission.detailedDescription);
+
+// Is required?
+if (permission.isRequired) {
+  // This permission is mandatory
+}
+```
+
+### PermissionStatus Extensions
+
+```dart
+final status = PermissionStatus.granted;
+
+// Status checks
+status.isGranted
+status.isDenied
+status.isPermanentlyDenied
+status.canRequest
+status.shouldNavigateToSettings
+
+// Display text
+print(status.displayText); // "Allowed"
+
+// Color
+print(status.colorHex); // "#4CAF50"
+```
+
+## Usage Examples
+
+### Example 1: Download File
+
+```dart
+Future<void> downloadFile(String url) async {
+  // Check if we have permission
+  final hasPermission = await context.hasPermission(AppPermission.storage);
+
+  if (!hasPermission) {
+    // Request permission with rationale
+    final granted = await context.requestPermission(
+      AppPermission.storage,
+      rationale: 'Storage permission needed to save the file',
+    );
+
+    if (!granted) {
+      AppSnackbar.show(
+        context,
+        message: 'Cannot download without storage permission',
+        type: AppSnackbarType.error,
+      );
+      return;
+    }
+  }
+
+  // Proceed with download
+  await downloadService.download(url);
+}
+```
+
+### Example 2: Video Assignment
+
+```dart
+Future<void> recordVideoAssignment() async {
+  // Request all media permissions
+  final results = await PermissionService.instance.requestGroup(
+    PermissionGroups.media,
+  );
+
+  final allGranted = results.values.every((r) => r.isGranted);
+
+  if (allGranted) {
+    // Open video recorder
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => VideoRecorderScreen()),
+    );
+  } else {
+    // Show which permissions are missing
+    final denied = results.entries
+        .where((e) => !e.value.isGranted)
+        .map((e) => e.key.displayName)
+        .join(', ');
+
+    AppSnackbar.show(
+      context,
+      message: 'Required permissions: $denied',
+      type: AppSnackbarType.warning,
+    );
+  }
+}
+```
+
+### Example 3: Profile Photo
+
+```dart
+class ProfilePhotoScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile Photo')),
+      body: PermissionGuard(
+        permission: AppPermission.camera,
+        autoRequest: true,
+        rationale: 'Camera access needed for profile photo',
+        child: CameraPreview(),
+        fallback: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.camera_alt, size: 64, color: Colors.grey),
+              const SizedBox(height: 16),
+              const Text('Camera not available'),
+              const SizedBox(height: 16),
+              AppButton(
+                label: 'Open Settings',
+                onPressed: () async {
+                  await PermissionService.instance.openAppSettings();
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### Example 4: First Launch Onboarding
+
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: FutureBuilder<bool>(
+        future: _isFirstLaunch(),
+        builder: (context, snapshot) {
+          if (snapshot.data == true) {
+            // First launch - show onboarding
+            return PermissionOnboardingScreen(
+              groups: PermissionGroups.required,
+              onComplete: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => HomeScreen()),
+                );
+              },
+            );
+          }
+          return HomeScreen();
+        },
+      ),
+    );
+  }
+
+  Future<bool> _isFirstLaunch() async {
+    final launched = await StorageService.instance.get<bool>('launched');
+    if (launched == null) {
+      await StorageService.instance.save('launched', true);
+      return true;
+    }
+    return false;
+  }
+}
+```
+
+### Example 5: Listen to Permission Changes
+
+```dart
+class FeatureScreen extends StatefulWidget {
+  @override
+  _FeatureScreenState createState() => _FeatureScreenState();
+}
+
+class _FeatureScreenState extends State<FeatureScreen>
+    with WidgetsBindingObserver {
+  bool _hasPermission = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _checkPermission();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // App came back from background - check if permission changed
+      _checkPermission();
+    }
+  }
+
+  Future<void> _checkPermission() async {
+    final status = await PermissionService.instance.checkPermission(
+      AppPermission.camera,
+    );
+    setState(() {
+      _hasPermission = status.isGranted;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _hasPermission
+          ? CameraWidget()
+          : const Center(child: Text('Camera permission required')),
+    );
+  }
+}
+```
+
+## Integration with Other Packages
+
+### app_notifications
+
+```dart
+// OLD (before app_permissions):
+await FirebaseMessaging.instance.requestPermission();
+
+// NEW (with app_permissions):
+import 'package:app_permissions/app_permissions.dart';
+
+final granted = await PermissionService.instance.requestPermission(
+  AppPermission.notifications,
+);
+if (granted.isGranted) {
+  await FirebaseMessaging.instance.requestPermission();
+}
+```
+
+### media_downloader
+
+```dart
+// Before downloading
+final hasPermission = await PermissionService.instance.requestPermission(
+  AppPermission.storage,
+  rationale: 'Storage access needed to download files',
+);
+
+if (!hasPermission.isGranted) {
+  throw StoragePermissionDeniedException();
+}
+
+// Proceed with download
+await mediaDownloader.download(url);
+```
+
+### media_player
+
+```dart
+// Before accessing camera
+PermissionGuard(
+  permission: AppPermission.camera,
+  autoRequest: true,
+  child: CameraView(),
+)
+```
+
+## Best Practices
+
+### 1. Request Just-In-Time
+
+Don't request all permissions at app launch. Request when the feature is first used:
+
+```dart
+// ❌ BAD - Request everything at launch
+void main() async {
+  await PermissionService.instance.requestPermissions([
+    AppPermission.camera,
+    AppPermission.microphone,
+    AppPermission.location,
+  ]);
+  runApp(MyApp());
+}
+
+// ✅ GOOD - Request when needed
+void onTakePhotoPressed() async {
+  final granted = await PermissionService.instance.requestPermission(
+    AppPermission.camera,
+  );
+  if (granted.isGranted) {
+    openCamera();
+  }
+}
+```
+
+### 2. Always Show Rationale
+
+Explain why you need the permission before requesting:
+
+```dart
+// ❌ BAD - No context
+await PermissionService.instance.requestPermission(AppPermission.camera);
+
+// ✅ GOOD - Clear rationale
+await PermissionService.instance.requestWithRationale(
+  context,
+  PermissionRequest(
+    permission: AppPermission.camera,
+    title: 'Camera Access Required',
+    message: 'We need camera access to let you take photos for assignments',
+    showRationale: true,
+  ),
+);
+```
+
+### 3. Handle Permanently Denied
+
+Always provide a path to settings for permanently denied permissions:
+
+```dart
+final result = await PermissionService.instance.requestPermission(
+  AppPermission.camera,
+);
+
+if (result.isPermanentlyDenied) {
+  // Show settings dialog
+  await PermissionService.instance.handlePermanentlyDenied(
+    context,
+    AppPermission.camera,
+  );
+}
+```
+
+### 4. Graceful Degradation
+
+App should work even without optional permissions:
+
+```dart
+// Check permission first
+final hasLocation = await context.hasPermission(AppPermission.location);
+
+if (hasLocation) {
+  // Show map with user location
+  showMapWithLocation();
+} else {
+  // Show map without user location (fallback)
+  showMapWithoutLocation();
+}
+```
+
+### 5. Use Permission Groups
+
+Group related permissions together:
+
+```dart
+// ❌ BAD - Request individually
+await PermissionService.instance.requestPermission(AppPermission.camera);
+await PermissionService.instance.requestPermission(AppPermission.microphone);
+await PermissionService.instance.requestPermission(AppPermission.photos);
+
+// ✅ GOOD - Use permission group
+await PermissionService.instance.requestGroup(
+  PermissionGroups.media,
+);
+```
+
+## Platform-Specific Notes
+
+### iOS
+
+- **Provisional Notifications**: iOS can grant provisional notification permissions
+- **Limited Photo Access**: iOS 14+ can grant limited photo library access
+- **Location Always**: Requires two-step permission flow
+- **Info.plist**: Add usage descriptions for all permissions
+
+### Android
+
+- **Runtime Permissions**: Android 6+ requires runtime permission requests
+- **shouldShowRationale**: Android provides API to check if rationale should be shown
+- **Storage Changes**: Android 10+ uses Scoped Storage
+- **AndroidManifest.xml**: Declare all permissions needed
+
+## Testing
+
+```dart
+import 'package:flutter_test/flutter_test.dart';
+import 'package:app_permissions/app_permissions.dart';
+
+void main() {
+  setUpAll(() async {
+    await PermissionService.instance.initialize();
+  });
+
+  tearDown(() async {
+    await PermissionService.instance.resetPermissionStates();
+  });
+
+  test('check permission returns status', () async {
+    final status = await PermissionService.instance.checkPermission(
+      AppPermission.camera,
+    );
+    expect(status, isA<PermissionStatus>());
+  });
+
+  test('permission state is cached', () {
+    final state = PermissionService.instance.getPermissionState(
+      AppPermission.camera,
+    );
+    expect(state, isA<PermissionState>());
+  });
+}
+```
+
+## Troubleshooting
+
+### Permission Always Returns Denied
+
+1. Check platform-specific permission declarations (Info.plist / AndroidManifest.xml)
+2. Ensure permission is not restricted by device policy
+3. Check if permission was permanently denied previously
+
+### Permission Dialog Not Showing
+
+1. Ensure you're not requesting same permission repeatedly
+2. Check if permission was already granted
+3. Verify app has required permission declarations
+
+### Settings Dialog Not Opening
+
+1. Check app_settings package is properly installed
+2. Test on real device (not all simulators support opening settings)
+3. Verify platform-specific implementation exists
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Add tests for new features
+4. Submit a pull request
+
+## Support
+
+For issues and feature requests, please create an issue on the repository.

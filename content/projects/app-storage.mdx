@@ -1,0 +1,312 @@
+---
+title: "App Storage"
+description: A simple and secure local storage package with support for primitives, collections, and JSON serialization.
+category: "package"
+longDescription: A simple and secure local storage package with support for primitives, collections, and JSON serialization.
+image: "/images/projects/dart.png"
+tags: [flutter, shared_preferences, flutter_secure_storage, storage, key-value]
+technologies: [flutter, dart]
+platform: Flutter
+status: completed
+featured: false
+links:
+    website: https://pub.dev/packages/app_storage
+    github: https://github.com/mixin27/app_storage
+date: 2026-01-04
+---
+
+A simple and secure local storage package with support for primitives, collections, JSON serialization, and secure data storage.
+
+## Features
+
+- **Simple API** - Easy-to-use interface for all storage operations
+- **Type Safety** - Generic methods with compile-time type checking
+- **Multiple Data Types** - Support for primitives, lists, maps, and custom objects
+- **Secure Storage** - Encrypted storage for sensitive data (tokens, passwords)
+- **TTL Support** - Time-to-live for cached data
+- **Singleton Pattern** - Easy access from anywhere in your app
+- **Exception Handling** - Proper error handling with custom exceptions
+- **JSON Serialization** - Automatic serialization for complex types
+
+## Installation
+
+Add this to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  app_storage: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
+```
+
+## Quick Start
+
+### Initialize Storage
+
+```dart
+import 'package:app_storage/app_storage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize storage service
+  await StorageService.instance.init();
+
+  runApp(MyApp());
+}
+```
+
+### Basic Usage
+
+```dart
+final storage = StorageService.instance;
+
+// Save data
+await storage.save('user_id', '12345');
+await storage.save('age', 25);
+await storage.save('is_active', true);
+
+// Retrieve data
+final userId = await storage.get<String>('user_id');
+final age = await storage.get<int>('age');
+final isActive = await storage.get<bool>('is_active');
+
+// Delete data
+await storage.delete('user_id');
+
+// Clear all data
+await storage.clear();
+```
+
+## Supported Data Types
+
+### Primitives
+```dart
+await storage.save('name', 'John Doe');           // String
+await storage.save('age', 25);                    // int
+await storage.save('height', 5.9);                // double
+await storage.save('is_enrolled', true);          // bool
+```
+
+### Lists
+```dart
+await storage.save('subjects', ['Math', 'Science', 'English']);
+await storage.save('grades', [85, 92, 78, 95]);
+
+final subjects = await storage.get<List<String>>('subjects');
+final grades = await storage.get<List<int>>('grades');
+```
+
+### Maps (JSON)
+```dart
+await storage.save('user_data', {
+  'name': 'John Doe',
+  'email': 'john@example.com',
+  'role': 'student',
+  'enrolled': true,
+});
+
+final userData = await storage.get<Map<String, dynamic>>('user_data');
+```
+
+### Complex Objects
+```dart
+final student = {
+  'id': 'STU001',
+  'name': 'Alice Smith',
+  'grade': 10,
+  'subjects': ['Math', 'Physics', 'Chemistry'],
+  'scores': {
+    'Math': 95,
+    'Physics': 88,
+    'Chemistry': 92,
+  }
+};
+
+await storage.save('student_profile', student);
+final profile = await storage.get<Map<String, dynamic>>('student_profile');
+```
+
+## Secure Storage
+
+For sensitive data like authentication tokens, passwords, and API keys:
+
+```dart
+final secureStorage = SecureStorageService.instance;
+
+// Save sensitive data
+await secureStorage.save('auth_token', 'jwt_token_here');
+await secureStorage.save('api_key', 'sk_live_1234567890');
+await secureStorage.save('password', 'MySecureP@ssw0rd');
+
+// Retrieve sensitive data
+final authToken = await secureStorage.get<String>('auth_token');
+final apiKey = await secureStorage.get<String>('api_key');
+
+// All other methods work the same way
+await secureStorage.delete('auth_token');
+await secureStorage.clear();
+```
+
+## Time-To-Live (TTL)
+
+Cache data with automatic expiration:
+
+```dart
+// Save with 1 hour TTL (3600 seconds)
+await storage.save('session_data', sessionInfo, ttl: 3600);
+
+// Save with 5 minute TTL
+await storage.save('temp_token', token, ttl: 300);
+
+// Data automatically expires and returns null after TTL
+final data = await storage.get<String>('session_data'); // null after 1 hour
+```
+
+## Utility Methods
+
+### Check Key Existence
+```dart
+final exists = await storage.containsKey('user_id');
+if (exists) {
+  // Key exists
+}
+```
+
+### Get All Keys
+```dart
+final keys = await storage.getKeys();
+print('Stored keys: $keys');
+```
+
+### Get All Data
+```dart
+final allData = await storage.getAll();
+allData.forEach((key, value) {
+  print('$key: $value');
+});
+```
+
+## Exception Handling
+
+The package provides custom exceptions for better error handling:
+
+```dart
+try {
+  await storage.save('user_data', complexObject);
+} on SerializationException catch (e) {
+  print('Serialization failed: ${e.message}');
+} on TypeMismatchException catch (e) {
+  print('Type mismatch: expected ${e.expectedType}, got ${e.actualType}');
+} on StorageException catch (e) {
+  print('Storage error: ${e.message}');
+}
+```
+
+## Real-World Examples
+
+### User Authentication
+```dart
+class AuthService {
+  final secureStorage = SecureStorageService.instance;
+
+  Future<void> saveAuthData(String token, Map<String, dynamic> user) async {
+    await secureStorage.save('auth_token', token);
+    await secureStorage.save('user_data', user);
+  }
+
+  Future<bool> isAuthenticated() async {
+    return await secureStorage.containsKey('auth_token');
+  }
+
+  Future<void> logout() async {
+    await secureStorage.delete('auth_token');
+    await secureStorage.delete('user_data');
+  }
+}
+```
+
+### User Preferences
+```dart
+class PreferencesService {
+  final storage = StorageService.instance;
+
+  Future<void> saveTheme(String theme) async {
+    await storage.save('theme', theme);
+  }
+
+  Future<String> getTheme() async {
+    return await storage.get<String>('theme') ?? 'light';
+  }
+
+  Future<void> saveNotificationSettings(bool enabled) async {
+    await storage.save('notifications_enabled', enabled);
+  }
+}
+```
+
+### Caching API Responses
+```dart
+class ApiService {
+  final storage = StorageService.instance;
+
+  Future<List<dynamic>> getStudents({bool forceRefresh = false}) async {
+    if (!forceRefresh) {
+      final cached = await storage.get<List<dynamic>>('students_cache');
+      if (cached != null) return cached;
+    }
+
+    // Fetch from API
+    final students = await fetchFromApi();
+
+    // Cache for 1 hour
+    await storage.save('students_cache', students, ttl: 3600);
+
+    return students;
+  }
+}
+```
+
+## Platform Support
+
+- ✅ Android
+- ✅ iOS
+- ✅ Web
+- ✅ Windows
+- ✅ macOS
+- ✅ Linux
+
+**Note:** Secure storage encryption strength varies by platform. iOS and Android provide the strongest encryption using Keychain and Keystore respectively.
+
+## Under the Hood
+
+- **Regular Storage**: Uses `shared_preferences` package
+- **Secure Storage**: Uses `flutter_secure_storage` package with platform-specific encryption
+  - iOS: Keychain
+  - Android: EncryptedSharedPreferences
+  - Other platforms: Best available encryption
+
+## Best Practices
+
+1. **Always initialize** storage in `main()` before using
+2. **Use secure storage** for sensitive data (tokens, passwords, API keys)
+3. **Use TTL** for cached data to avoid stale information
+4. **Handle exceptions** properly in production code
+5. **Don't store large binary data** - use file storage instead
+6. **Use type parameters** for type safety: `get<String>()`, `get<int>()`
+
+## License
+
+MIT License - feel free to use in your projects
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
+## Support
+
+For issues, questions, or suggestions, please open an issue on GitHub.
