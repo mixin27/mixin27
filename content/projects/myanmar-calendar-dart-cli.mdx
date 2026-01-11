@@ -1,0 +1,67 @@
+---
+title: "Myanmar Calendar Dart CLI"
+description: Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
+category: "package"
+longDescription: Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
+image: "/images/projects/dart.png"
+tags: [dart, myanmar-calendar, burmese, myanmar, converter, tools, utility, cli-tool]
+technologies: [dart]
+platform: Dart
+status: completed
+featured: false
+links:
+    website: https://pub.dev/packages/myanmar_calendar_dart_cli
+    github: https://github.com/mixin27/myanmar_calendar_dart_cli
+date: 2026-01-09
+---
+
+import Image from 'next/image'
+
+Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
+
+## 📸 Screenshots
+
+| Feature | Preview | Details |
+|---------|---------|---------|
+| `mycal today` | <Image src="/images/projects/myanmar-calendar-dart-cli/today.png" alt="Today" width={200} height={150} /> | Today command |
+| `mycal calendar` | <Image src="/images/projects/myanmar-calendar-dart-cli/calendar.png" alt="Calendar" width={200} height={150} /> | Calendar command |
+
+## Getting Started 🚀
+
+If the CLI application is available on [pub](https://pub.dev/packages/myanmar_calendar_dart_cli), activate globally via:
+
+```sh
+dart pub global activate myanmar_calendar_dart_cli
+```
+
+Or locally via:
+
+```sh
+dart pub global activate --source=path <path to this package>
+```
+
+## Usage
+
+```sh
+# Calendar command
+$ mycal calendar
+
+# Calendar command option
+$ mycal calendar --western 1997-01-27
+
+# Show CLI version
+$ mycal --version
+
+# Show usage help
+$ mycal --help
+```
+
+### Available Options
+
+- `ai` - A command to generate AI prompts for horoscopes, fortune telling, or divination.
+- `astro` - A command to display detailed astrological information for a given date.
+- `calendar` - A command to display a monthly Myanmar calendar.
+- `convert` - A command to convert dates between Western and Myanmar calendars.
+- `holiday` - A command to list holidays for a specific date or month.
+- `today` - A command to display the current Myanmar and Western date.
+- `update` - A command which updates the CLI.
