@@ -1,0 +1,215 @@
+---
+title: "Myanmar Calendar WearOS"
+description: A complete WearOS application for displaying Myanmar calendar information with support for multiple languages.
+category: "mobile"
+longDescription: A complete WearOS application for displaying Myanmar calendar information with support for multiple languages.
+image: "/images/projects/myanmar-calendar/myanmar_calendar.png"
+tags: [burmese, calendar, myanmar-calendar, astrology, wearOS, smart-watch]
+technologies: [flutter, flutter_bloc, wearos]
+platform: Flutter
+status: completed
+featured: false
+links:
+    github: "https://github.com/mixin27/myanmar_calendar_wear"
+    website: "https://github.com/mixin27/myanmar_calendar_wear/releases/latest"
+    playStore: "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar"
+date: 2026-01-14
+---
+import Image from 'next/image'
+
+
+A complete WearOS application for displaying Myanmar calendar information with support for multiple languages.
+
+## Features
+
+- **Myanmar Calendar Display**: Shows Myanmar date, moon phase, and day of week
+- **Multi-language Support**: Myanmar, English, Shan, Karen, and Mon languages
+- **Astrology Information**: Displays yatyaza, pyathada, and other astrological data
+- **Public Holidays**: Shows Myanmar public holidays
+- **Sabbath Indicators**: Highlights Buddhist sabbath days
+- **WearOS Optimized**: Designed for both round and square watch faces
+- **Swipe Navigation**: Swipe left/right to navigate between days
+- **Today Quick Access**: Tap the "Today" button to jump to current date
+
+## 📸 Screenshots
+
+| Feature | Preview | Details |
+|---------|---------|---------|
+| Home | <Image src="/images/projects/myanmar-calendar/wear/home.png" alt="Home" width={200} height={150} /> | Home Page |
+| More | <Image src="/images/projects/myanmar-calendar/wear/home_more.png" alt="Cart" width={200} height={150} /> | More View |
+| Language | <Image src="/images/projects/myanmar-calendar/wear/language_settings.png" alt="Cart" width={200} height={150} /> | Language Settings |
+
+## Project Structure
+
+```
+lib/
+├── main.dart                           # App entry point
+├── app/
+│   └── app.dart                        # Main app widget
+├── features/
+│   ├── day_details/
+│   │   ├── bloc/
+│   │   │   ├── day_details_bloc.dart   # State management
+│   │   │   ├── day_details_event.dart  # Events
+│   │   │   └── day_details_state.dart  # States
+│   │   ├── models/
+│   │   │   └── day_details.dart        # Data model
+│   │   ├── view/
+│   │   │   └── day_details_screen.dart # Main screen
+│   │   └── widgets/
+│   │       ├── myanmar_date_card.dart
+│   │       ├── moon_phase_widget.dart
+│   │       ├── sabbath_indicator.dart
+│   │       ├── holiday_banner.dart
+│   │       ├── astrology_warnings.dart
+│   │       └── additional_info_widget.dart
+│   └── settings/
+│       └── view/
+│           └── language_settings_screen.dart
+└── shared/
+    ├── models/
+    │   └── language.dart               # Language enum
+    └── l10n/
+        └── app_strings.dart            # Localization strings
+```
+
+## Setup Instructions
+
+### Prerequisites
+
+1. Flutter SDK (3.0.0 or higher)
+2. Android Studio with WearOS emulator or physical WearOS device
+3. `very_good_cli` installed:
+   ```bash
+   dart pub global activate very_good_cli
+   ```
+
+### Installation
+
+1. **Create the project** (if starting fresh):
+   ```bash
+   very_good create flutter_app myanmar_calendar_wear
+   cd myanmar_calendar_wear
+   ```
+
+2. **Copy all the provided files** to their respective locations in the project structure
+
+3. **Get dependencies**:
+   ```bash
+   flutter pub get
+   ```
+
+4. **Run on WearOS device/emulator**:
+   ```bash
+   flutter run
+   ```
+
+## Building for Release
+
+### Generate release APK:
+```bash
+flutter build apk --release --target-platform android-arm,android-arm64
+```
+
+### Install on WearOS device:
+```bash
+adb -s <device_id> install build/app/outputs/flutter-apk/app-release.apk
+```
+
+## Dependencies
+
+The project uses the following key dependencies:
+
+- `myanmar_calendar_dart`: Core calendar calculations
+- `wear`: WearOS-specific features
+- `flutter_bloc`: State management
+- `equatable`: Value equality
+- `intl`: Internationalization
+
+## Usage
+
+### Navigation
+- **Swipe left**: Next day
+- **Swipe right**: Previous day
+- **Tap "Today"**: Jump to current date
+- **Tap language icon**: Change language
+
+### Supported Languages
+1. Myanmar (မြန်မာ)
+2. English
+3. Shan (ၽႃႇသႃႇ)
+4. Karen (စှီၤကျိၤ)
+5. Mon (ဘာသာမန်)
+
+## WearOS-Specific Features
+
+- Optimized for both **round** and **square** watch faces
+- **Ambient mode** support (low-power display)
+- **Scrollable content** for detailed information
+- **Touch gestures** for navigation
+- **Minimal UI** for glanceable information
+
+## Customization
+
+### Changing Default Language
+Edit `lib/app/app.dart`:
+```dart
+AppLanguage _currentLanguage = AppLanguage.english; // Change default
+```
+
+### Adjusting Layout for Different Screen Sizes
+Modify padding in `lib/features/day_details/view/day_details_screen.dart`:
+```dart
+padding: EdgeInsets.fromLTRB(
+  isRound ? 20 : 12,  // Adjust these values
+  isRound ? 24 : 12,
+  isRound ? 20 : 12,
+  isRound ? 24 : 12,
+)
+```
+
+### Adding New Widgets
+Create new widgets in `lib/features/day_details/widgets/` and add them to the screen's column.
+
+## Testing
+
+### Run tests:
+```bash
+flutter test
+```
+
+### Test on WearOS emulator:
+1. Open Android Studio
+2. Create a WearOS virtual device
+3. Run `flutter run` and select the WearOS device
+
+## Troubleshooting
+
+### Issue: App doesn't install on WearOS
+- Ensure `minSdkVersion` is set to 26 or higher in `android/app/build.gradle`
+- Check that WearOS feature is declared in `AndroidManifest.xml`
+
+### Issue: Myanmar text not displaying correctly
+- Ensure the device has Myanmar Unicode fonts installed
+- Consider embedding custom fonts in the app
+
+### Issue: Swipe gestures not working
+- Check that `GestureDetector` is properly wrapping the content
+- Ensure no conflicting gesture detectors in child widgets
+
+## Contributing
+
+Feel free to submit issues and enhancement requests!
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- Myanmar Calendar calculations by [myanmar_calendar_dart](https://pub.dev/packages/myanmar_calendar_dart)
+- Based on [Very Good Ventures WearOS Guide](https://www.verygood.ventures/blog/building-wear-os-apps-with-flutter-a-very-good-guide)
+
+## Contact
+
+For questions or support, please open an issue on GitHub.
