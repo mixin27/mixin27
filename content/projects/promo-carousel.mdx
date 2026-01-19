@@ -19,7 +19,7 @@ A flexible, production-ready Flutter package for creating beautiful promotional 
 
 <div className='flex items-center justify-center'>
 <BadgeGroup>
-  <Badge text="pub: v1.0.0" color="blue" href="https://pub.dartlang.org/packages/promo_carousel"/>
+  <Badge text="pub: v1.2.1" color="blue" href="https://pub.dartlang.org/packages/promo_carousel"/>
   <Badge text="License: MIT" color="green" />
   <Badge text="Platform: All" color="gray" />
 </BadgeGroup>
@@ -28,20 +28,37 @@ A flexible, production-ready Flutter package for creating beautiful promotional 
 
 ## ✨ Features
 
+### Core Features
 - 🎯 **Modal Overlay** - Beautiful dialog-style presentation with dimmed background
 - 📱 **Swipeable Carousel** - Smooth PageView-based navigation
-- 🎨 **Built-in Visual Types** - Images, animations, search bars, and more
+- 🎨 **Built-in Visual Types** - Images, animations, search bars, videos, and more
 - 🔧 **Custom Widget Injection** - Inject user-specific widgets without coupling
 - 💾 **Persistent State** - Tracks "show once" slides using SharedPreferences
 - 🌗 **Theme Support** - Automatically adapts to light and dark themes
-- 📊 **Page Indicators** - Shows current position (e.g., "3 / 12")
-- 🎬 **Configurable Actions** - Built-in support for navigation, feature opening, and more
-- ♿ **Accessibility Ready** - Semantic structure for screen readers
-- 🌍 **Localization Friendly** - No hard-coded strings
+
+### New in v1.2.0
+- 🎭 **Hero Animations** - Smooth transitions between the carousel and host app
+- 🔊 **Audio Feedback** - Global and per-slide sound effects
+- 🧊 **3D Transitions** - Cube and Flip 3D page transitions
+- 🗺️ **Geolocation Rules** - Filter slides by country and region
+- 🌐 **Internationalization** - Built-in support for 14 languages (EN, MY, ES, FR, DE, JA, ZH, KO, HI, AR, PT, RU, TH, VI)
+- 🖼️ **Enhanced Images** - Transparently handle local assets OR network images with caching
+
+## 📱 Platform Support
+
+| Feature | Android | iOS | Web | macOS | Windows | Linux |
+|---------|:---:|:---:|:---:|:---:|:---:|:---:|
+| Core Carousel | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Images (Local/Network) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Animations | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Video Support** | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **Audio Feedback** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+
 
 ## 📸 Preview
 
 <Image src="/images/projects/promo-carousel/demo.png" alt="Promo carousel widget demo" width={200} height={300} />
+
 
 ## 🚀 Getting Started
 
@@ -51,7 +68,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  promo_carousel: ^1.0.0
+  promo_carousel: ^1.2.0
 ```
 
 Then run:
@@ -106,10 +123,21 @@ PromoSlide(
   rules: PromoRules(                  // Display rules
     showOnce: true,
     minAppVersion: '1.2.0',
+    maxAppVersion: '2.0.0',
+    showAfterDate: DateTime(2025, 1, 1),
+    showBeforeDate: DateTime(2025, 12, 31),
+    userSegments: ['premium', 'beta'],
+    deviceTypes: [DeviceType.mobile],
+    countries: ['US', 'CA'],           // Geolocation: Countries
+    regions: ['California', 'NY'],      // Geolocation: Regions
   ),
+  audioAsset: 'assets/sounds/promo.mp3', // Slide-specific sound
+  heroTag: 'promo_hero_image',         // Hero animation tag
   customContentBuilder: (context) {   // Optional custom widget
     return YourCustomWidget();
   },
+  semanticLabel: 'Welcome screen',    // Accessibility
+  metadata: {'experiment_id': '001'}, // A/B testing
 )
 ```
 
@@ -121,6 +149,9 @@ Built-in visual types available:
 - `PromoVisualType.animation` - Show an animated visual
 - `PromoVisualType.searchBar` - Search bar animation
 - `PromoVisualType.featureHighlight` - Gradient highlight
+- `PromoVisualType.video` - Video player (requires video asset)
+  > [!IMPORTANT]
+  > Video support (`PromoVisualType.video`) is currently not available on **Windows** and **Linux** platforms due to `video_player` package limitations.
 - `PromoVisualType.custom` - Use with `customContentBuilder`
 
 ### Actions
@@ -130,7 +161,18 @@ Available CTA actions:
 - `PromoAction.navigate` - Navigate to a route
 - `PromoAction.openFeature` - Open a specific feature
 - `PromoAction.openPaywall` - Show paywall/upgrade screen
+- `PromoAction.next` - Move to next slide (Will complete if last slide)
 - `PromoAction.close` - Simply close the modal
+- `PromoAction.custom` - Custom action with callback
+
+### Transition Types
+
+- `TransitionType.slide` - Horizontal slide
+- `TransitionType.fade` - Cross-fade effect
+- `TransitionType.scale` - Scaling animation
+- `TransitionType.rotate` - Rotation effect
+- `TransitionType.cube` - **(v1.2)** 3D Cube transition
+- `TransitionType.flip3D` - **(v1.2)** 3D Flip transition
 
 ### Configuration
 
@@ -141,14 +183,58 @@ PromoCarousel.show(
   context: context,
   slides: slides,
   config: PromoCarouselConfig(
+    // Appearance
     borderRadius: 24.0,
     elevation: 8.0,
     barrierColor: Color(0x80000000),
+    backdropBlur: 10.0,
+    displayMode: DisplayMode.dialog,
+
+    // Behavior
     barrierDismissible: true,
     showCloseButton: true,
     showDontShowAgain: false,
+    showSkipButton: true,
+    enableSwipeGestures: true,
+    enableTapToAdvance: true,
+
+    // Auto-advance
+    autoAdvance: true,
+    autoAdvanceDuration: Duration(seconds: 5),
+    pauseOnInteraction: true,
+
+    // Audio Feedback (v1.2)
+    slideChangeSound: 'assets/sounds/page_turn.mp3',
+    ctaClickSound: 'assets/sounds/click.mp3',
+
+    // Hero Animations (v1.2)
+    enableHeroAnimations: true,
+
+    // Progress
+    showProgressBar: true,
+    progressBarPosition: ProgressPosition.top,
+
+    // Accessibility
+    enableHaptics: true,
+    hapticFeedbackType: HapticType.light,
+    respectReducedMotion: true,
   ),
 );
+```
+
+### Pre-built Configs
+
+Use factory constructors for common scenarios:
+
+```dart
+// Onboarding flow
+config: PromoCarouselConfig.onboarding()
+
+// Feature announcement
+config: PromoCarouselConfig.announcement()
+
+// Marketing promotion
+config: PromoCarouselConfig.marketing()
 ```
 
 ## 🎯 Advanced Usage
@@ -181,56 +267,211 @@ PromoSlide(
 )
 ```
 
-### Filtering and Rules
+### Analytics Tracking
 
-The package automatically filters slides based on rules:
+Track user interactions with comprehensive callbacks:
 
 ```dart
-// This will only show slides that haven't been seen (if showOnce: true)
 PromoCarousel.show(
   context: context,
   slides: slides,
-  respectRules: true,  // Default: true
+  analytics: PromoCarouselAnalytics(
+    onSlideViewed: (slideId, index) {
+      print('Viewed: $slideId at index $index');
+      analytics.logEvent('promo_slide_viewed', {'slide_id': slideId});
+    },
+    onSlideSkipped: (slideId, index) {
+      analytics.logEvent('promo_slide_skipped');
+    },
+    onCTAClicked: (slideId, action, target) {
+      analytics.logEvent('promo_cta_clicked', {
+        'slide_id': slideId,
+        'action': action.name,
+        'target': target,
+      });
+    },
+    onCarouselCompleted: (viewedSlides) {
+      analytics.logEvent('promo_completed', {
+        'slides_viewed': viewedSlides.length,
+      });
+    },
+    onCarouselDismissed: (lastIndex, viewedSlides) {
+      analytics.logEvent('promo_dismissed', {
+        'last_index': lastIndex,
+        'completion_rate': viewedSlides.length / slides.length,
+      });
+    },
+    onSkipAll: () {
+      analytics.logEvent('promo_skipped_all');
+    },
+  ),
+);
+```
+
+### Auto-Advance with Pause
+
+Automatically progress through slides:
+
+```dart
+PromoCarousel.show(
+  context: context,
+  slides: slides,
+  config: PromoCarouselConfig(
+    autoAdvance: true,
+    autoAdvanceDuration: Duration(seconds: 5),
+    pauseOnInteraction: true, // Pause when user interacts
+    showProgressBar: true,
+  ),
+);
+```
+
+### Display Modes
+
+Choose how to present the carousel:
+
+```dart
+// Dialog (default)
+PromoCarousel.show(context: context, slides: slides);
+
+// Bottom sheet
+PromoCarousel.showBottomSheet(context: context, slides: slides);
+
+// Fullscreen
+PromoCarousel.showFullscreen(context: context, slides: slides);
+```
+
+### Remote Config Integration
+
+Load slides from JSON:
+
+```dart
+// From your Firebase Remote Config, API, etc.
+final jsonData = await remoteConfig.getJson('promo_slides');
+
+// Parse to slides
+final slides = PromoCarousel.fromJson(jsonData);
+
+// Show carousel
+PromoCarousel.show(context: context, slides: slides);
+```
+
+### Conditional Display Rules
+
+Advanced filtering based on multiple criteria:
+
+```dart
+PromoSlide(
+  id: 'premium_offer',
+  title: 'Upgrade to Premium',
+  rules: PromoRules(
+    showOnce: true,
+    minAppVersion: '1.5.0',
+    maxAppVersion: '2.0.0',
+    showAfterDate: DateTime(2025, 1, 1),
+    showBeforeDate: DateTime(2025, 12, 31),
+    userSegments: ['free_tier', 'trial'],
+    deviceTypes: [DeviceType.mobile, DeviceType.tablet],
+    customCondition: () {
+      // Custom logic
+      return user.hasUsedAppForDays(7);
+    },
+  ),
+  // ...
+)
+```
+
+### Custom Page Indicators
+
+Replace the default page counter:
+
+```dart
+PromoCarousel.show(
+  context: context,
+  slides: slides,
+  config: PromoCarouselConfig(
+    indicatorBuilder: (context, currentPage, totalPages) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(totalPages, (index) {
+          return Container(
+            margin: EdgeInsets.symmetric(horizontal: 4),
+            width: index == currentPage ? 12 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: index == currentPage ? Colors.blue : Colors.grey,
+              borderRadius: BorderRadius.circular(4),
+            ),
+          );
+        }),
+      );
+    },
+  ),
+);
+```
+
+### Preview Mode
+
+Test all slides regardless of rules:
+
+```dart
+PromoCarousel.showPreview(
+  context: context,
+  slides: slides,
+  // Ignores showOnce, date ranges, version checks, etc.
 );
 ```
 
 ### Manual State Management
 
-Reset seen slides:
+Control slide visibility programmatically:
 
 ```dart
+// Check if slide was seen
+final seen = await PromoCarousel.hasSeenSlide('welcome');
+
 // Reset a specific slide
 await PromoCarousel.resetSlide('welcome');
 
+// Reset multiple slides
+await PromoCarousel.resetSlides(['slide1', 'slide2']);
+
 // Reset all slides
 await PromoCarousel.resetAll();
+
+// Get all seen slides
+final seenSlides = await PromoCarousel.getSeenSlides();
+
+// Export analytics
+final analytics = await PromoCarousel.exportAnalytics();
 ```
 
-### Handling Actions
+### Debug Mode
+
+Enable detailed logging during development:
 
 ```dart
-PromoCarousel.show(
-  context: context,
-  slides: slides,
-  onAction: (action, target) {
-    switch (action) {
-      case PromoAction.navigate:
-        Navigator.pushNamed(context, target!);
-        break;
-      case PromoAction.openFeature:
-        _openFeature(target);
-        break;
-      case PromoAction.openPaywall:
-        _showPaywall();
-        break;
-      default:
-        break;
-    }
-  },
-  onDismiss: () {
-    print('User dismissed carousel');
-  },
-);
+void main() {
+  PromoCarousel.debugMode = true;
+  runApp(MyApp());
+}
+```
+
+### Internationalization (v1.2)
+
+The package includes built-in localization. To enable it, add the delegates to your `MaterialApp`:
+
+```dart
+MaterialApp(
+  localizationsDelegates: [
+    PromoLocalizationsDelegate(),
+    GlobalMaterialLocalizations.delegate,
+    // ...
+  ],
+  supportedLocales: [
+    Locale('en'),
+    Locale('my'),
+  ],
+)
 ```
 
 ## 🎨 Theming
@@ -255,27 +496,37 @@ Perfect for:
 - ✅ **Contextual tips** - Show relevant guidance
 - ✅ **Marketing campaigns** - Promote offers and upgrades
 - ✅ **Product tours** - Guide users through features
+- ✅ **A/B testing** - Test different messaging with metadata tracking
+- ✅ **Seasonal campaigns** - Date-based promotions
 
 ## 🏗️ Architecture
 
 The package follows clean architecture principles:
 
-- **Models**: Data structures (PromoSlide, PromoCTA, PromoRules)
-- **Controllers**: State management (PromoCarouselController)
-- **Widgets**: Presentation layer (PromoCarouselModal, PromoSlideContent)
-- **Public API**: Simple entry point (PromoCarousel)
+```
+lib/
+├── models/
+│   ├── promo_slide.dart              # Core data models
+│   └── promo_carousel_config.dart    # Configuration classes
+├── controllers/
+│   └── promo_carousel_controller.dart # State management
+├── widgets/
+│   ├── promo_carousel_modal.dart     # Main modal widget
+│   └── promo_slide_content.dart      # Content renderer
+└── promo_carousel.dart               # Public API
+```
 
 ## 🚫 What This Package Does NOT Do
 
 To keep the package generic and reusable:
 
-- ❌ No Firebase or remote config integration
-- ❌ No analytics tracking
+- ❌ No Firebase or remote config integration (but provides JSON parsing)
+- ❌ No analytics tracking implementation (but provides callbacks)
 - ❌ No app-specific navigation logic
-- ❌ No user data models or JSON parsing
+- ❌ No user data models or assumptions
 - ❌ No network requests
 
-These features should be implemented in your app layer.
+These features should be implemented in your app layer using the provided callbacks and hooks.
 
 ## 🤝 Contributing
 
@@ -285,6 +536,10 @@ Contributions are welcome! Please read our contributing guidelines and submit pu
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## 📝 Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
+
 ## 🙏 Acknowledgments
 
 Built with ❤️ for the Flutter community.
@@ -293,3 +548,7 @@ Built with ❤️ for the Flutter community.
 
 - 📧 Email: kyawzayartun.contact@gmail.com
 - 🐛 Issues: [GitHub Issues](https://github.com/mixin27/promo_carousel/issues)
+
+---
+
+**Made with Flutter** 💙

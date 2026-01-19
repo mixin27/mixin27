@@ -126,7 +126,7 @@ export default function AboutPage() {
                                 beautiful, functional, and user-friendly applications.
                             </p>
                             <p className="text-muted-foreground">
-                                With over three years of experience in mobile development, I've
+                                With over four years of experience in mobile development, I've
                                 had the privilege of working on diverse projects, from startups
                                 to enterprise applications. My journey in tech has been driven
                                 by curiosity, continuous learning, and a commitment to
