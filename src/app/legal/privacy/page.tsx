@@ -9,7 +9,7 @@ export const metadata: Metadata = generateOGMetadata({
   url: '/legal/privacy',
 })
 
-const lastUpdated = '2024-10-15'
+const lastUpdated = '2026-01-26'
 
 export default function PrivacyPolicyPage() {
   return (
@@ -156,7 +156,7 @@ export default function PrivacyPolicyPage() {
               </ul>
               <p className="text-muted-foreground mt-4">
                 To exercise these rights, please contact us at
-                contact@kyawzayartun.com.
+                kyawzayartun.contact@gmail.com.
               </p>
             </section>
 
@@ -199,7 +199,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <ul className="list-none space-y-2 text-muted-foreground">
                 <li>
-                  <strong>Email:</strong> contact@kyawzayartun.com
+                  <strong>Email:</strong> kyawzayartun.contact@gmail.com
                 </li>
                 <li>
                   <strong>Website:</strong>{' '}

@@ -8,7 +8,7 @@ export const metadata: Metadata = generateOGMetadata({
   url: '/legal/cookie-policy',
 })
 
-const lastUpdated = '2025-10-16'
+const lastUpdated = '2026-01-26'
 
 export default function CookiePolicyPage() {
   return (
@@ -231,7 +231,7 @@ export default function CookiePolicyPage() {
               </p>
               <ul className="list-none space-y-2 text-muted-foreground">
                 <li>
-                  <strong>Email:</strong> contact@kyawzayartun.com
+                  <strong>Email:</strong> kyawzayartun.contact@gmail.com
                 </li>
                 <li>
                   <strong>Website:</strong>{' '}

@@ -8,7 +8,7 @@ export const metadata: Metadata = generateOGMetadata({
   url: '/legal/terms',
 })
 
-const lastUpdated = '2024-10-15'
+const lastUpdated = '2026-01-26'
 
 export default function TermsPage() {
   return (
@@ -153,7 +153,7 @@ export default function TermsPage() {
               </p>
               <ul className="list-none space-y-2 text-muted-foreground">
                 <li>
-                  <strong>Email:</strong> contact@kyawzayartun.com
+                  <strong>Email:</strong> kyawzayartun.contact@gmail.com
                 </li>
                 <li>
                   <strong>Website:</strong>{' '}
