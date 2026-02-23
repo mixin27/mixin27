@@ -1,92 +1,110 @@
 {
-    "apps": [
-        {
-            "id": "myanmar-calendar",
-            "name": "Myanmar Calendar",
-            "description": "A comprehensive Myanmar Calendar application with astrological information, date conversion, and beautiful UI",
-            "icon": "/images/projects/myanmar-calendar/myanmar_calendar.png",
-            "category": "productivity",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
-                "github": "https://github.com/mixin27/mmcalendar"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-11-04",
-                "version": "2.1"
-            },
-            "status": "active",
-            "releaseDate": "2024-08-15"
-        },
-        {
-            "id": "yoyo-chatt",
-            "name": "Yoyo Chatt",
-            "description": "An innovative chat application developed using Flutter and Firebase",
-            "icon": "/images/projects/yoyo-chatt/logo.png",
-            "category": "social",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.norm.yoyo_chatt",
-                "github": "https://github.com/mixin27/yoyo_chatt"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2024-08-05"
-        },
-        {
-            "id": "beads-math",
-            "name": "Beads Math",
-            "description": "Mobile application to improve maths calculation skills",
-            "icon": "/images/projects/beads-math/logo.png",
-            "category": "productivity",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=tech.kbw.beads_math"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2024-02-01"
-        },
-        {
-            "id": "billion-sport-live",
-            "name": "Billion Sport Live",
-            "description": "Sport live stream mobile application",
-            "icon": "/images/projects/billion-sport-live/logo.png",
-            "category": "other",
-            "platform": "android",
-            "storeLinks": {
-                "github": "https://github.com/mixin27/vs-live-flutter"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "2.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2024-11-07"
-        },
-        {
-            "id": "maun-news",
-            "name": "Maun News",
-            "description": "Maun News is a news app that provides news from various sources in Myanmar",
-            "icon": "/images/projects/maun-news/logo.png",
-            "category": "other",
-            "platform": "android",
-            "storeLinks": {
-                "playStore": "https://play.google.com/store/apps/details?id=com.maun.news_mobile"
-            },
-            "privacyPolicy": {
-                "lastUpdated": "2025-10-15",
-                "version": "1.0.0"
-            },
-            "status": "active",
-            "releaseDate": "2024-11-20"
-        }
-    ],
-    "lastUpdated": "2025-10-15T00:00:00Z"
+  "apps": [
+    {
+      "id": "collectra",
+      "name": "Collectra - Collection Tracker and Value Manager",
+      "description": "Collectra helps you catalog collections, track value, manage tags and loans, and keep backups with export/import.",
+      "icon": "/images/projects/collectra/logo.png",
+      "category": "productivity",
+      "platform": "flutter",
+      "storeLinks": {
+        "playStore": "https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker",
+        "github": "https://github.com/mixin27/collection_tracker"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2026-02-23",
+        "version": "1.0"
+      },
+      "status": "active",
+      "releaseDate": "2026-02-23"
+    },
+    {
+      "id": "myanmar-calendar",
+      "name": "Myanmar Calendar",
+      "description": "A comprehensive Myanmar Calendar application with astrological information, date conversion, and beautiful UI",
+      "icon": "/images/projects/myanmar-calendar/myanmar_calendar.png",
+      "category": "productivity",
+      "platform": "android",
+      "storeLinks": {
+        "playStore": "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
+        "github": "https://github.com/mixin27/mmcalendar"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2025-11-04",
+        "version": "2.1"
+      },
+      "status": "active",
+      "releaseDate": "2024-08-15"
+    },
+    {
+      "id": "yoyo-chatt",
+      "name": "Yoyo Chatt",
+      "description": "An innovative chat application developed using Flutter and Firebase",
+      "icon": "/images/projects/yoyo-chatt/logo.png",
+      "category": "social",
+      "platform": "android",
+      "storeLinks": {
+        "playStore": "https://play.google.com/store/apps/details?id=com.norm.yoyo_chatt",
+        "github": "https://github.com/mixin27/yoyo_chatt"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2025-10-15",
+        "version": "2.0.0"
+      },
+      "status": "active",
+      "releaseDate": "2024-08-05"
+    },
+    {
+      "id": "beads-math",
+      "name": "Beads Math",
+      "description": "Mobile application to improve maths calculation skills",
+      "icon": "/images/projects/beads-math/logo.png",
+      "category": "productivity",
+      "platform": "android",
+      "storeLinks": {
+        "playStore": "https://play.google.com/store/apps/details?id=tech.kbw.beads_math"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2025-10-15",
+        "version": "2.0.0"
+      },
+      "status": "active",
+      "releaseDate": "2024-02-01"
+    },
+    {
+      "id": "billion-sport-live",
+      "name": "Billion Sport Live",
+      "description": "Sport live stream mobile application",
+      "icon": "/images/projects/billion-sport-live/logo.png",
+      "category": "other",
+      "platform": "android",
+      "storeLinks": {
+        "github": "https://github.com/mixin27/vs-live-flutter"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2025-10-15",
+        "version": "2.0.0"
+      },
+      "status": "active",
+      "releaseDate": "2024-11-07"
+    },
+    {
+      "id": "maun-news",
+      "name": "Maun News",
+      "description": "Maun News is a news app that provides news from various sources in Myanmar",
+      "icon": "/images/projects/maun-news/logo.png",
+      "category": "other",
+      "platform": "android",
+      "storeLinks": {
+        "playStore": "https://play.google.com/store/apps/details?id=com.maun.news_mobile"
+      },
+      "privacyPolicy": {
+        "lastUpdated": "2025-10-15",
+        "version": "1.0.0"
+      },
+      "status": "active",
+      "releaseDate": "2024-11-20"
+    }
+  ],
+  "lastUpdated": "2025-10-15T00:00:00Z"
 }
