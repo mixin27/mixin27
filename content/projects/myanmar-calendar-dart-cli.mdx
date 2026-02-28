@@ -1,8 +1,8 @@
 ---
 title: "Myanmar Calendar Dart CLI"
-description: Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
+description: Myanmar calendar utility CLI powered by myanmar_calendar_dart.
 category: "package"
-longDescription: Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
+longDescription: Myanmar calendar utility CLI powered by myanmar_calendar_dart.
 image: "/images/projects/dart.png"
 tags: [dart, myanmar-calendar, burmese, myanmar, converter, tools, utility, cli-tool]
 technologies: [dart]
@@ -15,53 +15,83 @@ links:
 date: 2026-01-09
 ---
 
-import Image from 'next/image'
+Myanmar calendar utility CLI built on [`myanmar_calendar_dart`](https://pub.dev/packages/myanmar_calendar_dart) `2.x`.
 
-Myanmar calendar Dart CLI package supporting ai prompt, convert and date information tools.
-
-## 📸 Screenshots
-
-| Feature | Preview | Details |
-|---------|---------|---------|
-| `mycal today` | <Image src="/images/projects/myanmar-calendar-dart-cli/today.png" alt="Today" width={200} height={150} /> | Today command |
-| `mycal calendar` | <Image src="/images/projects/myanmar-calendar-dart-cli/calendar.png" alt="Calendar" width={200} height={150} /> | Calendar command |
-
-## Getting Started 🚀
-
-If the CLI application is available on [pub](https://pub.dev/packages/myanmar_calendar_dart_cli), activate globally via:
+## Install
 
 ```sh
 dart pub global activate myanmar_calendar_dart_cli
 ```
 
-Or locally via:
+Run with:
 
 ```sh
-dart pub global activate --source=path <path to this package>
+mycal --help
 ```
 
-## Usage
+## Global options
+
+```text
+-l, --language           Output language (en, my, zawgyi, mon, shan, karen)
+-z, --timezone           Timezone offset (default: 6.5)
+    --calendar-type      0=British, 1=Gregorian, 2=Julian
+    --sasana-year-type   0, 1, or 2
+    --json               Print JSON output
+-v, --version            Print CLI version
+```
+
+## Commands
+
+- `today` - show today's Western/Myanmar/Shan date with holidays
+- `convert` - convert between Western and Myanmar dates
+- `info` - full details for one date (astro + holidays + chronicle)
+- `calendar` - render Myanmar month grid, or full Western month grid with `--western-month`
+- `holidays` - list holidays for a date or a whole Western month
+- `astro` - astrological breakdown for one date
+- `ai` - generate an AI prompt from date astrology data
+- `validate` - validate Myanmar date input
+- `year-info` - inspect metadata for a Myanmar year
+- `diagnostics` - package/runtime diagnostics and cache stats
+
+## Examples
 
 ```sh
-# Calendar command
-$ mycal calendar
+# Today
+mycal today
 
-# Calendar command option
-$ mycal calendar --western 1997-01-27
+# Convert Western -> Myanmar
+mycal convert --western 2026-02-28
 
-# Show CLI version
-$ mycal --version
+# Convert Myanmar -> Western
+mycal convert --myanmar 1387-11-11
 
-# Show usage help
-$ mycal --help
+# Detailed info for a date
+mycal info --western 2026-02-28
+
+# Monthly Myanmar calendar
+mycal calendar --year 1387 --month 11
+
+# Myanmar month grid using fortnight day values
+mycal calendar --year 1388 --month 0 --fortnight-day
+
+# Full Gregorian month grid
+mycal calendar --western-month 2026-07
+
+# Holidays in a Western month
+mycal holidays --month 2026-04
+
+# Astrology
+mycal astro --myanmar 1387-11-11
+
+# AI prompt
+mycal ai --western 2026-02-28 --type horoscope
+
+# Validate Myanmar date
+mycal validate --myanmar 1387-11-11
+
+# Year metadata
+mycal year-info --year 1387
+
+# JSON output with language override
+mycal --language my --json info --western 2026-02-28
 ```
-
-### Available Options
-
-- `ai` - A command to generate AI prompts for horoscopes, fortune telling, or divination.
-- `astro` - A command to display detailed astrological information for a given date.
-- `calendar` - A command to display a monthly Myanmar calendar.
-- `convert` - A command to convert dates between Western and Myanmar calendars.
-- `holiday` - A command to list holidays for a specific date or month.
-- `today` - A command to display the current Myanmar and Western date.
-- `update` - A command which updates the CLI.
