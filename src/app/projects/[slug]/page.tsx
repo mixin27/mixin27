@@ -1,7 +1,7 @@
-import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
+import { notFound } from "next/navigation"
+import { Metadata } from "next"
+import Link from "next/link"
+import Image from "next/image"
 import {
   ArrowLeft,
   ExternalLink,
@@ -10,15 +10,15 @@ import {
   Calendar,
   Users,
   Clock,
-} from 'lucide-react'
+} from "lucide-react"
 import {
   getProjectBySlug,
   getCompiledProject,
   getSortedProjects,
   getRelatedProjects,
-} from '@/lib/projects'
-import { formatDate } from '@/lib/utils'
-import { generateOGMetadata } from '@/lib/og'
+} from "@/lib/projects"
+import { formatDate } from "@/lib/utils"
+import { generateOGMetadata } from "@/lib/og"
 
 interface PageProps {
   params: Promise<{
@@ -43,7 +43,7 @@ export async function generateMetadata({
 
   if (!project) {
     return {
-      title: 'Project Not Found',
+      title: "Project Not Found",
     }
   }
 
@@ -68,7 +68,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
         <div className="container py-4">
           <Link
             href="/projects"
@@ -104,7 +104,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
 
             {/* Project Image */}
             <div className="aspect-video rounded-lg overflow-hidden mb-8 bg-muted">
-              <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+              <div className="w-full h-full bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <div className="text-6xl font-bold text-primary/10">
                   {/* {projectData.title.charAt(0)} */}
                   <Image
@@ -191,16 +191,16 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                     <p className="text-sm text-muted-foreground mb-1">Status</p>
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
-                        projectData.status === 'completed'
-                          ? 'bg-green-500/10 text-green-600 dark:text-green-400'
-                          : projectData.status === 'in-progress'
-                            ? 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400'
-                            : 'bg-gray-500/10 text-gray-600 dark:text-gray-400'
+                        projectData.status === "completed"
+                          ? "bg-green-500/10 text-green-600 dark:text-green-400"
+                          : projectData.status === "in-progress"
+                            ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                            : "bg-gray-500/10 text-gray-600 dark:text-gray-400"
                       }`}
                     >
                       <span className="size-1.5 rounded-full bg-current" />
                       {projectData.status.charAt(0).toUpperCase() +
-                        projectData.status.slice(1).replace('-', ' ')}
+                        projectData.status.slice(1).replace("-", " ")}
                     </span>
                   </div>
 
@@ -381,7 +381,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                   href={`/projects/${project.slug}`}
                   className="group rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-all"
                 >
-                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                  <div className="aspect-video bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                     <div className="text-4xl font-bold text-primary/10">
                       {/* {project.title.charAt(0)} */}
                       <Image

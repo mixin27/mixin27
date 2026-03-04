@@ -1,17 +1,17 @@
-import { notFound } from 'next/navigation'
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react'
+import { notFound } from "next/navigation"
+import { Metadata } from "next"
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react"
 import {
   getBlogPostBySlug,
   getCompiledBlogPost,
   getSortedBlogPosts,
   getRelatedBlogPosts,
-} from '@/lib/blog'
-import { formatDate } from '@/lib/utils'
-import { ShareButton } from '@/components/share-button'
-import { generateOGMetadata } from '@/lib/og'
+} from "@/lib/blog"
+import { formatDate } from "@/lib/utils"
+import { ShareButton } from "@/components/share-button"
+import { generateOGMetadata } from "@/lib/og"
 
 interface PageProps {
   params: Promise<{
@@ -36,7 +36,7 @@ export async function generateMetadata({
 
   if (!post) {
     return {
-      title: 'Post Not Found',
+      title: "Post Not Found",
     }
   }
 
@@ -61,7 +61,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-50">
         <div className="container py-4">
           <Link
             href="/blog"
@@ -178,7 +178,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                 <h3 className="font-semibold mb-1">About {post.author.name}</h3>
                 <p className="text-sm text-muted-foreground mb-3">
                   {post.author.bio ||
-                    'Passionate mobile developer sharing insights and tutorials.'}
+                    "Passionate mobile developer sharing insights and tutorials."}
                 </p>
                 {post.author.social && (
                   <div className="flex gap-3">
@@ -230,7 +230,7 @@ export default async function BlogPostPage({ params }: PageProps) {
                   href={`/blog/${post.slug}`}
                   className="group rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-all"
                 >
-                  <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                  <div className="aspect-video bg-linear-to-br from-primary/10 to-primary/5 flex items-center justify-center">
                     <div className="text-4xl font-bold text-primary/10">
                       {!post.coverImage && post.title.charAt(0)}
                       {post.coverImage && (

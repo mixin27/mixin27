@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link"
 import {
   ArrowRight,
   Code,
@@ -8,8 +8,8 @@ import {
   Linkedin,
   Mail,
   Twitter,
-} from 'lucide-react'
-import { SITE_CONFIG, SOCIAL_LINKS } from '@/lib/constants'
+} from "lucide-react"
+import { SITE_CONFIG, SOCIAL_LINKS } from "@/lib/constants"
 
 const iconMap: { [key: string]: any } = {
   github: Github,
@@ -24,13 +24,13 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Animated Background */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-primary/5 via-background to-background" />
+        <div className="absolute inset-0 -z-10 bg-linear-to-b from-primary/5 via-background to-background" />
         <div
           className="absolute inset-0 -z-10 opacity-[0.02]"
           style={{
             backgroundImage:
-              'radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)',
-            backgroundSize: '40px 40px',
+              "radial-gradient(circle at 1px 1px, hsl(var(--foreground)) 1px, transparent 0)",
+            backgroundSize: "40px 40px",
           }}
         />
 
@@ -45,15 +45,15 @@ export default function HomePage() {
 
               {/* Main Heading */}
               <h1 className="animate-fade-in-up animation-delay-100 text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-                Hello, I'm{' '}
+                Hello, I'm{" "}
                 <span className="text-primary">{SITE_CONFIG.author}</span>
               </h1>
 
               <p className="animate-fade-in-up animation-delay-200 text-xl md:text-2xl text-muted-foreground mb-8">
-                A passionate{' '}
+                A passionate{" "}
                 <span className="font-semibold text-foreground">
                   mobile developer
-                </span>{' '}
+                </span>{" "}
                 dedicated to creating seamless, user-friendly applications that
                 bring ideas to life.
               </p>
@@ -84,11 +84,11 @@ export default function HomePage() {
                       key={social.name}
                       href={social.url}
                       target={
-                        social.url.startsWith('http') ? '_blank' : undefined
+                        social.url.startsWith("http") ? "_blank" : undefined
                       }
                       rel={
-                        social.url.startsWith('http')
-                          ? 'noopener noreferrer'
+                        social.url.startsWith("http")
+                          ? "noopener noreferrer"
                           : undefined
                       }
                       className="rounded-md p-2 hover:bg-accent transition-colors"
@@ -107,7 +107,7 @@ export default function HomePage() {
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
           <div
             className="size-6 rounded-full border-2 flex items-center justify-center"
-            style={{ borderColor: 'hsl(var(--primary) / 0.5)' }}
+            style={{ borderColor: "hsl(var(--primary) / 0.5)" }}
           >
             <div className="size-2 rounded-full bg-primary" />
           </div>
@@ -170,7 +170,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="border-t">
         <div className="container py-16 md:py-24">
-          <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-background border p-8 md:p-12 text-center">
+          <div className="rounded-2xl bg-linear-to-br from-primary/10 via-primary/5 to-background border p-8 md:p-12 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Let's Build Something Amazing
             </h2>

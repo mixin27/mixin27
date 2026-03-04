@@ -30,7 +30,7 @@ export default function AppsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
+      <section className="border-b bg-linear-to-b from-background to-muted/20">
         <div className="container py-16 md:py-24">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm text-primary mb-4">

@@ -1,19 +1,19 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import Image from 'next/image'
-import { Calendar, Clock, ArrowRight, Rss } from 'lucide-react'
-import { generateMetadata as genMeta, formatDate } from '@/lib/utils'
+import { Metadata } from "next"
+import Link from "next/link"
+import Image from "next/image"
+import { Calendar, Clock, ArrowRight, Rss } from "lucide-react"
+import { generateMetadata as genMeta, formatDate } from "@/lib/utils"
 import {
   getSortedBlogPosts,
   getFeaturedBlogPosts,
   getAllBlogCategories,
-} from '@/lib/blog'
+} from "@/lib/blog"
 
 export const metadata: Metadata = genMeta({
-  title: 'Blog',
+  title: "Blog",
   description:
-    'Articles and tutorials about mobile development, best practices, and my learnings.',
-  url: '/blog',
+    "Articles and tutorials about mobile development, best practices, and my learnings.",
+  url: "/blog",
 })
 
 export default async function BlogPage() {
@@ -26,7 +26,7 @@ export default async function BlogPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
+      <section className="border-b bg-linear-to-b from-background to-muted/20">
         <div className="container py-16 md:py-24">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
@@ -81,7 +81,7 @@ export default async function BlogPage() {
                 className="group rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-all"
               >
                 {/* Featured Image Placeholder */}
-                <div className="aspect-[2/1] bg-gradient-to-br from-primary/20 to-primary/5 relative overflow-hidden">
+                <div className="aspect-2/1 bg-linear-to-br from-primary/20 to-primary/5 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-6xl font-bold text-primary/10">
                       {post.coverImage && (
@@ -172,7 +172,7 @@ export default async function BlogPage() {
                 className="group rounded-lg border bg-card overflow-hidden hover:shadow-lg transition-all"
               >
                 {/* Post Image Placeholder */}
-                <div className="aspect-video bg-gradient-to-br from-primary/10 to-primary/5 relative overflow-hidden">
+                <div className="aspect-video bg-linear-to-br from-primary/10 to-primary/5 relative overflow-hidden">
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-5xl font-bold text-primary/10">
                       {post.coverImage && (

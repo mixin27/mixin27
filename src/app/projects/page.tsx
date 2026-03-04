@@ -21,7 +21,7 @@ export default async function ProjectsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="border-b bg-gradient-to-b from-background to-muted/20">
+      <section className="border-b bg-linear-to-b from-background to-muted/20">
         <div className="container py-16 md:py-24">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4">
@@ -67,7 +67,7 @@ export default async function ProjectsPage() {
               >
                 {/* Project Image */}
                 <div className="aspect-video bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                     {!project.image && (
                       <Smartphone className="size-16 text-primary/40" />
                     )}
@@ -168,7 +168,7 @@ export default async function ProjectsPage() {
                 >
                   {/* Project Image */}
                   <div className="aspect-video bg-muted relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                       {!project.image && (
                         <Smartphone className="size-16 text-primary/40" />
                       )}

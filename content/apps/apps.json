@@ -21,8 +21,8 @@
     {
       "id": "myanmar-calendar",
       "name": "Myanmar Calendar",
-      "description": "A comprehensive Myanmar Calendar application with astrological information, date conversion, and beautiful UI",
-      "icon": "/images/projects/myanmar-calendar/myanmar_calendar.png",
+      "description": "A modern Myanmar calendar app with calendar views, astrology, events, conversion tools, and printable calendar generation.",
+      "icon": "/images/projects/myanmar-calendar/logo.png",
       "category": "productivity",
       "platform": "android",
       "storeLinks": {
