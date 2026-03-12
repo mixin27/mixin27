@@ -15,8 +15,7 @@ import {
     convertInvoiceToReceipt,
     canConvertInvoiceToReceipt,
 } from "@/lib/document-conversions"
-import jsPDF from "jspdf"
-import html2canvas from "html2canvas-pro"
+import { exportElementToPdf } from "@/lib/pdf-export"
 import { InvoicePreview } from "@/components/tools/InvoicePreview"
 
 export default function InvoiceViewPage() {
@@ -111,24 +110,10 @@ export default function InvoiceViewPage() {
         setIsGenerating(true)
 
         try {
-            const canvas = await html2canvas(invoiceRef.current, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-            })
-
-            const imgData = canvas.toDataURL("image/png")
-            const pdf = new jsPDF({
-                orientation: "portrait",
-                unit: "mm",
-                format: "a4",
-            })
-
-            const imgWidth = 210
-            const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-            pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
-            pdf.save(`${invoice?.invoiceNumber}.pdf`)
+            await exportElementToPdf(
+                invoiceRef.current,
+                `${invoice?.invoiceNumber}.pdf`,
+            )
         } catch (error) {
             console.error("Error generating PDF:", error)
             alert("Failed to generate PDF. Please try again.")

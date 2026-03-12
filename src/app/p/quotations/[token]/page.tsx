@@ -5,8 +5,7 @@ import { useParams } from "next/navigation"
 import { Quotation, InvoiceSettings } from "@/types/invoice"
 import { QuotationPreview } from "@/components/tools/QuotationPreview"
 import { Download, Printer } from "lucide-react"
-import jsPDF from "jspdf"
-import html2canvas from "html2canvas-pro"
+import { exportElementToPdf } from "@/lib/pdf-export"
 
 export default function PublicQuotationPage() {
     const params = useParams()
@@ -49,24 +48,10 @@ export default function PublicQuotationPage() {
         setIsGenerating(true)
 
         try {
-            const canvas = await html2canvas(quotationRef.current, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-            })
-
-            const imgData = canvas.toDataURL("image/png")
-            const pdf = new jsPDF({
-                orientation: "portrait",
-                unit: "mm",
-                format: "a4",
-            })
-
-            const imgWidth = 210
-            const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-            pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
-            pdf.save(`${quotation?.invoiceNumber}.pdf`)
+            await exportElementToPdf(
+                quotationRef.current,
+                `${quotation?.invoiceNumber}.pdf`,
+            )
         } catch (error) {
             console.error("Error generating PDF:", error)
             alert("Failed to generate PDF. Please try again.")

@@ -10,8 +10,7 @@ import {
 } from "@/lib/storage/tools-storage"
 import { TimeEntry, Client } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
-import jsPDF from "jspdf"
-import html2canvas from "html2canvas-pro"
+import { exportElementToPdf } from "@/lib/pdf-export"
 
 type ViewType = "week" | "month" | "client" | "project"
 
@@ -189,42 +188,8 @@ export default function TimesheetReportsPage() {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 100))
-
-      const canvas = await html2canvas(reportRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        windowWidth: reportRef.current.scrollWidth,
-        windowHeight: reportRef.current.scrollHeight,
-      })
-
-      const imgData = canvas.toDataURL("image/png")
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      })
-
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = pdf.internal.pageSize.getHeight()
-      const imgWidth = canvas.width
-      const imgHeight = canvas.height
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
-      const imgX = (pdfWidth - imgWidth * ratio) / 2
-      const imgY = 0
-
-      pdf.addImage(
-        imgData,
-        "PNG",
-        imgX,
-        imgY,
-        imgWidth * ratio,
-        imgHeight * ratio,
-      )
-
       const filename = `Timesheet_${viewType}_${currentDate.toISOString().split("T")[0]}.pdf`
-      pdf.save(filename)
+      await exportElementToPdf(reportRef.current, filename)
     } catch (error) {
       console.error("Error generating PDF:", error)
       alert("Failed to generate PDF. Please try again.")
