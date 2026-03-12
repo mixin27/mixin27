@@ -9,6 +9,29 @@ interface QuotationPreviewProps {
 }
 
 export function QuotationPreview({ quotation, settings }: QuotationPreviewProps) {
+    const isCalculatorQuote = () => {
+        const note = quotation.notes?.toLowerCase() ?? ""
+        if (note.includes("generated from pricing calculator")) return true
+        const prefixes = ["Base:", "Feature:", "Add-on:"]
+        return quotation.items.some((item) =>
+            prefixes.some((prefix) => item.description.startsWith(prefix)),
+        )
+    }
+
+    const isCalculator = isCalculatorQuote()
+    const decimals = quotation.currency.toUpperCase() === "MMK" ? 0 : 2
+
+    const formatMoney = (value: number) =>
+        value.toLocaleString("en-US", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+        })
+
+    const formatQuantity = (value: number) => {
+        if (Number.isInteger(value)) return value.toString()
+        return value.toFixed(1)
+    }
+
     return (
         <div className="bg-white text-black p-8 md:p-12 rounded-lg shadow-lg print:shadow-none print:rounded-none">
             {/* Header */}
@@ -74,8 +97,12 @@ export function QuotationPreview({ quotation, settings }: QuotationPreviewProps)
                             <th className="text-left py-3 text-sm font-semibold">
                                 DESCRIPTION
                             </th>
-                            <th className="text-right py-3 text-sm font-semibold">QTY</th>
-                            <th className="text-right py-3 text-sm font-semibold">RATE</th>
+                            <th className="text-right py-3 text-sm font-semibold">
+                                {isCalculator ? "DAYS" : "QTY"}
+                            </th>
+                            <th className="text-right py-3 text-sm font-semibold">
+                                {isCalculator ? "DAY RATE" : "RATE"}
+                            </th>
                             <th className="text-right py-3 text-sm font-semibold">AMOUNT</th>
                         </tr>
                     </thead>
@@ -83,12 +110,16 @@ export function QuotationPreview({ quotation, settings }: QuotationPreviewProps)
                         {quotation.items.map((item) => (
                             <tr key={item.id} className="border-b border-gray-200">
                                 <td className="py-3 text-sm">{item.description}</td>
-                                <td className="text-right py-3 text-sm">{item.quantity}</td>
                                 <td className="text-right py-3 text-sm">
-                                    {quotation.currency} {item.rate.toFixed(2)}
+                                    {isCalculator
+                                        ? formatQuantity(item.quantity)
+                                        : item.quantity}
                                 </td>
                                 <td className="text-right py-3 text-sm">
-                                    {quotation.currency} {item.amount.toFixed(2)}
+                                    {quotation.currency} {formatMoney(item.rate)}
+                                </td>
+                                <td className="text-right py-3 text-sm">
+                                    {quotation.currency} {formatMoney(item.amount)}
                                 </td>
                             </tr>
                         ))}
@@ -102,7 +133,7 @@ export function QuotationPreview({ quotation, settings }: QuotationPreviewProps)
                     <div className="flex justify-between py-2 text-sm">
                         <span className="text-gray-600">Subtotal:</span>
                         <span>
-                            {quotation.currency} {quotation.subtotal.toFixed(2)}
+                            {quotation.currency} {formatMoney(quotation.subtotal)}
                         </span>
                     </div>
                     {quotation.discount > 0 && (
@@ -117,8 +148,11 @@ export function QuotationPreview({ quotation, settings }: QuotationPreviewProps)
                             <span>
                                 -{quotation.currency}{" "}
                                 {quotation.discountType === "percentage"
-                                    ? (quotation.subtotal * (quotation.discount / 100)).toFixed(2)
-                                    : quotation.discount.toFixed(2)}
+                                    ? formatMoney(
+                                          quotation.subtotal *
+                                              (quotation.discount / 100),
+                                      )
+                                    : formatMoney(quotation.discount)}
                             </span>
                         </div>
                     )}
@@ -126,14 +160,14 @@ export function QuotationPreview({ quotation, settings }: QuotationPreviewProps)
                         <div className="flex justify-between py-2 text-sm">
                             <span className="text-gray-600">Tax ({quotation.taxRate}%):</span>
                             <span>
-                                {quotation.currency} {quotation.taxAmount.toFixed(2)}
+                                {quotation.currency} {formatMoney(quotation.taxAmount)}
                             </span>
                         </div>
                     )}
                     <div className="flex justify-between py-3 text-lg font-bold border-t-2 border-gray-300">
                         <span>Total:</span>
                         <span>
-                            {quotation.currency} {quotation.total.toFixed(2)}
+                            {quotation.currency} {formatMoney(quotation.total)}
                         </span>
                     </div>
                 </div>

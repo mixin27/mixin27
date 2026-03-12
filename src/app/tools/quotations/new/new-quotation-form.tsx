@@ -13,12 +13,17 @@ import {
     incrementInvoiceNumber,
     getClientById,
 } from "@/lib/storage/tools-storage"
+import {
+    getQuotationDraft,
+    deleteQuotationDraft,
+} from "@/lib/storage/quotation-drafts"
 import { Client, InvoiceItem, Quotation } from "@/types/invoice"
 
 export default function NewQuotationForm() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const preSelectedClientId = searchParams.get("clientId")
+    const draftId = searchParams.get("draftId")
 
     const [clients, setClients] = useState<Client[]>([])
     const [selectedClientId, setSelectedClientId] = useState<string>("")
@@ -49,6 +54,8 @@ export default function NewQuotationForm() {
     )
     const [notes, setNotes] = useState<string>("")
     const [terms, setTerms] = useState<string>("")
+    const [loadedDraftId, setLoadedDraftId] = useState<string | null>(null)
+    const [isCalculatorDraft, setIsCalculatorDraft] = useState(false)
 
     useEffect(() => {
         const loadData = async () => {
@@ -63,6 +70,33 @@ export default function NewQuotationForm() {
             setTaxRate(settings.defaultTaxRate)
             setTerms(settings.defaultPaymentTerms)
 
+            if (draftId) {
+                const draft = getQuotationDraft(draftId)
+                if (draft) {
+                    setItems(
+                        draft.items.length > 0
+                            ? draft.items
+                            : [
+                                  {
+                                      id: uuidv7(),
+                                      description: "",
+                                      quantity: 1,
+                                      rate: 0,
+                                      amount: 0,
+                                  },
+                              ],
+                    )
+                    setCurrency(draft.currency || settings.defaultCurrency)
+                    setTaxRate(draft.taxRate ?? settings.defaultTaxRate)
+                    setDiscount(draft.discount ?? 0)
+                    setDiscountType(draft.discountType ?? "percentage")
+                    setNotes(draft.notes || "")
+                    setTerms(draft.terms || settings.defaultPaymentTerms)
+                    setLoadedDraftId(draftId)
+                    setIsCalculatorDraft(draft.source === "pricing-calculator")
+                }
+            }
+
             // Pre-select client if provided
             if (preSelectedClientId) {
                 const client = await getClientById(preSelectedClientId)
@@ -73,7 +107,7 @@ export default function NewQuotationForm() {
         }
 
         loadData()
-    }, [preSelectedClientId])
+    }, [preSelectedClientId, draftId])
 
     const addItem = () => {
         setItems([
@@ -94,6 +128,28 @@ export default function NewQuotationForm() {
         }
     }
 
+    const getCurrencyDecimals = () => {
+        return currency.toUpperCase() === "MMK" ? 0 : 2
+    }
+
+    const roundMoney = (value: number) => {
+        const decimals = getCurrencyDecimals()
+        return Number(value.toFixed(decimals))
+    }
+
+    const formatMoney = (value: number) => {
+        const decimals = getCurrencyDecimals()
+        return value.toLocaleString("en-US", {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+        })
+    }
+
+    const parseIntegerInput = (value: string) => {
+        const digits = value.replace(/[^\d]/g, "")
+        return digits ? Number(digits) : 0
+    }
+
     const updateItem = (
         id: string,
         field: keyof InvoiceItem,
@@ -102,9 +158,13 @@ export default function NewQuotationForm() {
         setItems(
             items.map((item) => {
                 if (item.id === id) {
-                    const updated = { ...item, [field]: value }
+                    let nextValue = value
+                    if (typeof value === "string" && field === "rate") {
+                        nextValue = parseIntegerInput(value)
+                    }
+                    const updated = { ...item, [field]: nextValue }
                     if (field === "quantity" || field === "rate") {
-                        updated.amount = updated.quantity * updated.rate
+                        updated.amount = roundMoney(updated.quantity * updated.rate)
                     }
                     return updated
                 }
@@ -114,12 +174,16 @@ export default function NewQuotationForm() {
     }
 
     const calculateTotals = () => {
-        const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
+        const subtotal = roundMoney(
+            items.reduce((sum, item) => sum + roundMoney(item.amount), 0),
+        )
         const discountAmount =
-            discountType === "percentage" ? subtotal * (discount / 100) : discount
-        const taxableAmount = subtotal - discountAmount
-        const taxAmount = taxableAmount * (taxRate / 100)
-        const total = taxableAmount + taxAmount
+            discountType === "percentage"
+                ? roundMoney(subtotal * (discount / 100))
+                : roundMoney(discount)
+        const taxableAmount = roundMoney(subtotal - discountAmount)
+        const taxAmount = roundMoney(taxableAmount * (taxRate / 100))
+        const total = roundMoney(taxableAmount + taxAmount)
 
         return {
             subtotal,
@@ -170,6 +234,9 @@ export default function NewQuotationForm() {
 
         await saveQuotation(quotation)
         await incrementInvoiceNumber()
+        if (loadedDraftId) {
+            deleteQuotationDraft(loadedDraftId)
+        }
         router.push("/tools/quotations")
     }
 
@@ -313,7 +380,14 @@ export default function NewQuotationForm() {
                     {/* Line Items */}
                     <div className="rounded-lg border bg-card p-6">
                         <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-xl font-semibold">Line Items</h2>
+                            <div>
+                                <h2 className="text-xl font-semibold">Line Items</h2>
+                                {isCalculatorDraft && (
+                                    <p className="text-xs text-muted-foreground mt-1">
+                                        Unit: days
+                                    </p>
+                                )}
+                            </div>
                             <button
                                 type="button"
                                 onClick={addItem}
@@ -345,27 +419,26 @@ export default function NewQuotationForm() {
                                     <div className="col-span-4 md:col-span-2">
                                         <input
                                             type="number"
-                                            placeholder="Qty"
+                                            placeholder={isCalculatorDraft ? "Days" : "Qty"}
                                             value={item.quantity}
                                             onChange={(e) =>
                                                 updateItem(item.id, "quantity", Number(e.target.value))
                                             }
                                             min="0"
-                                            step="0.01"
+                                            step={isCalculatorDraft ? "0.5" : "0.01"}
                                             className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                             required
                                         />
                                     </div>
                                     <div className="col-span-4 md:col-span-2">
                                         <input
-                                            type="number"
-                                            placeholder="Rate"
-                                            value={item.rate}
+                                            type="text"
+                                            inputMode="numeric"
+                                            placeholder={isCalculatorDraft ? "Day rate" : "Rate"}
+                                            value={item.rate.toString()}
                                             onChange={(e) =>
-                                                updateItem(item.id, "rate", Number(e.target.value))
+                                                updateItem(item.id, "rate", e.target.value)
                                             }
-                                            min="0"
-                                            step="0.01"
                                             className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
                                             required
                                         />
@@ -373,7 +446,7 @@ export default function NewQuotationForm() {
                                     <div className="col-span-3 md:col-span-2">
                                         <input
                                             type="text"
-                                            value={`${currency} ${item.amount.toFixed(2)}`}
+                                            value={`${currency} ${formatMoney(item.amount)}`}
                                             disabled
                                             className="w-full px-4 py-2 rounded-lg border bg-muted text-muted-foreground"
                                         />
@@ -400,7 +473,7 @@ export default function NewQuotationForm() {
                             <div className="flex justify-between text-sm">
                                 <span className="text-muted-foreground">Subtotal:</span>
                                 <span className="font-medium">
-                                    {currency} {totals.subtotal.toFixed(2)}
+                                    {currency} {formatMoney(totals.subtotal)}
                                 </span>
                             </div>
 
@@ -439,7 +512,7 @@ export default function NewQuotationForm() {
                                         Discount Amount:
                                     </span>
                                     <span className="font-medium">
-                                        -{currency} {totals.discountAmount.toFixed(2)}
+                                        -{currency} {formatMoney(totals.discountAmount)}
                                     </span>
                                 </div>
                             )}
@@ -462,7 +535,7 @@ export default function NewQuotationForm() {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-muted-foreground">Tax Amount:</span>
                                     <span className="font-medium">
-                                        {currency} {totals.taxAmount.toFixed(2)}
+                                        {currency} {formatMoney(totals.taxAmount)}
                                     </span>
                                 </div>
                             )}
@@ -470,7 +543,7 @@ export default function NewQuotationForm() {
                             <div className="flex justify-between text-lg font-bold pt-4 border-t">
                                 <span>Total:</span>
                                 <span>
-                                    {currency} {totals.total.toFixed(2)}
+                                    {currency} {formatMoney(totals.total)}
                                 </span>
                             </div>
                         </div>

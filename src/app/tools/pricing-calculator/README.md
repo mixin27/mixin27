@@ -4,6 +4,7 @@
 - Add or edit presets in `presets.ts`.
 - Base scope items live in `data.ts`.
 - Types are defined in `types.ts`.
+- Payment terms presets live in `payment-terms.ts`.
 
 ## Preset structure
 Each preset is a `Template` with:

@@ -34,6 +34,16 @@ export default function EditQuotationPage() {
   const [originalQuotation, setOriginalQuotation] = useState<Quotation | null>(
     null,
   )
+  const [isCalculatorQuote, setIsCalculatorQuote] = useState(false)
+
+  const isCalculatorQuotation = (quotation: Quotation) => {
+    const note = quotation.notes?.toLowerCase() ?? ""
+    if (note.includes("generated from pricing calculator")) return true
+    const prefixes = ["Base:", "Feature:", "Add-on:"]
+    return quotation.items.some((item) =>
+      prefixes.some((prefix) => item.description.startsWith(prefix)),
+    )
+  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -62,6 +72,7 @@ export default function EditQuotationPage() {
       setDiscountType(loadedQuotation.discountType)
       setNotes(loadedQuotation.notes || "")
       setTerms(loadedQuotation.terms || "")
+      setIsCalculatorQuote(isCalculatorQuotation(loadedQuotation))
     }
 
     loadData()
@@ -86,6 +97,28 @@ export default function EditQuotationPage() {
     }
   }
 
+  const getCurrencyDecimals = () => {
+    return currency.toUpperCase() === "MMK" ? 0 : 2
+  }
+
+  const roundMoney = (value: number) => {
+    const decimals = getCurrencyDecimals()
+    return Number(value.toFixed(decimals))
+  }
+
+  const formatMoney = (value: number) => {
+    const decimals = getCurrencyDecimals()
+    return value.toLocaleString("en-US", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })
+  }
+
+  const parseIntegerInput = (value: string) => {
+    const digits = value.replace(/[^\d]/g, "")
+    return digits ? Number(digits) : 0
+  }
+
   const updateItem = (
     id: string,
     field: keyof InvoiceItem,
@@ -94,9 +127,13 @@ export default function EditQuotationPage() {
     setItems(
       items.map((item) => {
         if (item.id === id) {
-          const updated = { ...item, [field]: value }
+          let nextValue = value
+          if (typeof value === "string" && field === "rate") {
+            nextValue = parseIntegerInput(value)
+          }
+          const updated = { ...item, [field]: nextValue }
           if (field === "quantity" || field === "rate") {
-            updated.amount = updated.quantity * updated.rate
+            updated.amount = roundMoney(updated.quantity * updated.rate)
           }
           return updated
         }
@@ -106,12 +143,16 @@ export default function EditQuotationPage() {
   }
 
   const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
+    const subtotal = roundMoney(
+      items.reduce((sum, item) => sum + roundMoney(item.amount), 0),
+    )
     const discountAmount =
-      discountType === "percentage" ? subtotal * (discount / 100) : discount
-    const taxableAmount = subtotal - discountAmount
-    const taxAmount = taxableAmount * (taxRate / 100)
-    const total = taxableAmount + taxAmount
+      discountType === "percentage"
+        ? roundMoney(subtotal * (discount / 100))
+        : roundMoney(discount)
+    const taxableAmount = roundMoney(subtotal - discountAmount)
+    const taxAmount = roundMoney(taxableAmount * (taxRate / 100))
+    const total = roundMoney(taxableAmount + taxAmount)
 
     return {
       subtotal,
@@ -304,14 +345,19 @@ export default function EditQuotationPage() {
           </div>
 
           {/* Line Items */}
-          <div className="rounded-lg border bg-card p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Line Items</h2>
-              <button
-                type="button"
-                onClick={addItem}
-                className="inline-flex items-center gap-2 rounded-lg border bg-background px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
-              >
+      <div className="rounded-lg border bg-card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-semibold">Line Items</h2>
+            {isCalculatorQuote && (
+              <p className="text-xs text-muted-foreground mt-1">Unit: days</p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={addItem}
+            className="inline-flex items-center gap-2 rounded-lg border bg-background px-3 py-2 text-sm font-medium hover:bg-accent transition-colors"
+          >
                 <Plus className="size-4" />
                 Add Item
               </button>
@@ -335,42 +381,39 @@ export default function EditQuotationPage() {
                       required
                     />
                   </div>
-                  <div className="col-span-4 md:col-span-2">
-                    <input
-                      type="number"
-                      placeholder="Qty"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateItem(item.id, "quantity", Number(e.target.value))
-                      }
-                      min="0"
-                      step="0.01"
-                      className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-4 md:col-span-2">
-                    <input
-                      type="number"
-                      placeholder="Rate"
-                      value={item.rate}
-                      onChange={(e) =>
-                        updateItem(item.id, "rate", Number(e.target.value))
-                      }
-                      min="0"
-                      step="0.01"
-                      className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
-                      required
-                    />
-                  </div>
-                  <div className="col-span-3 md:col-span-2">
-                    <input
-                      type="text"
-                      value={`${currency} ${item.amount.toFixed(2)}`}
-                      disabled
-                      className="w-full px-4 py-2 rounded-lg border bg-muted text-muted-foreground"
-                    />
-                  </div>
+            <div className="col-span-4 md:col-span-2">
+              <input
+                type="number"
+                placeholder={isCalculatorQuote ? "Days" : "Qty"}
+                value={item.quantity}
+                onChange={(e) =>
+                  updateItem(item.id, "quantity", Number(e.target.value))
+                }
+                min="0"
+                step={isCalculatorQuote ? "0.5" : "0.01"}
+                className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                required
+              />
+            </div>
+            <div className="col-span-4 md:col-span-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder={isCalculatorQuote ? "Day rate" : "Rate"}
+                value={item.rate.toString()}
+                onChange={(e) => updateItem(item.id, "rate", e.target.value)}
+                className="w-full px-4 py-2 rounded-lg border bg-background focus:outline-none focus:ring-2 focus:ring-primary"
+                required
+              />
+            </div>
+            <div className="col-span-3 md:col-span-2">
+              <input
+                type="text"
+                value={`${currency} ${formatMoney(item.amount)}`}
+                disabled
+                className="w-full px-4 py-2 rounded-lg border bg-muted text-muted-foreground"
+              />
+            </div>
                   <div className="col-span-1 flex justify-end">
                     <button
                       type="button"
@@ -391,11 +434,11 @@ export default function EditQuotationPage() {
             <h2 className="text-xl font-semibold mb-6">Calculations</h2>
             <div className="max-w-md ml-auto space-y-4">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Subtotal:</span>
-                <span className="font-medium">
-                  {currency} {totals.subtotal.toFixed(2)}
-                </span>
-              </div>
+              <span className="text-muted-foreground">Subtotal:</span>
+              <span className="font-medium">
+                {currency} {formatMoney(totals.subtotal)}
+              </span>
+            </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -432,7 +475,7 @@ export default function EditQuotationPage() {
                     Discount Amount:
                   </span>
                   <span className="font-medium">
-                    -{currency} {totals.discountAmount.toFixed(2)}
+                    -{currency} {formatMoney(totals.discountAmount)}
                   </span>
                 </div>
               )}
@@ -455,17 +498,17 @@ export default function EditQuotationPage() {
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Tax Amount:</span>
                   <span className="font-medium">
-                    {currency} {totals.taxAmount.toFixed(2)}
+                    {currency} {formatMoney(totals.taxAmount)}
                   </span>
                 </div>
               )}
 
-              <div className="flex justify-between text-lg font-bold pt-4 border-t">
-                <span>Total:</span>
-                <span>
-                  {currency} {totals.total.toFixed(2)}
-                </span>
-              </div>
+            <div className="flex justify-between text-lg font-bold pt-4 border-t">
+              <span>Total:</span>
+              <span>
+                {currency} {formatMoney(totals.total)}
+              </span>
+            </div>
             </div>
           </div>
 

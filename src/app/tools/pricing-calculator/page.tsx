@@ -2,11 +2,23 @@
 
 import { useMemo, useState, type Dispatch, type SetStateAction } from "react"
 import Link from "next/link"
-import { ArrowLeft, Calculator, Copy, RotateCcw } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { v7 as uuidv7 } from "uuid"
+import { ArrowLeft, Calculator, Copy, FileCheck, RotateCcw } from "lucide-react"
+
+import { getSettings } from "@/lib/storage/tools-storage"
+import { saveQuotationDraft } from "@/lib/storage/quotation-drafts"
+import type { InvoiceItem } from "@/types/invoice"
 
 import { addonDefaults, baseDefaults, supportDefaults } from "./data"
+import {
+  defaultPaymentTermsPreset,
+  paymentTermsPresets,
+} from "./payment-terms"
 import { defaultPresetKey, presetOrder, templates } from "./presets"
 import type { Item, Mode, PackageKey, SupportPlan } from "./types"
+
+type QuoteScenario = "low" | "mid" | "high"
 
 const cloneItems = (items: Item[]) => items.map((item) => ({ ...item }))
 const cloneSupport = (items: SupportPlan[]) =>
@@ -23,6 +35,8 @@ const applyPackage = (items: Item[], ids: string[]) => {
 const formatNumber = (value: number) =>
   Math.round(value).toLocaleString("en-US")
 
+const roundDays = (value: number) => Math.round(value * 2) / 2
+
 const sumDays = (items: Item[], key: "daysLow" | "daysHigh") =>
   items.reduce((sum, item) => sum + item[key], 0)
 
@@ -35,6 +49,7 @@ const getInitialPresetKey = () => {
 }
 
 export default function PricingCalculatorPage() {
+  const router = useRouter()
   const initialPresetKey = getInitialPresetKey()
   const initialTemplate = templates[initialPresetKey]
 
@@ -47,6 +62,10 @@ export default function PricingCalculatorPage() {
   const [manualDayRateLow, setManualDayRateLow] = useState(140000)
   const [manualDayRateHigh, setManualDayRateHigh] = useState(200000)
   const [contingency, setContingency] = useState(15)
+  const [paymentTermsPreset, setPaymentTermsPreset] = useState(
+    defaultPaymentTermsPreset,
+  )
+  const [customPaymentTerms, setCustomPaymentTerms] = useState("")
 
   const [projectPreset, setProjectPreset] = useState(initialPresetKey)
   const [activePackage, setActivePackage] = useState<PackageKey>(
@@ -66,6 +85,7 @@ export default function PricingCalculatorPage() {
     cloneSupport(supportDefaults),
   )
   const [copyStatus, setCopyStatus] = useState("Copy summary")
+  const [quoteScenario, setQuoteScenario] = useState<QuoteScenario>("mid")
   const [customFeature, setCustomFeature] = useState({
     name: "",
     scope: "",
@@ -126,6 +146,49 @@ export default function PricingCalculatorPage() {
 
   const hourlyLow = dayRates.low / 8
   const hourlyHigh = dayRates.high / 8
+
+  const paymentTermsPreview = useMemo(() => {
+    if (paymentTermsPreset === "custom") {
+      return customPaymentTerms.trim() || "Add custom payment terms."
+    }
+    const preset = paymentTermsPresets.find(
+      (item) => item.id === paymentTermsPreset,
+    )
+    if (preset?.id === "default") {
+      return "Use default payment terms from settings."
+    }
+    return preset?.terms || "Select a payment terms preset."
+  }, [customPaymentTerms, paymentTermsPreset])
+
+  const scenarioDayRate = useMemo(() => {
+    if (quoteScenario === "low") return dayRates.low
+    if (quoteScenario === "high") return dayRates.high
+    return (dayRates.low + dayRates.high) / 2
+  }, [dayRates.high, dayRates.low, quoteScenario])
+
+  const getScenarioDays = (item: Item) => {
+    if (quoteScenario === "low") return roundDays(item.daysLow)
+    if (quoteScenario === "high") return roundDays(item.daysHigh)
+    return roundDays((item.daysLow + item.daysHigh) / 2)
+  }
+
+  const scenarioBaseDays = baseSelected.reduce(
+    (sum, item) => sum + getScenarioDays(item),
+    0,
+  )
+  const scenarioFeatureDays = featureSelected.reduce(
+    (sum, item) => sum + getScenarioDays(item),
+    0,
+  )
+  const scenarioAddonDays = addonSelected.reduce(
+    (sum, item) => sum + getScenarioDays(item),
+    0,
+  )
+  const scenarioSubtotal =
+    (scenarioBaseDays + scenarioFeatureDays + scenarioAddonDays) *
+    scenarioDayRate
+  const scenarioContingency = scenarioSubtotal * (contingency / 100)
+  const scenarioTotal = scenarioSubtotal + scenarioContingency
 
   const handlePresetChange = (value: string) => {
     const template = templates[value]
@@ -227,6 +290,8 @@ export default function PricingCalculatorPage() {
     setManualDayRateLow(140000)
     setManualDayRateHigh(200000)
     setContingency(15)
+    setPaymentTermsPreset(defaultPaymentTermsPreset)
+    setCustomPaymentTerms("")
     setProjectPreset(nextPresetKey)
     setActivePackage(nextTemplate?.defaultPackage ?? "mvp")
     setBaseItems(cloneItems(baseDefaults))
@@ -279,6 +344,105 @@ export default function PricingCalculatorPage() {
       setCopyStatus("Copy failed")
       setTimeout(() => setCopyStatus("Copy summary"), 1500)
     }
+  }
+
+  const buildQuotationItems = (): InvoiceItem[] => {
+    const items: InvoiceItem[] = []
+
+    const pushItem = (prefix: string, item: Item) => {
+      const quantity = getScenarioDays(item)
+      if (quantity <= 0) return
+      const rate = scenarioDayRate
+      items.push({
+        id: uuidv7(),
+        description: `${prefix}: ${item.name}`,
+        quantity,
+        rate,
+        amount: quantity * rate,
+      })
+    }
+
+    baseSelected.forEach((item) => pushItem("Base", item))
+    featureSelected.forEach((item) => pushItem("Feature", item))
+    addonSelected.forEach((item) => pushItem("Add-on", item))
+
+    const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
+    if (contingency > 0) {
+      const contingencyAmount = subtotal * (contingency / 100)
+      items.push({
+        id: uuidv7(),
+        description: `Contingency (${contingency}%)`,
+        quantity: 1,
+        rate: contingencyAmount,
+        amount: contingencyAmount,
+      })
+    }
+
+    return items
+  }
+
+  const buildDraftNotes = () => {
+    const scenarioLabel =
+      quoteScenario === "low"
+        ? "Low (min days + low rate)"
+        : quoteScenario === "high"
+          ? "High (max days + high rate)"
+          : "Balanced (avg days + mid rate)"
+
+    const lines = [
+      "Generated from Pricing Calculator",
+      `Preset: ${currentTemplate?.label ?? "Custom"}`,
+      `Scenario: ${scenarioLabel}`,
+      `Day rate used: ${formatNumber(scenarioDayRate)} MMK/day`,
+      `Base days: ${scenarioBaseDays.toFixed(1)}`,
+      `Feature days: ${scenarioFeatureDays.toFixed(1)}`,
+      `Add-on days: ${scenarioAddonDays.toFixed(1)}`,
+      `Scenario total: ${formatNumber(scenarioTotal)} MMK`,
+    ]
+
+    return lines.join("\n")
+  }
+
+  const handleCreateQuotation = () => {
+    const itemCount =
+      baseSelected.length + featureSelected.length + addonSelected.length
+    if (itemCount === 0) {
+      alert("Select at least one item before generating a quotation.")
+      return
+    }
+
+    const settings = getSettings()
+    if (paymentTermsPreset === "custom" && !customPaymentTerms.trim()) {
+      alert("Please add custom payment terms or choose a preset.")
+      return
+    }
+
+    const selectedPreset = paymentTermsPresets.find(
+      (preset) => preset.id === paymentTermsPreset,
+    )
+    const resolvedTerms =
+      paymentTermsPreset === "custom"
+        ? customPaymentTerms.trim()
+        : selectedPreset?.id === "default"
+          ? settings.defaultPaymentTerms
+          : selectedPreset?.terms || settings.defaultPaymentTerms
+    const draftId = uuidv7()
+    const items = buildQuotationItems()
+
+    saveQuotationDraft({
+      id: draftId,
+      source: "pricing-calculator",
+      createdAt: new Date().toISOString(),
+      currency: settings.defaultCurrency,
+      taxRate: settings.defaultTaxRate,
+      discount: 0,
+      discountType: "percentage",
+      notes: buildDraftNotes(),
+      terms: resolvedTerms,
+      items,
+    })
+
+    router.push(`/tools/quotations/new?draftId=${draftId}`)
   }
 
   return (
@@ -666,6 +830,51 @@ export default function PricingCalculatorPage() {
         </section>
 
         <section className="rounded-xl border bg-card p-6 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold">6. Payment terms</h2>
+            <p className="text-sm text-muted-foreground">
+              Used when generating a quotation from this calculator.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-4">
+            <label className="flex flex-col gap-2 text-sm font-medium text-muted-foreground">
+              Payment terms preset
+              <select
+                value={paymentTermsPreset}
+                onChange={(event) =>
+                  setPaymentTermsPreset(event.target.value)
+                }
+                className="h-10 rounded-lg border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                {paymentTermsPresets.map((preset) => (
+                  <option key={preset.id} value={preset.id}>
+                    {preset.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="rounded-lg border bg-muted/30 p-3 text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">Preview:</span>{" "}
+              {paymentTermsPreview}
+            </div>
+          </div>
+
+          {paymentTermsPreset === "custom" && (
+            <div className="mt-4">
+              <label className="flex flex-col gap-2 text-sm font-medium text-muted-foreground">
+                Custom payment terms
+                <textarea
+                  value={customPaymentTerms}
+                  onChange={(event) => setCustomPaymentTerms(event.target.value)}
+                  rows={4}
+                  className="rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </label>
+            </div>
+          )}
+        </section>
+
+        <section className="rounded-xl border bg-card p-6 shadow-sm">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
             <div>
               <h2 className="text-xl font-semibold">Summary</h2>
@@ -690,6 +899,44 @@ export default function PricingCalculatorPage() {
                 <Copy className="size-4" />
                 {copyStatus}
               </button>
+              <button
+                type="button"
+                onClick={handleCreateQuotation}
+                disabled={totalDaysHigh === 0}
+                className="inline-flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-sm font-medium text-primary hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <FileCheck className="size-4" />
+                Create quotation
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-4 mb-6">
+            <label className="flex flex-col gap-2 text-sm font-medium text-muted-foreground">
+              Quotation scenario
+              <select
+                value={quoteScenario}
+                onChange={(event) =>
+                  setQuoteScenario(event.target.value as QuoteScenario)
+                }
+                className="h-10 rounded-lg border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="low">Low (min days + low rate)</option>
+                <option value="mid">Balanced (avg days + mid rate)</option>
+                <option value="high">High (max days + high rate)</option>
+              </select>
+            </label>
+            <div className="rounded-lg border bg-muted/30 p-3 text-sm">
+              <p className="text-muted-foreground">Scenario summary</p>
+              <p className="text-base font-semibold text-foreground">
+                {formatNumber(scenarioTotal)} MMK
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Rate: {formatNumber(scenarioDayRate)} MMK/day · Days:{" "}
+                {(scenarioBaseDays + scenarioFeatureDays + scenarioAddonDays).toFixed(
+                  1,
+                )}
+              </p>
             </div>
           </div>
 
