@@ -9,6 +9,7 @@ import {
   Clock,
   Settings,
   Cloud,
+  Calculator,
 } from "lucide-react"
 import { LogoutButton } from "@/components/logout-button"
 
@@ -38,6 +39,15 @@ const tools = [
     href: "/tools/quotations",
     color: "text-green-600",
     bgColor: "bg-green-50 dark:bg-green-950",
+    available: true,
+  },
+  {
+    name: "Fee Calculator",
+    description: "Estimate project pricing with templates and day rates",
+    icon: Calculator,
+    href: "/tools/pricing-calculator",
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50 dark:bg-indigo-950",
     available: true,
   },
   {
