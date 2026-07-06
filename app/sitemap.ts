@@ -1,0 +1,143 @@
+
+import { getAllContent } from '@/lib/mdx'
+import { getBaseUrl } from '@/lib/utils'
+import type { MetadataRoute } from 'next'
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = getBaseUrl()
+
+  // Static pages
+  const staticPages = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/projects`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/apps`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/contracts`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/invoices`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/quotations`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/pricing-calculator`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/receipts`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/timesheet`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/tools/settings`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/legal/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/legal/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+    {
+      url: `${baseUrl}/legal/cookie-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    },
+  ]
+
+  // Blog posts
+  const posts = await getAllContent("blog")
+  const blogPages = posts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
+    lastModified: post.frontmatter.date && new Date(post.frontmatter.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
+
+  // Projects
+  const projects = await getAllContent("projects")
+  const projectPages = projects.map((project) => ({
+    url: `${baseUrl}/projects/${project.slug}`,
+    lastModified: project.frontmatter.date && new Date(project.frontmatter.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  // Apps privacy policies
+  const apps = await getAllContent("apps")
+  const appPages = apps.map((app) => ({
+    url: `${baseUrl}/apps/${app.slug}/privacy`,
+    lastModified: app.frontmatter.date && new Date(app.frontmatter.date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
+  return [...staticPages, ...blogPages, ...projectPages, ...appPages]
+}
