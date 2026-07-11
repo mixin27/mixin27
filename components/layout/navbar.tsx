@@ -7,6 +7,7 @@ import { navItems, siteConfig } from "@/data/config"
 import { cn } from "@/lib/utils"
 import { KztLogo } from "@/components/ui/kzt-logo"
 import { NetworkField } from "@/components/ui/network-field"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -92,6 +93,7 @@ export function Navbar() {
 
           {/* CTA + hamburger */}
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
