@@ -1,0 +1,38 @@
+---
+title: "Portfolio Site"
+description: "My personal portfolio built with Next.js 15, Tailwind CSS v4, and MDX."
+date: "2024-06-01"
+tech: ["Next.js", "TypeScript", "Tailwind CSS", "MDX"]
+github: "https://github.com/mixin27/mixin27"
+live: "https://kyawzayartun.com"
+status: "completed"
+---
+
+## Overview
+
+This portfolio site is built with the Next.js App Router, Tailwind CSS v4, and a custom MDX pipeline.
+
+## Key decisions
+
+### Server Components by default
+
+MDX compilation happens entirely on the server using `next-mdx-remote/rsc`. No MDX JS is shipped to the client.
+
+### Shiki for syntax highlighting
+
+```typescript
+const prettyCodeOptions = {
+  theme: {
+    dark: "github-dark-dimmed",
+    light: "github-light",
+  },
+};
+```
+
+## Results
+
+| Metric        | Score |
+| ------------- | ----- |
+| Performance   | 99    |
+| Accessibility | 100   |
+| SEO           | 100   |

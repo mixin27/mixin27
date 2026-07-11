@@ -1,0 +1,139 @@
+/*
+ * MDX prose styles — import in your globals.css:
+ * @import "./mdx.css";
+ *
+ * Tailwind v4 + shadcn/ui compatible.
+ * Uses .prose-mdx on the <article> wrapper.
+ */
+
+@import "katex/dist/katex.min.css";
+
+/*
+ * MDX prose styles — import in your globals.css:
+ * @import "./mdx.css";
+ *
+ * Works with Tailwind v4 CSS variables and shadcn/ui tokens.
+ * Uses the .prose-mdx class applied on the <article> wrapper.
+ */
+
+/* ─── Shiki dual-theme ─────────────────────────────────────────────────────── */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+.dark .shiki,
+.dark .shiki span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
+/* ─── Highlighted lines ─────────────────────────────────────────────────────── */
+.line--highlighted {
+  background-color: color-mix(in oklch, var(--primary) 10%, transparent);
+  border-left: 2px solid color-mix(in oklch, var(--primary) 60%, transparent);
+  margin: 0 -1rem;
+  padding: 0 1rem;
+  display: inline-block;
+  width: calc(100% + 2rem);
+}
+
+/* ─── Highlighted chars (word highlight) ─────────────────────────────────────  */
+.chars--highlighted {
+  background-color: color-mix(in oklch, var(--primary) 15%, transparent);
+  border-radius: 3px;
+  padding: 1px 2px;
+}
+
+/* ─── Prose base ───────────────────────────────────────────────────────────── */
+.prose-mdx {
+  /* Sensible max-width for reading */
+  max-width: 72ch;
+
+  /* Vertical rhythm */
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+/* First element shouldn't have top margin */
+.prose-mdx > *:first-child {
+  margin-top: 0 !important;
+}
+
+/* ─── Anchor hover on headings ─────────────────────────────────────────────── */
+.prose-mdx .anchor {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ─── KaTeX math ───────────────────────────────────────────────────────────── */
+@import "katex/dist/katex.min.css";
+
+.katex-display {
+  overflow-x: auto;
+  padding: 1rem 0;
+}
+
+/* ─── Task list checkboxes (remark-gfm) ────────────────────────────────────── */
+.prose-mdx ul.contains-task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose-mdx .task-list-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.prose-mdx .task-list-item input[type="checkbox"] {
+  accent-color: hsl(var(--primary));
+  width: 0.9rem;
+  height: 0.9rem;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+/* ─── Mermaid SVG sizing ───────────────────────────────────────────────────── */
+.prose-mdx figure svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─── Code block figure (rehype-pretty-code) ────────────────────────────────  */
+.prose-mdx figure[data-rehype-pretty-code-figure] {
+  margin: 1.5rem 0;
+}
+
+.prose-mdx figure[data-rehype-pretty-code-figure] pre {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+.prose-mdx figure[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-light);
+}
+
+.dark .prose-mdx figure[data-rehype-pretty-code-figure] pre {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
+.dark .prose-mdx figure[data-rehype-pretty-code-figure] code span {
+  color: var(--shiki-dark);
+}
+
+.prose-mdx figure[data-rehype-pretty-code-figure] > figcaption {
+  font-family: var(--font-mono, ui-monospace);
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.4);
+}
+
+/* Code span — line numbers */
+.prose-mdx [data-line] {
+  border-left: 2px solid transparent;
+}

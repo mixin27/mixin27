@@ -1,17 +1,11 @@
 ---
 title: "FinWallet"
-description: A modern finance wallet application with beautiful UI/UX
-category: "mobile"
-longDescription: A modern finance wallet application with beautiful UI/UX
+description: "A modern finance wallet application with beautiful UI/UX."
+date: "2025-12-24"
+tech: ["Flutter", "BLoC", "GoRouter", "Drift", "REST APIs"]
+github: "https://github.com/mixin27/finance-wallet"
+status: "completed"
 image: "/images/projects/finance-wallet/logo.png"
-tags: [wallet, finance, account, transaction]
-technologies: [flutter]
-platform: Flutter
-status: in-progress
-featured: true
-links:
-    github: "https://github.com/mixin27/finance-wallet"
-date: 2025-12-24
 ---
 
 A modern, premium finance wallet application built with Flutter. FinanceWallet helps users manage their finances with a beautiful UI, robust offline-first architecture, and secure biometric authentication.
@@ -48,6 +42,7 @@ The project follow the **MVVM (Model-View-ViewModel)** architectural pattern com
 
 ### Component Relationship
 
+<Mermaid caption="Component relationship">
 ```mermaid
 graph TD
     subgraph Presentation
@@ -73,6 +68,7 @@ graph TD
     Remote <--> API[Backend API]
     Local <--> DB[(Drift SQLite)]
 ```
+</Mermaid>
 
 ### Key Principles
 1. **Unidirectional Data Flow**: State flows down, events flow up.
