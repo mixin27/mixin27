@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { GithubIcon, ExternalLinkIcon } from "@/components/ui/social-icons"
 import { getCategoryColor, getCategoryLabel } from "@/lib/utils"
 import type { Project } from "@/types"
@@ -11,19 +12,39 @@ interface ProjectCardProps {
 export function ProjectCard({ project, index }: ProjectCardProps) {
   return (
     <article className="app-glass-card group relative flex flex-col rounded-2xl p-7">
-      {/* Featured badge */}
-      {project.featured && (
-        <span className="absolute top-5 right-5 rounded-md bg-(--app-accent-primary) px-2 py-0.5 font-mono text-[9px] tracking-widest text-white uppercase">
-          Featured
-        </span>
-      )}
+      {/* Top Header Row with Logo & Featured/Number */}
+      <div className="mb-5 flex items-start justify-between">
+        {project.image ? (
+          <div className="flex size-12 items-center justify-center rounded-xl border border-border/80 bg-muted/30 p-1.5 backdrop-blur-xs transition-colors group-hover:border-purple-500/30 group-hover:bg-purple-500/5">
+            <Image
+              src={project.image}
+              alt={`${project.name} logo`}
+              width={48}
+              height={48}
+              className="size-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="flex size-12 items-center justify-center rounded-xl border border-border/80 bg-muted/30 p-1.5 backdrop-blur-xs">
+            <span className="font-mono text-xs font-bold text-muted-foreground uppercase">
+              {project.category.substring(0, 2)}
+            </span>
+          </div>
+        )}
 
-      {/* Number */}
-      {index !== undefined && (
-        <span className="mb-3 font-mono text-[11px] tracking-widest text-muted-foreground/80">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-      )}
+        <div className="flex items-center gap-2">
+          {project.featured && (
+            <span className="rounded-md bg-purple-500/20 px-2 py-0.5 font-mono text-[9px] tracking-widest text-purple-300 uppercase">
+              Featured
+            </span>
+          )}
+          {index !== undefined && (
+            <span className="font-mono text-[11px] tracking-widest text-muted-foreground/80">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+          )}
+        </div>
+      </div>
 
       {/* Category */}
       <span

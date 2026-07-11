@@ -1,4 +1,5 @@
 import { type ReactNode } from "react"
+import Image from "next/image"
 import { TableOfContents } from "./toc"
 import type { Frontmatter } from "@/types/mdx"
 import { cn } from "@/lib/utils"
@@ -35,6 +36,7 @@ export function MdxLayout({
     live,
     status,
     lastReviewed,
+    image,
   } = frontmatter
 
   const formattedDate = date
@@ -59,7 +61,7 @@ export function MdxLayout({
           <header className="mb-10">
             {/* Tags / tech chips */}
             {(tags ?? tech)?.length && (
-              <div className="mb-3 flex flex-wrap gap-2">
+              <div className="mb-6 flex flex-wrap gap-2">
                 {(tags ?? tech)!.map((t) => (
                   <span
                     key={t}
@@ -71,15 +73,29 @@ export function MdxLayout({
               </div>
             )}
 
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              {title}
-            </h1>
-
-            {description && (
-              <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-                {description}
-              </p>
-            )}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+              {variant === "project" && image && (
+                <div className="flex size-20 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-muted/30 p-2.5 backdrop-blur-xs">
+                  <Image
+                    src={image}
+                    alt={`${title} logo`}
+                    width={80}
+                    height={80}
+                    className="size-full object-contain"
+                  />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                  {title}
+                </h1>
+                {description && (
+                  <p className="mt-3 text-lg leading-relaxed text-muted-foreground">
+                    {description}
+                  </p>
+                )}
+              </div>
+            </div>
 
             {/* Meta row */}
             <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">

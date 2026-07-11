@@ -31,20 +31,42 @@ function isDarkMode() {
 }
 
 function extractTextContent(node: ReactNode): string {
+  if (node === null || node === undefined) {
+    return ""
+  }
+
   if (typeof node === "string" || typeof node === "number") {
     return String(node)
   }
 
   if (Array.isArray(node)) {
+    const hasLineElements = node.some(
+      (child) =>
+        isValidElement(child) &&
+        (((child as any).props.className === "line") ||
+          ((child as any).props.className as string[])?.includes?.("line"))
+    )
+
+    if (hasLineElements) {
+      return node.map(extractTextContent).join("\n")
+    }
     return node.map(extractTextContent).join("")
   }
 
-  if (isValidElement<{ children?: ReactNode }>(node)) {
-    return extractTextContent(node.props.children)
+  if (isValidElement<{ children?: ReactNode; className?: string | string[] }>(node)) {
+    const className = node.props.className
+    const isLine =
+      className === "line" ||
+      (Array.isArray(className) && className.includes("line")) ||
+      (typeof className === "string" && className.split(" ").includes("line"))
+
+    const content = extractTextContent(node.props.children)
+    return isLine ? content : content
   }
 
   return ""
 }
+
 
 function resolveChartSource({ chart, children }: MermaidProps) {
   const source =

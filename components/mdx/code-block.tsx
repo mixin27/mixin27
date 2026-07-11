@@ -2,6 +2,7 @@
 
 import { type ComponentPropsWithoutRef, useRef, useState } from "react";
 import { CheckIcon, CopyIcon } from "lucide-react";
+import { Mermaid } from "./mermaid";
 
 type PreProps = ComponentPropsWithoutRef<"pre"> & {
   // rehype-pretty-code adds these data attributes
@@ -22,6 +23,10 @@ export function CodeBlock({ children, "data-language": language, ...props }: Pre
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  if (language === "mermaid") {
+    return <Mermaid>{children}</Mermaid>;
   }
 
   return (
