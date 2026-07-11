@@ -1,7 +1,48 @@
-import type { Project } from "@/types";
+import type { Project } from "@/types"
 
 export const projects: Project[] = [
   // ── FEATURED ──────────────────────────────────────────────
+  {
+    id: "cannopy-pos",
+    slug: "cannopy-pos",
+    name: "Cannopy POS",
+    shortDesc:
+      "Enterprise-grade local-first mobile Point of Sale (POS) system with cursor-based synchronization.",
+    fullDesc:
+      "A production-grade, offline-first retail Point of Sale (POS) application featuring Drift-backed local storage, cursor-based API sync, socket-based local LAN data replication, active cashier shift tracking, and ESC/POS thermal printing integrations.",
+    category: "flutter",
+    tags: [
+      "offline-first",
+      "p2p-sync",
+      "clean-architecture",
+      "bluetooth-printing",
+      "inventory",
+      "retail",
+    ],
+    featured: true,
+    links: {},
+    image: "/images/projects/cannopy/logo.png",
+  },
+  {
+    id: "astral-wealth-mobile",
+    slug: "astral-wealth-mobile",
+    name: "POCO Myanmar (Astral Wealth)",
+    shortDesc:
+      "Role-based field sales operations, real-time inventory tracking, and hierarchical reporting platform.",
+    fullDesc:
+      "An enterprise mobile platform for field team operations featuring dynamic role-based dashboards, offline-first barcode/IMEI scanning, counter stock assignments, and multi-level hierarchical sales analytics.",
+    category: "flutter",
+    tags: [
+      "field-sales",
+      "inventory",
+      "data-visualization",
+      "barcode-scanner",
+      "push-notifications",
+    ],
+    featured: true,
+    links: {},
+    image: "/images/projects/poco/logo.png",
+  },
   {
     id: "collectra",
     slug: "collectra",
@@ -15,8 +56,7 @@ export const projects: Project[] = [
     featured: true,
     links: {
       github: "https://github.com/mixin27/collection_tracker",
-      releases:
-        "https://github.com/mixin27/collection_tracker/releases/latest",
+      releases: "https://github.com/mixin27/collection_tracker/releases/latest",
     },
     image: "/images/projects/collectra/logo.png",
   },
@@ -41,8 +81,7 @@ export const projects: Project[] = [
     id: "finance-wallet",
     slug: "finance-wallet",
     name: "FinWallet",
-    shortDesc:
-      "A modern finance wallet application with beautiful UI/UX.",
+    shortDesc: "A modern finance wallet application with beautiful UI/UX.",
     fullDesc:
       "A privacy-first personal finance tracker with offline storage, budget planning, and visual spending analytics built with Flutter.",
     category: "flutter",
@@ -155,8 +194,7 @@ export const projects: Project[] = [
     id: "myanmar-calendar-dart-cli",
     slug: "myanmar-calendar-dart-cli",
     name: "Myanmar Calendar Dart CLI",
-    shortDesc:
-      "Myanmar calendar utility CLI powered by myanmar_calendar_dart.",
+    shortDesc: "Myanmar calendar utility CLI powered by myanmar_calendar_dart.",
     fullDesc:
       "A command-line tool for Myanmar calendar calculations, powered by the myanmar_calendar_dart package.",
     category: "dart",
@@ -260,8 +298,7 @@ export const projects: Project[] = [
     tags: ["wallet", "finance", "account"],
     featured: false,
     links: {
-      github:
-        "https://github.com/mixin27/weather-app-jetpack-compose",
+      github: "https://github.com/mixin27/weather-app-jetpack-compose",
     },
     image: "/images/projects/weather-app/logo.png",
   },
@@ -297,6 +334,22 @@ export const projects: Project[] = [
     image: "/images/projects/maun-news/logo.png",
   },
   {
+    id: "portfolio-site",
+    slug: "portfolio-site",
+    name: "Portfolio Site",
+    shortDesc:
+      "My personal portfolio built with Next.js 15, Tailwind CSS v4, and MDX.",
+    fullDesc:
+      "My personal portfolio site built with the Next.js App Router, Tailwind CSS v4, and a custom MDX pipeline.",
+    category: "web",
+    tags: ["next.js", "typescript", "tailwind-css", "mdx"],
+    featured: false,
+    links: {
+      github: "https://github.com/mixin27/mixin27",
+      demo: "https://kyawzayartun.com",
+    },
+  },
+  {
     id: "sumeer",
     slug: "sumeer",
     name: "Sumeer",
@@ -328,8 +381,7 @@ export const projects: Project[] = [
     id: "native-id",
     slug: "native-id",
     name: "Native ID",
-    shortDesc:
-      "Flutter unique identifier plugin for Android and iOS.",
+    shortDesc: "Flutter unique identifier plugin for Android and iOS.",
     fullDesc:
       "A Flutter plugin that provides native unique device identifiers for both Android and iOS platforms.",
     category: "flutter",
@@ -384,8 +436,7 @@ export const projects: Project[] = [
     id: "sky-cargo-terminal",
     slug: "sky-cargo-terminal",
     name: "Sky Cargo Terminal Service",
-    shortDesc:
-      "Forwarder appointment application for Sky Cargo Terminal.",
+    shortDesc: "Forwarder appointment application for Sky Cargo Terminal.",
     fullDesc:
       "A Flutter app for cargo forwarders to schedule and manage appointments at the Sky Cargo Terminal.",
     category: "flutter",
@@ -423,7 +474,7 @@ export const projects: Project[] = [
     },
     image: "/images/projects/speaking-partners/logo.png",
   },
-];
+]
 
-export const featuredProjects = projects.filter((p) => p.featured);
-export const totalProjects = projects.length;
+export const featuredProjects = projects.filter((p) => p.featured)
+export const totalProjects = projects.length
