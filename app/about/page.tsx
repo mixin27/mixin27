@@ -211,6 +211,15 @@ export default function AboutPage() {
 
           <div className="max-w-xl rounded-2xl border border-border bg-card/60 p-7 shadow-sm">
             <h3 className="mb-1 font-bold text-foreground">
+              Samsung Mobile Application Training Certificate 2018
+            </h3>
+            <p className="mb-3 text-sm text-muted-foreground">
+              Samsung Tech Institute, Yangon · 2018
+            </p>
+          </div>
+
+          <div className="max-w-xl rounded-2xl border border-border bg-card/60 p-7 shadow-sm mt-4">
+            <h3 className="mb-1 font-bold text-foreground">
               Bachelor of Computer Science
             </h3>
             <p className="mb-3 text-sm text-muted-foreground">
@@ -224,6 +233,8 @@ export default function AboutPage() {
               C# and Android development.
             </p>
           </div>
+
+          
         </div>
 
         {/* CTA */}

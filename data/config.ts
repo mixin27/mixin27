@@ -1,4 +1,4 @@
-import type { NavItem, SocialLink } from "@/types";
+import type { NavItem, SocialLink } from "@/types"
 
 export const siteConfig = {
   name: "Kyaw Zayar Tun",
@@ -16,7 +16,7 @@ export const siteConfig = {
   featuredProjects: 8,
   totalApps: 6,
   yearsExperience: 4,
-} as const;
+} as const
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
@@ -26,7 +26,7 @@ export const navItems: NavItem[] = [
   { label: "Tools", href: "/tools" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-];
+]
 
 export const socialLinks: SocialLink[] = [
   { label: "GitHub", href: "https://github.com/mixin27", icon: "github" },
@@ -45,21 +45,38 @@ export const socialLinks: SocialLink[] = [
     href: "mailto:kyawzayartun.contact@gmail.com",
     icon: "email",
   },
-];
+]
 
 export const experience = [
+  {
+    period: "Mar 2026 – Present",
+    role: "Mid Mobile Developer",
+    company: "Cannopy Technologies",
+    type: "Full-time",
+    description: "Develop and maintain mobile application for iOS and Android.",
+    bullets: [
+      "Developing a large-scale Point of Sale (POS) application using Flutter.",
+      "Implementing inventory, sales, customer, and transaction management modules.",
+      "Building scalable feature-based architecture for long-term maintainability.",
+      "Collaborating with backend engineers, QA engineers, and product stakeholders.",
+      "Participating in code reviews and maintaining coding standards.",
+      "Optimizing application performance and improving user experience.",
+      "Contributing to application architecture and technical decision-making.",
+    ],
+  },
   {
     period: "Nov 2023 – Present",
     role: "Freelance Mobile Developer",
     company: "Freelance",
     type: "Remote",
-    description:
-      "Building independent projects that clients need.",
+    description: "Building independent projects that clients need.",
     bullets: [
-      "Developed and published multiple Flutter applications including Myanmar Calendar, Maun News, Beads Math, and Yoyo Chatt.",
-      "Implemented real-time chat, multi-language support, date conversion, onboarding flows, ads monetization, and API integrations.",
-      "Managed full development lifecycle: UI/UX → backend integration → testing → Play Store release.",
-      "Built Myanmar Calendar (10K+ downloads), a multi-language Flutter app with date conversion & traditional Burmese calendar features.",
+      "Designed and developed multiple Flutter applications from concept to production.",
+      "Architected scalable applications using Clean Architecture principles.",
+      "Integrated REST APIs and implemented complex business workflows.",
+      "Managed complete application lifecycle from development to deployment.",
+      "Collaborated directly with clients to gather requirements and deliver solutions.",
+      "Diagnosed and resolved production issues to improve application stability.",
     ],
   },
   {
@@ -70,9 +87,12 @@ export const experience = [
     description:
       "Developed and maintained multiple mobile applications for iOS and Android using Flutter.",
     bullets: [
-      "Designed and developed production Flutter applications for business clients, collaborating with designers, backend developers, and QA teams.",
-      "Migrated legacy Android and Xamarin apps to Flutter, reducing maintenance effort and improving cross-platform consistency.",
-      "Built reusable Flutter components and internal frameworks, reducing overall development time by ~20% across projects.",
+      "Developed and maintained enterprise-grade Flutter applications.",
+      "Migrated legacy Android and Xamarin applications to Flutter.",
+      "Built reusable Flutter components, reducing development effort by approximately 20%.",
+      "Collaborated with designers, QA engineers, and project managers.",
+      "Participated in code reviews and implementation planning.",
+      "Contributed to application architecture and development best practices.",
     ],
   },
   {
@@ -83,8 +103,9 @@ export const experience = [
     description:
       "Started my journey in mobile development, learning and growing with each project.",
     bullets: [
-      "Assisted in developing Android applications using Java and Kotlin, following modern Android development practices.",
-      "Fixed bugs, improved UI/UX, and optimized app performance under guidance from senior developers.",
+      "Developed Android applications using Java and Kotlin.",
+      "Fixed bugs and improved application performance.",
+      "Participated in QA testing and debugging activities.",
     ],
   },
   {
@@ -100,14 +121,14 @@ export const experience = [
       "Worked closely with team members on feature implementation and basic testing.",
     ],
   },
-];
+]
 
 export const skills = {
   mobile: ["Flutter", "React Native", "Android (Kotlin/Jetpack Compose)"],
   backend: ["Node.js", "Firebase", "REST APIs", "GraphQL"],
   frontend: ["React", "Next.js"],
   tools: ["Git & GitHub", "CI/CD"],
-};
+}
 
 export const values = [
   {
@@ -134,4 +155,4 @@ export const values = [
     description:
       "Committed to delivering high-quality work that exceeds expectations and industry standards.",
   },
-];
+]
