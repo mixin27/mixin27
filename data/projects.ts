@@ -3,6 +3,23 @@ import type { Project } from "@/types"
 export const projects: Project[] = [
   // ── FEATURED ──────────────────────────────────────────────
   {
+    id: "fom-order-manager",
+    slug: "fom-order-manager",
+    name: "FOM Order Manager",
+    shortDesc:
+      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+    fullDesc:
+      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+    category: "full-stack",
+    tags: ["React", "Next.js", "Flutter", "NestJS", "PostgreSQL", "Docker"],
+    featured: true,
+    links: {
+      live: "https://getfom.com",
+      playStore: "https://play.google.com/store/apps/details?id=com.getfom.app",
+    },
+    image: "/images/projects/fom-order-manager/logo.png",
+  },
+  {
     id: "cannopy-pos",
     slug: "cannopy-pos",
     name: "Cannopy POS",

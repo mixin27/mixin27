@@ -1,0 +1,315 @@
+---
+title: "FOM Order Manager"
+description: "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging"
+date: "2026-07-19"
+tech: ["React", "Next.js", "Flutter", "NestJS", "PostgreSQL", "Docker"]
+live: "https://play.google.com/store/apps/details?id=com.getfom.app"
+status: "completed"
+image: "/images/projects/fom-order-manager/logo.png"
+---
+
+A comprehensive, production-grade e-commerce monorepo solution built for **Facebook-first shops** in emerging markets (such as Southeast Asia/Myanmar). It enables shop owners to manage the complete lifecycle of social commerce operations—combining order creation, customer messaging via a unified social inbox, offline-ready mobile delivery tracking, and merchant payment reconciliation into a unified ecosystem.
+
+---
+
+## 🚀 Key Project Metadata
+
+- **Project Type**: Full-Stack SaaS E-Commerce Platform (Mobile, Web, & API Backend)
+- **Monorepo Tooling**: Turborepo & `pnpm` workspaces
+- **Primary Stack**: NestJS 11, Next.js 16, Flutter 3.24+, Prisma 7, PostgreSQL 16, Redis 7.4, Docker
+- **Live Demo Page**: [getfom.com](https://getfom.com)
+- **Production Status**: Production-Ready with CI/CD automation and local containerized staging
+
+---
+
+## 🎯 Executive Summary & Problem Space
+
+In many developing markets, social media platforms like **Facebook** serve as the primary storefront for small-to-medium retail businesses. Businesses list products via posts, interact with customers via Facebook Messenger, and negotiate payments manually through bank screenshot uploads.
+
+However, this chat-first workflow introduces severe operational friction:
+
+1. **Disconnected Silos**: Customer conversations, order details, invoices, and payment statuses are spread across different messaging platforms, notebooks, or spreadsheets.
+2. **Payment Fraud & Manual Verification**: Reconciling dozens of bank transfer screenshot uploads daily is slow and prone to errors or fraud.
+3. **Poor Connectivity**: Delivery personnel and shop managers lose access to crucial business data in low-bandwidth or offline zones.
+
+**FOM Platform** addresses these challenges by consolidating social storefront chat streams into a **Unified Inbox**, standardizing order entries, automating local QR-scan payment reconciliation, and running an offline-first Flutter mobile client.
+
+---
+
+## 🏗️ System Architecture
+
+FOM is architected as a modular monorepo with separation of concerns between client surfaces and backend infrastructure.
+
+<Mermaid
+  caption="System Architecture"
+  chart='graph TD
+    %% Clients
+    WebDashboard["Web Dashboard - Next.js 16 / React 19"]
+    MobileApp["Mobile App - Flutter 3.24 / Bloc"]
+
+    %% API & Realtime
+    APIGateway["API Gateway - NestJS 11 / Fastify"]
+    RealtimeSocket["Realtime Server - Socket.IO"]
+
+    %% Queues & Workers
+    BullQueue["Job and Event Queue - BullMQ"]
+
+    %% Database Layers
+    Postgres["PostgreSQL 16 - Primary Database"]
+    Redis["Redis 7.4 - Cache and PubSub"]
+
+    %% Local/Offline storage
+    Drift["Drift SQLite - Local Cache"]
+
+    %% Third-party integrations
+    MetaAPI["Meta Messenger API"]
+    TelegramAPI["Telegram Bot API"]
+    MMPayAPI["MyanMyanPay Gateway"]
+
+    %% Connections
+    WebDashboard -->|REST / WebSockets| APIGateway
+    WebDashboard -->|WebSockets| RealtimeSocket
+    MobileApp -->|REST / WebSockets| APIGateway
+    MobileApp -->|Sync Engine| Drift
+
+    APIGateway -->|Prisma ORM| Postgres
+    APIGateway -->|Job Dispatch| BullQueue
+    APIGateway -->|Caching and PubSub| Redis
+    RealtimeSocket -->|PubSub| Redis
+
+    %% Integration connections
+    APIGateway -->|Dynamic QR / Pay Intent| MMPayAPI
+    MetaAPI -->|Webhook Ingestion| APIGateway
+    TelegramAPI -->|Webhook Ingestion| APIGateway
+
+    %% Styles
+    style WebDashboard fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style MobileApp fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style APIGateway fill:#16a34a,stroke:#15803d,color:#fff
+    style RealtimeSocket fill:#16a34a,stroke:#15803d,color:#fff
+    style BullQueue fill:#16a34a,stroke:#15803d,color:#fff
+    style Postgres fill:#d97706,stroke:#b45309,color:#fff
+    style Redis fill:#d97706,stroke:#b45309,color:#fff
+    style Drift fill:#d97706,stroke:#b45309,color:#fff
+    style MetaAPI fill:#db2777,stroke:#be185d,color:#fff
+    style TelegramAPI fill:#db2777,stroke:#be185d,color:#fff
+    style MMPayAPI fill:#db2777,stroke:#be185d,color:#fff'
+/>
+
+---
+
+## 🛠️ Technology Stack Breakdown
+
+### Frontend & Clients
+
+| Technology       | Purpose                  | Version | Key Packages / Libraries                                                   |
+| :--------------- | :----------------------- | :------ | :------------------------------------------------------------------------- |
+| **Next.js**      | Web dashboard            | 16.1.6  | `@tanstack/react-query`, `@tanstack/react-table`, `zustand`, `recharts`    |
+| **React**        | UI rendering             | 19.2.4  | React hooks, context, state optimization                                   |
+| **Flutter**      | Mobile app (iOS/Android) | 3.24+   | `flutter_bloc` (v9), `drift_flutter` (v0.3), `dio` (v5), `go_router` (v17) |
+| **TypeScript**   | Type safety              | 5.9.3   | Unified types between API calls and web clients                            |
+| **Tailwind CSS** | Styling                  | 4.1.18  | Modern styling architecture                                                |
+
+### Backend & Infrastructure
+
+| Technology     | Purpose                 | Version | Key Packages / Libraries                          |
+| :------------- | :---------------------- | :------ | :------------------------------------------------ |
+| **NestJS**     | API server framework    | 11.x    | `@nestjs/common`, Fastify Adapter, Socket.IO      |
+| **PostgreSQL** | Primary relational DB   | 16.x    | Structured storage, foreign key indices           |
+| **Redis**      | Cache, Pub/Sub & queues | 7.4     | Caching API responses, Socket.IO adapter          |
+| **Prisma**     | Database ORM            | 7.x     | Schema migrations, type-safe queries              |
+| **Socket.IO**  | Real-time events        | 4.x     | Persistent connection, live state synchronization |
+
+### DevOps & Tooling
+
+| Technology           | Purpose                                                   |
+| :------------------- | :-------------------------------------------------------- |
+| **Docker / Compose** | Containerization and local staging environments           |
+| **GitHub Actions**   | CI/CD pipelines (Build, Lint, Test, Deploy)               |
+| **Caddy**            | Reverse proxy, static asset delivery, and SSL termination |
+| **Turborepo / pnpm** | Monorepo pipeline scheduling and workspace isolation      |
+
+---
+
+## 💡 Key Engineering Accomplishments
+
+### 1. Extensible Webhook Channel Abstraction
+
+Instead of hardcoding Meta Messenger integrations, the codebase features a provider-agnostic messaging architecture. Custom webhooks ingest messages from multiple channels (Messenger, Telegram, and future Viber support) and normalize them before persisting:
+
+- **Unified Inbox Handler**: Adapters map incoming raw webhooks to a standard `ChannelInboundEvent` interface.
+- **Queue-Backed Processing**: Webhooks are ingested instantly and placed into a Redis/BullMQ queue to prevent drops due to burst traffic.
+- **Normalized DB Schema**: Standardized message records are automatically linked to customer profiles based on verified identifiers (phone numbers, user profiles).
+
+### 2. Offline-First Mobile Synchronization Engine
+
+To handle spotty mobile connections, the Flutter application leverages an offline-first database approach:
+
+- **Local DB (Drift/SQLite)**: Complete transactional data (orders, customers, delivery queues) is cached locally on the device.
+- **Background Sync Queue**: Operations executed offline are serialized into a sync queue.
+- **Smart Conflict Resolution**: When the client reconnects, the engine synchronizes the pending changes with the API server, applying merge strategies based on transaction timestamps.
+
+### 3. Automated Local QR Merchant Payments
+
+FOM automates order validation and decreases merchant transaction verification overhead by integrating with **MyanMyanPay** (supporting KBZPay, Wave, AYA Pay, etc.):
+
+- **Dynamic QR Codes**: Generating unique, time-sensitive QR codes with embedded metadata (order ID and expected exact amount) via `MMPaySDK`.
+- **Callback Signature Verification**: Securing the incoming payment webhooks by calculating HMAC signatures using the secret merchant keys.
+- **State Machine Transitions**: Automatically updating the Order status to `Confirmed` and logging the payment transaction ID upon receiving valid payment callbacks.
+
+### 4. Database-Backed Role-Based Access Control (RBAC)
+
+Designed a secure authorization system enabling fine-grained control:
+
+- **Multi-Tenant Hierarchy**: Users belong to shops through membership associations.
+- **JW-Token Payload Inflation**: Shop memberships, user permissions, and active roles are compiled directly into JWT access tokens. This prevents redundant database queries during client requests while maintaining real-time UI customization.
+
+---
+
+## 📱 Product Features & Interface Details
+
+### Web Dashboard Pages
+
+| Page           | Description          | Key Capabilities                                                 |
+| :------------- | :------------------- | :--------------------------------------------------------------- |
+| **Dashboard**  | Business Overview    | Sales statistics, order counts, visual charting with `recharts`  |
+| **Orders**     | Order Management     | Filterable order tables, bulk status updates, invoice generation |
+| **Customers**  | Customer Database    | Customer profiles, transaction logs, channel identifiers         |
+| **Staff**      | Team Management      | Invitation codes, role assignments, audit logs                   |
+| **Deliveries** | Delivery Operations  | Assign drivers, plan routes, track package dispatches            |
+| **Templates**  | Message Templates    | Preset replies for fast checkout links, FAQs                     |
+| **Reports**    | Analytics & Insights | Daily/Weekly/Monthly income reports and PDF exports              |
+
+### Mobile App Screens
+
+| Screen           | Description       | Offline Capabilities                                         |
+| :--------------- | :---------------- | :----------------------------------------------------------- |
+| **Dashboard**    | Mobile Overview   | Display cached metrics and quick action shortcuts            |
+| **Orders**       | Order Manager     | Create draft orders offline; auto-sync when network returns  |
+| **Order Detail** | Detail Sheet      | Local invoice viewer, status transitions, signature capture  |
+| **Inbox**        | Unified Messaging | Read and write messages stored locally; queue outbound texts |
+| **Deliveries**   | Delivery Tracking | Signature capture, photos, offline driver confirmation       |
+
+### Role-Based Access Control Matrix
+
+| Role        | Permissions                                                        | System Scope        |
+| :---------- | :----------------------------------------------------------------- | :------------------ |
+| **Owner**   | Full access, subscription billing, staff management, shop deletes  | Tenant Owner        |
+| **Admin**   | Read/write all business records, invite staff, manage integrations | Tenant Admin        |
+| **Manager** | Read/write orders, view customers, read reports, manage inventory  | Operational Manager |
+| **Staff**   | View orders, handle chat inbox, update order status                | Operational Staff   |
+
+---
+
+## 🗃️ Database Schema & Scale
+
+The database uses PostgreSQL managed via Prisma. Database indexes are placed on foreign keys (`shopId`, `customerId`, `orderId`) to support swift querying under large workloads.
+
+### Core Schema Associations
+
+- `shops` has a many-to-many relationship with `users` via the `memberships` table.
+- `shops` has a one-to-many relationship with `orders`, `customers`, `products`, and `channel_connections`.
+- `orders` has a one-to-many relationship with `order_items`, `deliveries`, and `payments`.
+- `channel_connections` has a one-to-many relationship with `channel_threads`, which maps to `channel_messages`.
+
+### Key Tables & Target Database Scale
+
+| Table Name  | Description                   | Target Record Vol. |
+| :---------- | :---------------------------- | :----------------- |
+| `shops`     | Registered shop accounts      | ~1,000             |
+| `users`     | Staff and owner accounts      | ~5,000             |
+| `orders`    | Transaction and order records | ~100,000           |
+| `customers` | Customer profiling data       | ~50,000            |
+| `products`  | Product listings              | ~10,000            |
+
+---
+
+## 🔌 API Endpoints Reference
+
+### Authentication Services
+
+| Method | Endpoint                | Description                                  |
+| :----- | :---------------------- | :------------------------------------------- |
+| POST   | `/api/v1/auth/register` | Register email/password                      |
+| POST   | `/api/v1/auth/login`    | Sign in & generate JWT access/refresh tokens |
+| POST   | `/api/v1/auth/refresh`  | Rotate access token                          |
+| POST   | `/api/v1/auth/logout`   | Invalidate refresh token session             |
+
+### Order Processing Services
+
+| Method | Endpoint             | Description                                                 |
+| :----- | :------------------- | :---------------------------------------------------------- |
+| GET    | `/api/v1/orders`     | Fetch paginated orders list (filterable by status/customer) |
+| POST   | `/api/v1/orders`     | Create a new order with line items                          |
+| GET    | `/api/v1/orders/:id` | Retrieve single order details                               |
+| PATCH  | `/api/v1/orders/:id` | Update order details / change statuses                      |
+
+### Customer Relationship Services
+
+| Method | Endpoint                | Description                                    |
+| :----- | :---------------------- | :--------------------------------------------- |
+| GET    | `/api/v1/customers`     | Query customer records (supports search index) |
+| POST   | `/api/v1/customers`     | Register new customer profiles                 |
+| GET    | `/api/v1/customers/:id` | Retrieve customer profile and history          |
+| PATCH  | `/api/v1/customers/:id` | Edit customer tags or information              |
+
+---
+
+## 🔒 Security, Compliance, & Performance
+
+### Security Guardrails
+
+- **Data Encryption**: Merchant tokens and Facebook page credentials are encrypted in PostgreSQL using AES-256-GCM.
+- **Payload Validation**: Inputs verified on backend endpoints using Zod schema structures to prevent SQL injections.
+- **Access Control**: Active route guards evaluate roles and permissions stored securely inside JWT payloads.
+
+### Compliance Standards
+
+- **GDPR & CCPA**: User profile deletion procedures and data portability capabilities are built into account settings.
+- **PCI DSS**: Payments are routed directly via Stripe (for subscriptions) and secure APIs (MyanMyanPay), keeping payment token details off internal servers.
+
+### Performance Indicators
+
+| Metric                           | Benchmark Target   | Achieved / Actual |
+| :------------------------------- | :----------------- | :---------------- |
+| **API Response Time**            | $\le 200\text{ms}$ | $150\text{ms}$    |
+| **Lighthouse Performance Score** | $\ge 90$           | $95$              |
+| **First Contentful Paint (FCP)** | $\le 1.5\text{s}$  | $1.2\text{s}$     |
+| **Time to Interactive (TTI)**    | $\le 3.0\text{s}$  | $2.1\text{s}$     |
+| **Mobile App Cold Launch**       | $\le 2.0\text{s}$  | $1.8\text{s}$     |
+
+---
+
+## 🛠️ Key Technical Challenges & Solutions
+
+### Challenge 1: Real-Time Synchronization Across Platforms
+
+- **Problem**: Keeping Web Dashboards and Mobile applications in sync with customer messages and order updates in real-time.
+- **Solution**: Developed a persistent WebSocket layer using NestJS and Socket.IO. We used Redis as a Pub/Sub adapter to sync event states across container instances. On the mobile client, changes update Flutter state blocks (`flutter_bloc`) instantly without full-screen page refreshes.
+
+### Challenge 2: Client Synchronization in Low-Connectivity Regions
+
+- **Problem**: Delivery drivers frequently lose network coverage, leading to data loss during deliveries.
+- **Solution**: Deployed a local background queue in Flutter utilizing the `Drift` database. Every local mutation is logged as a pending task. When connectivity returns, a sync service transmits events, resolves data conflicts with timestamp merging, and updates local records.
+
+### Challenge 3: Extensible Message Webhook Scaling
+
+- **Problem**: High-volume chat streams during marketing campaigns could overwhelm the webhook endpoints.
+- **Solution**: Decoupled webhook ingestion from parsing. Inbound webhooks are immediately queued inside Redis using `BullMQ`. Worker threads process individual queue items asynchronously, ensuring the HTTP API remains available under load.
+
+---
+
+## 🔮 Future Enhancements
+
+- **Multi-Language Support (i18n)**: Out-of-the-box localizations for English and Burmese.
+- **AI-Powered Order Extraction**: LLM integrations to parse addresses and order details directly from unstructured customer chat messages.
+- **Inventory Integration**: Real-time stock alerts and warehouse sync features.
+- **Advanced POS Offline Integration**: Direct barcode scanning and offline print receipts on local mobile printers.
+
+---
+
+## 🔗 Project Links & Contact
+
+- **Demo Website**: [getfom.com](https://getfom.com)
+- **App Download**: [Google Play Store](https://play.google.com/store/apps/details?id=com.getfom.app)
+- **Contact Email**: contact@getfom.com

@@ -1,7 +1,25 @@
-import type { App } from "@/types";
+import type { App } from "@/types"
 
 export const apps: App[] = [
   // ── PRODUCTIVITY ──────────────────────────────────────────
+  {
+    id: "fom-order-manager",
+    slug: "fom-order-manager",
+    name: "FOM Order Manager",
+    shortName: "FOM",
+    description:
+      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+    category: "productivity",
+    platform: "android",
+    status: "active",
+    packageId: "com.getfom.app",
+    links: {
+      playStore: "https://play.google.com/store/apps/details?id=com.getfom.app",
+      live: "https://getfom.com",
+      privacy: "/apps/fom-order-manager/privacy",
+    },
+    image: "/images/projects/fom-order-manager/logo.png",
+  },
   {
     id: "collectra",
     slug: "collectra",
@@ -45,8 +63,7 @@ export const apps: App[] = [
     slug: "beads-math",
     name: "Beads Math",
     shortName: "Beads Math",
-    description:
-      "Mobile application to improve maths calculation skills.",
+    description: "Mobile application to improve maths calculation skills.",
     category: "productivity",
     platform: "android",
     status: "active",
@@ -114,13 +131,13 @@ export const apps: App[] = [
     },
     image: "/images/projects/maun-news/logo.png",
   },
-];
+]
 
-export const totalApps = apps.length;
-export const activeApps = apps.filter((a) => a.status === "active").length;
+export const totalApps = apps.length
+export const activeApps = apps.filter((a) => a.status === "active").length
 export const androidApps = apps.filter(
   (a) => a.platform === "android" || a.platform === "both"
-).length;
+).length
 export const iosApps = apps.filter(
   (a) => a.platform === "ios" || a.platform === "both"
-).length;
+).length
