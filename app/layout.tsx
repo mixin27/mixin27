@@ -3,6 +3,8 @@ import { DM_Mono, Outfit, Syne } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { Metadata } from "next"
+import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { siteConfig } from "@/data/config"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
@@ -123,6 +125,8 @@ export default function RootLayout({
           <Footer />
           <BackToTop />
         </ThemeProvider>
+        <Analytics/>
+        <SpeedInsights/>
       </body>
     </html>
   )
