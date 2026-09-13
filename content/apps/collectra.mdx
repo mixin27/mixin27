@@ -1,150 +1,293 @@
 ---
 title: Privacy Policy for Collectra (Collection Tracker)
-updatedAt: 2026-02-23
-version: 1.0
+description: "Privacy Policy for the Collectra collection-tracking application."
+updatedAt: 2026-09-13
+version: 1.1
 ---
 
 # Privacy Policy
 
-This Privacy Policy explains how **Collectra** ("the App") collects, uses, and protects information.
+**Last updated: September 13, 2026**
 
-If you need legal certainty for your region and business model, have this policy reviewed by a qualified lawyer.
+This Privacy Policy explains how **Collectra** ("Collectra," "the App," "we," "us," or "our") handles information when you use the Collectra mobile application.
 
-## 1. Who We Are
+Collectra is provided by **Kyaw Zayar Tun**.
 
-Collectra is provided by **Kyaw Zayar Tun** ("we", "us", "our").
+- Website: [https://kyawzayartun.com](https://kyawzayartun.com)
+- Contact page: [https://kyawzayartun.com/contact](https://kyawzayartun.com/contact)
+- Email: [kyawzayartun.contact@gmail.com](mailto:kyawzayartun.contact@gmail.com)
 
-- Website: `https://kyawzayartun.com/contact
-- Contact: `kyawzayartun.contact@gmail.com`
+## 1. Overview
 
-## 2. Information We Collect
+Collectra is an offline-first application for organizing personal collections.
 
-### 2.1 Information you provide in the app
+The current version does not require an account and does not provide cloud synchronization. Collection information you create is stored locally on your device unless you intentionally export or share it.
 
-- Collection and item data you create (for example: names, notes, tags, prices, loan records, metadata fields, and images you attach).
-- Account information when you choose to sign in (for example: email and profile fields supported by backend auth).
-- Data export/import files you choose to create or import.
+Collectra does not sell personal information, display third-party advertising, or track you across applications or websites owned by other companies.
 
-### 2.2 Information collected automatically
+## 2. Information Stored on Your Device
 
-Depending on settings and feature flags, the app may process:
+The App may store the following information locally:
 
-- Device and app diagnostics (Crashlytics crash data and device/app technical metadata).
-- App performance telemetry (Firebase Performance traces).
-- Usage analytics events (Firebase Analytics), only when enabled by consent/settings.
-- Push messaging tokens and delivery metadata (Firebase Cloud Messaging), only when notifications are enabled.
-- Runtime configuration state (Firebase Remote Config values used to enable/disable app features).
+- Collection names and descriptions
+- Item names, descriptions, notes, tags, barcodes, and metadata
+- Purchase prices, estimated values, and price history
+- Loan records
+- Favorite and wishlist selections
+- Photos you select or capture
+- App preferences, including language, theme, view settings, and consent choices
+- Notification preferences
+- Locally generated import and export data
+- Cached metadata and images
 
-### 2.3 Information not collected by default
+This information remains on your device unless you explicitly use an export, share, backup, or other system feature that sends it to a destination you select.
 
-- The app can be used offline without mandatory account registration.
-- Cloud sync and backend-connected features are optional and can be disabled by runtime feature flags.
+We cannot access locally stored collection data remotely.
 
-## 3. How We Use Information
+## 3. Accounts and Cloud Synchronization
 
-We use data to:
+The current public version of Collectra does not offer user accounts or cloud synchronization.
 
-- Provide core app features (collection management, value tracking, tag management, loan tracking, import/export).
-- Keep app functionality reliable and secure.
-- Diagnose crashes and improve app performance.
-- Understand feature usage (if analytics is enabled).
-- Deliver push notifications that you opt into.
-- Support optional authenticated features such as cloud sync.
+Because no Collectra account is created, we do not collect account registration information such as your name, email address, or password, and there is no server-side Collectra account to delete.
 
-## 4. Legal Bases (where applicable)
+If account or cloud synchronization features are introduced in a future version, this Privacy Policy will be updated before those features are made available.
 
-Depending on your location, we rely on one or more legal bases:
+## 4. Information Processed Automatically
 
-- Consent (for analytics and notifications where required).
-- Performance of a contract (to provide app functionality you request).
-- Legitimate interests (service reliability, fraud prevention, and product improvement).
-- Legal obligations (if disclosure is required by law).
+Collectra uses certain Firebase services to understand app reliability, performance, and feature usage.
 
-## 5. Third-Party Services and Processors
+### 4.1 Firebase Analytics
 
-Collectra may use:
+With your consent, Collectra may use Firebase Analytics to process information such as:
 
-- **Firebase Analytics**
-- **Firebase Crashlytics**
-- **Firebase Performance Monitoring**
-- **Firebase Cloud Messaging**
-- **Firebase Remote Config**
-- Optional custom backend APIs for authentication and cloud sync
+- App launches and sessions
+- Screens or features used
+- General interaction events
+- App version
+- Device model and operating-system version
+- Language and general region
+- Firebase installation or vendor identifiers
+- General technical information about the App
 
-These providers may process data according to their own policies and data processing terms.
+We do not intentionally include collection names, item names, notes, photos, barcodes, prices, loan details, or other user-created collection content in analytics events.
 
-## 6. Data Sharing
+Analytics collection can be accepted, declined, or disabled from the App's settings. Collectra does not use Firebase Analytics for third-party advertising or cross-app tracking.
 
-We do not sell personal data.
+### 4.2 Firebase Crashlytics
 
-We may share data only:
+Collectra uses Firebase Crashlytics to identify crashes and improve stability. Crash reports may include:
 
-- With service providers/processors that operate app infrastructure.
-- When required by law, regulation, subpoena, or legal process.
-- To protect rights, safety, security, and prevent abuse.
-- As part of a business transfer (for example merger/acquisition), with appropriate safeguards.
+- Crash stack traces and error information
+- App version and bundle identifier
+- Device model, architecture, and operating-system version
+- Available memory and storage information
+- App state at the time of a crash
+- Crashlytics and Firebase installation identifiers
+- Time and technical context of the crash
 
-## 7. Data Storage and Retention
+We do not intentionally attach collection content, photos, notes, barcodes, or other user-created data to crash reports.
 
-- Local app data is stored on your device until deleted by you or removed by uninstall.
-- Account/session data may be stored in secure storage on device.
-- Diagnostics/analytics/performance data retention depends on provider settings (for example Firebase retention policies).
-- Backend-synced data (if enabled) is retained according to backend policies.
+According to Firebase's published service information, Crashlytics generally retains crash reports and associated identifiers for 90 days before beginning removal from live and backup systems.
 
-## 8. Your Choices and Controls
+### 4.3 Firebase Performance Monitoring
+
+Collectra may use Firebase Performance Monitoring to measure application startup time, screen performance, and network reliability. This may include:
+
+- Firebase installation and session identifiers
+- Device model, operating system, language, and app version
+- General network type and country derived from an IP address
+- Performance timings
+- Network request URLs without request parameters or payload contents
+- Response codes, response times, and payload sizes
+
+Firebase states that IP-associated performance events are generally retained for 30 days and installation-associated or de-identified performance data for 60 days before removal begins.
+
+### 4.4 Firebase Remote Config
+
+Collectra uses Firebase Remote Config to receive configuration values, such as whether a feature is available. Firebase may process technical service information, including a Firebase installation identifier, IP address, app version, and configuration-request information.
+
+Remote Config does not receive the contents of your collections.
+
+### 4.5 Firebase Cloud Messaging
+
+If push notifications are made available and you choose to enable them, Firebase Cloud Messaging may process:
+
+- A Firebase installation identifier
+- A push-notification token
+- App and device information needed to deliver notifications
+- Notification delivery information
+
+You can decline notification permission or disable notifications through Collectra's settings or your device settings.
+
+## 5. Metadata Search Services
+
+Collectra can retrieve public information about books, movies, television programs, and video games from third-party metadata providers.
+
+Depending on the type of item you search for, Collectra may contact:
+
+- Google Books
+- The Movie Database ("TMDB")
+- Internet Game Database ("IGDB")
+- Twitch authentication services used by IGDB
+
+When you perform a metadata search or barcode lookup, the App may send the relevant search term, title, ISBN, barcode, or public item identifier to the appropriate provider.
+
+These providers may also receive technical information normally transmitted during an internet request, such as your IP address, request time, device network information, and request headers.
+
+Collectra does not send your complete collection database, notes, loan records, prices, or unrelated photos to metadata providers. Images supplied by metadata services, such as book covers, movie posters, or game artwork, may be downloaded directly from the provider's image servers.
+
+Use of these services is subject to their respective policies:
+
+- [Google Privacy Policy](https://policies.google.com/privacy)
+- [Google Books API documentation](https://developers.google.com/books)
+- [TMDB Privacy Policy](https://www.themoviedb.org/privacy-policy)
+- [TMDB API Terms of Use](https://www.themoviedb.org/api-terms-of-use)
+- [Twitch Privacy Notice](https://www.twitch.tv/p/en/legal/privacy-notice/)
+- [IGDB API documentation](https://api-docs.igdb.com/)
+
+## 6. Camera, Photos, and Files
+
+Collectra may request access to:
+
+### Camera
+
+Camera access is used when you choose to scan a barcode or capture a photo for a collection item.
+
+### Photo library
+
+Photo-library access is used when you choose to select or save an image.
+
+### Files
+
+File access is used when you choose to import collection data or export a backup.
+
+Collectra only requests these permissions when needed for the relevant feature. You can deny or revoke access through your device settings. Denying a permission prevents the related feature from working but does not prevent you from using unrelated parts of the App.
+
+## 7. Exports and Sharing
+
+When you export or share information, Collectra creates a file containing the data you selected and passes it to the operating system's file picker or share interface.
+
+The destination application or service you choose may receive and process that exported file according to its own privacy policy. We do not control how a third-party destination handles information you intentionally send to it.
+
+Exported files remain under your control and may continue to exist until you delete them from your device, cloud-storage provider, messaging application, or other selected destination.
+
+## 8. How We Use Information
+
+Information processed through the App and its service providers is used to:
+
+- Provide collection-management features
+- Retrieve requested public metadata
+- Save your preferences
+- Diagnose crashes and technical problems
+- Measure and improve performance
+- Understand feature usage when you consent to analytics
+- Deliver notifications when enabled
+- Prevent abuse and maintain service security
+- Comply with applicable legal obligations
+
+We do not use your information to build advertising profiles or sell it to data brokers.
+
+## 9. Data Sharing
+
+We may share limited technical information with service providers only as necessary to provide the functions described in this policy.
+
+These providers include Google Firebase and the metadata providers listed above.
+
+We may also disclose information when reasonably necessary to:
+
+- Comply with applicable law or a valid legal request
+- Protect the rights, safety, and security of users or others
+- Investigate fraud, abuse, or security incidents
+- Complete a business transfer, subject to appropriate safeguards
+
+We do not sell or rent personal information.
+
+## 10. Data Retention and Deletion
+
+### Local data
+
+Collection data and preferences stored locally remain on your device until you:
+
+- Delete individual items or collections
+- Clear the App's data
+- Delete exported files
+- Uninstall the App
+
+### Analytics and diagnostics
+
+Firebase retains analytics, crash, performance, installation, and service information according to the applicable Firebase or Google settings and retention policies.
+
+Current Firebase service-retention information is available at:
+
+[Privacy and Security in Firebase](https://firebase.google.com/support/privacy)
+
+### Deletion requests
+
+Because the current version does not create a Collectra account or upload your collection database to a Collectra backend, we generally cannot identify or remotely delete data stored only on your device.
+
+For questions or requests involving information processed through our Firebase project, contact us at [kyawzayartun.contact@gmail.com](mailto:kyawzayartun.contact@gmail.com). We may need information from you to verify and process a request.
+
+## 11. Your Choices
 
 You can:
 
-- Use the app without signing in for non-auth features.
-- Enable or disable analytics collection in app settings.
-- Enable or disable notification permissions at OS/app level.
-- Export your data for backup.
-- Request account-related data deletion where account features are used.
+- Use the core App without creating an account
+- Accept or decline analytics collection
+- Disable analytics in the App's settings
+- Decline or revoke camera, photo, file, and notification permissions
+- Delete local collection information
+- Delete exported files
+- Uninstall the App
+- Contact us regarding privacy questions or applicable data rights
 
-## 9. Account Deletion and Data Deletion Requests
+## 12. International Data Processing
 
-If you use account features, you can submit an account deletion request from the app (if implemented) or by contacting **kyawzayartun.contact@gmail.com**.
+Firebase and metadata providers may process information in countries other than the country where you live.
 
-Deletion request notes:
+These countries may have different data-protection laws. Service providers process information according to their applicable terms, privacy policies, and legal obligations.
 
-- Some data may be retained temporarily for legal, fraud-prevention, or operational reasons.
-- Backups may persist for a limited retention window.
-- After deletion is complete, account-linked cloud data generally cannot be restored.
+## 13. Data Security
 
-## 10. International Data Transfers
+We use reasonable technical and organizational safeguards appropriate to the nature of the information processed.
 
-Your data may be processed in countries other than your own. Where required, we apply safeguards such as contractual protections for cross-border transfer.
+Local collection information is protected by the security controls provided by your device and operating system. We recommend using a device passcode, biometric protection where available, current operating-system updates, and secure handling of exported files.
 
-## 11. Children’s Privacy
+No storage or transmission system can be guaranteed to be completely secure.
 
-Collectra is not directed to children under 13 (or the minimum age in your jurisdiction). If you believe a child submitted personal data, contact **kyawzayartun.contact@gmail.com** to request removal.
+## 14. Children's Privacy
 
-## 12. Security
+Collectra is not directed specifically to children under 13 or the minimum applicable age in their country.
 
-We use reasonable technical and organizational measures to protect data. No method of storage or transmission is 100% secure, and absolute security cannot be guaranteed.
+We do not knowingly collect personal information directly from children through an account system because the current version does not provide accounts. Firebase services may process limited technical information as described in this policy.
 
-## 13. Your Privacy Rights
+If you believe information relating to a child has been processed inappropriately, contact us at [kyawzayartun.contact@gmail.com](mailto:kyawzayartun.contact@gmail.com).
 
-Depending on applicable law (for example GDPR/CCPA equivalents), you may have rights to:
+## 15. Your Privacy Rights
 
-- Access data
-- Correct inaccurate data
-- Delete data
-- Restrict or object to processing
-- Data portability
-- Withdraw consent (where processing is consent-based)
+Depending on where you live, you may have rights concerning personal information, including rights to:
 
-To exercise rights, contact **kyawzayartun.contact@gmail.com**.
+- Request access
+- Request correction
+- Request deletion
+- Object to or restrict certain processing
+- Withdraw consent
+- Request data portability
+- Lodge a complaint with an appropriate data-protection authority
 
-## 14. Changes to This Policy
+These rights may be subject to legal limitations. To submit a request, contact [kyawzayartun.contact@gmail.com](mailto:kyawzayartun.contact@gmail.com).
 
-We may update this Privacy Policy from time to time. We will update the "lastUpdated" date and may provide additional notice where required.
+## 16. Changes to This Policy
 
-## 15. Contact
+We may update this Privacy Policy when the App, its service providers, or applicable requirements change.
 
-For privacy questions or requests:
+The updated policy will be published at this URL with a revised "Last updated" date. If a change materially affects how information is processed, we may provide additional notice in the App or request consent when required.
 
-- Email: **kyawzayartun.contact@gmail.com**
-- Website: **https://kyawzayartun.com/**
-- Entity: **Kyaw Zayar Tun**
-- Jurisdiction: **Myanmar**
+## 17. Contact
+
+For privacy questions or requests, contact:
+
+**Kyaw Zayar Tun**
+
+- Email: [kyawzayartun.contact@gmail.com](mailto:kyawzayartun.contact@gmail.com)
+- Website: [https://kyawzayartun.com](https://kyawzayartun.com)
+- Contact page: [https://kyawzayartun.com/contact](https://kyawzayartun.com/contact)
