@@ -16,6 +16,7 @@ export interface Project {
   links: {
     github?: string;
     playStore?: string;
+    appStore?: string;
     pubDev?: string;
     releases?: string;
     demo?: string;

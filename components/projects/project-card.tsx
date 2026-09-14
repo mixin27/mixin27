@@ -122,6 +122,19 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           </a>
         )}
 
+        {project.links.appStore && (
+          <a
+            href={project.links.appStore}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`${project.name} on Play Store`}
+            className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground/80 transition-colors hover:text-foreground"
+          >
+            App Store
+            <ExternalLinkIcon className="size-3" />
+          </a>
+        )}
+
         {project.links.releases && (
           <a
             href={project.links.releases}

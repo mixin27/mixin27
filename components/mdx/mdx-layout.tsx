@@ -34,6 +34,8 @@ export function MdxLayout({
     tech,
     github,
     live,
+    playStore,
+    appStore,
     status,
     lastReviewed,
     image,
@@ -121,7 +123,7 @@ export function MdxLayout({
             </div>
 
             {/* Project-specific links */}
-            {variant === "project" && (github || live) && (
+            {variant === "project" && (github || live || appStore || playStore) && (
               <div className="mt-5 flex flex-wrap gap-3">
                 {github && (
                   <a
@@ -141,6 +143,28 @@ export function MdxLayout({
                     className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
                   >
                     Live site ↗
+                  </a>
+                )}
+
+                {playStore && (
+                  <a
+                    href={playStore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-green-900 px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    Play Store ↗
+                  </a>
+                )}
+
+                {appStore && (
+                  <a
+                    href={appStore}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  >
+                    App Store ↗
                   </a>
                 )}
                 {status && <StatusBadge status={status} />}

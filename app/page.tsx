@@ -68,8 +68,8 @@ export default function HomePage() {
         aria-labelledby="hero-heading"
       >
         <div className="pointer-events-none absolute inset-0 bg-grid opacity-60" />
-        <div className="pointer-events-none absolute -top-24 -right-24 size-[520px] rounded-full bg-(--app-accent-glow) blur-[120px]" />
-        <div className="pointer-events-none absolute bottom-10 left-[8%] size-[280px] rounded-full bg-(--app-accent-glow) opacity-70 blur-[110px]" />
+        <div className="pointer-events-none absolute -top-24 -right-24 size-130 rounded-full bg-(--app-accent-glow) blur-[120px]" />
+        <div className="pointer-events-none absolute bottom-10 left-[8%] size-70 rounded-full bg-(--app-accent-glow) opacity-70 blur-[110px]" />
 
         <div className="relative mx-auto grid max-w-7xl gap-16 px-6 lg:min-h-[calc(100vh-8rem)] lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
           <div>
@@ -242,14 +242,14 @@ export default function HomePage() {
             Work <span className="app-gradient-text">Experience</span>
           </h2>
 
-          <div className="mt-12 max-w-[640px]">
+          <div className="mt-12 max-w-160">
             <div className="relative pl-8 before:absolute before:top-0 before:bottom-0 before:left-0 before:w-px before:bg-[linear-gradient(to_bottom,var(--app-accent-primary),transparent)]">
               {experience.map((item) => (
                 <div
                   key={`${item.company}-${item.period}`}
                   className="relative pb-10"
                 >
-                  <span className="absolute top-1 left-[-37px] size-2.5 rounded-full bg-(--app-accent-primary) shadow-[0_0_12px_var(--app-accent-primary)]" />
+                  <span className="absolute top-1 -left-9.25 size-2.5 rounded-full bg-(--app-accent-primary) shadow-[0_0_12px_var(--app-accent-primary)]" />
                   <p className="mb-2 font-mono text-[11px] tracking-widest text-(--app-accent-primary) uppercase">
                     {item.period}
                   </p>
@@ -273,18 +273,18 @@ export default function HomePage() {
         className="relative overflow-hidden py-20 sm:py-24"
         aria-labelledby="cta-heading"
       >
-        <div className="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--app-accent-glow) blur-[100px]" />
+        <div className="pointer-events-none absolute top-1/2 left-1/2 h-75 w-150 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--app-accent-glow) blur-[100px]" />
         <div className="relative mx-auto max-w-3xl px-6 text-center">
           <SectionLabel className="mb-4 justify-center">
             Let&apos;s Build
           </SectionLabel>
           <h2
             id="cta-heading"
-            className="mx-auto max-w-[600px] font-heading text-[clamp(2.15rem,5vw,3.2rem)] leading-[1.05] tracking-[-0.03em]"
+            className="mx-auto max-w-150 font-heading text-[clamp(2.15rem,5vw,3.2rem)] leading-[1.05] tracking-[-0.03em]"
           >
             Have a <span className="app-gradient-text">Project</span> in Mind?
           </h2>
-          <p className="mx-auto mt-5 max-w-[460px] text-[1.02rem] leading-8 text-(--app-text-secondary)">
+          <p className="mx-auto mt-5 max-w-115 text-[1.02rem] leading-8 text-(--app-text-secondary)">
             I&apos;m available for freelance projects and collaborations.
             Let&apos;s turn your idea into a beautiful mobile experience.
           </p>

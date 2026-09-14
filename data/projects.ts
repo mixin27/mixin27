@@ -16,6 +16,7 @@ export const projects: Project[] = [
     links: {
       live: "https://getfom.com",
       playStore: "https://play.google.com/store/apps/details?id=com.getfom.app",
+      appStore: "https://apps.apple.com/us/app/fom-order-manager/id6808275627",
     },
     image: "/images/projects/fom-order-manager/logo.png",
   },
@@ -37,7 +38,10 @@ export const projects: Project[] = [
       "retail",
     ],
     featured: true,
-    links: {},
+    links: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.cannopypos.retail",
+    },
     image: "/images/projects/cannopy/logo.png",
   },
   {
@@ -73,6 +77,8 @@ export const projects: Project[] = [
     featured: true,
     links: {
       github: "https://github.com/mixin27/collection_tracker",
+      playStore:
+        "https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker",
       releases: "https://github.com/mixin27/collection_tracker/releases/latest",
     },
     image: "/images/projects/collectra/logo.png",
@@ -122,6 +128,8 @@ export const projects: Project[] = [
     featured: true,
     links: {
       github: "https://github.com/mixin27/mmcalendar",
+      playStore:
+        "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
       releases: "https://github.com/mixin27/mmcalendar/releases/latest",
     },
     image: "/images/projects/myanmar-calendar/logo.png",
