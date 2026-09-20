@@ -96,7 +96,12 @@ export async function getAllContent(type: "blog" | "projects" | "apps") {
     return [];
   }
 
-  const mdxFiles = files.filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+  const mdxFiles = files.filter(
+    (f) =>
+      (f.endsWith(".mdx") || f.endsWith(".md")) &&
+      // Keep reusable policy templates out of published routes and counts.
+      !(type === "apps" && f === "template.mdx")
+  );
 
   const items = await Promise.all(
     mdxFiles.map(async (filename) => {

@@ -11,8 +11,11 @@ export interface Frontmatter {
   tech?: string[]
   github?: string
   live?: string
+  demo?: string
   playStore?: string
   appStore?: string
+  pubDev?: string
+  releases?: string
   status?: "completed" | "in-progress" | "archived"
   lastReviewed?: string
   version?: string

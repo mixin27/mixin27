@@ -41,6 +41,7 @@ export const projects: Project[] = [
     links: {
       playStore:
         "https://play.google.com/store/apps/details?id=com.cannopypos.retail",
+      appStore: "https://apps.apple.com/mm/app/cannopy-pos/id6808059928",
     },
     image: "/images/projects/cannopy/logo.png",
   },
@@ -116,8 +117,8 @@ export const projects: Project[] = [
     image: "/images/projects/finance-wallet/logo.png",
   },
   {
-    id: "mynmar-calendar",
-    slug: "mynmar-calendar",
+    id: "myanmar-calendar",
+    slug: "myanmar-calendar",
     name: "Myanmar Calendar",
     shortDesc:
       "A modern Myanmar calendar app with calendar views, astrology, events, conversion tools, and printable calendar generation.",
@@ -146,6 +147,8 @@ export const projects: Project[] = [
     featured: true,
     links: {
       github: "https://github.com/mixin27/vs-live-flutter",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.billion.sport_live",
     },
     image: "/images/projects/billion-sport-live/logo.png",
   },
@@ -175,7 +178,10 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["flashcard", "abacus", "text-to-speech"],
     featured: true,
-    links: {},
+    links: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=tech.kbw.beads_math",
+    },
     image: "/images/projects/beads-math/logo.png",
   },
   {
@@ -355,7 +361,10 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["maun", "news", "article"],
     featured: false,
-    links: {},
+    links: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.maun.news_mobile",
+    },
     image: "/images/projects/maun-news/logo.png",
   },
   {
@@ -399,7 +408,10 @@ export const projects: Project[] = [
     category: "android",
     tags: ["branch", "management", "g&g"],
     featured: false,
-    links: {},
+    links: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.systematic.gng_live",
+    },
     image: "/images/projects/grab-and-go/logo.png",
   },
   {
@@ -428,7 +440,11 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["farming", "farmer", "information"],
     featured: false,
-    links: {},
+    links: {
+      appStore: "https://apps.apple.com/us/app/armo-farmer/id1549131787",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.cluspedia.armo",
+    },
     image: "/images/projects/armo-farmer/logo.png",
   },
   {
@@ -439,9 +455,14 @@ export const projects: Project[] = [
     fullDesc:
       "An internal mobile application for Lucky Diamond Myanmar staff to manage and submit cash requests.",
     category: "flutter",
-    tags: ["luckydiamondmyanmar", "luckydiamondmyanmar", "mobile"],
+    tags: ["cash-requests", "workflows", "mobile"],
     featured: false,
-    links: {},
+    links: {
+      appStore:
+        "https://apps.apple.com/us/app/lucky-diamond-myanmar/id6444782470",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.systematic.lucky_diamond",
+    },
     image: "/images/projects/lucky-diamond-myanmar/logo.png",
   },
   {
@@ -454,7 +475,12 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["clinic", "hiv/aids", "test-kits"],
     featured: false,
-    links: {},
+    links: {
+      appStore:
+        "https://apps.apple.com/us/app/satecha-service-hub/id1638288355",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.systematic.cpi",
+    },
     image: "/images/projects/sate-cha-service/logo.png",
   },
   {
@@ -467,7 +493,11 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["cargo", "terminal", "forwarder"],
     featured: false,
-    links: {},
+    links: {
+      appStore: "https://apps.apple.com/us/app/mcs-service/id1513511820",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.systematic.mcs_service",
+    },
     image: "/images/projects/sky-cargo-terminal-service/logo.png",
   },
   {
@@ -480,7 +510,10 @@ export const projects: Project[] = [
     category: "flutter",
     tags: ["e-learning", "course"],
     featured: false,
-    links: {},
+    links: {
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.systematic.kudos",
+    },
     image: "/images/projects/kudos-to-you/logo.png",
   },
   {

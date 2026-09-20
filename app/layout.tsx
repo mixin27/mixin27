@@ -1,4 +1,4 @@
-import { DM_Mono, Outfit, Syne } from "next/font/google"
+import { Inter, JetBrains_Mono } from "next/font/google"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -11,14 +11,12 @@ import { Footer } from "@/components/layout/footer"
 import { BackToTop } from "@/components/layout/back-to-top"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-sans" })
-
-const headingFont = Syne({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-sans",
 })
 
-const fontMono = DM_Mono({
+const fontMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
   weight: ["300", "400", "500"],
@@ -75,7 +73,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(fontMono.variable, outfit.variable, headingFont.variable)}
+      className={cn(fontMono.variable, inter.variable)}
       data-scroll-behavior="smooth"
     >
         <head>

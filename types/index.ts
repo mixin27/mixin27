@@ -41,6 +41,7 @@ export interface App {
   packageId?: string;
   links: {
     playStore?: string;
+    appStore?: string;
     github?: string;
     privacy: string;
     live?: string;

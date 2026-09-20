@@ -12,10 +12,7 @@ export const siteConfig = {
   linkedin: "https://linkedin.com/in/kyaw-zayar-tun-7574a917a",
   twitter: "https://twitter.com/kyawzayartun98",
   twitterHandle: "@kyawzayartun98",
-  totalProjects: 28,
-  featuredProjects: 8,
-  totalApps: 6,
-  yearsExperience: 4,
+  yearsExperience: 5,
 } as const
 
 export const navItems: NavItem[] = [

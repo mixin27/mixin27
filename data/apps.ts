@@ -10,11 +10,12 @@ export const apps: App[] = [
     description:
       "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
     category: "productivity",
-    platform: "android",
+    platform: "both",
     status: "active",
     packageId: "com.getfom.app",
     links: {
       playStore: "https://play.google.com/store/apps/details?id=com.getfom.app",
+      appStore: "https://apps.apple.com/us/app/fom-order-manager/id6808275627",
       live: "https://getfom.com",
       privacy: "/apps/fom-order-manager/privacy",
     },
@@ -109,6 +110,8 @@ export const apps: App[] = [
     status: "active",
     links: {
       github: "https://github.com/mixin27/vs-live-flutter",
+      playStore:
+        "https://play.google.com/store/apps/details?id=com.billion.sport_live",
       privacy: "/apps/billion-sport-live/privacy",
     },
     image: "/images/projects/billion-sport-live/logo.png",

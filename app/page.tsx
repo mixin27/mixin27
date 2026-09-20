@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { siteConfig, experience } from "@/data/config"
-import { featuredProjects } from "@/data/projects"
+import { featuredProjects, totalProjects } from "@/data/projects"
 import { ProjectCard } from "@/components/projects/project-card"
 import { SectionLabel } from "@/components/ui/section-label"
 import { Badge } from "@/components/ui/badge"
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 const companyCount = new Set(experience.map((item) => item.company)).size
 
 const heroStats = [
-  { value: `${siteConfig.totalProjects}+`, label: "Total Projects" },
-  { value: siteConfig.featuredProjects.toString(), label: "Featured" },
+  { value: totalProjects.toString(), label: "Total Projects" },
+  { value: featuredProjects.length.toString(), label: "Featured" },
   { value: `${siteConfig.yearsExperience}+`, label: "Years Exp" },
   { value: companyCount.toString(), label: "Companies" },
 ]
@@ -206,7 +206,7 @@ export default function HomePage() {
               href="/projects"
               className="app-btn-outline inline-flex items-center gap-2 rounded-xl px-7 py-4 font-heading text-sm font-semibold text-foreground transition-all"
             >
-              View All {siteConfig.totalProjects} Projects
+              View All {totalProjects} Projects
               <ArrowRightIcon className="size-4" />
             </Link>
           </div>

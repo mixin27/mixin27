@@ -96,6 +96,19 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           </a>
         )}
 
+        {(project.links.live || project.links.demo) && (
+          <a
+            href={project.links.live ?? project.links.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Visit ${project.name}`}
+            className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground/80 transition-colors hover:text-foreground"
+          >
+            Website
+            <ExternalLinkIcon className="size-3" />
+          </a>
+        )}
+
         {project.links.pubDev && (
           <a
             href={project.links.pubDev}
@@ -114,7 +127,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.playStore}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${project.name} on Play Store`}
+            aria-label={`${project.name} on the App Store`}
             className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground/80 transition-colors hover:text-foreground"
           >
             Play Store

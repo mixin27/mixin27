@@ -1,6 +1,6 @@
 import Link from "next/link"
+import Image from "next/image"
 import { GithubIcon, ExternalLinkIcon } from "@/components/ui/social-icons"
-import { AppPhoneIcon } from "@/components/ui/portfolio-icons"
 import type { App } from "@/types"
 import { cn } from "@/lib/utils"
 
@@ -22,9 +22,14 @@ export function AppCard({ app }: AppCardProps) {
     <article className="app-glass-card flex flex-col rounded-2xl p-6">
       {/* Header */}
       <div className="mb-4 flex items-start gap-4">
-        {/* App icon placeholder */}
-        <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-(--app-gradient-hero) text-(--app-accent-primary) shadow-[0_0_20px_var(--app-accent-glow)]">
-          <AppPhoneIcon className="size-7" />
+        <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border/80 bg-muted/30 p-1.5 shadow-[0_0_20px_var(--app-accent-glow)]">
+          <Image
+            src={app.image}
+            alt={`${app.name} icon`}
+            width={56}
+            height={56}
+            className="size-full object-contain"
+          />
         </div>
 
         <div className="min-w-0 flex-1">
@@ -54,18 +59,34 @@ export function AppCard({ app }: AppCardProps) {
       </p>
 
       {/* Store links */}
-      <div className="mb-5 flex items-center gap-3">
-        {app.links.playStore && (
-          <a
-            href={app.links.playStore}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted/60 px-3 py-1.5 font-mono text-[11px] text-muted-foreground transition-colors hover:border-foreground/15 hover:text-foreground"
-          >
-            Play Store
-            <ExternalLinkIcon className="size-3" />
-          </a>
-        )}
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        {[
+          { href: app.links.live, label: "Visit website", primary: true },
+          { href: app.links.playStore, label: "Google Play", primary: !app.links.live },
+          {
+            href: app.links.appStore,
+            label: "App Store",
+            primary: !app.links.live && !app.links.playStore,
+          },
+        ]
+          .filter((link): link is { href: string; label: string; primary: boolean } => Boolean(link.href))
+          .map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all",
+                link.primary
+                  ? "border-(--app-accent-primary) bg-(--app-accent-primary) text-white hover:-translate-y-0.5 hover:opacity-90"
+                  : "border-border bg-muted/60 text-foreground hover:border-(--app-accent-border)"
+              )}
+            >
+              {link.label}
+              <ExternalLinkIcon className="size-3" />
+            </a>
+          ))}
         {app.links.github && (
           <a
             href={app.links.github}

@@ -36,6 +36,8 @@ export function MdxLayout({
     live,
     playStore,
     appStore,
+    pubDev,
+    releases,
     status,
     lastReviewed,
     image,
@@ -123,50 +125,34 @@ export function MdxLayout({
             </div>
 
             {/* Project-specific links */}
-            {variant === "project" && (github || live || appStore || playStore) && (
-              <div className="mt-5 flex flex-wrap gap-3">
-                {github && (
-                  <a
-                    href={github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/80"
-                  >
-                    GitHub ↗
-                  </a>
-                )}
-                {live && (
-                  <a
-                    href={live}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                  >
-                    Live site ↗
-                  </a>
-                )}
-
-                {playStore && (
-                  <a
-                    href={playStore}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-green-900 px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                  >
-                    Play Store ↗
-                  </a>
-                )}
-
-                {appStore && (
-                  <a
-                    href={appStore}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-1.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                  >
-                    App Store ↗
-                  </a>
-                )}
+            {variant === "project" &&
+              (github || live || appStore || playStore || pubDev || releases) && (
+              <div className="mt-6 flex flex-wrap items-center gap-2">
+                {[
+                  { href: live, label: "Visit website", primary: true },
+                  { href: playStore, label: "Google Play", primary: !live },
+                  { href: appStore, label: "App Store", primary: !live && !playStore },
+                  { href: pubDev, label: "View on pub.dev", primary: !live && !playStore && !appStore },
+                  { href: github, label: "Source code", primary: false },
+                  { href: releases, label: "Releases", primary: false },
+                ]
+                  .filter((link): link is { href: string; label: string; primary: boolean } => Boolean(link.href))
+                  .map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-semibold transition-all",
+                        link.primary
+                          ? "border-(--app-accent-primary) bg-(--app-accent-primary) text-white shadow-sm hover:-translate-y-0.5 hover:opacity-90"
+                          : "border-border bg-muted/60 text-foreground hover:border-(--app-accent-border) hover:bg-muted"
+                      )}
+                    >
+                      {link.label} <span aria-hidden>↗</span>
+                    </a>
+                  ))}
                 {status && <StatusBadge status={status} />}
               </div>
             )}
