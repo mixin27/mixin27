@@ -37,6 +37,7 @@ export function MdxLayout({
     playStore,
     appStore,
     pubDev,
+    demo,
     releases,
     status,
     lastReviewed,
@@ -126,7 +127,7 @@ export function MdxLayout({
 
             {/* Project-specific links */}
             {variant === "project" &&
-              (github || live || appStore || playStore || pubDev || releases) && (
+              (github || live || appStore || playStore || pubDev || demo || releases) && (
               <div className="mt-6 flex flex-wrap items-center gap-2">
                 {[
                   { href: live, label: "Visit website", primary: true },
@@ -134,6 +135,7 @@ export function MdxLayout({
                   { href: appStore, label: "App Store", primary: !live && !playStore },
                   { href: pubDev, label: "View on pub.dev", primary: !live && !playStore && !appStore },
                   { href: github, label: "Source code", primary: false },
+                  { href: demo, label: "Demo", primary: false },
                   { href: releases, label: "Releases", primary: false },
                 ]
                   .filter((link): link is { href: string; label: string; primary: boolean } => Boolean(link.href))

@@ -52,6 +52,7 @@ export default async function ProjectPage({ params }: Props) {
         playStore: catalogueProject.links.playStore,
         appStore: catalogueProject.links.appStore,
         pubDev: catalogueProject.links.pubDev,
+        demo: catalogueProject.links.demo,
         releases: catalogueProject.links.releases,
       }
     : project.frontmatter

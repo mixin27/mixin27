@@ -1,0 +1,148 @@
+---
+title: "MyanLex"
+description: "An open-source developer platform for deterministic Myanmar-language text processing with explicit, stable API contracts."
+date: "2026-10-06"
+tech:
+  [
+    "TypeScript",
+    "NestJS",
+    "Next.js",
+    "PostgreSQL",
+    "Prisma",
+    "Redis",
+    "OpenAPI",
+    "Dart",
+  ]
+github: "https://github.com/mixin27/myanlex"
+live: "https://myanlex-docs.vercel.app/"
+demo: "https://myanmar-data-review.vercel.app/"
+status: "in-progress"
+image: "/images/projects/myanlex/logo.png"
+---
+
+**MyanLex** is an open-source developer platform for processing Myanmar-language text with deterministic behavior and explicit API contracts.
+
+It is built from a framework-independent linguistic core outward, separating language-processing rules from APIs, authentication, databases, and infrastructure.
+
+## Why I Built It
+
+Myanmar text processing has challenges that generic text libraries do not adequately address, including Unicode and Zawgyi coexistence, orthographic structure, normalization differences, syllable boundaries, mixed scripts, and transliteration.
+
+MyanLex provides a reusable foundation for applications, backend services, developer tools, data pipelines, and NLP workflows that need reliable Myanmar-language processing.
+
+## Language Processing
+
+MyanLex provides explicit operations for:
+
+- Unicode and Zawgyi detection
+- Unicode and Zawgyi conversion
+- Unicode normalization
+- Burmese orthography validation
+- Written syllable segmentation
+- Myanmar-aware tokenization
+- Mixed-script analysis
+- Myanmar-to-Latin transliteration
+- Batch text processing
+
+Each operation has a clearly defined responsibility. Detection does not automatically convert text, conversion does not silently normalize it, syllabification is distinct from dictionary-based word segmentation, and transliteration is distinct from translation.
+
+## Developer Platform
+
+MyanLex exposes its language engine through a versioned HTTP API that can be consumed independently of the platform repository.
+
+The developer platform includes:
+
+- Workspaces and projects
+- Project API keys
+- Authentication and permissions
+- Usage limits and quotas
+- Batch operations
+- OpenAPI-generated API contracts
+- Typed SDK support
+- Developer console
+- Interactive playground
+- Self-hosted deployments
+
+This allows applications written in different languages or frameworks to use the same Myanmar text-processing behavior through stable contracts.
+
+## Architecture
+
+The architecture keeps the linguistic core independent from:
+
+- HTTP frameworks
+- Databases
+- Authentication
+- Environment configuration
+- Deployment infrastructure
+
+This separation makes the core easier to test, reuse, and evolve without coupling linguistic behavior to a specific application stack.
+
+Language behavior is developed from specifications and reviewed corpus fixtures, followed by tests, implementation, and regression validation.
+
+## Explicit Processing
+
+A major design principle of MyanLex is avoiding hidden transformations.
+
+Operations expose their boundaries clearly and report versioned processing profiles so consumers can understand how text was processed.
+
+Text spans also use Unicode code-point offsets, providing predictable positions across supported integrations.
+
+## API & SDKs
+
+MyanLex provides an OpenAPI-defined HTTP contract for integrating Myanmar-language processing into external applications.
+
+The platform is designed to support typed clients, including **TypeScript** and **Dart**, while remaining usable from any language capable of making HTTP requests.
+
+API consumers do not need to clone the MyanLex repository or run its internal application stack when connecting to an available deployment.
+
+## Self-Hosting
+
+MyanLex can be deployed as a self-hosted platform.
+
+The current architecture includes:
+
+- API service
+- Developer console
+- Documentation application
+- PostgreSQL persistence
+- Redis-backed distributed rate limiting
+- API key authentication
+- Usage quota enforcement
+- Health and readiness endpoints
+- Prometheus-compatible metrics
+
+This makes the project suitable for both local development and independently operated deployments.
+
+## Linguistic Correctness
+
+For NLP behavior, the project follows a specification-first workflow:
+
+1. Define the linguistic behavior
+2. Add provenance-recorded corpus fixtures
+3. Write tests
+4. Implement the behavior
+5. Run regression validation
+
+The goal is to make Myanmar-language processing predictable, reproducible, and reviewable rather than relying on undocumented heuristics.
+
+## Myanmar Data Review
+
+**Myanmar Data Review** is a practical web application built with MyanLex.
+
+It provides a visual way to inspect Myanmar-language text and experiment with the processing capabilities of the underlying engine.
+
+[Explore Myanmar Data Review](https://myanmar-data-review.vercel.app/)
+
+## Current Status
+
+MyanLex is currently in **developer preview**.
+
+The documentation and self-hosting workflow are available, while the public hosted API and npm/pub.dev packages have not yet been launched.
+
+For now, developers can run a self-hosted deployment and use the local SDK setup.
+
+## Links
+
+- [Documentation](https://myanlex-docs.vercel.app/)
+- [GitHub Repository](https://github.com/mixin27/myanlex)
+- [Myanmar Data Review](https://myanmar-data-review.vercel.app/)

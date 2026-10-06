@@ -39,6 +39,7 @@ export const projects: Project[] = [
     ],
     featured: true,
     links: {
+      live: "https://cannopypos.com/",
       playStore:
         "https://play.google.com/store/apps/details?id=com.cannopypos.retail",
       appStore: "https://apps.apple.com/mm/app/cannopy-pos/id6808059928",
@@ -80,41 +81,11 @@ export const projects: Project[] = [
       github: "https://github.com/mixin27/collection_tracker",
       playStore:
         "https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker",
+      appStore:
+        "https://apps.apple.com/us/app/collectra-collection-tracker/id6811477706",
       releases: "https://github.com/mixin27/collection_tracker/releases/latest",
     },
     image: "/images/projects/collectra/logo.png",
-  },
-  {
-    id: "myanmar-calendar-dart",
-    slug: "myanmar-calendar-dart",
-    name: "Myanmar Calendar Dart",
-    shortDesc:
-      "A comprehensive Dart package for Myanmar calendar with date conversions, astrological calculations, and multi-language support.",
-    fullDesc:
-      "A comprehensive Dart package published on pub.dev providing full Myanmar traditional calendar functionality, including Buddhist era calculations, astrological data, and multi-language support.",
-    category: "dart",
-    tags: ["dart", "myanmar-calendar", "burmese"],
-    featured: true,
-    links: {
-      github: "https://github.com/mixin27/myanmar_calendar_dart",
-      pubDev: "https://pub.dev/packages/myanmar_calendar_dart",
-    },
-    image: "/images/projects/dart.png",
-  },
-  {
-    id: "finance-wallet",
-    slug: "finance-wallet",
-    name: "FinWallet",
-    shortDesc: "A modern finance wallet application with beautiful UI/UX.",
-    fullDesc:
-      "A privacy-first personal finance tracker with offline storage, budget planning, and visual spending analytics built with Flutter.",
-    category: "flutter",
-    tags: ["wallet", "finance", "account"],
-    featured: true,
-    links: {
-      github: "https://github.com/mixin27/finance-wallet",
-    },
-    image: "/images/projects/finance-wallet/logo.png",
   },
   {
     id: "myanmar-calendar",
@@ -131,9 +102,110 @@ export const projects: Project[] = [
       github: "https://github.com/mixin27/mmcalendar",
       playStore:
         "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
+      appStore:
+        "https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564",
       releases: "https://github.com/mixin27/mmcalendar/releases/latest",
     },
     image: "/images/projects/myanmar-calendar/logo.png",
+  },
+  {
+    id: "beads-math",
+    slug: "beads-math",
+    name: "Beads Math",
+    shortDesc: "Mobile application to improve maths calculation skills.",
+    fullDesc:
+      "Gamified mathematics learning app inspired by traditional abacus mechanics with flashcards, text-to-speech, and progressive difficulty.",
+    category: "flutter",
+    tags: ["flashcard", "abacus", "text-to-speech"],
+    featured: true,
+    links: {
+      live: "https://www.facebook.com/Kids-Brain-Work-114184707850861/",
+    },
+    image: "/images/projects/beads-math/logo.png",
+  },
+  {
+    id: "myanlex",
+    slug: "myanlex",
+    name: "MyanLex",
+    shortDesc:
+      "Open-source toolkit for reliable Myanmar-language text processing.",
+    fullDesc:
+      "A deterministic Myanmar NLP toolkit for validation, conversion, syllabification, tokenization, and mixed-script analysis.",
+    category: "full-stack",
+    tags: [
+      "burmese-orthography-validation",
+      "conversion",
+      "mixed-script-detection",
+      "myanmar-language",
+      "nlp",
+      "syllabification",
+      "tokenization",
+    ],
+    featured: true,
+    links: {
+      live: "https://myanlex-docs.vercel.app/",
+      demo: "https://myanmar-data-review.vercel.app/",
+    },
+    image: "/images/projects/myanlex/logo.png",
+  },
+  {
+    id: "myanmar-data-review",
+    slug: "myanmar-data-review",
+    name: "Myanmar Data Review",
+    shortDesc:
+      "A web tool for reviewing and analyzing Myanmar-language text data.",
+    fullDesc:
+      "Built with MyanLex to inspect encoding, normalization, orthography, tokenization, syllabification, and mixed-script issues in Myanmar text.",
+    category: "web",
+    tags: [
+      "data-quality",
+      "myanmar-language",
+      "nlp",
+      "text-analysis",
+      "unicode",
+      "zawgyi",
+      "tokenization",
+      "syllabification",
+    ],
+    featured: true,
+    links: {
+      live: "https://myanmar-data-review.vercel.app/",
+    },
+    image: "/images/projects/myanmar-data-review/logo.png",
+  },
+
+  // ── MORE PROJECTS ─────────────────────────────────────────
+  {
+    id: "myanmar-calendar-dart",
+    slug: "myanmar-calendar-dart",
+    name: "Myanmar Calendar Dart",
+    shortDesc:
+      "A comprehensive Dart package for Myanmar calendar with date conversions, astrological calculations, and multi-language support.",
+    fullDesc:
+      "A comprehensive Dart package published on pub.dev providing full Myanmar traditional calendar functionality, including Buddhist era calculations, astrological data, and multi-language support.",
+    category: "dart",
+    tags: ["dart", "myanmar-calendar", "burmese"],
+    featured: false,
+    links: {
+      github: "https://github.com/mixin27/myanmar_calendar_dart",
+      pubDev: "https://pub.dev/packages/myanmar_calendar_dart",
+    },
+    image: "/images/projects/dart.png",
+  },
+  {
+    id: "finance-wallet",
+    slug: "finance-wallet",
+    name: "FinWallet",
+    shortDesc: "A modern finance wallet application with beautiful UI/UX.",
+    fullDesc:
+      "A privacy-first personal finance tracker with offline storage, budget planning, and visual spending analytics built with Flutter.",
+    category: "flutter",
+    tags: ["wallet", "finance", "account"],
+    featured: false,
+    links: {
+      github: "https://github.com/mixin27/finance-wallet",
+    },
+    image: "/images/projects/finance-wallet/logo.png",
   },
   {
     id: "billion-sport-live",
@@ -144,7 +216,7 @@ export const projects: Project[] = [
       "A real-time sports live stream app delivering live scores and match results for football leagues built with Flutter.",
     category: "flutter",
     tags: ["live", "live-stream", "football"],
-    featured: true,
+    featured: false,
     links: {
       github: "https://github.com/mixin27/vs-live-flutter",
       playStore:
@@ -162,27 +234,11 @@ export const projects: Project[] = [
       "A real-time chat app with end-to-end messaging, media sharing, and group conversation support built on Flutter and Firebase.",
     category: "flutter",
     tags: ["chat", "social", "communication"],
-    featured: true,
+    featured: false,
     links: {
       github: "https://github.com/mixin27/yoyo_chatt",
     },
     image: "/images/projects/yoyo-chatt/logo.png",
-  },
-  {
-    id: "beads-math",
-    slug: "beads-math",
-    name: "Beads Math",
-    shortDesc: "Mobile application to improve maths calculation skills.",
-    fullDesc:
-      "Gamified mathematics learning app inspired by traditional abacus mechanics with flashcards, text-to-speech, and progressive difficulty.",
-    category: "flutter",
-    tags: ["flashcard", "abacus", "text-to-speech"],
-    featured: true,
-    links: {
-      playStore:
-        "https://play.google.com/store/apps/details?id=tech.kbw.beads_math",
-    },
-    image: "/images/projects/beads-math/logo.png",
   },
   {
     id: "flutter-mmcalendar",
@@ -194,15 +250,13 @@ export const projects: Project[] = [
       "A drop-in Flutter widget package published on pub.dev that adds Myanmar Calendar display and calculation capabilities to any Flutter app.",
     category: "flutter",
     tags: ["flutter", "myanmar-calendar", "burmese"],
-    featured: true,
+    featured: false,
     links: {
       github: "https://github.com/mixin27/flutter-mmcalendar",
       pubDev: "https://pub.dev/packages/flutter_mmcalendar",
     },
     image: "/images/projects/flutter-mmcalendar/logo.png",
   },
-
-  // ── MORE PROJECTS ─────────────────────────────────────────
   {
     id: "myanmar-calendar-wear",
     slug: "myanmar-calendar-wear",

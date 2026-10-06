@@ -1,0 +1,180 @@
+---
+title: "Myanmar Data Review"
+description: "A web tool powered by MyanLex for reviewing, validating, and analyzing Myanmar-language text data."
+date: "2026-10-06"
+tech: ["MyanLex", "Myanmar NLP", "Unicode", "Zawgyi"]
+live: "https://myanmar-data-review.vercel.app/"
+github: "https://github.com/mixin27/myanlex"
+status: "completed"
+image: "/images/projects/myanmar-data-review/logo.png"
+---
+
+Myanmar Data Review is a web-based tool for analyzing and reviewing **Myanmar-language text and data**.
+
+The application is built using **[MyanLex](https://github.com/mixin27/myanlex)**, my open-source Myanmar-language processing project, and provides a practical interface around its language-processing capabilities.
+
+Rather than treating Myanmar text as generic Unicode strings, the application uses Myanmar-specific linguistic rules to help identify encoding, orthographic, normalization, tokenization, and script-related issues.
+
+## Why I Built It
+
+Myanmar-language data presents several challenges that are uncommon in many other languages.
+
+Real-world datasets can contain combinations of:
+
+- Unicode Myanmar text
+- Legacy Zawgyi text
+- Inconsistent Unicode normalization
+- Invalid or unusual character sequences
+- Mixed Myanmar and Latin scripts
+- Orthographic inconsistencies
+- Irregular token boundaries
+- Different representations of visually similar text
+
+These problems can affect search, comparison, indexing, analytics, NLP pipelines, and machine-learning datasets.
+
+I built Myanmar Data Review as a practical way to expose the language-processing capabilities of MyanLex and make Myanmar text analysis easier to understand and use.
+
+## Powered by MyanLex
+
+The application is powered by **[MyanLex](https://github.com/mixin27/myanlex)**, an open-source, developer-focused toolkit I am building for deterministic Myanmar-language processing.
+
+MyanLex provides the linguistic engine behind the application and is designed around explicit, testable language rules.
+
+Its capabilities include:
+
+### Unicode & Zawgyi Detection
+
+Analyze Myanmar text to determine whether it uses standard Unicode or legacy Zawgyi encoding.
+
+This is particularly important when working with older Myanmar datasets or data collected from multiple sources.
+
+### Unicode & Zawgyi Conversion
+
+Explicitly convert text between Unicode and Zawgyi when conversion is required.
+
+Keeping detection and conversion as separate operations avoids silently modifying source data.
+
+### Unicode Normalization
+
+Normalize Myanmar Unicode text into a consistent representation.
+
+Different Unicode sequences can sometimes display similarly while remaining different at the code-point level, which can cause problems with searching, comparison, deduplication, and downstream data processing.
+
+### Burmese Orthography Validation
+
+Analyze text structure against Burmese orthographic rules and identify sequences that may require further review.
+
+This provides a Myanmar-specific validation layer rather than relying only on generic Unicode validation.
+
+### Myanmar Syllabification
+
+Segment Myanmar text into orthographic syllables.
+
+Syllable-level processing is useful for linguistic analysis, search, NLP preprocessing, text statistics, and other Myanmar-language applications.
+
+### Myanmar-Aware Tokenization
+
+Tokenize Myanmar text while preserving its linguistic structure and reporting mixed-script content.
+
+Tokenization is especially important for Myanmar because whitespace alone cannot always be treated as a reliable word boundary.
+
+### Mixed-Script Analysis
+
+Identify combinations of Myanmar and Latin script within the analyzed text.
+
+This can be useful when reviewing imported datasets, user-generated content, names, identifiers, and multilingual text.
+
+### Myanmar-to-Latin Transliteration
+
+MyanLex also supports Myanmar-to-Latin transliteration based on the ALA-LC 2011 system.
+
+This provides a deterministic transliteration option for applications that need Latin representations of Myanmar text.
+
+## Data Quality Review
+
+Myanmar Data Review brings these individual language-processing operations together from a **data quality perspective**.
+
+Instead of requiring developers to inspect raw Unicode code points or manually run individual NLP operations, the application provides an easier way to understand the characteristics of Myanmar-language data.
+
+Typical use cases include:
+
+- Reviewing Myanmar-language datasets
+- Checking imported or migrated text
+- Detecting Unicode and Zawgyi inconsistencies
+- Preparing data for NLP pipelines
+- Inspecting text before database migration
+- Validating Myanmar text collected from external sources
+- Investigating normalization problems
+- Reviewing mixed-script content
+- Exploring Myanmar linguistic structure
+- Testing MyanLex processing behavior
+
+## Open-Source Foundation
+
+One of the main goals of the project is to demonstrate a real application built on top of **[MyanLex](https://github.com/mixin27/myanlex)**.
+
+MyanLex separates its framework-independent language engine from higher-level applications and APIs. This allows the same linguistic processing rules to be reused across different environments and products.
+
+Myanmar Data Review acts as a consumer-facing example of that architecture.
+
+It turns lower-level language operations into something that can be explored visually and used for real Myanmar-language data review.
+
+## Engineering Focus
+
+A major focus of both MyanLex and Myanmar Data Review is **deterministic processing**.
+
+For language operations such as normalization, validation, syllabification, tokenization, and encoding detection, predictable output is important.
+
+The underlying engine therefore emphasizes:
+
+- Explicit linguistic rules
+- Deterministic processing
+- Unicode-aware implementation
+- Reproducible results
+- Reviewed regression data
+- Clear operation boundaries
+- Preservation of source information where appropriate
+
+This makes the project suitable not only as a demonstration, but also as groundwork for more serious Myanmar-language developer tooling.
+
+## Relationship With MyanLex
+
+The two projects have different responsibilities.
+
+**[MyanLex](https://github.com/mixin27/myanlex)** is the reusable Myanmar-language processing engine and developer toolkit.
+
+**[Myanmar Data Review](https://myanmar-data-review.vercel.app/)** is an application built on top of that engine to demonstrate and apply those capabilities to real text and data-review workflows.
+
+Together, they represent both sides of the project:
+
+**Language engine → reusable processing capabilities**
+
+**Data Review → practical application of those capabilities**
+
+## What I Learned
+
+Building Myanmar Data Review alongside MyanLex required working beyond normal application development and thinking about text at the Unicode and linguistic level.
+
+The project involved areas such as:
+
+- Unicode code-point handling
+- Myanmar script characteristics
+- Unicode normalization
+- Legacy Zawgyi compatibility
+- Burmese orthographic structure
+- Syllable segmentation
+- Tokenization
+- Mixed-script text
+- Deterministic language processing
+- API and application boundaries
+- Dataset and regression-based validation
+
+It has also provided a practical environment for validating how MyanLex behaves outside unit tests and library-level examples.
+
+## Future Direction
+
+Myanmar Data Review can continue evolving alongside MyanLex as additional language-processing capabilities become available.
+
+Potential areas include deeper dataset-level analysis, richer issue reporting, corpus statistics, batch-processing workflows, exportable review results, and additional Myanmar NLP analysis tools.
+
+The broader goal is to make Myanmar-language data easier for developers and researchers to inspect, understand, validate, and process.
