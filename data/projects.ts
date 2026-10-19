@@ -92,9 +92,9 @@ export const projects: Project[] = [
     slug: "myanmar-calendar",
     name: "Myanmar Calendar",
     shortDesc:
-      "A modern Myanmar calendar app with calendar views, astrology, events, conversion tools, and printable calendar generation.",
+      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, class timetables and Calendar Studio for printable calendars.",
     fullDesc:
-      "A full-featured Myanmar traditional calendar app supporting Gregorian and Buddhist Era dates, public holidays, auspicious days, astrology, events, and printable calendars.",
+      "Every day in both calendars: the Myanmar date and moon, Sabbath, holidays and astrology, with 22 grid layouts, events with weekly timetables and multiple dates, holiday reminders, home-screen widgets on iOS and Android, and Calendar Studio for designing and exporting printable calendars.",
     category: "flutter",
     tags: ["burmese", "calendar", "myanmar-calendar"],
     featured: true,

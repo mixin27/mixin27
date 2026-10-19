@@ -183,27 +183,51 @@ export const mdxComponents: MDXComponents = {
   pre: CodeBlock,
 
   // ─── Images ──────────────────────────────────────────────────────────────
-  img: ({ src, alt, width, height, ...props }: ImageMdxProps) => (
-    <figure className="my-8">
-      <Image
+  img: ({ src, alt, width, height, ...props }: ImageMdxProps) =>
+    isBadge(src) ? (
+      // Badges stay small and inline, as on GitHub: no frame or caption.
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
         src={src}
         alt={alt ?? ""}
-        width={typeof width === "number" ? width : 800}
-        height={typeof height === "number" ? height : 450}
-        className="rounded-xl border border-border object-cover"
-        {...props}
+        className="my-0 inline-block h-5 w-auto align-middle"
       />
-      {alt && (
-        <figcaption className="mt-2 text-center text-sm text-muted-foreground">
-          {alt}
-        </figcaption>
-      )}
-    </figure>
-  ),
+    ) : (
+      <figure className="my-8">
+        {/* Without a size in the MDX, the image keeps its own shape: phone
+            screenshots stay tall instead of being cropped to 16:9. */}
+        <Image
+          src={src}
+          alt={alt ?? ""}
+          width={typeof width === "number" ? width : 0}
+          height={typeof height === "number" ? height : 0}
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="h-auto w-full rounded-xl border border-border"
+          {...props}
+        />
+        {alt && (
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground">
+            {alt}
+          </figcaption>
+        )}
+      </figure>
+    ),
 
   // ─── Custom components (used directly in MDX files) ───────────────────────
   Callout,
   Mermaid,
+}
+
+// ─── Helper: badge images ────────────────────────────────────────────────────
+/** Remote status badges: shields.io, GitHub Actions badge.svg, pub.dev badges. */
+function isBadge(src: string | undefined) {
+  if (!src || !/^https?:\/\//.test(src)) return false
+  return (
+    /(^|\.)shields\.io\//.test(src.replace(/^https?:\/\//, "")) ||
+    /\/badge\.svg(\?|$)/.test(src) ||
+    /\/badges?\//.test(src) ||
+    /\.svg(\?|$)/.test(src)
+  )
 }
 
 // ─── Helper: heading anchor icon ─────────────────────────────────────────────

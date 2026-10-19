@@ -46,7 +46,7 @@ export const apps: App[] = [
     name: "Myanmar Calendar",
     shortName: "Myanmar Calendar",
     description:
-      "A modern Myanmar calendar app with calendar views, astrology, events, conversion tools, and printable calendar generation.",
+      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, class timetables and Calendar Studio for printable calendars.",
     category: "productivity",
     platform: "android",
     status: "active",
