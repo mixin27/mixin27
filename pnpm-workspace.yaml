@@ -1,3 +1,14 @@
+# pnpm 9 (Vercel's default for this lockfile) needs a packages list, even
+# for a single-package repo.
+packages:
+  - "."
+
+# pnpm 10+ reads overrides here; pnpm 9 reads the copy in package.json.
+# Keep the two the same.
+overrides:
+  "@types/react": 19.2.17
+  "@types/react-dom": 19.2.3
+
 allowBuilds:
   core-js: true
   msw: true
