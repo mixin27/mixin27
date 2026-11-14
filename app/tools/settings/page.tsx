@@ -2,15 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Save, Download, Upload } from "lucide-react"
+import { ArrowLeft, Save, Download } from "lucide-react"
 import { getSettings, saveSettings } from "@/lib/storage/tools-storage"
-import {
-  buildBackup,
-  downloadBackupFile,
-  restoreBackup,
-  summarizeBackup,
-  validateBackup,
-} from "@/lib/tools/backup"
 import { InvoiceSettings } from "@/types/invoice"
 
 export default function SettingsPage() {
@@ -27,45 +20,6 @@ export default function SettingsPage() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     }
-  }
-
-  const handleExport = () => {
-    downloadBackupFile(buildBackup())
-  }
-
-  const handleImport = () => {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = "application/json"
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (!file) return
-      try {
-        const result = validateBackup(JSON.parse(await file.text()))
-        if (!result.ok) {
-          alert(result.error)
-          return
-        }
-        const { counts } = summarizeBackup(result.backup)
-        const list = Object.entries(counts)
-          .map(([key, n]) => `${n} ${key.replace(/_/g, " ")}`)
-          .join(", ")
-        if (
-          !confirm(
-            `Import ${list || "settings"}?\n\nRecords are merged into your current data. When the same record exists in both, the newer one is kept.`,
-          )
-        ) {
-          return
-        }
-        restoreBackup(result.backup, "merge")
-        setSettings(getSettings())
-        alert("Data imported successfully!")
-      } catch (error) {
-        alert("Invalid file format!")
-        console.error("Error importing data:", error)
-      }
-    }
-    input.click()
   }
 
   if (!settings) {
@@ -387,29 +341,16 @@ export default function SettingsPage() {
           <div className="rounded-2xl border border-border bg-card/60 shadow-sm p-6">
             <h2 className="text-2xl font-bold tracking-tight mb-6">Data Management</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Export or import all your data including invoices, clients, and
-              settings.
+              All your data is stored only in this browser. Back it up to Google
+              Drive or a file, and restore it on another device.
             </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleExport}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
-              >
-                <Download className="size-4" />
-                Export Data
-              </button>
-              <button
-                onClick={handleImport}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
-              >
-                <Upload className="size-4" />
-                Import Data
-              </button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              💡 Tip: Export your data regularly as a backup. All data is stored
-              locally in your browser.
-            </p>
+            <Link
+              href="/tools/backup"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+            >
+              <Download className="size-4" />
+              Backup &amp; Restore
+            </Link>
           </div>
         </div>
       </div>

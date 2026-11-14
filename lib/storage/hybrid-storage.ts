@@ -1,5 +1,6 @@
 // localStorage-only storage operations (cloud sync removed)
 import { ensureMigrated } from "./migrations"
+import { notifyToolsDataChanged } from "./change-events"
 
 function getFromStorage<T>(key: string): T[] {
   if (typeof window === "undefined") return []
@@ -16,6 +17,7 @@ function getFromStorage<T>(key: string): T[] {
 function saveToStorage<T>(key: string, data: T[]): void {
   if (typeof window === "undefined") return
   localStorage.setItem(key, JSON.stringify(data))
+  notifyToolsDataChanged(key)
 }
 
 export async function hybridSave<T extends { id: string }>(

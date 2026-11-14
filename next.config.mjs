@@ -17,6 +17,8 @@ const nextConfig = {
       { source: "/tools/invoices/clients", destination: "/tools/clients", permanent: true },
       { source: "/tools/invoices/clients/new", destination: "/tools/clients/new", permanent: true },
       { source: "/tools/invoices/clients/:id", destination: "/tools/clients/:id", permanent: true },
+      // Backup moved from /tools/migrate to /tools/backup
+      { source: "/tools/migrate", destination: "/tools/backup", permanent: true },
     ];
   },
 };

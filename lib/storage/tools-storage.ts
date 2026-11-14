@@ -19,6 +19,7 @@ import {
 import { Resume, ResumeStats } from "@/types/resume"
 import { ensureMigrated, parseDocNumber } from "./migrations"
 import { DEFAULT_SETTINGS } from "./settings-defaults"
+import { notifyToolsDataChanged } from "./change-events"
 import { deriveInvoiceStatus, invoicePaidAmount } from "@/lib/tools/payments"
 
 const STORAGE_KEYS = {
@@ -192,6 +193,7 @@ export const getSettings = (): InvoiceSettings => {
 export const saveSettings = async (settings: InvoiceSettings): Promise<void> => {
     if (typeof window === "undefined") return
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
+    notifyToolsDataChanged(STORAGE_KEYS.SETTINGS)
 }
 
 // Quotation Operations

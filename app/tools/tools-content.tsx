@@ -10,6 +10,7 @@ import {
   Settings,
   Calculator,
   Users,
+  DatabaseBackup,
 } from "lucide-react"
 import { SectionLabel } from "@/components/ui/section-label"
 
@@ -61,6 +62,12 @@ const tools = [
     description: "Track billable hours and generate timesheets",
     icon: Clock,
     href: "/tools/timesheet",
+  },
+  {
+    name: "Backup & Restore",
+    description: "Back up your data to Google Drive or a file, and restore it on any device",
+    icon: DatabaseBackup,
+    href: "/tools/backup",
   },
   {
     name: "Settings",
