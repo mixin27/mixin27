@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check, Wallet } from "lucide-react"
+import { ArrowLeft, Download, Printer, Edit, Trash2, Wallet, Repeat } from "lucide-react"
 import {
     getInvoiceById,
     deleteInvoice,
@@ -21,6 +21,8 @@ import {
 import { RecordPaymentDialog } from "@/components/tools/RecordPaymentDialog"
 import { formatMoney, roundMoney } from "@/lib/tools/totals"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { ShareLinkBox } from "@/components/tools/ShareLinkBox"
+import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { InvoicePreview } from "@/components/tools/InvoicePreview"
 
 export default function InvoiceViewPage() {
@@ -30,7 +32,6 @@ export default function InvoiceViewPage() {
     const [settings, setSettings] = useState<InvoiceSettings | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
     const [showPaymentDialog, setShowPaymentDialog] = useState(false)
-    const [copied, setCopied] = useState(false)
     const [receipts, setReceipts] = useState<Receipt[]>([])
     const [sourceQuotation, setSourceQuotation] = useState<Quotation | null>(null)
     const invoiceRef = useRef<HTMLDivElement>(null)
@@ -126,13 +127,6 @@ export default function InvoiceViewPage() {
         )
     }
 
-    const copyPublicLink = () => {
-        if (!invoice?.token) return
-        const url = `${window.location.origin}/p/invoices/${invoice.token}`
-        navigator.clipboard.writeText(url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
 
     const getStatusColor = (status: Invoice["status"]) => {
         switch (status) {
@@ -182,6 +176,14 @@ export default function InvoiceViewPage() {
                                     ? `Installment ${invoice.installment.index} of ${invoice.installment.count} · ${invoice.installment.label}`
                                     : "Invoice Details"}
                             </p>
+                            {invoice.recurringTemplateId && (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Generated from a{" "}
+                                    <Link href={`/tools/invoices/recurring/${invoice.recurringTemplateId}`} className="font-semibold text-purple-400 hover:underline">
+                                        recurring template
+                                    </Link>
+                                </p>
+                            )}
                             {invoice.sourceQuotationId && (
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     From quotation{" "}
@@ -206,32 +208,7 @@ export default function InvoiceViewPage() {
                         </div>
                     </div>
 
-                    {invoice.token && (
-                        <div className="mt-6 mb-6 flex items-center gap-3 bg-muted/50 p-2 rounded-xl border border-border max-w-xl">
-                            <div className="bg-purple-500/10 p-2 rounded-md">
-                                <LinkIcon className="size-4 text-purple-400" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                                    Public Link
-                                </p>
-                                <p className="text-sm truncate select-all">
-                                    {`${typeof window !== "undefined" ? window.location.origin : ""}/p/invoices/${invoice.token}`}
-                                </p>
-                            </div>
-                            <button
-                                onClick={copyPublicLink}
-                                className="p-2 hover:bg-background rounded-md border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
-                                title="Copy Link"
-                            >
-                                {copied ? (
-                                    <Check className="size-4 text-green-500" />
-                                ) : (
-                                    <Copy className="size-4" />
-                                )}
-                            </button>
-                        </div>
-                    )}
+                    <ShareLinkBox kind="invoice" doc={invoice} settings={settings} amountPaid={paidSoFar} />
 
                     {(payments.length > 0 || legacyReceipts.length > 0) && (
                         <div className="mt-6 max-w-xl rounded-xl border border-border bg-card/60">
@@ -313,6 +290,16 @@ export default function InvoiceViewPage() {
                             <Edit className="size-4" />
                             Edit
                         </Link>
+                        <DuplicateButton kind="invoice" id={invoice.id} />
+                        {!invoice.recurringTemplateId && (
+                            <Link
+                                href={`/tools/invoices/recurring/new?fromInvoice=${invoice.id}`}
+                                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+                            >
+                                <Repeat className="size-4" />
+                                Make Recurring
+                            </Link>
+                        )}
                         <button
                             onClick={handleDelete}
                             className="inline-flex items-center gap-2 rounded-xl border border-destructive text-destructive px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-destructive/10"

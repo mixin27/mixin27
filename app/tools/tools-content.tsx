@@ -11,8 +11,12 @@ import {
   Calculator,
   Users,
   DatabaseBackup,
+  Repeat,
+  BarChart3,
 } from "lucide-react"
 import { SectionLabel } from "@/components/ui/section-label"
+import { RecurringDueBanner } from "@/components/tools/RecurringDueBanner"
+import { ToolsDashboard } from "@/components/tools/ToolsDashboard"
 
 const tools = [
   {
@@ -26,6 +30,12 @@ const tools = [
     description: "Create and manage professional invoices for your clients",
     icon: FileText,
     href: "/tools/invoices",
+  },
+  {
+    name: "Recurring Invoices",
+    description: "Set up retainers and subscriptions once, then generate each invoice in one click",
+    icon: Repeat,
+    href: "/tools/invoices/recurring",
   },
   {
     name: "Quotations",
@@ -62,6 +72,12 @@ const tools = [
     description: "Track billable hours and generate timesheets",
     icon: Clock,
     href: "/tools/timesheet",
+  },
+  {
+    name: "Reports",
+    description: "Invoices, payments received and unpaid balances by age, with CSV export",
+    icon: BarChart3,
+    href: "/tools/reports",
   },
   {
     name: "Backup & Restore",
@@ -129,6 +145,8 @@ export default function ToolsContent() {
 
       {/* Tools Grid */}
       <div className="mx-auto max-w-7xl px-6 py-20">
+        <RecurringDueBanner className="mb-6" />
+        <ToolsDashboard />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => {
             const Icon = tool.icon

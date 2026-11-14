@@ -9,6 +9,7 @@ import {
     TimeTrackingStats,
     RunningTimer,
     TimeEntry,
+    RecurringTemplate,
 } from "@/types/invoice"
 import {
     hybridSave,
@@ -32,6 +33,7 @@ const STORAGE_KEYS = {
     TIME_ENTRIES: "time_entries",
     RUNNING_TIMER: "running_timer",
     RESUMES: "resumes",
+    RECURRING: "recurring_templates",
 } as const
 
 const getFromStorage = <T>(key: string): T[] => {
@@ -234,6 +236,23 @@ export const getNextReceiptNumber = async (): Promise<string> => peekDocNumber("
 
 export const incrementReceiptNumber = async (usedNumber?: string): Promise<void> =>
     advanceDocNumber("receipt", usedNumber)
+
+// Recurring invoice templates
+export const saveRecurringTemplate = async (template: RecurringTemplate): Promise<void> => {
+    await hybridSave(STORAGE_KEYS.RECURRING, template)
+}
+
+export const getRecurringTemplates = async (): Promise<RecurringTemplate[]> => {
+    return hybridGetAll<RecurringTemplate>(STORAGE_KEYS.RECURRING)
+}
+
+export const getRecurringTemplateById = async (id: string): Promise<RecurringTemplate | null> => {
+    return hybridGetById<RecurringTemplate>(STORAGE_KEYS.RECURRING, id)
+}
+
+export const deleteRecurringTemplate = async (id: string): Promise<void> => {
+    await hybridDelete(STORAGE_KEYS.RECURRING, id)
+}
 
 // Contract Operations
 export const saveContract = async (contract: Contract): Promise<void> => {

@@ -2,8 +2,14 @@ import { v7 as uuidv7 } from "uuid"
 import { Invoice, Payment, Quotation, Receipt, SplitPart } from "@/types/invoice"
 import {
     deleteReceipt,
+    getClientById,
     getInvoiceById,
     getInvoices,
+    getNextQuotationNumber,
+    getRecurringTemplateById,
+    getRecurringTemplates,
+    incrementQuotationNumber,
+    saveRecurringTemplate,
     getNextInvoiceNumber,
     getNextReceiptNumber,
     getQuotationById,
@@ -28,6 +34,15 @@ import {
     type PaymentInput,
 } from "@/lib/tools/payments"
 import { roundMoney } from "@/lib/tools/totals"
+import {
+    buildInvoiceFromTemplate,
+    dueDates,
+    duplicateInvoice,
+    duplicateQuotation,
+    duplicateReceipt,
+    nextDateAfter,
+} from "@/lib/tools/recurring"
+import type { RecurringTemplate } from "@/types/invoice"
 
 const today = () => new Date().toISOString().slice(0, 10)
 
@@ -332,4 +347,111 @@ export async function confirmAndDeleteReceipt(receipt: Receipt): Promise<boolean
 /** Accepted quotations can be invoiced; sent ones can too after a confirmation. */
 export function canConvertQuotationToInvoice(quotation: Quotation): boolean {
     return quotation.status === "accepted" || quotation.status === "sent"
+}
+
+// ---------- Duplicating ----------
+
+const newIds = (number: string) => ({
+    id: uuidv7(),
+    token: uuidv7(),
+    number,
+    now: new Date().toISOString(),
+    newItemId: () => uuidv7(),
+})
+
+/** Copy a document as a new draft dated today. Returns the new document's id. */
+export async function duplicateDocument(
+    kind: "quotation" | "invoice" | "receipt",
+    id: string,
+): Promise<string | null> {
+    if (kind === "invoice") {
+        const source = await getInvoiceById(id)
+        if (!source) return null
+        const number = getNextInvoiceNumber()
+        const copy = duplicateInvoice(source, newIds(number), today())
+        await saveInvoice(copy)
+        await incrementInvoiceNumber(number)
+        return copy.id
+    }
+    if (kind === "quotation") {
+        const source = await getQuotationById(id)
+        if (!source) return null
+        const number = getNextQuotationNumber()
+        const copy = duplicateQuotation(source, newIds(number), today())
+        await saveQuotation(copy)
+        await incrementQuotationNumber(number)
+        return copy.id
+    }
+    const source = await getReceiptById(id)
+    if (!source) return null
+    const number = await getNextReceiptNumber()
+    const copy = duplicateReceipt(source, newIds(number), today())
+    await saveReceipt(copy)
+    await incrementReceiptNumber(number)
+    return copy.id
+}
+
+// ---------- Recurring invoices ----------
+
+export interface DueTemplate {
+    template: RecurringTemplate
+    dates: string[]
+}
+
+/** Active templates with at least one invoice due today or earlier. */
+export async function getDueRecurring(on: string = today()): Promise<DueTemplate[]> {
+    const templates = await getRecurringTemplates()
+    return templates
+        .map((template) => ({ template, dates: dueDates(template, on) }))
+        .filter((t) => t.dates.length > 0)
+}
+
+/**
+ * Create draft invoices for every due date of a template (including missed
+ * ones) and move the template forward. Uses the client's current details.
+ */
+export async function generateRecurringInvoices(templateId: string, on: string = today()): Promise<Invoice[]> {
+    const template = await getRecurringTemplateById(templateId)
+    if (!template) return []
+    const dates = dueDates(template, on)
+    if (!dates.length) return []
+    const client = (await getClientById(template.clientId)) ?? template.client
+
+    const created: Invoice[] = []
+    for (const date of dates) {
+        const number = getNextInvoiceNumber()
+        const invoice = buildInvoiceFromTemplate(template, date, newIds(number), client)
+        await saveInvoice(invoice)
+        await incrementInvoiceNumber(number)
+        created.push(invoice)
+    }
+
+    const generatedCount = template.generatedCount + dates.length
+    const next = nextDateAfter(template, generatedCount)
+    const now = new Date().toISOString()
+    await saveRecurringTemplate({
+        ...template,
+        client,
+        generatedCount,
+        nextDate: next ?? template.nextDate,
+        active: next === null ? false : template.active,
+        lastGeneratedAt: now,
+        updatedAt: now,
+    })
+    return created
+}
+
+/** Generate everything that is due across all templates. */
+export async function generateAllDueRecurring(on: string = today()): Promise<Invoice[]> {
+    const due = await getDueRecurring(on)
+    const created: Invoice[] = []
+    for (const { template } of due) created.push(...(await generateRecurringInvoices(template.id, on)))
+    return created
+}
+
+/** Invoices generated from a template, newest first. */
+export async function getTemplateInvoices(templateId: string): Promise<Invoice[]> {
+    return (await getInvoices())
+        .filter((i) => i.recurringTemplateId === templateId)
+        .sort((a, b) => b.issueDate.localeCompare(a.issueDate))
 }
