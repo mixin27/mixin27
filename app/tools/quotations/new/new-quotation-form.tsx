@@ -9,8 +9,8 @@ import {
     saveQuotation,
     getClients,
     getSettings,
-    getNextInvoiceNumber,
-    incrementInvoiceNumber,
+    getNextQuotationNumber,
+    incrementQuotationNumber,
     getClientById,
 } from "@/lib/storage/tools-storage"
 import {
@@ -18,6 +18,7 @@ import {
     deleteQuotationDraft,
 } from "@/lib/storage/quotation-drafts"
 import { Client, InvoiceItem, Quotation } from "@/types/invoice"
+import { computeTotals, formatMoney as formatMoneyFor, roundMoney as roundMoneyFor } from "@/lib/tools/totals"
 
 export default function NewQuotationForm() {
     const router = useRouter()
@@ -65,7 +66,7 @@ export default function NewQuotationForm() {
             ])
 
             setClients(loadedClients)
-            setQuotationNumber(getNextInvoiceNumber().replace("INV-", "QUO-"))
+            setQuotationNumber(getNextQuotationNumber())
             setCurrency(settings.defaultCurrency)
             setTaxRate(settings.defaultTaxRate)
             setTerms(settings.defaultPaymentTerms)
@@ -128,22 +129,9 @@ export default function NewQuotationForm() {
         }
     }
 
-    const getCurrencyDecimals = () => {
-        return currency.toUpperCase() === "MMK" ? 0 : 2
-    }
+    const roundMoney = (value: number) => roundMoneyFor(value, currency)
 
-    const roundMoney = (value: number) => {
-        const decimals = getCurrencyDecimals()
-        return Number(value.toFixed(decimals))
-    }
-
-    const formatMoney = (value: number) => {
-        const decimals = getCurrencyDecimals()
-        return value.toLocaleString("en-US", {
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals,
-        })
-    }
+    const formatMoney = (value: number) => formatMoneyFor(value, currency)
 
     const parseIntegerInput = (value: string) => {
         const digits = value.replace(/[^\d]/g, "")
@@ -173,25 +161,8 @@ export default function NewQuotationForm() {
         )
     }
 
-    const calculateTotals = () => {
-        const subtotal = roundMoney(
-            items.reduce((sum, item) => sum + roundMoney(item.amount), 0),
-        )
-        const discountAmount =
-            discountType === "percentage"
-                ? roundMoney(subtotal * (discount / 100))
-                : roundMoney(discount)
-        const taxableAmount = roundMoney(subtotal - discountAmount)
-        const taxAmount = roundMoney(taxableAmount * (taxRate / 100))
-        const total = roundMoney(taxableAmount + taxAmount)
-
-        return {
-            subtotal,
-            discountAmount,
-            taxAmount,
-            total,
-        }
-    }
+    const calculateTotals = () =>
+        computeTotals({ items, discount, discountType, taxRate, currency })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -213,6 +184,7 @@ export default function NewQuotationForm() {
             id: uuidv7(),
             token: uuidv7(),
             invoiceNumber: quotationNumber,
+            clientId: client.id,
             client,
             issueDate,
             dueDate: validUntil, // Using validUntil as dueDate for compatibility
@@ -233,7 +205,7 @@ export default function NewQuotationForm() {
         }
 
         await saveQuotation(quotation)
-        await incrementInvoiceNumber()
+        await incrementQuotationNumber(quotationNumber)
         if (loadedDraftId) {
             deleteQuotationDraft(loadedDraftId)
         }

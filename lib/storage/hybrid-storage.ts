@@ -1,9 +1,16 @@
 // localStorage-only storage operations (cloud sync removed)
+import { ensureMigrated } from "./migrations"
 
 function getFromStorage<T>(key: string): T[] {
   if (typeof window === "undefined") return []
-  const data = localStorage.getItem(key)
-  return data ? JSON.parse(data) : []
+  ensureMigrated()
+  try {
+    const data = localStorage.getItem(key)
+    const parsed = data ? JSON.parse(data) : []
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
 }
 
 function saveToStorage<T>(key: string, data: T[]): void {

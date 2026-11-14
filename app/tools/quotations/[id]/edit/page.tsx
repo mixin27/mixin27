@@ -11,6 +11,7 @@ import {
   getClients,
 } from "@/lib/storage/tools-storage"
 import { Client, InvoiceItem, Quotation } from "@/types/invoice"
+import { computeTotals, formatMoney as formatMoneyFor, roundMoney as roundMoneyFor } from "@/lib/tools/totals"
 
 export default function EditQuotationPage() {
   const params = useParams()
@@ -97,22 +98,9 @@ export default function EditQuotationPage() {
     }
   }
 
-  const getCurrencyDecimals = () => {
-    return currency.toUpperCase() === "MMK" ? 0 : 2
-  }
+  const roundMoney = (value: number) => roundMoneyFor(value, currency)
 
-  const roundMoney = (value: number) => {
-    const decimals = getCurrencyDecimals()
-    return Number(value.toFixed(decimals))
-  }
-
-  const formatMoney = (value: number) => {
-    const decimals = getCurrencyDecimals()
-    return value.toLocaleString("en-US", {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    })
-  }
+  const formatMoney = (value: number) => formatMoneyFor(value, currency)
 
   const parseIntegerInput = (value: string) => {
     const digits = value.replace(/[^\d]/g, "")
@@ -142,25 +130,8 @@ export default function EditQuotationPage() {
     )
   }
 
-  const calculateTotals = () => {
-    const subtotal = roundMoney(
-      items.reduce((sum, item) => sum + roundMoney(item.amount), 0),
-    )
-    const discountAmount =
-      discountType === "percentage"
-        ? roundMoney(subtotal * (discount / 100))
-        : roundMoney(discount)
-    const taxableAmount = roundMoney(subtotal - discountAmount)
-    const taxAmount = roundMoney(taxableAmount * (taxRate / 100))
-    const total = roundMoney(taxableAmount + taxAmount)
-
-    return {
-      subtotal,
-      discountAmount,
-      taxAmount,
-      total,
-    }
-  }
+  const calculateTotals = () =>
+    computeTotals({ items, discount, discountType, taxRate, currency })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -185,6 +156,7 @@ export default function EditQuotationPage() {
     const updatedQuotation: Quotation = {
       ...originalQuotation,
       invoiceNumber: quotationNumber,
+      clientId: client.id,
       client,
       issueDate,
       dueDate: validUntil,

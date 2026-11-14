@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
 import { Invoice, InvoiceItem, Client } from "@/types/invoice"
+import { computeTotals, lineAmount } from "@/lib/tools/totals"
 import {
     saveInvoice,
     getClients,
@@ -95,7 +96,7 @@ export default function NewInvoiceForm() {
                 if (item.id === id) {
                     const updated = { ...item, [field]: value }
                     if (field === "quantity" || field === "rate") {
-                        updated.amount = updated.quantity * updated.rate
+                        updated.amount = lineAmount(updated.quantity, updated.rate, currency)
                     }
                     return updated
                 }
@@ -104,30 +105,11 @@ export default function NewInvoiceForm() {
         )
     }
 
-    const calculateSubtotal = () => {
-        return items.reduce((sum, item) => sum + item.amount, 0)
-    }
-
-    const calculateDiscount = () => {
-        const subtotal = calculateSubtotal()
-        if (discountType === "percentage") {
-            return subtotal * (discount / 100)
-        }
-        return discount
-    }
-
-    const calculateTax = () => {
-        const subtotal = calculateSubtotal()
-        const discountAmount = calculateDiscount()
-        return (subtotal - discountAmount) * (taxRate / 100)
-    }
-
-    const calculateTotal = () => {
-        const subtotal = calculateSubtotal()
-        const discountAmount = calculateDiscount()
-        const taxAmount = calculateTax()
-        return subtotal - discountAmount + taxAmount
-    }
+    const totals = computeTotals({ items, discount, discountType, taxRate, currency })
+    const calculateSubtotal = () => totals.subtotal
+    const calculateDiscount = () => totals.discountAmount
+    const calculateTax = () => totals.taxAmount
+    const calculateTotal = () => totals.total
 
     const handleSave = async (status: Invoice["status"] = "draft") => {
         const selectedClient = clients.find((c) => c.id === selectedClientId)
@@ -147,6 +129,7 @@ export default function NewInvoiceForm() {
             id: uuidv7(),
             token: uuidv7(),
             invoiceNumber,
+            clientId: selectedClient.id,
             client: selectedClient,
             issueDate,
             dueDate,
@@ -166,7 +149,7 @@ export default function NewInvoiceForm() {
         }
 
         await saveInvoice(invoice)
-        await incrementInvoiceNumber()
+        await incrementInvoiceNumber(invoiceNumber)
         router.push("/tools/invoices")
     }
 

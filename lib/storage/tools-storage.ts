@@ -17,6 +17,8 @@ import {
     hybridDelete,
 } from "./hybrid-storage"
 import { Resume, ResumeStats } from "@/types/resume"
+import { ensureMigrated, parseDocNumber } from "./migrations"
+import { DEFAULT_SETTINGS } from "./settings-defaults"
 
 const STORAGE_KEYS = {
     INVOICES: "invoices",
@@ -58,17 +60,49 @@ export const deleteInvoice = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.INVOICES, id)
 }
 
-export const getNextInvoiceNumber = (): string => {
+// Document numbering. Each type has its own prefix and counter in settings.
+type CounterKind = "invoice" | "quotation" | "receipt" | "contract"
+
+const COUNTER_FIELDS = {
+    invoice: { prefix: "invoicePrefix", next: "nextInvoiceNumber" },
+    quotation: { prefix: "quotationPrefix", next: "nextQuotationNumber" },
+    receipt: { prefix: "receiptPrefix", next: "nextReceiptNumber" },
+    contract: { prefix: "contractPrefix", next: "nextContractNumber" },
+} as const satisfies Record<CounterKind, { prefix: keyof InvoiceSettings; next: keyof InvoiceSettings }>
+
+export const formatDocNumber = (prefix: string, number: number): string =>
+    `${prefix}${String(number).padStart(4, "0")}`
+
+export const peekDocNumber = (kind: CounterKind): string => {
     const settings = getSettings()
-    const number = settings.nextInvoiceNumber
-    return `${settings.invoicePrefix}${String(number).padStart(4, "0")}`
+    const { prefix, next } = COUNTER_FIELDS[kind]
+    return formatDocNumber(
+        (settings[prefix] as string | undefined) ?? (DEFAULT_SETTINGS[prefix] as string),
+        (settings[next] as number | undefined) || 1,
+    )
 }
 
-export const incrementInvoiceNumber = async (): Promise<void> => {
+/**
+ * Advance a counter after a document is saved. If the saved number was typed
+ * by hand and is higher than the counter, jump past it so it is never reused.
+ */
+export const advanceDocNumber = async (kind: CounterKind, usedNumber?: string): Promise<void> => {
     const settings = getSettings()
-    settings.nextInvoiceNumber += 1
-    await saveSettings(settings)
+    const { next } = COUNTER_FIELDS[kind]
+    const current = (settings[next] as number | undefined) || 1
+    const used = parseDocNumber(usedNumber)
+    await saveSettings({ ...settings, [next]: Math.max(current, used) + 1 })
 }
+
+export const getNextInvoiceNumber = (): string => peekDocNumber("invoice")
+
+export const incrementInvoiceNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("invoice", usedNumber)
+
+export const getNextQuotationNumber = (): string => peekDocNumber("quotation")
+
+export const incrementQuotationNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("quotation", usedNumber)
 
 // Client Operations
 export const saveClient = async (client: Client): Promise<void> => {
@@ -88,28 +122,15 @@ export const deleteClient = async (id: string): Promise<void> => {
 }
 
 // Settings Operations
-const defaultSettings: InvoiceSettings = {
-    businessName: "Your Business Name",
-    businessEmail: "contact@yourbusiness.com",
-    businessPhone: "",
-    businessAddress: "",
-    businessCity: "",
-    businessState: "",
-    businessZipCode: "",
-    businessCountry: "",
-    taxId: "",
-    logo: "",
-    defaultCurrency: "USD",
-    defaultTaxRate: 0,
-    defaultPaymentTerms: "Net 30",
-    invoicePrefix: "INV-",
-    nextInvoiceNumber: 1,
-}
-
 export const getSettings = (): InvoiceSettings => {
-    if (typeof window === "undefined") return defaultSettings
-    const data = localStorage.getItem(STORAGE_KEYS.SETTINGS)
-    return data ? JSON.parse(data) : defaultSettings
+    if (typeof window === "undefined") return { ...DEFAULT_SETTINGS }
+    ensureMigrated()
+    try {
+        const data = localStorage.getItem(STORAGE_KEYS.SETTINGS)
+        return data ? { ...DEFAULT_SETTINGS, ...JSON.parse(data) } : { ...DEFAULT_SETTINGS }
+    } catch {
+        return { ...DEFAULT_SETTINGS }
+    }
 }
 
 export const saveSettings = async (settings: InvoiceSettings): Promise<void> => {
@@ -151,11 +172,10 @@ export const deleteReceipt = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.RECEIPTS, id)
 }
 
-export const getNextReceiptNumber = async (): Promise<string> => {
-    const receipts = await getReceipts()
-    const nextNumber = receipts.length + 1
-    return `REC-${String(nextNumber).padStart(4, "0")}`
-}
+export const getNextReceiptNumber = async (): Promise<string> => peekDocNumber("receipt")
+
+export const incrementReceiptNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("receipt", usedNumber)
 
 // Contract Operations
 export const saveContract = async (contract: Contract): Promise<void> => {
@@ -174,11 +194,10 @@ export const deleteContract = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.CONTRACTS, id)
 }
 
-export const getNextContractNumber = async (): Promise<string> => {
-    const contracts = await getContracts()
-    const nextNumber = contracts.length + 1
-    return `CON-${String(nextNumber).padStart(4, "0")}`
-}
+export const getNextContractNumber = async (): Promise<string> => peekDocNumber("contract")
+
+export const incrementContractNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("contract", usedNumber)
 
 // Time Entry Operations
 export const saveTimeEntry = async (entry: TimeEntry): Promise<void> => {
@@ -553,81 +572,4 @@ export const formatDuration = (minutes: number): string => {
 
 export const formatDurationDecimal = (minutes: number): string => {
     return (minutes / 60).toFixed(2)
-}
-
-// Export all data (for backup)
-export const exportAllData = async () => {
-    const [
-        invoices,
-        clients,
-        quotations,
-        receipts,
-        contracts,
-        timeEntries,
-        settings,
-        resumes,
-    ] = await Promise.all([
-        getInvoices(),
-        getClients(),
-        getQuotations(),
-        getReceipts(),
-        getContracts(),
-        getTimeEntries(),
-        Promise.resolve(getSettings()),
-        getResumes(),
-    ])
-
-    return {
-        invoices,
-        clients,
-        quotations,
-        receipts,
-        contracts,
-        timeEntries,
-        settings,
-        resumes,
-        exportedAt: new Date().toISOString(),
-    }
-}
-
-// Import data (from backup)
-export const importAllData = async (data: any): Promise<void> => {
-    if (data.clients) {
-        for (const client of data.clients) {
-            await saveClient(client)
-        }
-    }
-    if (data.invoices) {
-        for (const invoice of data.invoices) {
-            await saveInvoice(invoice)
-        }
-    }
-    if (data.quotations) {
-        for (const quotation of data.quotations) {
-            await saveQuotation(quotation)
-        }
-    }
-    if (data.receipts) {
-        for (const receipt of data.receipts) {
-            await saveReceipt(receipt)
-        }
-    }
-    if (data.contracts) {
-        for (const contract of data.contracts) {
-            await saveContract(contract)
-        }
-    }
-    if (data.timeEntries) {
-        for (const entry of data.timeEntries) {
-            await saveTimeEntry(entry)
-        }
-    }
-    if (data.settings) {
-        await saveSettings(data.settings)
-    }
-    if (data.resumes) {
-        for (const resume of data.resumes) {
-            await saveResume(resume)
-        }
-    }
 }

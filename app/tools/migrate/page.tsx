@@ -9,7 +9,13 @@ import {
     CheckCircle,
     ArrowLeft,
 } from "lucide-react"
-import { exportAllData, importAllData } from "@/lib/storage/tools-storage"
+import {
+    buildBackup,
+    downloadBackupFile,
+    restoreBackup,
+    summarizeBackup,
+    validateBackup,
+} from "@/lib/tools/backup"
 
 export default function MigratePage() {
     const [status, setStatus] = useState<
@@ -22,20 +28,13 @@ export default function MigratePage() {
             setStatus("exporting")
             setMessage("Preparing data...")
 
-            const data = await exportAllData()
-            const blob = new Blob([JSON.stringify(data, null, 2)], {
-                type: "application/json",
-            })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement("a")
-            a.href = url
-            a.download = `tools-backup-${new Date().toISOString().split("T")[0]}.json`
-            a.click()
-            URL.revokeObjectURL(url)
+            const backup = buildBackup()
+            downloadBackupFile(backup)
+            const { counts } = summarizeBackup(backup)
 
             setStatus("success")
             setMessage(
-                `✓ Exported ${data.clients?.length || 0} clients, ${data.invoices?.length || 0} invoices, ${data.resumes?.length || 0} resumes, and more!`,
+                `✓ Exported ${counts.clients || 0} clients, ${counts.invoices || 0} invoices, ${counts.resumes || 0} resumes, and more!`,
             )
         } catch (error) {
             setStatus("error")
@@ -53,14 +52,15 @@ export default function MigratePage() {
             setStatus("importing")
             setMessage("Reading file...")
 
-            const text = await file.text()
-            const data = JSON.parse(text)
+            const result = validateBackup(JSON.parse(await file.text()))
+            if (!result.ok) throw new Error(result.error)
 
-            await importAllData(data)
+            restoreBackup(result.backup, "merge")
+            const { counts } = summarizeBackup(result.backup)
 
             setStatus("success")
             setMessage(
-                `✓ Imported ${data.clients?.length || 0} clients, ${data.invoices?.length || 0} invoices, ${data.resumes?.length || 0} resumes to localStorage!`,
+                `✓ Imported ${counts.clients || 0} clients, ${counts.invoices || 0} invoices, ${counts.resumes || 0} resumes to localStorage!`,
             )
         } catch (error) {
             setStatus("error")

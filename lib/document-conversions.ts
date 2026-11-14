@@ -5,15 +5,17 @@ import {
     getNextInvoiceNumber,
     incrementInvoiceNumber,
     getNextReceiptNumber,
+    incrementReceiptNumber,
 } from "@/lib/storage/tools-storage"
 import { v7 as uuidv7 } from 'uuid'
 
-export function convertQuotationToInvoice(quotation: Quotation): Invoice {
+export async function convertQuotationToInvoice(quotation: Quotation): Promise<Invoice> {
     const invoiceNumber = getNextInvoiceNumber()
 
     const invoice: Invoice = {
         id: uuidv7(),
         invoiceNumber,
+        clientId: quotation.clientId ?? quotation.client.id,
         client: quotation.client,
         issueDate: new Date().toISOString().split("T")[0],
         dueDate: quotation.validUntil,
@@ -31,12 +33,13 @@ export function convertQuotationToInvoice(quotation: Quotation): Invoice {
         terms: quotation.terms,
         currency: quotation.currency,
         token: uuidv7(),
+        sourceQuotationId: quotation.id,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     }
 
-    saveInvoice(invoice)
-    incrementInvoiceNumber()
+    await saveInvoice(invoice)
+    await incrementInvoiceNumber(invoiceNumber)
 
     return invoice
 }
@@ -53,10 +56,12 @@ export async function convertInvoiceToReceipt(
         id: uuidv7(),
         token: uuidv7(),
         receiptNumber,
+        clientId: invoice.clientId ?? invoice.client.id,
         client: invoice.client,
         paymentDate: paymentDate || new Date().toISOString().split("T")[0],
         paymentMethod,
         relatedInvoiceNumber: invoice.invoiceNumber,
+        invoiceId: invoice.id,
         items: invoice.items,
         subtotal: invoice.subtotal,
         taxRate: invoice.taxRate,
@@ -71,7 +76,8 @@ export async function convertInvoiceToReceipt(
         updatedAt: new Date().toISOString(),
     }
 
-    saveReceipt(receipt)
+    await saveReceipt(receipt)
+    await incrementReceiptNumber(receiptNumber)
 
     return receipt
 }

@@ -10,6 +10,7 @@ import {
   getClients,
   getSettings,
   getNextContractNumber,
+  incrementContractNumber,
   getClientById,
 } from "@/lib/storage/tools-storage"
 import { Client, Contract, ContractTemplateType } from "@/types/invoice"
@@ -103,6 +104,7 @@ export default function NewContractForm() {
       contractNumber,
       templateType,
       templateName: template.name,
+      clientId: client.id,
       client,
       projectName,
       projectScope,
@@ -125,6 +127,7 @@ export default function NewContractForm() {
     }
 
     await saveContract(contract)
+    await incrementContractNumber(contractNumber)
     router.push("/tools/contracts")
   }
 

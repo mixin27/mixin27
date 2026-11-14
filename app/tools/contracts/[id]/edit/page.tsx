@@ -96,6 +96,7 @@ export default function EditContractPage() {
     const updatedContract: Contract = {
       ...originalContract,
       contractNumber,
+      clientId: client.id,
       client,
       projectName,
       projectScope,

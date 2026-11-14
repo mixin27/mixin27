@@ -88,11 +88,12 @@ export default function QuotationViewPage() {
     const confirmConvertToInvoice = async () => {
         if (!quotation) return
 
-        const invoice = convertQuotationToInvoice(quotation)
+        const invoice = await convertQuotationToInvoice(quotation)
 
         // Update quotation status to reflect it's been converted
         const updatedQuotation = {
             ...quotation,
+            invoiceIds: [...(quotation.invoiceIds ?? []), invoice.id],
             notes: quotation.notes
                 ? `${quotation.notes}\n\nConverted to Invoice: ${invoice.invoiceNumber}`
                 : `Converted to Invoice: ${invoice.invoiceNumber}`,

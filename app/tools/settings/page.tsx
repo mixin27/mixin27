@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowLeft, Save, Download, Upload } from "lucide-react"
+import { getSettings, saveSettings } from "@/lib/storage/tools-storage"
 import {
-  getSettings,
-  saveSettings,
-  exportAllData,
-  importAllData,
-} from "@/lib/storage/tools-storage"
+  buildBackup,
+  downloadBackupFile,
+  restoreBackup,
+  summarizeBackup,
+  validateBackup,
+} from "@/lib/tools/backup"
 import { InvoiceSettings } from "@/types/invoice"
 
 export default function SettingsPage() {
@@ -28,42 +30,39 @@ export default function SettingsPage() {
   }
 
   const handleExport = () => {
-    const data = exportAllData()
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `invoice-data-backup-${new Date().toISOString().split("T")[0]}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    downloadBackupFile(buildBackup())
   }
 
   const handleImport = () => {
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "application/json"
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          try {
-            const data = JSON.parse(event.target?.result as string)
-            if (
-              confirm("This will replace all your current data. Are you sure?")
-            ) {
-              importAllData(data)
-              setSettings(getSettings())
-              alert("Data imported successfully!")
-            }
-          } catch (error) {
-            alert("Invalid file format!")
-            console.error("Error importing data:", error)
-          }
+      if (!file) return
+      try {
+        const result = validateBackup(JSON.parse(await file.text()))
+        if (!result.ok) {
+          alert(result.error)
+          return
         }
-        reader.readAsText(file)
+        const { counts } = summarizeBackup(result.backup)
+        const list = Object.entries(counts)
+          .map(([key, n]) => `${n} ${key.replace(/_/g, " ")}`)
+          .join(", ")
+        if (
+          !confirm(
+            `Import ${list || "settings"}?\n\nRecords are merged into your current data. When the same record exists in both, the newer one is kept.`,
+          )
+        ) {
+          return
+        }
+        restoreBackup(result.backup, "merge")
+        setSettings(getSettings())
+        alert("Data imported successfully!")
+      } catch (error) {
+        alert("Invalid file format!")
+        console.error("Error importing data:", error)
       }
     }
     input.click()
@@ -322,6 +321,47 @@ export default function SettingsPage() {
                   min="1"
                 />
               </div>
+
+              {(
+                [
+                  ["Quotation", "quotationPrefix", "nextQuotationNumber", "QUO-"],
+                  ["Receipt", "receiptPrefix", "nextReceiptNumber", "REC-"],
+                  ["Contract", "contractPrefix", "nextContractNumber", "CON-"],
+                ] as const
+              ).map(([label, prefixKey, nextKey, fallback]) => (
+                <div key={prefixKey} className="contents">
+                  <div>
+                    <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
+                      {label} Prefix
+                    </label>
+                    <input
+                      type="text"
+                      value={settings[prefixKey] ?? fallback}
+                      onChange={(e) =>
+                        setSettings({ ...settings, [prefixKey]: e.target.value })
+                      }
+                      className="w-full rounded-xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
+                      Next {label} Number
+                    </label>
+                    <input
+                      type="number"
+                      value={settings[nextKey] ?? 1}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          [nextKey]: parseInt(e.target.value) || 1,
+                        })
+                      }
+                      className="w-full rounded-xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
+                      min="1"
+                    />
+                  </div>
+                </div>
+              ))}
 
               <div className="md:col-span-2">
                 <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
