@@ -35,7 +35,7 @@ export function CodeBlock({ children, "data-language": language, ...props }: Pre
       data-language={language}
     >
       {/* Header bar */}
-      <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-2">
+      <div className="flex items-center justify-between border-b border-border bg-muted/40 px-3 py-1.5 sm:px-4 sm:py-2">
         <span className="font-mono text-xs font-medium text-muted-foreground uppercase tracking-wider">
           {language ?? "code"}
         </span>
@@ -61,7 +61,7 @@ export function CodeBlock({ children, "data-language": language, ...props }: Pre
       {/* Code */}
       <pre
         ref={ref}
-        className="overflow-x-auto p-4 text-sm leading-relaxed"
+        className="overflow-x-auto p-3 text-[0.8125rem] leading-relaxed sm:p-4 sm:text-sm"
         {...props}
       >
         {children}

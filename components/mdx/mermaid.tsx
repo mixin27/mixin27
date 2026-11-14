@@ -169,7 +169,7 @@ export function Mermaid(props: MermaidProps) {
         const { svg: rendered } = await mermaid.render(id, source)
 
         if (!cancelled) {
-          setSvg(rendered)
+          setSvg(keepReadableOnPhones(rendered))
           setError("")
         }
       } catch (err) {
@@ -203,7 +203,7 @@ export function Mermaid(props: MermaidProps) {
   return (
     <figure className="my-8 flex flex-col items-center">
       <div
-        className="w-full overflow-x-auto rounded-xl border border-border bg-background p-6"
+        className="w-full overflow-x-auto rounded-xl border border-border bg-background p-3 sm:p-6"
         dangerouslySetInnerHTML={{ __html: svg }}
         aria-label="Diagram"
       />
@@ -213,5 +213,20 @@ export function Mermaid(props: MermaidProps) {
         </figcaption>
       )}
     </figure>
+  )
+}
+
+/**
+ * Mermaid sizes the SVG to 100% of its box with a max-width of its natural
+ * width, so on a phone a wide graph shrinks until its labels can't be read.
+ * Keep it at least its natural width (up to 600px) and let the frame scroll.
+ */
+function keepReadableOnPhones(svg: string) {
+  return svg.replace(
+    /style="max-width:\s*([\d.]+)px;?"/,
+    (_, width: string) => {
+      const min = Math.min(Math.round(Number(width)), 600)
+      return `style="max-width: ${width}px; min-width: ${min}px;"`
+    }
   )
 }

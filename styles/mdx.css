@@ -137,3 +137,51 @@
 .prose-mdx [data-line] {
   border-left: 2px solid transparent;
 }
+
+/* ─── Screenshot tables ──────────────────────────────────────────────────────
+ * Markdown tables used as image galleries (| Home | Details | … |). On a
+ * phone, auto layout squeezed each screenshot to whatever its column label
+ * allowed (40–120px, all different). Give every image column the same
+ * readable width and let the table scroll sideways inside its frame instead.
+ */
+.prose-mdx table:has(td figure) {
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+}
+
+.prose-mdx td:has(> figure),
+.prose-mdx table:has(td figure) th {
+  width: 10rem;
+  vertical-align: top;
+}
+
+.prose-mdx td:has(> figure) {
+  padding: 0.75rem;
+  scroll-snap-align: start;
+}
+
+.prose-mdx td > figure {
+  margin: 0;
+}
+
+/* The column header already names the screenshot. */
+.prose-mdx td > figure > figcaption {
+  display: none;
+}
+
+.prose-mdx div:has(> table td figure) {
+  scroll-snap-type: x proximity;
+}
+
+@media (max-width: 640px) {
+  .prose-mdx th,
+  .prose-mdx td {
+    padding: 0.625rem 0.75rem;
+  }
+}
+
+/* Block code scrolls inside its frame; lines never wrap or push the page. */
+.prose-mdx pre > code[data-language] {
+  min-width: max-content;
+}

@@ -167,11 +167,15 @@ export const mdxComponents: MDXComponents = {
 
   // ─── Inline code ─────────────────────────────────────────────────────────
   code: ({ children, ...props }) => {
-    // Block code is handled by rehype-pretty-code (renders a <figure>).
-    // This handles only inline `code`.
+    // Block code from rehype-pretty-code carries data-language: leave it to
+    // CodeBlock's <pre>. The inline style here used to give it a second
+    // grey box and padding inside the block, eating width on phones.
+    if ("data-language" in props) {
+      return <code {...props}>{children}</code>
+    }
     return (
       <code
-        className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.875em] font-medium text-foreground"
+        className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.875em] font-medium break-words text-foreground"
         {...props}
       >
         {children}
