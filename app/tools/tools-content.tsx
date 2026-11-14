@@ -84,7 +84,7 @@ const features = [
   },
   {
     title: "Privacy First",
-    description: "All data stored locally in your browser. No cloud, no tracking.",
+    description: "Your data stays in your browser. Optional backups go to your own Google Drive, never to our servers.",
   },
   {
     title: "Professional",
@@ -106,14 +106,23 @@ export default function ToolsContent() {
           aria-hidden="true"
         />
         <div className="mx-auto max-w-7xl px-6">
-          <SectionLabel className="mb-4">Tools</SectionLabel>
-          <h1 className="mb-4 text-5xl font-bold tracking-tight">
-            Freelance Tools
+          <SectionLabel className="mb-4">Free web app</SectionLabel>
+          <h1 className="mb-4 text-4xl md:text-5xl font-bold tracking-tight">
+            KZT Freelance Tools
           </h1>
-          <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Professional tools to manage your freelance business. Create
-            invoices, quotations, contracts, and more &mdash; all free and
-            private.
+          <p className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            KZT Freelance Tools helps freelancers and small businesses run the
+            paperwork side of their work: create quotations, turn them into
+            invoices (including split payments), record payments and receipts,
+            manage clients, and keep contracts and timesheets. It&apos;s free,
+            needs no account, and keeps your data in your own browser.
+          </p>
+          <p className="mt-4 text-sm text-muted-foreground">
+            <a href="#about" className="text-purple-400 hover:underline">How it works and how your data is handled</a>
+            {" · "}
+            <Link href="/legal/privacy#freelance-tools" className="text-purple-400 hover:underline">Privacy Policy</Link>
+            {" · "}
+            <Link href="/legal/terms" className="text-purple-400 hover:underline">Terms</Link>
           </p>
         </div>
       </div>
@@ -185,6 +194,83 @@ export default function ToolsContent() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* About the app and Google data (public, for users and Google's OAuth review) */}
+      <section id="about" className="scroll-mt-24 border-t border-border/70 py-20">
+        <div className="mx-auto max-w-3xl px-6 space-y-10">
+          <div>
+            <SectionLabel className="mb-4">About this app</SectionLabel>
+            <h2 className="mb-4 text-3xl font-bold">How KZT Freelance Tools works</h2>
+            <p className="leading-relaxed text-muted-foreground">
+              KZT Freelance Tools is made by Kyaw Zayar Tun and runs entirely in
+              your web browser. Anyone can use it without signing up. Everything
+              you create &mdash; clients, quotations, invoices, payments,
+              receipts, contracts, timesheets and resumes &mdash; is saved in
+              your browser&apos;s local storage on your device. It is not sent to
+              or stored on our servers.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-xl font-semibold">Optional Google Drive backup</h3>
+            <p className="mb-4 leading-relaxed text-muted-foreground">
+              Because your data lives in one browser, you can choose to back it
+              up to your own Google Drive and restore it on another device. This
+              is optional; the rest of the app works without a Google account.
+            </p>
+            <ul className="list-disc space-y-2 pl-6 text-muted-foreground">
+              <li>
+                When you click <strong>Connect Google Drive</strong> on the{" "}
+                <Link href="/tools/backup" className="text-purple-400 hover:underline">Backup &amp; Restore</Link>{" "}
+                page, Google asks you to allow access to the app&apos;s own
+                hidden folder in your Drive (the <code>drive.appdata</code>{" "}
+                permission).
+              </li>
+              <li>
+                The app uses this only to save backup files of your Tools data,
+                list them, restore them and delete them when you ask. It cannot
+                see, open or change any of your other Drive files.
+              </li>
+              <li>
+                It also reads your Google account email address from Drive to
+                show which account is connected.
+              </li>
+              <li>
+                Your Google data goes directly between your browser and Google.
+                It is never sent to our servers, shared with anyone, sold, or
+                used for advertising or to train AI models.
+              </li>
+              <li>
+                Google&apos;s access token is kept only in memory while the tab is
+                open. You can disconnect at any time on the Backup &amp; Restore
+                page or at{" "}
+                <a href="https://myaccount.google.com/permissions" className="text-purple-400 hover:underline" rel="noopener noreferrer" target="_blank">
+                  myaccount.google.com/permissions
+                </a>
+                .
+              </li>
+            </ul>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            KZT Freelance Tools&apos; use and transfer of information received
+            from Google APIs adheres to the{" "}
+            <a
+              href="https://developers.google.com/terms/api-services-user-data-policy"
+              className="text-purple-400 hover:underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Google API Services User Data Policy
+            </a>
+            , including the Limited Use requirements. Read the full{" "}
+            <Link href="/legal/privacy#freelance-tools" className="text-purple-400 hover:underline">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
       </section>
     </>
