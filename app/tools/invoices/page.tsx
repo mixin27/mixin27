@@ -64,6 +64,8 @@ export default function InvoicesPage() {
         return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
       case "overdue":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+      case "partially_paid":
+        return "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
       case "draft":
         return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
       case "cancelled":
@@ -187,6 +189,7 @@ export default function InvoicesPage() {
             <option value="all">All Status</option>
             <option value="draft">Draft</option>
             <option value="sent">Sent</option>
+            <option value="partially_paid">Partially paid</option>
             <option value="paid">Paid</option>
             <option value="overdue">Overdue</option>
             <option value="cancelled">Cancelled</option>
@@ -271,8 +274,8 @@ export default function InvoicesPage() {
                             invoice.status,
                           )}`}
                         >
-                          {invoice.status.charAt(0).toUpperCase() +
-                            invoice.status.slice(1)}
+                          {(invoice.status.charAt(0).toUpperCase() +
+                            invoice.status.slice(1)).replace(/_/g, " ")}
                         </span>
                       </td>
                       <td className="px-6 py-4">

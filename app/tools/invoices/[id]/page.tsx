@@ -7,14 +7,17 @@ import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Che
 import {
     getInvoiceById,
     deleteInvoice,
+    getQuotationById,
     getSettings,
-    saveInvoice,
 } from "@/lib/storage/tools-storage"
-import { Invoice, InvoiceSettings, Receipt } from "@/types/invoice"
+import { Invoice, InvoiceSettings, Quotation, Receipt } from "@/types/invoice"
 import {
     convertInvoiceToReceipt,
     canConvertInvoiceToReceipt,
+    getInvoiceReceipts,
 } from "@/lib/document-conversions"
+import { invoicePaidAmount } from "@/lib/tools/client-stats"
+import { formatMoney, roundMoney } from "@/lib/tools/totals"
 import { exportElementToPdf } from "@/lib/pdf-export"
 import { InvoicePreview } from "@/components/tools/InvoicePreview"
 
@@ -32,6 +35,8 @@ export default function InvoiceViewPage() {
     )
     const [amountPaid, setAmountPaid] = useState<number>(0)
     const [copied, setCopied] = useState(false)
+    const [receipts, setReceipts] = useState<Receipt[]>([])
+    const [sourceQuotation, setSourceQuotation] = useState<Quotation | null>(null)
     const invoiceRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -43,9 +48,22 @@ export default function InvoiceViewPage() {
             ])
 
             if (loadedInvoice) {
+                const [loadedReceipts, quotation] = await Promise.all([
+                    getInvoiceReceipts(loadedInvoice),
+                    loadedInvoice.sourceQuotationId
+                        ? getQuotationById(loadedInvoice.sourceQuotationId)
+                        : Promise.resolve(null),
+                ])
                 setInvoice(loadedInvoice)
                 setSettings(loadedSettings)
-                setAmountPaid(loadedInvoice.total)
+                setReceipts(loadedReceipts)
+                setSourceQuotation(quotation)
+                setAmountPaid(
+                    roundMoney(
+                        loadedInvoice.total - invoicePaidAmount(loadedInvoice, loadedReceipts),
+                        loadedInvoice.currency,
+                    ),
+                )
             } else {
                 router.push("/tools/invoices")
             }
@@ -75,26 +93,19 @@ export default function InvoiceViewPage() {
     const confirmGenerateReceipt = async () => {
         if (!invoice) return
 
-        const receipt = await convertInvoiceToReceipt(
+        if (!(amountPaid > 0)) {
+            alert("Enter an amount greater than zero.")
+            return
+        }
+
+        const { receipt, invoice: updated } = await convertInvoiceToReceipt(
             invoice,
             paymentMethod,
             paymentDate,
             amountPaid,
         )
-
-        if (amountPaid >= invoice.total && invoice.status !== "paid") {
-            const updatedInvoice = {
-                ...invoice,
-                status: "paid" as Invoice["status"],
-                updatedAt: new Date().toISOString(),
-            }
-            await saveInvoice(updatedInvoice)
-            setInvoice(updatedInvoice)
-        }
-
+        setInvoice(updated)
         setShowReceiptModal(false)
-
-        alert(`Successfully generated Receipt ${receipt.receiptNumber}`)
         router.push(`/tools/receipts/${receipt.id}`)
     }
 
@@ -146,12 +157,17 @@ export default function InvoiceViewPage() {
                 return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
             case "overdue":
                 return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+            case "partially_paid":
+                return "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
             case "draft":
                 return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
             case "cancelled":
                 return "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200"
         }
     }
+
+    const paidSoFar = invoicePaidAmount(invoice, receipts)
+    const balance = roundMoney(invoice.total - paidSoFar, invoice.currency)
 
     return (
         <>
@@ -173,8 +189,22 @@ export default function InvoiceViewPage() {
                             </Link>
                             <h1 className="mb-4 text-5xl font-bold tracking-tight">{invoice.invoiceNumber}</h1>
                             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">
-                                Invoice Details
+                                {invoice.installment
+                                    ? `Installment ${invoice.installment.index} of ${invoice.installment.count} · ${invoice.installment.label}`
+                                    : "Invoice Details"}
                             </p>
+                            {invoice.sourceQuotationId && (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    From quotation{" "}
+                                    {sourceQuotation ? (
+                                        <Link href={`/tools/quotations/${sourceQuotation.id}`} className="font-semibold text-purple-400 hover:underline">
+                                            {sourceQuotation.invoiceNumber}
+                                        </Link>
+                                    ) : (
+                                        <span>(deleted)</span>
+                                    )}
+                                </p>
+                            )}
                         </div>
                         <div className="shrink-0 pt-14">
                             <span
@@ -182,7 +212,7 @@ export default function InvoiceViewPage() {
                                     invoice.status,
                                 )}`}
                             >
-                                {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                                {(invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)).replace(/_/g, " ")}
                             </span>
                         </div>
                     </div>
@@ -214,15 +244,44 @@ export default function InvoiceViewPage() {
                         </div>
                     )}
 
-                    <div className="flex gap-3 mt-6">
-                        {canConvertInvoiceToReceipt(invoice) && (
+                    {receipts.length > 0 && (
+                        <div className="mt-6 max-w-xl rounded-xl border border-border bg-card/60">
+                            <p className="border-b border-border px-4 py-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
+                                Receipts · paid {invoice.currency} {formatMoney(paidSoFar, invoice.currency)} of {formatMoney(invoice.total, invoice.currency)}
+                            </p>
+                            <ul className="divide-y divide-border/60">
+                                {receipts.map((r) => (
+                                    <li key={r.id}>
+                                        <Link href={`/tools/receipts/${r.id}`} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/40">
+                                            <span className="font-semibold">{r.receiptNumber}</span>
+                                            <span className="text-muted-foreground">{r.paymentDate}</span>
+                                            <span className="ml-auto tabular-nums">
+                                                {r.currency} {formatMoney(r.amountPaid, r.currency)}
+                                            </span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-3 mt-6">
+                        {canConvertInvoiceToReceipt(invoice) && balance > 0 && (
                             <button
                                 onClick={handleGenerateReceipt}
                                 className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
                             >
                                 <Download className="size-4" />
-                                Generate Receipt
+                                {receipts.length ? "Receipt for Next Payment" : "Generate Receipt"}
                             </button>
+                        )}
+                        {balance <= 0 && receipts.length === 1 && (
+                            <Link
+                                href={`/tools/receipts/${receipts[0].id}`}
+                                className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
+                            >
+                                View Receipt
+                            </Link>
                         )}
                         <button
                             onClick={handleDownloadPDF}
@@ -317,13 +376,14 @@ export default function InvoiceViewPage() {
                                         value={amountPaid}
                                         onChange={(e) => setAmountPaid(Number(e.target.value))}
                                         min="0"
-                                        max={invoice.total}
-                                        step="0.01"
+                                        max={balance}
+                                        step="any"
                                         className="w-full pl-16 pr-4 py-3 rounded-xl border border-border bg-background/80 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
                                     />
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-1">
-                                    Invoice total: {invoice.currency} {invoice.total.toFixed(2)}
+                                    Invoice total: {invoice.currency} {formatMoney(invoice.total, invoice.currency)}
+                                    {paidSoFar > 0 && ` · still due ${invoice.currency} ${formatMoney(balance, invoice.currency)}`}
                                 </p>
                             </div>
                         </div>

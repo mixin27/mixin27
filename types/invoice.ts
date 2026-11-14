@@ -102,11 +102,21 @@ export interface InvoiceSettings {
     nextContractNumber?: number
 }
 
+export interface SplitPart {
+    label: string
+    mode: "percent" | "fixed"
+    /** Percent (0–100) or amount in the quotation's currency. Ignored for the last part, which takes the remainder. */
+    value: number
+    dueDate: string
+}
+
 export interface Quotation
     extends Omit<Invoice, "status" | "sourceQuotationId" | "installment" | "payments"> {
     validUntil: string
     status: "draft" | "sent" | "accepted" | "rejected" | "expired"
     invoiceIds?: string[]
+    /** Set when the quotation was split into installment invoices. */
+    splitPlan?: SplitPart[]
 }
 
 export interface Receipt {

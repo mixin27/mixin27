@@ -13,6 +13,7 @@ import {
     Link as LinkIcon,
     Copy,
     Check,
+    Split,
 } from "lucide-react"
 import {
     getQuotationById,
@@ -20,11 +21,16 @@ import {
     getSettings,
     saveQuotation,
 } from "@/lib/storage/tools-storage"
-import { Quotation, InvoiceSettings } from "@/types/invoice"
+import { Invoice, Quotation, InvoiceSettings, SplitPart } from "@/types/invoice"
 import {
     convertQuotationToInvoice,
     canConvertQuotationToInvoice,
+    createInstallmentInvoices,
+    getLinkedInvoices,
 } from "@/lib/document-conversions"
+import { invoicingState, missingInstallments } from "@/lib/tools/split"
+import { formatMoney } from "@/lib/tools/totals"
+import { SplitInvoiceDialog } from "@/components/tools/SplitInvoiceDialog"
 import { exportElementToPdf } from "@/lib/pdf-export"
 import { QuotationPreview } from "@/components/tools/QuotationPreview"
 
@@ -35,6 +41,9 @@ export default function QuotationViewPage() {
     const [settings, setSettings] = useState<InvoiceSettings | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
     const [showConvertModal, setShowConvertModal] = useState(false)
+    const [showSplitDialog, setShowSplitDialog] = useState(false)
+    const [linked, setLinked] = useState<Invoice[]>([])
+    const [notice, setNotice] = useState<string | null>(null)
     const [copied, setCopied] = useState(false)
     const quotationRef = useRef<HTMLDivElement>(null)
 
@@ -49,6 +58,7 @@ export default function QuotationViewPage() {
             if (loadedQuotation) {
                 setQuotation(loadedQuotation)
                 setSettings(loadedSettings)
+                setLinked(await getLinkedInvoices(loadedQuotation))
             } else {
                 router.push("/tools/quotations")
             }
@@ -72,40 +82,64 @@ export default function QuotationViewPage() {
         setTimeout(() => setCopied(false), 2000)
     }
 
+    /** Sent (not yet accepted) quotations need an explicit OK before invoicing. */
+    const confirmNotAccepted = () =>
+        quotation?.status === "accepted" ||
+        confirm(
+            `${quotation?.invoiceNumber} is marked "${quotation?.status}", not accepted. Create invoices anyway?`,
+        )
+
     const handleConvertToInvoice = () => {
         if (!quotation) return
 
         if (!canConvertQuotationToInvoice(quotation)) {
             alert(
-                'Only accepted quotations can be converted to invoices. Please change the status to "Accepted" first.',
+                'Only sent or accepted quotations can be converted to invoices. Change the status first.',
             )
             return
         }
+        if (!confirmNotAccepted()) return
 
         setShowConvertModal(true)
+    }
+
+    const handleSplit = () => {
+        if (!quotation || !confirmNotAccepted()) return
+        setShowSplitDialog(true)
     }
 
     const confirmConvertToInvoice = async () => {
         if (!quotation) return
 
-        const invoice = await convertQuotationToInvoice(quotation)
-
-        // Update quotation status to reflect it's been converted
-        const updatedQuotation = {
-            ...quotation,
-            invoiceIds: [...(quotation.invoiceIds ?? []), invoice.id],
-            notes: quotation.notes
-                ? `${quotation.notes}\n\nConverted to Invoice: ${invoice.invoiceNumber}`
-                : `Converted to Invoice: ${invoice.invoiceNumber}`,
-            updatedAt: new Date().toISOString(),
-        }
-        await saveQuotation(updatedQuotation)
-
+        const { invoice, created } = await convertQuotationToInvoice(quotation)
         setShowConvertModal(false)
-
-        // Show success message and navigate
-        alert(`Successfully created Invoice ${invoice.invoiceNumber}`)
+        if (!created) {
+            setNotice(`This quotation was already invoiced as ${invoice.invoiceNumber}.`)
+        }
         router.push(`/tools/invoices/${invoice.id}`)
+    }
+
+    const confirmSplit = async (parts: SplitPart[]) => {
+        if (!quotation) return
+        await createInstallmentInvoices(quotation, parts)
+        const latest = await getQuotationById(quotation.id)
+        if (latest) {
+            setQuotation(latest)
+            setLinked(await getLinkedInvoices(latest))
+        }
+        setShowSplitDialog(false)
+        setNotice(`Created ${parts.length} draft invoices. Open each one to review and send it.`)
+    }
+
+    const handleCreateMissing = async () => {
+        if (!quotation) return
+        const created = await createInstallmentInvoices(quotation, [])
+        const latest = await getQuotationById(quotation.id)
+        if (latest) {
+            setQuotation(latest)
+            setLinked(await getLinkedInvoices(latest))
+        }
+        setNotice(`Re-created ${created.length} missing installment invoice${created.length === 1 ? "" : "s"}.`)
     }
 
     const handlePrint = () => {
@@ -155,6 +189,11 @@ export default function QuotationViewPage() {
         }
     }
 
+    const state = invoicingState(quotation, linked)
+    const missing = missingInstallments(quotation, linked)
+    const activeLinked = linked.filter((i) => i.status !== "cancelled")
+    const canInvoice = canConvertQuotationToInvoice(quotation) && activeLinked.length === 0
+
     return (
         <>
             {/* Header - Hidden when printing */}
@@ -172,14 +211,27 @@ export default function QuotationViewPage() {
                             </h1>
                             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground">Quotation Details</p>
                         </div>
-                        <span
-                            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
-                                quotation.status,
-                            )}`}
-                        >
-                            {quotation.status.charAt(0).toUpperCase() +
-                                quotation.status.slice(1)}
-                        </span>
+                        <div className="flex flex-col items-end gap-2">
+                            <span
+                                className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
+                                    quotation.status,
+                                )}`}
+                            >
+                                {quotation.status.charAt(0).toUpperCase() +
+                                    quotation.status.slice(1)}
+                            </span>
+                            {state !== "none" && (
+                                <span
+                                    className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${
+                                        state === "full"
+                                            ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                            : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
+                                    }`}
+                                >
+                                    {state === "full" ? "Invoiced" : "Partially invoiced"}
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     {quotation.token && (
@@ -209,15 +261,76 @@ export default function QuotationViewPage() {
                         </div>
                     )}
 
-                    <div className="flex gap-3">
-                        {canConvertQuotationToInvoice(quotation) && (
-                            <button
-                                onClick={handleConvertToInvoice}
+                    {notice && (
+                        <div role="status" className="mb-6 flex max-w-xl items-start justify-between gap-4 rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-sm">
+                            <span>{notice}</span>
+                            <button type="button" onClick={() => setNotice(null)} aria-label="Dismiss" className="text-muted-foreground hover:text-foreground">×</button>
+                        </div>
+                    )}
+
+                    {linked.length > 0 && (
+                        <div className="mb-6 max-w-xl rounded-xl border border-border bg-card/60">
+                            <p className="border-b border-border px-4 py-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
+                                Invoices from this quotation
+                            </p>
+                            <ul className="divide-y divide-border/60">
+                                {linked.map((inv) => (
+                                    <li key={inv.id}>
+                                        <Link href={`/tools/invoices/${inv.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm hover:bg-muted/40">
+                                            <span className="font-semibold">{inv.invoiceNumber}</span>
+                                            {inv.installment && (
+                                                <span className="text-muted-foreground">
+                                                    {inv.installment.index}/{inv.installment.count} · {inv.installment.label}
+                                                </span>
+                                            )}
+                                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs capitalize">{inv.status.replace(/_/g, " ")}</span>
+                                            <span className="ml-auto tabular-nums">
+                                                {inv.currency} {formatMoney(inv.total, inv.currency)}
+                                            </span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                            {missing.length > 0 && (
+                                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 text-sm">
+                                    <span className="text-amber-600 dark:text-amber-400">
+                                        Missing: {missing.map((p) => `${p.index}. ${p.label}`).join(", ")}
+                                    </span>
+                                    <button type="button" onClick={handleCreateMissing} className="font-semibold text-purple-500 hover:underline">
+                                        Create missing ({missing.length})
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <div className="flex flex-wrap gap-3">
+                        {canInvoice && (
+                            <>
+                                <button
+                                    onClick={handleConvertToInvoice}
+                                    className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+                                >
+                                    <FileText className="size-4" />
+                                    Convert to Invoice
+                                </button>
+                                <button
+                                    onClick={handleSplit}
+                                    className="inline-flex items-center gap-2 rounded-xl border border-green-600 px-5 py-2.5 text-sm font-semibold text-green-700 dark:text-green-400 hover:bg-green-600/10 transition-colors"
+                                >
+                                    <Split className="size-4" />
+                                    Split into Invoices
+                                </button>
+                            </>
+                        )}
+                        {activeLinked.length === 1 && !quotation.splitPlan && (
+                            <Link
+                                href={`/tools/invoices/${activeLinked[0].id}`}
                                 className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
                             >
                                 <FileText className="size-4" />
-                                Convert to Invoice
-                            </button>
+                                View Invoice
+                            </Link>
                         )}
                         <button
                             onClick={handleDownloadPDF}
@@ -252,11 +365,19 @@ export default function QuotationViewPage() {
                 </div>
             </div>
 
+            {showSplitDialog && (
+                <SplitInvoiceDialog
+                    quotation={quotation}
+                    onCancel={() => setShowSplitDialog(false)}
+                    onConfirm={confirmSplit}
+                />
+            )}
+
             {/* Convert Confirmation Modal */}
             {
                 showConvertModal && (
                     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                        <div className="rounded-2xl border border-border bg-card/60 shadow-sm max-w-md w-full p-6">
+                        <div role="dialog" aria-modal="true" className="rounded-2xl border border-border bg-background shadow-xl max-w-md w-full p-6">
                             <h2 className="text-2xl font-bold mb-4">Convert to Invoice?</h2>
                             <p className="text-muted-foreground mb-6">
                                 This will create a new invoice based on this quotation. The
@@ -277,7 +398,7 @@ export default function QuotationViewPage() {
                                     <div className="flex justify-between">
                                         <span className="text-muted-foreground">Amount:</span>
                                         <span className="font-medium">
-                                            {quotation?.currency} {quotation?.total.toFixed(2)}
+                                            {quotation.currency} {formatMoney(quotation.total, quotation.currency)}
                                         </span>
                                     </div>
                                 </div>

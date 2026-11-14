@@ -282,6 +282,7 @@ export default function EditInvoicePage() {
                 >
                   <option value="draft">Draft</option>
                   <option value="sent">Sent</option>
+                  <option value="partially_paid">Partially paid</option>
                   <option value="paid">Paid</option>
                   <option value="overdue">Overdue</option>
                   <option value="cancelled">Cancelled</option>
