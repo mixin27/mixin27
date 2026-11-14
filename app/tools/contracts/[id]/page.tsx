@@ -10,9 +10,6 @@ import {
     Edit,
     Trash2,
     PenTool,
-    Link as LinkIcon,
-    Copy,
-    Check,
 } from "lucide-react"
 import {
     getContractById,
@@ -36,7 +33,6 @@ export default function ContractViewPage() {
     const [signatureType, setSignatureType] = useState<"business" | "client">(
         "business",
     )
-    const [copied, setCopied] = useState(false)
     const contractRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -65,13 +61,6 @@ export default function ContractViewPage() {
         }
     }
 
-    const copyPublicLink = () => {
-        if (!contract?.token) return
-        const url = `${window.location.origin}/p/contracts/${contract.token}`
-        navigator.clipboard.writeText(url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
 
     const handlePrint = () => {
         window.print()
@@ -214,32 +203,6 @@ export default function ContractViewPage() {
                         </div>
                     </div>
 
-                    {contract.token && (
-                        <div className="mb-6 flex items-center gap-3 bg-muted/50 p-2 rounded-xl border border-border max-w-xl">
-                            <div className="bg-purple-500/10 p-2 rounded-md">
-                                <LinkIcon className="size-4 text-purple-400" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                                    Public Link
-                                </p>
-                                <p className="text-sm truncate select-all">
-                                    {`${typeof window !== "undefined" ? window.location.origin : ""}/p/contracts/${contract.token}`}
-                                </p>
-                            </div>
-                            <button
-                                onClick={copyPublicLink}
-                                className="p-2 hover:bg-background rounded-md border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
-                                title="Copy Link"
-                            >
-                                {copied ? (
-                                    <Check className="size-4 text-green-500" />
-                                ) : (
-                                    <Copy className="size-4" />
-                                )}
-                            </button>
-                        </div>
-                    )}
 
                     <div className="flex gap-3 flex-wrap">
                         <button

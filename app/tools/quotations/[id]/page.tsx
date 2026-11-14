@@ -10,9 +10,6 @@ import {
     Edit,
     Trash2,
     FileText,
-    Link as LinkIcon,
-    Copy,
-    Check,
     Split,
 } from "lucide-react"
 import {
@@ -32,6 +29,7 @@ import { invoicingState, missingInstallments } from "@/lib/tools/split"
 import { formatMoney } from "@/lib/tools/totals"
 import { SplitInvoiceDialog } from "@/components/tools/SplitInvoiceDialog"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { ShareLinkBox } from "@/components/tools/ShareLinkBox"
 import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { QuotationPreview } from "@/components/tools/QuotationPreview"
 
@@ -45,7 +43,6 @@ export default function QuotationViewPage() {
     const [showSplitDialog, setShowSplitDialog] = useState(false)
     const [linked, setLinked] = useState<Invoice[]>([])
     const [notice, setNotice] = useState<string | null>(null)
-    const [copied, setCopied] = useState(false)
     const quotationRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -75,13 +72,6 @@ export default function QuotationViewPage() {
         }
     }
 
-    const copyPublicLink = () => {
-        if (!quotation?.token) return
-        const url = `${window.location.origin}/p/quotations/${quotation.token}`
-        navigator.clipboard.writeText(url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
 
     /** Sent (not yet accepted) quotations need an explicit OK before invoicing. */
     const confirmNotAccepted = () =>
@@ -235,32 +225,7 @@ export default function QuotationViewPage() {
                         </div>
                     </div>
 
-                    {quotation.token && (
-                        <div className="mb-6 flex items-center gap-3 bg-muted/50 p-2 rounded-xl border border-border max-w-xl">
-                            <div className="bg-primary/10 p-2 rounded-md">
-                                <LinkIcon className="size-4 text-primary" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                                    Public Link
-                                </p>
-                                <p className="text-sm truncate select-all">
-                                    {`${typeof window !== "undefined" ? window.location.origin : ""}/p/quotations/${quotation.token}`}
-                                </p>
-                            </div>
-                            <button
-                                onClick={copyPublicLink}
-                                className="p-2 hover:bg-background rounded-md border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
-                                title="Copy Link"
-                            >
-                                {copied ? (
-                                    <Check className="size-4 text-green-500" />
-                                ) : (
-                                    <Copy className="size-4" />
-                                )}
-                            </button>
-                        </div>
-                    )}
+                    <ShareLinkBox kind="quotation" doc={quotation} settings={settings} />
 
                     {notice && (
                         <div role="status" className="mb-6 flex max-w-xl items-start justify-between gap-4 rounded-xl border border-purple-500/30 bg-purple-500/10 px-4 py-3 text-sm">

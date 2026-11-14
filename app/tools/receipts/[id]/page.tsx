@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check } from "lucide-react"
+import { ArrowLeft, Download, Printer, Edit, Trash2 } from "lucide-react"
 import {
     getReceiptById,
     getSettings,
@@ -11,6 +11,7 @@ import {
 import { Receipt, InvoiceSettings } from "@/types/invoice"
 import { confirmAndDeleteReceipt } from "@/lib/document-conversions"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { ShareLinkBox } from "@/components/tools/ShareLinkBox"
 import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { ReceiptPreview } from "@/components/tools/ReceiptPreview"
 
@@ -20,7 +21,6 @@ export default function ReceiptViewPage() {
     const [receipt, setReceipt] = useState<Receipt | null>(null)
     const [settings, setSettings] = useState<InvoiceSettings | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
-    const [copied, setCopied] = useState(false)
     const receiptRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -48,13 +48,6 @@ export default function ReceiptViewPage() {
         }
     }
 
-    const copyPublicLink = () => {
-        if (!receipt?.token) return
-        const url = `${window.location.origin}/p/receipts/${receipt.token}`
-        navigator.clipboard.writeText(url)
-        setCopied(true)
-        setTimeout(() => setCopied(false), 2000)
-    }
 
     const handlePrint = () => {
         window.print()
@@ -112,32 +105,7 @@ export default function ReceiptViewPage() {
                         </div>
                     </div>
 
-                    {receipt.token && (
-                        <div className="mt-6 flex items-center gap-3 bg-muted/50 p-2 rounded-lg border border-border max-w-xl">
-                            <div className="bg-primary/10 p-2 rounded-md">
-                                <LinkIcon className="size-4 text-primary" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
-                                    Public Link
-                                </p>
-                                <p className="text-sm truncate select-all">
-                                    {`${typeof window !== "undefined" ? window.location.origin : ""}/p/receipts/${receipt.token}`}
-                                </p>
-                            </div>
-                            <button
-                                onClick={copyPublicLink}
-                                className="p-2 hover:bg-background rounded-md border border-transparent hover:border-border transition-colors text-muted-foreground hover:text-foreground"
-                                title="Copy Link"
-                            >
-                                {copied ? (
-                                    <Check className="size-4 text-green-500" />
-                                ) : (
-                                    <Copy className="size-4" />
-                                )}
-                            </button>
-                        </div>
-                    )}
+                    <ShareLinkBox kind="receipt" doc={receipt} settings={settings} />
 
                     <div className="mt-6 flex flex-wrap gap-3">
                         <button
