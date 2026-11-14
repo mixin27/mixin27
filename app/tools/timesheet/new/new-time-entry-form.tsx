@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ArrowLeft, Save } from "lucide-react"
 import {
   saveTimeEntry,
-  getClients,
+  getSelectableClients,
   getClientById,
 } from "@/lib/storage/tools-storage"
 import { Client, TimeEntry } from "@/types/invoice"
@@ -32,7 +32,7 @@ export default function NewTimeEntryForm() {
 
   useEffect(() => {
     const loadData = async () => {
-      const loadedClients = await getClients()
+      const loadedClients = await getSelectableClients(preSelectedClientId)
       // const settings = getSettings()
 
       setClients(loadedClients)

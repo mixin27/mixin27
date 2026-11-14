@@ -9,10 +9,17 @@ import {
   Clock,
   Settings,
   Calculator,
+  Users,
 } from "lucide-react"
 import { SectionLabel } from "@/components/ui/section-label"
 
 const tools = [
+  {
+    name: "Clients",
+    description: "Keep client details in one place and see what each one owes",
+    icon: Users,
+    href: "/tools/clients",
+  },
   {
     name: "Invoices",
     description: "Create and manage professional invoices for your clients",

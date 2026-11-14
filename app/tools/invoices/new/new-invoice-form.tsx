@@ -9,7 +9,7 @@ import { Invoice, InvoiceItem, Client } from "@/types/invoice"
 import { computeTotals, lineAmount } from "@/lib/tools/totals"
 import {
     saveInvoice,
-    getClients,
+    getSelectableClients,
     getSettings,
     getNextInvoiceNumber,
     incrementInvoiceNumber,
@@ -43,7 +43,7 @@ export default function NewInvoiceForm() {
     useEffect(() => {
         const loadData = async () => {
             const [loadedClients, settings] = await Promise.all([
-                getClients(),
+                getSelectableClients(preSelectedClientId),
                 Promise.resolve(getSettings()),
             ])
             setClients(loadedClients)
@@ -223,7 +223,7 @@ export default function NewInvoiceForm() {
                                     ))}
                                 </select>
                                 <Link
-                                    href="/tools/invoices/clients/new"
+                                    href="/tools/clients/new?returnTo=/tools/invoices/new"
                                     className="text-sm text-primary hover:underline mt-1 inline-block"
                                 >
                                     + Add new client

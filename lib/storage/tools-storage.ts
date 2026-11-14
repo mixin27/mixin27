@@ -113,12 +113,67 @@ export const getClients = async (): Promise<Client[]> => {
     return hybridGetAll<Client>(STORAGE_KEYS.CLIENTS)
 }
 
+/** Clients for a picker: archived ones are hidden unless already selected. */
+export const getSelectableClients = async (keepId?: string | null): Promise<Client[]> => {
+    const clients = await getClients()
+    return clients
+        .filter((c) => !c.archived || c.id === keepId)
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
+}
+
 export const getClientById = async (id: string): Promise<Client | null> => {
     return hybridGetById<Client>(STORAGE_KEYS.CLIENTS, id)
 }
 
 export const deleteClient = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.CLIENTS, id)
+}
+
+/** Every document type that can belong to a client, loaded in one go. */
+export const loadClientDocuments = async () => {
+    const [quotations, invoices, receipts, contracts, timeEntries] = await Promise.all([
+        getQuotations(),
+        getInvoices(),
+        getReceipts(),
+        getContracts(),
+        getTimeEntries(),
+    ])
+    return { quotations, invoices, receipts, contracts, timeEntries }
+}
+
+/**
+ * Copy an edited client onto documents that are still drafts. Sent, paid and
+ * signed documents keep the client details they were issued with.
+ */
+export const updateClientOnDrafts = async (client: Client): Promise<number> => {
+    const docs = await loadClientDocuments()
+    const isMine = (d: { clientId?: string; client: Client }) =>
+        (d.clientId ?? d.client.id) === client.id
+    const now = new Date().toISOString()
+    let count = 0
+    for (const q of docs.quotations.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveQuotation({ ...q, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    for (const i of docs.invoices.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveInvoice({ ...i, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    for (const c of docs.contracts.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveContract({ ...c, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    return count
+}
+
+export const countClientDrafts = async (clientId: string): Promise<number> => {
+    const docs = await loadClientDocuments()
+    const isMine = (d: { clientId?: string; client: Client }) => (d.clientId ?? d.client.id) === clientId
+    return (
+        docs.quotations.filter((d) => isMine(d) && d.status === "draft").length +
+        docs.invoices.filter((d) => isMine(d) && d.status === "draft").length +
+        docs.contracts.filter((d) => isMine(d) && d.status === "draft").length
+    )
 }
 
 // Settings Operations

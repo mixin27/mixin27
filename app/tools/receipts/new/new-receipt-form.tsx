@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
 import {
   saveReceipt,
-  getClients,
+  getSelectableClients,
   getSettings,
   getNextReceiptNumber,
   incrementReceiptNumber,
@@ -51,7 +51,7 @@ export default function NewReceiptForm() {
   useEffect(() => {
     const loadData = async () => {
       const [loadedClients, settings] = await Promise.all([
-        getClients(),
+        getSelectableClients(preSelectedClientId),
         Promise.resolve(getSettings()),
       ])
 
@@ -280,7 +280,7 @@ export default function NewReceiptForm() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">Client</h2>
               <Link
-                href="/tools/invoices/clients/new"
+                href="/tools/clients/new?returnTo=/tools/receipts/new"
                 className="text-sm text-primary hover:underline"
               >
                 + Add New Client

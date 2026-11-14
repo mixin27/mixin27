@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ArrowLeft, Plus, Trash2, Save } from "lucide-react"
 import {
     saveQuotation,
-    getClients,
+    getSelectableClients,
     getSettings,
     getNextQuotationNumber,
     incrementQuotationNumber,
@@ -61,7 +61,7 @@ export default function NewQuotationForm() {
     useEffect(() => {
         const loadData = async () => {
             const [loadedClients, settings] = await Promise.all([
-                getClients(),
+                getSelectableClients(preSelectedClientId),
                 Promise.resolve(getSettings()),
             ])
 
@@ -319,7 +319,7 @@ export default function NewQuotationForm() {
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-xl font-semibold">Client</h2>
                             <Link
-                                href="/tools/invoices/clients/new"
+                                href={`/tools/clients/new?returnTo=${encodeURIComponent(draftId ? `/tools/quotations/new?draftId=${draftId}` : "/tools/quotations/new")}`}
                                 className="text-sm text-primary hover:underline"
                             >
                                 + Add New Client

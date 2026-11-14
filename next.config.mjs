@@ -11,6 +11,14 @@ const nextConfig = {
   pageExtensions: ["js", "jsx", "ts", "tsx", "md", "mdx"],
   // Required for rehype-mermaid (uses puppeteer/playwright under the hood)
   serverExternalPackages: ["shiki", "rehype-mermaid"],
+  async redirects() {
+    return [
+      // Clients moved from /tools/invoices/clients to /tools/clients
+      { source: "/tools/invoices/clients", destination: "/tools/clients", permanent: true },
+      { source: "/tools/invoices/clients/new", destination: "/tools/clients/new", permanent: true },
+      { source: "/tools/invoices/clients/:id", destination: "/tools/clients/:id", permanent: true },
+    ];
+  },
 };
 
 

@@ -306,7 +306,7 @@ export default function EditInvoicePage() {
                   ))}
                 </select>
                 <Link
-                  href="/tools/invoices/clients/new"
+                  href="/tools/clients/new"
                   className="text-sm text-purple-400 hover:underline mt-1 inline-block"
                 >
                   + Add new client
