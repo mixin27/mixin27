@@ -1,5 +1,8 @@
 import type { Client, Contract, Invoice, Quotation, Receipt, TimeEntry } from "@/types/invoice"
 import { roundMoney } from "./totals"
+import { invoicePaidAmount } from "./payments"
+
+export { invoicePaidAmount }
 
 /** Amounts keyed by currency code; nothing is converted between currencies. */
 export type MoneyByCurrency = Record<string, number>
@@ -32,23 +35,6 @@ function add(map: MoneyByCurrency, currency: string, amount: number) {
   if (!amount) return
   const code = (currency || "USD").toUpperCase()
   map[code] = roundMoney((map[code] ?? 0) + amount, code)
-}
-
-/**
- * How much of an invoice has been paid. Uses recorded payments when present,
- * otherwise receipts linked to the invoice; a "paid" invoice counts in full.
- */
-export function invoicePaidAmount(invoice: Invoice, receipts: Receipt[]): number {
-  let paid: number
-  if (invoice.payments?.length) {
-    paid = invoice.payments.reduce((sum, p) => sum + (p.amount || 0), 0)
-  } else {
-    paid = receipts
-      .filter((r) => r.invoiceId === invoice.id)
-      .reduce((sum, r) => sum + (r.amountPaid || 0), 0)
-  }
-  if (invoice.status === "paid") paid = Math.max(paid, invoice.total)
-  return roundMoney(Math.min(paid, invoice.total), invoice.currency)
 }
 
 /** Invoices that are billed to the client (not drafts or cancelled). */

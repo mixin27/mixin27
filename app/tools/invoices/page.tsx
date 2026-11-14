@@ -14,9 +14,11 @@ import {
 import {
   getInvoices,
   getInvoiceStats,
+  getReceipts,
   deleteInvoice,
 } from "@/lib/storage/tools-storage"
 import { Invoice } from "@/types/invoice"
+import { deriveInvoiceStatus } from "@/lib/tools/payments"
 import { formatDate } from "@/lib/utils"
 
 export default function InvoicesPage() {
@@ -30,11 +32,18 @@ export default function InvoicesPage() {
   }, [])
 
   const loadData = async () => {
-    const [invoices, stats] = await Promise.all([
+    const [invoices, stats, receipts] = await Promise.all([
       getInvoices(),
       getInvoiceStats(),
+      getReceipts(),
     ])
-    setInvoices(invoices)
+    // Show today's status (paid / partially paid / overdue) without saving it.
+    setInvoices(
+      invoices.map((invoice) => ({
+        ...invoice,
+        status: deriveInvoiceStatus(invoice, receipts),
+      })),
+    )
     setStats(stats)
   }
 

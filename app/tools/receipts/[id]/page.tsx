@@ -6,10 +6,10 @@ import Link from "next/link"
 import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check } from "lucide-react"
 import {
     getReceiptById,
-    deleteReceipt,
     getSettings,
 } from "@/lib/storage/tools-storage"
 import { Receipt, InvoiceSettings } from "@/types/invoice"
+import { confirmAndDeleteReceipt } from "@/lib/document-conversions"
 import { exportElementToPdf } from "@/lib/pdf-export"
 import { ReceiptPreview } from "@/components/tools/ReceiptPreview"
 
@@ -42,8 +42,7 @@ export default function ReceiptViewPage() {
     }, [params.id, router])
 
     const handleDelete = async () => {
-        if (confirm("Are you sure you want to delete this receipt?")) {
-            await deleteReceipt(receipt!.id)
+        if (receipt && (await confirmAndDeleteReceipt(receipt))) {
             router.push("/tools/receipts")
         }
     }

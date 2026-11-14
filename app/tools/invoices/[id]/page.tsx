@@ -3,20 +3,22 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check } from "lucide-react"
+import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check, Wallet } from "lucide-react"
 import {
     getInvoiceById,
     deleteInvoice,
     getQuotationById,
     getSettings,
 } from "@/lib/storage/tools-storage"
-import { Invoice, InvoiceSettings, Quotation, Receipt } from "@/types/invoice"
+import { Invoice, InvoiceSettings, Payment, Quotation, Receipt } from "@/types/invoice"
+import { getInvoiceReceipts, recordPayment, removePayment } from "@/lib/document-conversions"
 import {
-    convertInvoiceToReceipt,
-    canConvertInvoiceToReceipt,
-    getInvoiceReceipts,
-} from "@/lib/document-conversions"
-import { invoicePaidAmount } from "@/lib/tools/client-stats"
+    deriveInvoiceStatus,
+    invoicePaidAmount,
+    paymentMethodLabel,
+    type PaymentInput,
+} from "@/lib/tools/payments"
+import { RecordPaymentDialog } from "@/components/tools/RecordPaymentDialog"
 import { formatMoney, roundMoney } from "@/lib/tools/totals"
 import { exportElementToPdf } from "@/lib/pdf-export"
 import { InvoicePreview } from "@/components/tools/InvoicePreview"
@@ -27,13 +29,7 @@ export default function InvoiceViewPage() {
     const [invoice, setInvoice] = useState<Invoice | null>(null)
     const [settings, setSettings] = useState<InvoiceSettings | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
-    const [showReceiptModal, setShowReceiptModal] = useState(false)
-    const [paymentMethod, setPaymentMethod] =
-        useState<Receipt["paymentMethod"]>("bank_transfer")
-    const [paymentDate, setPaymentDate] = useState<string>(
-        new Date().toISOString().split("T")[0],
-    )
-    const [amountPaid, setAmountPaid] = useState<number>(0)
+    const [showPaymentDialog, setShowPaymentDialog] = useState(false)
     const [copied, setCopied] = useState(false)
     const [receipts, setReceipts] = useState<Receipt[]>([])
     const [sourceQuotation, setSourceQuotation] = useState<Quotation | null>(null)
@@ -58,12 +54,6 @@ export default function InvoiceViewPage() {
                 setSettings(loadedSettings)
                 setReceipts(loadedReceipts)
                 setSourceQuotation(quotation)
-                setAmountPaid(
-                    roundMoney(
-                        loadedInvoice.total - invoicePaidAmount(loadedInvoice, loadedReceipts),
-                        loadedInvoice.currency,
-                    ),
-                )
             } else {
                 router.push("/tools/invoices")
             }
@@ -79,34 +69,29 @@ export default function InvoiceViewPage() {
         }
     }
 
-    const handleGenerateReceipt = () => {
-        if (!invoice) return
-
-        if (!canConvertInvoiceToReceipt(invoice)) {
-            alert("Only sent or paid invoices can have receipts generated.")
-            return
-        }
-
-        setShowReceiptModal(true)
+    const reload = async (id: string) => {
+        const fresh = await getInvoiceById(id)
+        if (!fresh) return
+        setInvoice(fresh)
+        setReceipts(await getInvoiceReceipts(fresh))
     }
 
-    const confirmGenerateReceipt = async () => {
+    const handleRecordPayment = async (input: PaymentInput, createReceipt: boolean) => {
         if (!invoice) return
+        await recordPayment(invoice.id, input, { createReceipt })
+        await reload(invoice.id)
+        setShowPaymentDialog(false)
+    }
 
-        if (!(amountPaid > 0)) {
-            alert("Enter an amount greater than zero.")
-            return
-        }
-
-        const { receipt, invoice: updated } = await convertInvoiceToReceipt(
-            invoice,
-            paymentMethod,
-            paymentDate,
-            amountPaid,
-        )
-        setInvoice(updated)
-        setShowReceiptModal(false)
-        router.push(`/tools/receipts/${receipt.id}`)
+    const handleRemovePayment = async (payment: Payment) => {
+        if (!invoice) return
+        const label = `${invoice.currency} ${formatMoney(payment.amount, invoice.currency)} on ${payment.date}`
+        if (!confirm(`Remove the payment of ${label}?`)) return
+        const deleteReceipt =
+            !!payment.receiptId &&
+            confirm("Also delete the receipt created for this payment?\n\nOK deletes it. Cancel keeps it as a standalone receipt.")
+        await removePayment(invoice.id, payment.id, { deleteReceipt })
+        await reload(invoice.id)
     }
 
     const handlePrint = () => {
@@ -168,6 +153,10 @@ export default function InvoiceViewPage() {
 
     const paidSoFar = invoicePaidAmount(invoice, receipts)
     const balance = roundMoney(invoice.total - paidSoFar, invoice.currency)
+    const payments = [...(invoice.payments ?? [])].sort((a, b) => a.date.localeCompare(b.date))
+    const legacyReceipts = receipts.filter((r) => !r.paymentId)
+    const displayStatus = deriveInvoiceStatus(invoice, receipts)
+    const money = (v: number) => `${invoice.currency} ${formatMoney(v, invoice.currency)}`
 
     return (
         <>
@@ -209,10 +198,10 @@ export default function InvoiceViewPage() {
                         <div className="shrink-0 pt-14">
                             <span
                                 className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(
-                                    invoice.status,
+                                    displayStatus,
                                 )}`}
                             >
-                                {(invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)).replace(/_/g, " ")}
+                                {(displayStatus.charAt(0).toUpperCase() + displayStatus.slice(1)).replace(/_/g, " ")}
                             </span>
                         </div>
                     </div>
@@ -244,20 +233,47 @@ export default function InvoiceViewPage() {
                         </div>
                     )}
 
-                    {receipts.length > 0 && (
+                    {(payments.length > 0 || legacyReceipts.length > 0) && (
                         <div className="mt-6 max-w-xl rounded-xl border border-border bg-card/60">
-                            <p className="border-b border-border px-4 py-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-                                Receipts · paid {invoice.currency} {formatMoney(paidSoFar, invoice.currency)} of {formatMoney(invoice.total, invoice.currency)}
-                            </p>
+                            <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-border px-4 py-2">
+                                <p className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase">Payments</p>
+                                <p className="text-sm">
+                                    Paid <span className="font-semibold tabular-nums">{money(paidSoFar)}</span> of {money(invoice.total)}
+                                    {balance > 0 && <span className="ml-2 text-amber-600 dark:text-amber-400">· {money(balance)} due</span>}
+                                </p>
+                            </div>
                             <ul className="divide-y divide-border/60">
-                                {receipts.map((r) => (
+                                {payments.map((p) => {
+                                    const receipt = receipts.find((r) => r.id === p.receiptId)
+                                    return (
+                                        <li key={p.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-3 text-sm">
+                                            <span className="font-medium tabular-nums">{p.date}</span>
+                                            <span className="text-muted-foreground">{paymentMethodLabel(p.method)}</span>
+                                            {p.reference && <span className="text-muted-foreground truncate max-w-[10rem]">#{p.reference}</span>}
+                                            {receipt && (
+                                                <Link href={`/tools/receipts/${receipt.id}`} className="text-purple-400 hover:underline">
+                                                    {receipt.receiptNumber}
+                                                </Link>
+                                            )}
+                                            <span className="ml-auto font-semibold tabular-nums">{money(p.amount)}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemovePayment(p)}
+                                                aria-label={`Remove payment of ${money(p.amount)}`}
+                                                className="rounded-lg p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive print:hidden"
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </li>
+                                    )
+                                })}
+                                {legacyReceipts.map((r) => (
                                     <li key={r.id}>
-                                        <Link href={`/tools/receipts/${r.id}`} className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-muted/40">
-                                            <span className="font-semibold">{r.receiptNumber}</span>
-                                            <span className="text-muted-foreground">{r.paymentDate}</span>
-                                            <span className="ml-auto tabular-nums">
-                                                {r.currency} {formatMoney(r.amountPaid, r.currency)}
-                                            </span>
+                                        <Link href={`/tools/receipts/${r.id}`} className="flex flex-wrap items-center gap-x-3 px-4 py-3 text-sm hover:bg-muted/40">
+                                            <span className="font-medium tabular-nums">{r.paymentDate}</span>
+                                            <span className="text-muted-foreground">{paymentMethodLabel(r.paymentMethod)}</span>
+                                            <span className="text-purple-400">{r.receiptNumber}</span>
+                                            <span className="ml-auto font-semibold tabular-nums">{money(r.amountPaid)}</span>
                                         </Link>
                                     </li>
                                 ))}
@@ -266,22 +282,14 @@ export default function InvoiceViewPage() {
                     )}
 
                     <div className="flex flex-wrap gap-3 mt-6">
-                        {canConvertInvoiceToReceipt(invoice) && balance > 0 && (
+                        {invoice.status !== "cancelled" && balance > 0 && (
                             <button
-                                onClick={handleGenerateReceipt}
+                                onClick={() => setShowPaymentDialog(true)}
                                 className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
                             >
-                                <Download className="size-4" />
-                                {receipts.length ? "Receipt for Next Payment" : "Generate Receipt"}
+                                <Wallet className="size-4" />
+                                Record Payment
                             </button>
-                        )}
-                        {balance <= 0 && receipts.length === 1 && (
-                            <Link
-                                href={`/tools/receipts/${receipts[0].id}`}
-                                className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
-                            >
-                                View Receipt
-                            </Link>
                         )}
                         <button
                             onClick={handleDownloadPDF}
@@ -316,101 +324,20 @@ export default function InvoiceViewPage() {
                 </div>
             </div>
 
-            {/* Receipt Generation Modal */}
-            {showReceiptModal && invoice && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-card rounded-2xl max-w-md w-full p-6 shadow-sm">
-                        <h2 className="text-2xl font-bold mb-4">Generate Receipt</h2>
-                        <p className="text-muted-foreground mb-6">
-                            Create a payment receipt for this invoice.
-                        </p>
-
-                        <div className="space-y-4 mb-6">
-                            <div>
-                                <label className="block font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
-                                    Payment Date <span className="text-destructive">*</span>
-                                </label>
-                                <input
-                                    type="date"
-                                    value={paymentDate}
-                                    onChange={(e) => setPaymentDate(e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl border border-border bg-background/80 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
-                                    Payment Method <span className="text-destructive">*</span>
-                                </label>
-                                <select
-                                    value={paymentMethod}
-                                    onChange={(e) =>
-                                        setPaymentMethod(e.target.value as Receipt["paymentMethod"])
-                                    }
-                                    className="w-full px-4 py-3 rounded-xl border border-border bg-background/80 text-sm text-foreground outline-none focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
-                                >
-                                    <option value="bank_transfer">Bank Transfer</option>
-                                    <option value="credit_card">Credit Card</option>
-                                    <option value="cash">Cash</option>
-                                    <option value="check">Check</option>
-                                    <option value="paypal">PayPal</option>
-                                    <option value="kbz_pay">KBZ KPay</option>
-                                    <option value="aya_pay">AYA Pay</option>
-                                    <option value="cb_pay">CB Pay</option>
-                                    <option value="wave_pay">Wave Pay</option>
-                                    <option value="uab_pay">UAB Pay</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
-                                    Amount Paid <span className="text-destructive">*</span>
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                                        {invoice.currency}
-                                    </span>
-                                    <input
-                                        type="number"
-                                        value={amountPaid}
-                                        onChange={(e) => setAmountPaid(Number(e.target.value))}
-                                        min="0"
-                                        max={balance}
-                                        step="any"
-                                        className="w-full pl-16 pr-4 py-3 rounded-xl border border-border bg-background/80 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
-                                    />
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                    Invoice total: {invoice.currency} {formatMoney(invoice.total, invoice.currency)}
-                                    {paidSoFar > 0 && ` · still due ${invoice.currency} ${formatMoney(balance, invoice.currency)}`}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 justify-end">
-                            <button
-                                onClick={() => setShowReceiptModal(false)}
-                                className="rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={confirmGenerateReceipt}
-                                className="rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-green-700"
-                            >
-                                Generate Receipt
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            {showPaymentDialog && (
+                <RecordPaymentDialog
+                    invoice={invoice}
+                    balance={balance}
+                    onCancel={() => setShowPaymentDialog(false)}
+                    onConfirm={handleRecordPayment}
+                />
             )}
 
             {/* Invoice Preview */}
             <div className="mx-auto max-w-7xl px-6 py-16">
                 <div className="max-w-4xl mx-auto">
                     <div ref={invoiceRef}>
-                        <InvoicePreview invoice={invoice} settings={settings} />
+                        <InvoicePreview invoice={invoice} settings={settings} amountPaid={paidSoFar} />
                     </div>
                 </div>
             </div>

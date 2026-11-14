@@ -1,10 +1,13 @@
 import { v7 as uuidv7 } from "uuid"
-import { Invoice, Quotation, Receipt, SplitPart } from "@/types/invoice"
+import { Invoice, Payment, Quotation, Receipt, SplitPart } from "@/types/invoice"
 import {
+    deleteReceipt,
+    getInvoiceById,
     getInvoices,
     getNextInvoiceNumber,
     getNextReceiptNumber,
     getQuotationById,
+    getReceiptById,
     getReceipts,
     incrementInvoiceNumber,
     incrementReceiptNumber,
@@ -18,7 +21,12 @@ import {
     linkedInvoices,
     missingInstallments,
 } from "@/lib/tools/split"
-import { invoicePaidAmount } from "@/lib/tools/client-stats"
+import {
+    invoiceBalance,
+    storedStatusAfterPayments,
+    validatePayment,
+    type PaymentInput,
+} from "@/lib/tools/payments"
 import { roundMoney } from "@/lib/tools/totals"
 
 const today = () => new Date().toISOString().slice(0, 10)
@@ -147,35 +155,27 @@ export async function getInvoiceReceipts(invoice: Invoice): Promise<Receipt[]> {
 
 /** What is still owed on an invoice. */
 export async function getInvoiceBalance(invoice: Invoice): Promise<number> {
-    const paid = invoicePaidAmount(invoice, await getInvoiceReceipts(invoice))
-    return roundMoney(invoice.total - paid, invoice.currency)
+    return invoiceBalance(invoice, await getInvoiceReceipts(invoice))
 }
 
-/**
- * Create a receipt for a payment against an invoice (defaults to the balance)
- * and mark the invoice paid or partially paid.
- */
-export async function convertInvoiceToReceipt(
+function buildPaymentReceipt(
     invoice: Invoice,
-    paymentMethod: Receipt["paymentMethod"],
-    paymentDate?: string,
-    amountPaid?: number,
-): Promise<{ receipt: Receipt; invoice: Invoice }> {
-    const balance = await getInvoiceBalance(invoice)
-    const amount = roundMoney(amountPaid && amountPaid > 0 ? amountPaid : balance, invoice.currency)
-    const receiptNumber = await getNextReceiptNumber()
+    payment: Payment,
+    receiptNumber: string,
+    balanceBefore: number,
+): Receipt {
     const now = new Date().toISOString()
-
-    const receipt: Receipt = {
+    return {
         id: uuidv7(),
         token: uuidv7(),
         receiptNumber,
         clientId: invoice.clientId ?? invoice.client.id,
         client: invoice.client,
-        paymentDate: paymentDate || today(),
-        paymentMethod,
+        paymentDate: payment.date,
+        paymentMethod: payment.method,
         relatedInvoiceNumber: invoice.invoiceNumber,
         invoiceId: invoice.id,
+        paymentId: payment.id,
         items: invoice.items,
         subtotal: invoice.subtotal,
         taxRate: invoice.taxRate,
@@ -183,34 +183,153 @@ export async function convertInvoiceToReceipt(
         discount: invoice.discount,
         discountType: invoice.discountType,
         total: invoice.total,
-        amountPaid: amount,
-        notes:
-            amount >= invoice.total
+        amountPaid: payment.amount,
+        notes: [
+            payment.amount >= invoice.total
                 ? `Payment received for Invoice ${invoice.invoiceNumber}`
-                : amount >= balance
+                : payment.amount >= balanceBefore
                   ? `Final payment for Invoice ${invoice.invoiceNumber}`
                   : `Part payment for Invoice ${invoice.invoiceNumber}`,
+            payment.reference ? `Reference: ${payment.reference}` : "",
+        ]
+            .filter(Boolean)
+            .join("\n"),
         currency: invoice.currency,
         createdAt: now,
         updatedAt: now,
     }
+}
 
-    await saveReceipt(receipt)
-    await incrementReceiptNumber(receiptNumber)
+/**
+ * Record a payment on an invoice, optionally with a receipt, and update the
+ * invoice status (partially paid / paid).
+ */
+export async function recordPayment(
+    invoiceId: string,
+    input: PaymentInput,
+    options: { createReceipt: boolean },
+): Promise<{ invoice: Invoice; payment: Payment; receipt: Receipt | null }> {
+    // Always work from the stored invoice so concurrent edits aren't lost.
+    const invoice = await getInvoiceById(invoiceId)
+    if (!invoice) throw new Error("Invoice not found.")
+    const receipts = await getInvoiceReceipts(invoice)
+    const error = validatePayment(invoice, receipts, input)
+    if (error) throw new Error(error)
 
-    const remaining = roundMoney(balance - amount, invoice.currency)
-    const status: Invoice["status"] = remaining <= 0 ? "paid" : "partially_paid"
-    const updatedInvoice = invoice.status === status ? invoice : { ...invoice, status, updatedAt: now }
-    if (updatedInvoice !== invoice) await saveInvoice(updatedInvoice)
+    const balanceBefore = invoiceBalance(invoice, receipts)
+    const payment: Payment = {
+        id: uuidv7(),
+        date: input.date,
+        amount: roundMoney(input.amount, invoice.currency),
+        method: input.method,
+        reference: input.reference?.trim() || undefined,
+    }
 
-    return { receipt, invoice: updatedInvoice }
+    let receipt: Receipt | null = null
+    if (options.createReceipt) {
+        const receiptNumber = await getNextReceiptNumber()
+        receipt = buildPaymentReceipt(invoice, payment, receiptNumber, balanceBefore)
+        payment.receiptId = receipt.id
+        await saveReceipt(receipt)
+        await incrementReceiptNumber(receiptNumber)
+    }
+
+    const withPayment: Invoice = { ...invoice, payments: [...(invoice.payments ?? []), payment] }
+    const allReceipts = receipt ? [...receipts, receipt] : receipts
+    const updated: Invoice = {
+        ...withPayment,
+        status: storedStatusAfterPayments(withPayment, allReceipts),
+        updatedAt: new Date().toISOString(),
+    }
+    await saveInvoice(updated)
+    return { invoice: updated, payment, receipt }
+}
+
+/** Remove a payment from an invoice; optionally delete its receipt too. */
+export async function removePayment(
+    invoiceId: string,
+    paymentId: string,
+    options: { deleteReceipt: boolean },
+): Promise<Invoice | null> {
+    const invoice = await getInvoiceById(invoiceId)
+    if (!invoice) return null
+    const payment = invoice.payments?.find((p) => p.id === paymentId)
+    if (!payment) return invoice
+
+    if (payment.receiptId) {
+        if (options.deleteReceipt) {
+            await deleteReceipt(payment.receiptId)
+        } else {
+            // Keep the receipt but detach it, so it no longer counts as payment.
+            const receipt = await getReceiptById(payment.receiptId)
+            if (receipt) await saveReceipt({ ...receipt, invoiceId: undefined, paymentId: undefined })
+        }
+    }
+
+    const withoutPayment: Invoice = {
+        ...invoice,
+        payments: (invoice.payments ?? []).filter((p) => p.id !== paymentId),
+    }
+    const receipts = await getInvoiceReceipts(withoutPayment)
+    const base = withoutPayment.status === "paid" ? { ...withoutPayment, status: "sent" as const } : withoutPayment
+    const updated: Invoice = {
+        ...base,
+        status: storedStatusAfterPayments(base, receipts),
+        updatedAt: new Date().toISOString(),
+    }
+    await saveInvoice(updated)
+    return updated
+}
+
+/**
+ * Delete a receipt. If it was created for a payment, `removeLinkedPayment`
+ * decides whether that payment is removed from the invoice as well.
+ */
+export async function deleteReceiptWithPayment(
+    receipt: Receipt,
+    removeLinkedPayment: boolean,
+): Promise<void> {
+    if (receipt.invoiceId && receipt.paymentId && removeLinkedPayment) {
+        await removePayment(receipt.invoiceId, receipt.paymentId, { deleteReceipt: true })
+        return
+    }
+    if (receipt.invoiceId && receipt.paymentId) {
+        // Keep the payment, just forget the receipt.
+        const invoice = await getInvoiceById(receipt.invoiceId)
+        if (invoice) {
+            await saveInvoice({
+                ...invoice,
+                payments: (invoice.payments ?? []).map((p) =>
+                    p.id === receipt.paymentId ? { ...p, receiptId: undefined } : p,
+                ),
+            })
+        }
+    }
+    await deleteReceipt(receipt.id)
+    if (receipt.invoiceId && !receipt.paymentId) {
+        // An older receipt counted towards the invoice; refresh its status.
+        const invoice = await getInvoiceById(receipt.invoiceId)
+        if (invoice) {
+            const receipts = await getInvoiceReceipts(invoice)
+            const base = invoice.status === "paid" ? { ...invoice, status: "sent" as const } : invoice
+            await saveInvoice({ ...base, status: storedStatusAfterPayments(base, receipts) })
+        }
+    }
+}
+
+/** Ask how to delete a receipt; returns false if the user cancels. */
+export async function confirmAndDeleteReceipt(receipt: Receipt): Promise<boolean> {
+    if (!confirm(`Delete receipt ${receipt.receiptNumber}?`)) return false
+    const removePaymentToo =
+        !!receipt.paymentId &&
+        confirm(
+            `This receipt records a payment on ${receipt.relatedInvoiceNumber ?? "an invoice"}.\n\nOK also removes that payment, so the invoice shows it as unpaid again. Cancel keeps the payment and deletes only the receipt.`,
+        )
+    await deleteReceiptWithPayment(receipt, removePaymentToo)
+    return true
 }
 
 /** Accepted quotations can be invoiced; sent ones can too after a confirmation. */
 export function canConvertQuotationToInvoice(quotation: Quotation): boolean {
     return quotation.status === "accepted" || quotation.status === "sent"
-}
-
-export function canConvertInvoiceToReceipt(invoice: Invoice): boolean {
-    return ["sent", "partially_paid", "overdue", "paid"].includes(invoice.status)
 }

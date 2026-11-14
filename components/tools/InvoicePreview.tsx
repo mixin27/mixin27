@@ -2,13 +2,18 @@
 
 import { Invoice, InvoiceSettings } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
+import { formatMoney, roundMoney } from "@/lib/tools/totals"
 
 interface InvoicePreviewProps {
     invoice: Invoice
     settings: InvoiceSettings
+    /** Shows "Amount paid" and "Balance due" under the total when above zero. */
+    amountPaid?: number
 }
 
-export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
+export function InvoicePreview({ invoice, settings, amountPaid = 0 }: InvoicePreviewProps) {
+    const fm = (v: number) => formatMoney(v, invoice.currency)
+    const balanceDue = roundMoney(invoice.total - amountPaid, invoice.currency)
     return (
         <div className="bg-white text-black p-8 md:p-12 rounded-lg shadow-lg print:shadow-none print:rounded-none">
             {/* Header */}
@@ -63,6 +68,14 @@ export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
                         <p className="text-sm text-gray-600">Due Date</p>
                         <p className="font-semibold">{formatDate(invoice.dueDate)}</p>
                     </div>
+                    {invoice.installment && (
+                        <div className="mt-4">
+                            <p className="text-sm text-gray-600">Installment</p>
+                            <p className="font-semibold">
+                                {invoice.installment.index} of {invoice.installment.count} · {invoice.installment.label}
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -85,10 +98,10 @@ export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
                                 <td className="py-3 text-sm">{item.description}</td>
                                 <td className="text-right py-3 text-sm">{item.quantity}</td>
                                 <td className="text-right py-3 text-sm">
-                                    {invoice.currency} {item.rate.toFixed(2)}
+                                    {invoice.currency} {fm(item.rate)}
                                 </td>
                                 <td className="text-right py-3 text-sm">
-                                    {invoice.currency} {item.amount.toFixed(2)}
+                                    {invoice.currency} {fm(item.amount)}
                                 </td>
                             </tr>
                         ))}
@@ -102,7 +115,7 @@ export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
                     <div className="flex justify-between py-2 text-sm">
                         <span className="text-gray-600">Subtotal:</span>
                         <span>
-                            {invoice.currency} {invoice.subtotal.toFixed(2)}
+                            {invoice.currency} {fm(invoice.subtotal)}
                         </span>
                     </div>
                     {invoice.discount > 0 && (
@@ -117,8 +130,8 @@ export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
                             <span>
                                 -{invoice.currency}{" "}
                                 {invoice.discountType === "percentage"
-                                    ? (invoice.subtotal * (invoice.discount / 100)).toFixed(2)
-                                    : invoice.discount.toFixed(2)}
+                                    ? fm(roundMoney(invoice.subtotal * (invoice.discount / 100), invoice.currency))
+                                    : fm(invoice.discount)}
                             </span>
                         </div>
                     )}
@@ -126,16 +139,32 @@ export function InvoicePreview({ invoice, settings }: InvoicePreviewProps) {
                         <div className="flex justify-between py-2 text-sm">
                             <span className="text-gray-600">Tax ({invoice.taxRate}%):</span>
                             <span>
-                                {invoice.currency} {invoice.taxAmount.toFixed(2)}
+                                {invoice.currency} {fm(invoice.taxAmount)}
                             </span>
                         </div>
                     )}
                     <div className="flex justify-between py-3 text-lg font-bold border-t-2 border-gray-300">
                         <span>Total:</span>
                         <span>
-                            {invoice.currency} {invoice.total.toFixed(2)}
+                            {invoice.currency} {fm(invoice.total)}
                         </span>
                     </div>
+                    {amountPaid > 0 && (
+                        <>
+                            <div className="flex justify-between py-2 text-sm">
+                                <span className="text-gray-600">Amount paid:</span>
+                                <span>
+                                    -{invoice.currency} {fm(amountPaid)}
+                                </span>
+                            </div>
+                            <div className="flex justify-between py-3 text-lg font-bold border-t border-gray-300">
+                                <span>Balance due:</span>
+                                <span>
+                                    {invoice.currency} {fm(balanceDue)}
+                                </span>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
 

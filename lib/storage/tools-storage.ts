@@ -19,6 +19,7 @@ import {
 import { Resume, ResumeStats } from "@/types/resume"
 import { ensureMigrated, parseDocNumber } from "./migrations"
 import { DEFAULT_SETTINGS } from "./settings-defaults"
+import { deriveInvoiceStatus, invoicePaidAmount } from "@/lib/tools/payments"
 
 const STORAGE_KEYS = {
     INVOICES: "invoices",
@@ -390,20 +391,23 @@ export const getTimeTrackingStats = async (): Promise<TimeTrackingStats> => {
 
 // Statistics
 export const getInvoiceStats = async () => {
-    const invoices = await getInvoices()
+    const [invoices, receipts] = await Promise.all([getInvoices(), getReceipts()])
+    const withStatus = invoices.map((invoice) => ({
+        invoice,
+        status: deriveInvoiceStatus(invoice, receipts),
+        paid: invoicePaidAmount(invoice, receipts),
+    }))
+    const billed = withStatus.filter((i) => i.status !== "draft" && i.status !== "cancelled")
 
     return {
         total: invoices.length,
-        draft: invoices.filter((i) => i.status === "draft").length,
-        sent: invoices.filter((i) => i.status === "sent").length,
-        paid: invoices.filter((i) => i.status === "paid").length,
-        overdue: invoices.filter((i) => i.status === "overdue").length,
-        totalRevenue: invoices
-            .filter((i) => i.status === "paid")
-            .reduce((sum, i) => sum + i.total, 0),
-        pendingRevenue: invoices
-            .filter((i) => i.status === "sent" || i.status === "overdue")
-            .reduce((sum, i) => sum + i.total, 0),
+        draft: withStatus.filter((i) => i.status === "draft").length,
+        sent: withStatus.filter((i) => i.status === "sent").length,
+        partiallyPaid: withStatus.filter((i) => i.status === "partially_paid").length,
+        paid: withStatus.filter((i) => i.status === "paid").length,
+        overdue: withStatus.filter((i) => i.status === "overdue").length,
+        totalRevenue: billed.reduce((sum, i) => sum + i.paid, 0),
+        pendingRevenue: billed.reduce((sum, i) => sum + (i.invoice.total - i.paid), 0),
     }
 }
 

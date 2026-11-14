@@ -36,6 +36,7 @@ import {
   type ClientDocuments,
 } from "@/lib/tools/client-stats"
 import { formatMoney, roundMoney } from "@/lib/tools/totals"
+import { deriveInvoiceStatus } from "@/lib/tools/payments"
 import type { Client } from "@/types/invoice"
 
 type Tab = "quotations" | "invoices" | "receipts" | "contracts" | "time"
@@ -209,13 +210,12 @@ export default function ClientDetailPage() {
       newLabel: "New invoice",
       rows: byNewest(own.invoices).map((d) => {
         const balance = roundMoney(d.total - invoicePaidAmount(d, own.receipts), d.currency)
-        const overdue = isBilled(d) && balance > 0 && d.dueDate < today
         return {
           id: d.id,
           href: `/tools/invoices/${d.id}`,
           number: d.invoiceNumber,
           date: d.issueDate,
-          status: overdue && d.status === "sent" ? "overdue" : d.status,
+          status: deriveInvoiceStatus(d, own.receipts, today),
           amount: money(d.total, d.currency),
           detail:
             isBilled(d) && balance > 0 && balance < d.total

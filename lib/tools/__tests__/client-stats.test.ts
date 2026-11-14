@@ -49,9 +49,10 @@ const receipt = (over: Partial<Receipt>): Receipt => ({
 const empty: ClientDocuments = { quotations: [], invoices: [], receipts: [], contracts: [], timeEntries: [] }
 
 describe("invoicePaidAmount", () => {
-  it("prefers recorded payments, then linked receipts, and caps at the total", () => {
+  it("adds payments and linked receipts, and caps at the total", () => {
     const inv = invoice({ id: "i1", payments: [{ id: "p", date: "x", amount: 30, method: "cash" }] })
-    expect(invoicePaidAmount(inv, [receipt({ invoiceId: "i1", amountPaid: 99 })])).toBe(30)
+    expect(invoicePaidAmount(inv, [receipt({ invoiceId: "i1", paymentId: "p", amountPaid: 30 })])).toBe(30)
+    expect(invoicePaidAmount(inv, [receipt({ invoiceId: "i1", amountPaid: 20 })])).toBe(50)
     expect(invoicePaidAmount(invoice({ id: "i1" }), [receipt({ invoiceId: "i1", amountPaid: 40 })])).toBe(40)
     expect(invoicePaidAmount(invoice({ id: "i1" }), [receipt({ invoiceId: "i1", amountPaid: 500 })])).toBe(100)
     expect(invoicePaidAmount(invoice({ status: "paid" }), [])).toBe(100)
