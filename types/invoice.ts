@@ -72,6 +72,8 @@ export interface Invoice {
     currency: string
     token?: string
     sourceQuotationId?: string
+    /** Set on invoices generated from a recurring template. */
+    recurringTemplateId?: string
     installment?: InvoiceInstallment
     payments?: Payment[]
     createdAt: string
@@ -111,7 +113,7 @@ export interface SplitPart {
 }
 
 export interface Quotation
-    extends Omit<Invoice, "status" | "sourceQuotationId" | "installment" | "payments"> {
+    extends Omit<Invoice, "status" | "sourceQuotationId" | "recurringTemplateId" | "installment" | "payments"> {
     validUntil: string
     status: "draft" | "sent" | "accepted" | "rejected" | "expired"
     invoiceIds?: string[]
@@ -157,7 +159,14 @@ export interface RecurringTemplate {
     discountType: "percentage" | "fixed"
     currency: string
     interval: RecurringInterval
+    /** First issue date; later dates are counted from it so month-ends don't drift. */
+    startDate: string
+    /** How many invoices have been generated so far. */
+    generatedCount: number
+    /** Issue date of the next invoice to generate. */
     nextDate: string
+    /** Stop after this date (optional). */
+    endDate?: string
     paymentTermsDays: number
     notes?: string
     terms?: string

@@ -10,7 +10,9 @@ import {
   Eye,
   Edit,
   ArrowLeft,
+  Repeat,
 } from "lucide-react"
+import { RecurringDueBanner } from "@/components/tools/RecurringDueBanner"
 import {
   getInvoices,
   getInvoiceStats,
@@ -105,7 +107,14 @@ export default function InvoicesPage() {
                 Manage your invoices and track payments
               </p>
             </div>
-            <div className="shrink-0 pt-14">
+            <div className="shrink-0 pt-14 flex flex-wrap gap-2">
+              <Link
+                href="/tools/invoices/recurring"
+                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+              >
+                <Repeat className="size-4" />
+                Recurring
+              </Link>
               <Link
                 href="/tools/invoices/new"
                 className="inline-flex items-center gap-2 rounded-xl bg-purple-500 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-purple-400"
@@ -119,6 +128,7 @@ export default function InvoicesPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-16">
+        <RecurringDueBanner className="mb-6" />
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

@@ -11,8 +11,10 @@ import {
   Calculator,
   Users,
   DatabaseBackup,
+  Repeat,
 } from "lucide-react"
 import { SectionLabel } from "@/components/ui/section-label"
+import { RecurringDueBanner } from "@/components/tools/RecurringDueBanner"
 
 const tools = [
   {
@@ -26,6 +28,12 @@ const tools = [
     description: "Create and manage professional invoices for your clients",
     icon: FileText,
     href: "/tools/invoices",
+  },
+  {
+    name: "Recurring Invoices",
+    description: "Set up retainers and subscriptions once, then generate each invoice in one click",
+    icon: Repeat,
+    href: "/tools/invoices/recurring",
   },
   {
     name: "Quotations",
@@ -129,6 +137,7 @@ export default function ToolsContent() {
 
       {/* Tools Grid */}
       <div className="mx-auto max-w-7xl px-6 py-20">
+        <RecurringDueBanner className="mb-6" />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tools.map((tool) => {
             const Icon = tool.icon

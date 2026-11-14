@@ -11,6 +11,7 @@ import {
 import { Receipt, InvoiceSettings } from "@/types/invoice"
 import { confirmAndDeleteReceipt } from "@/lib/document-conversions"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { ReceiptPreview } from "@/components/tools/ReceiptPreview"
 
 export default function ReceiptViewPage() {
@@ -138,7 +139,7 @@ export default function ReceiptViewPage() {
                         </div>
                     )}
 
-                    <div className="mt-6 flex gap-3">
+                    <div className="mt-6 flex flex-wrap gap-3">
                         <button
                             onClick={handleDownloadPDF}
                             disabled={isGenerating}
@@ -161,6 +162,7 @@ export default function ReceiptViewPage() {
                             <Edit className="size-4" />
                             Edit
                         </Link>
+                        <DuplicateButton kind="receipt" id={receipt.id} />
                         <button
                             onClick={handleDelete}
                             className="inline-flex items-center gap-2 rounded-xl border border-destructive text-destructive px-5 py-2.5 text-sm font-semibold hover:bg-destructive/10 transition-colors"

@@ -32,6 +32,7 @@ import { invoicingState, missingInstallments } from "@/lib/tools/split"
 import { formatMoney } from "@/lib/tools/totals"
 import { SplitInvoiceDialog } from "@/components/tools/SplitInvoiceDialog"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { QuotationPreview } from "@/components/tools/QuotationPreview"
 
 export default function QuotationViewPage() {
@@ -354,6 +355,7 @@ export default function QuotationViewPage() {
                             <Edit className="size-4" />
                             Edit
                         </Link>
+                        <DuplicateButton kind="quotation" id={quotation.id} />
                         <button
                             onClick={handleDelete}
                             className="inline-flex items-center gap-2 rounded-xl border border-destructive text-destructive px-5 py-2.5 text-sm font-semibold hover:bg-destructive/10 transition-colors"

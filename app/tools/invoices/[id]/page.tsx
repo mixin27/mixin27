@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check, Wallet } from "lucide-react"
+import { ArrowLeft, Download, Printer, Edit, Trash2, Link as LinkIcon, Copy, Check, Wallet, Repeat } from "lucide-react"
 import {
     getInvoiceById,
     deleteInvoice,
@@ -21,6 +21,7 @@ import {
 import { RecordPaymentDialog } from "@/components/tools/RecordPaymentDialog"
 import { formatMoney, roundMoney } from "@/lib/tools/totals"
 import { exportElementToPdf } from "@/lib/pdf-export"
+import { DuplicateButton } from "@/components/tools/DuplicateButton"
 import { InvoicePreview } from "@/components/tools/InvoicePreview"
 
 export default function InvoiceViewPage() {
@@ -182,6 +183,14 @@ export default function InvoiceViewPage() {
                                     ? `Installment ${invoice.installment.index} of ${invoice.installment.count} · ${invoice.installment.label}`
                                     : "Invoice Details"}
                             </p>
+                            {invoice.recurringTemplateId && (
+                                <p className="mt-2 text-sm text-muted-foreground">
+                                    Generated from a{" "}
+                                    <Link href={`/tools/invoices/recurring/${invoice.recurringTemplateId}`} className="font-semibold text-purple-400 hover:underline">
+                                        recurring template
+                                    </Link>
+                                </p>
+                            )}
                             {invoice.sourceQuotationId && (
                                 <p className="mt-2 text-sm text-muted-foreground">
                                     From quotation{" "}
@@ -313,6 +322,16 @@ export default function InvoiceViewPage() {
                             <Edit className="size-4" />
                             Edit
                         </Link>
+                        <DuplicateButton kind="invoice" id={invoice.id} />
+                        {!invoice.recurringTemplateId && (
+                            <Link
+                                href={`/tools/invoices/recurring/new?fromInvoice=${invoice.id}`}
+                                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+                            >
+                                <Repeat className="size-4" />
+                                Make Recurring
+                            </Link>
+                        )}
                         <button
                             onClick={handleDelete}
                             className="inline-flex items-center gap-2 rounded-xl border border-destructive text-destructive px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-destructive/10"
