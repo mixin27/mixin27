@@ -3,25 +3,6 @@ import type { App } from "@/types"
 export const apps: App[] = [
   // ── PRODUCTIVITY ──────────────────────────────────────────
   {
-    id: "fom-order-manager",
-    slug: "fom-order-manager",
-    name: "FOM Order Manager",
-    shortName: "FOM",
-    description:
-      "Turn Messenger, Telegram and Viber chats into orders, and track stock, delivery, payment and sales.",
-    category: "productivity",
-    platform: "both",
-    status: "active",
-    packageId: "com.getfom.app",
-    links: {
-      playStore: "https://play.google.com/store/apps/details?id=com.getfom.app",
-      appStore: "https://apps.apple.com/us/app/fom-order-manager/id6808275627",
-      live: "https://getfom.com",
-      privacy: "/apps/fom-order-manager/privacy",
-    },
-    image: "/images/projects/fom-order-manager/logo.png",
-  },
-  {
     id: "collectra",
     slug: "collectra",
     name: "Collectra - Collection Tracker and Value Manager",
