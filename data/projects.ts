@@ -92,9 +92,9 @@ export const projects: Project[] = [
     slug: "myanmar-calendar",
     name: "Myanmar Calendar",
     shortDesc:
-      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, class timetables and Calendar Studio for printable calendars.",
+      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, events, notes and a merit diary, interactive widgets, Apple Watch and Wear OS apps, and Calendar Studio for printable calendars.",
     fullDesc:
-      "Every day in both calendars: the Myanmar date and moon, Sabbath, holidays and astrology, with 22 grid layouts, events with weekly timetables and multiple dates, holiday reminders, home-screen widgets on iOS and Android, and Calendar Studio for designing and exporting printable calendars.",
+      "Every day in both calendars: the Myanmar date and moon, Sabbath, holidays and astrology, with 22 grid layouts, events with timetables and Myanmar-date repeats, day notes, a merit diary, long-weekend planning, Sabbath and daily reminders, backup and .ics import, home-screen widgets you can tick events off on, apps for Apple Watch and Wear OS, and Calendar Studio for designing and exporting printable calendars.",
     category: "flutter",
     tags: ["burmese", "calendar", "myanmar-calendar"],
     featured: true,
@@ -105,6 +105,7 @@ export const projects: Project[] = [
       appStore:
         "https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564",
       releases: "https://github.com/mixin27/mmcalendar/releases/latest",
+      live: "https://calendar.kyawzayartun.com",
     },
     image: "/images/projects/myanmar-calendar/logo.png",
   },
@@ -260,18 +261,20 @@ export const projects: Project[] = [
   {
     id: "myanmar-calendar-wear",
     slug: "myanmar-calendar-wear",
-    name: "Myanmar Calendar WearOS",
+    name: "Myanmar Calendar for Wear OS",
     shortDesc:
-      "A complete WearOS application for displaying Myanmar calendar information with support for multiple languages.",
+      "A standalone Wear OS app with the Myanmar date, moon, Sabbath and holidays, each day's astrology, a Tile and a watch-face complication.",
     fullDesc:
-      "A full WearOS companion app that brings Myanmar calendar information to your wrist with multi-language support.",
+      "The Wear OS form factor of Myanmar Calendar, in the same monorepo and on the same Play listing: day pages for the week ahead, astrology, Coming up, a Tile and a complication, in Myanmar, English, Shan, Mon and Karen.",
     category: "flutter",
-    tags: ["burmese", "calendar", "myanmar-calendar"],
+    tags: ["burmese", "calendar", "myanmar-calendar", "wear-os"],
     featured: false,
     links: {
-      github: "https://github.com/mixin27/myanmar_calendar_wear",
-      releases:
-        "https://github.com/mixin27/myanmar_calendar_wear/releases/latest",
+      github:
+        "https://github.com/mixin27/mmcalendar/tree/main/apps/myanmar_calendar_wear",
+      playStore:
+        "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
+      releases: "https://github.com/mixin27/mmcalendar/releases/latest",
     },
     image: "/images/projects/myanmar-calendar/logo.png",
   },

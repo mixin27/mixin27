@@ -1,207 +1,75 @@
 ---
-title: "Myanmar Calendar WearOS"
-description: "A complete WearOS application for displaying Myanmar calendar information with support for multiple languages."
-date: "2026-01-14"
-tech: ["Flutter", "WearOS"]
-github: "https://github.com/mixin27/myanmar_calendar_wear"
-live: "https://github.com/mixin27/myanmar_calendar_wear/releases/latest"
+title: "Myanmar Calendar for Wear OS"
+description: "A standalone Wear OS app with the Myanmar date, moon, Sabbath and holidays for today and the week ahead, each day's astrology, a Tile and a watch-face complication, in five calendar languages."
+date: "2026-11-14"
+tech: ["Flutter", "Wear OS", "Wear OS Tiles", "Kotlin", "WorkManager"]
+github: "https://github.com/mixin27/mmcalendar/tree/main/apps/myanmar_calendar_wear"
+playStore: "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar"
+live: "https://calendar.kyawzayartun.com"
 status: "completed"
 image: "/images/projects/myanmar-calendar/logo.png"
 ---
 
+The Myanmar calendar on a Wear OS watch. It is the Wear OS form factor of [Myanmar Calendar](/projects/myanmar-calendar): the same Play listing, the same calendar engine and holiday catalogue. Since version 2.7.0 it lives in the [mmcalendar](https://github.com/mixin27/mmcalendar) monorepo next to the phone app. It needs no phone to run.
 
-A complete WearOS application for displaying Myanmar calendar information with support for multiple languages.
+## ✨ Features
 
-## Features
-
-- **Myanmar Calendar Display**: Shows Myanmar date, moon phase, and day of week
-- **Multi-language Support**: Myanmar, English, Shan, Karen, and Mon languages
-- **Astrology Information**: Displays yatyaza, pyathada, and other astrological data
-- **Public Holidays**: Shows Myanmar public holidays
-- **Sabbath Indicators**: Highlights Buddhist sabbath days
-- **WearOS Optimized**: Designed for both round and square watch faces
-- **Swipe Navigation**: Swipe left/right to navigate between days
-- **Today Quick Access**: Tap the "Today" button to jump to current date
+- **Day pages**: today and the next six days, one per screen. Swipe or turn the crown. Each shows the moon, "Waxing 5" or "Full Moon", the Myanmar month and year, the Western date, and Sabbath and holiday tags. On a plain day, today shows how far the next Sabbath is.
+- **Astrology**: tap a day for its good and caution marks (Yatyaza, Pyathada, Thamanyo and the rest, by the phone's rule), Nagahle, Mahabote and Nakhat.
+- **Coming up**: the next holidays, Sabbath days and full and new moons, with countdowns.
+- **Tile**: today's Myanmar date, the moon phase and the next holiday or Sabbath.
+- **Complication**: the moon and day of the fortnight, the Myanmar date, or the moon's illumination, for any watch face that takes them.
+- **Five calendar languages**: Myanmar, English, Shan, Mon and Karen. The Tile and complication follow the app's language.
+- **Ambient mode**: today's date, dimmed.
 
 ## 📸 Screenshots
 
-| Feature | Preview | Details |
-|---------|---------|---------|
-| Home | ![Home](/images/projects/myanmar-calendar/wear/home.png) | Home Page |
-| More | ![More View](/images/projects/myanmar-calendar/wear/home_more.png) | More View |
-| Language | ![Language Settings](/images/projects/myanmar-calendar/wear/language_settings.png) | Language Settings |
+| Today | Sabbath | Astrology |
+| --- | --- | --- |
+| ![Today](/images/projects/myanmar-calendar/wear/today.jpg) | ![Sabbath](/images/projects/myanmar-calendar/wear/sabbath.jpg) | ![Astrology](/images/projects/myanmar-calendar/wear/astrology.jpg) |
 
-## Project Structure
+| Coming up | Tile | Complication |
+| --- | --- | --- |
+| ![Coming up](/images/projects/myanmar-calendar/wear/coming_up.jpg) | ![Tile](/images/projects/myanmar-calendar/wear/tile.jpg) | ![Complication](/images/projects/myanmar-calendar/wear/face.jpg) |
+
+| In Myanmar |
+| --- |
+| ![Today in Myanmar](/images/projects/myanmar-calendar/wear/today_my.jpg) |
+
+## 🏗️ How it works
+
+- **One calendar everywhere.** Dates come from [`myanmar_calendar_dart`](https://pub.dev/packages/myanmar_calendar_dart), holidays from the phone app's catalogue, and astrology tones from the phone's good-day rule. Words come from the shared localizations package, so the watch never disagrees with the phone.
+- **One payload.** The Tile and complication are native Kotlin, but they don't calculate anything. Dart writes a slim version of the payload the phone's home-screen widgets use (90 days of dates, the words and the Coming up list), and Kotlin only draws it. WorkManager rewrites it daily, and a midnight alarm refreshes the Tile and complication.
+- **Small app.** No network permission, no Firebase and no state-management framework: the screens are plain widgets over a day model.
+
+```text
+apps/myanmar_calendar_wear/
+├── lib/
+│   ├── app/                 # App and colours (the phone's dark tokens)
+│   ├── features/
+│   │   ├── home/            # Day pages, Coming up, ambient day
+│   │   ├── day_details/     # Day model and the astrology screen
+│   │   └── settings/        # Calendar language
+│   └── watch_payload/       # Writes and schedules the Tile/complication payload
+└── android/app/src/main/kotlin/dev/mixin27/mmcalendar/watch/
+                             # Tile, complication, midnight refresh
+```
+
+## 🚀 Build
 
 ```bash
-lib/
-├── main.dart                           # App entry point
-├── app/
-│   └── app.dart                        # Main app widget
-├── features/
-│   ├── day_details/
-│   │   ├── bloc/
-│   │   │   ├── day_details_bloc.dart   # State management
-│   │   │   ├── day_details_event.dart  # Events
-│   │   │   └── day_details_state.dart  # States
-│   │   ├── models/
-│   │   │   └── day_details.dart        # Data model
-│   │   ├── view/
-│   │   │   └── day_details_screen.dart # Main screen
-│   │   └── widgets/
-│   │       ├── myanmar_date_card.dart
-│   │       ├── moon_phase_widget.dart
-│   │       ├── sabbath_indicator.dart
-│   │       ├── holiday_banner.dart
-│   │       ├── astrology_warnings.dart
-│   │       └── additional_info_widget.dart
-│   └── settings/
-│       └── view/
-│           └── language_settings_screen.dart
-└── shared/
-    ├── models/
-    │   └── language.dart               # Language enum
-    └── l10n/
-        └── app_strings.dart            # Localization strings
+git clone https://github.com/mixin27/mmcalendar.git
+cd mmcalendar && flutter pub get
+
+cd apps/myanmar_calendar_wear
+flutter run                          # on a Wear OS emulator or watch
+flutter build appbundle --release    # for Play, signed with the phone app's upload key
 ```
 
-## Setup Instructions
+## 🕰️ History
 
-### Prerequisites
+The first version (January 2026) was a separate repository, [`myanmar_calendar_wear`](https://github.com/mixin27/myanmar_calendar_wear), with its own holiday logic and no Tile. Version 2.7.0 moved it into the monorepo, switched it to the phone's calendar code, added the Tile and complication, and redesigned the screens to match the Apple Watch app.
 
-1. Flutter SDK (3.0.0 or higher)
-2. Android Studio with WearOS emulator or physical WearOS device
-3. `very_good_cli` installed:
-   ```bash
-   dart pub global activate very_good_cli
-   ```
+## 📝 License
 
-### Installation
-
-1. **Create the project** (if starting fresh):
-   ```bash
-   very_good create flutter_app myanmar_calendar_wear
-   cd myanmar_calendar_wear
-   ```
-
-2. **Copy all the provided files** to their respective locations in the project structure
-
-3. **Get dependencies**:
-   ```bash
-   flutter pub get
-   ```
-
-4. **Run on WearOS device/emulator**:
-   ```bash
-   flutter run
-   ```
-
-## Building for Release
-
-### Generate release APK:
-```bash
-flutter build apk --release --target-platform android-arm,android-arm64
-```
-
-### Install on WearOS device:
-```bash
-adb -s <device_id> install build/app/outputs/flutter-apk/app-release.apk
-```
-
-## Dependencies
-
-The project uses the following key dependencies:
-
-- `myanmar_calendar_dart`: Core calendar calculations
-- `wear`: WearOS-specific features
-- `flutter_bloc`: State management
-- `equatable`: Value equality
-- `intl`: Internationalization
-
-## Usage
-
-### Navigation
-- **Swipe left**: Next day
-- **Swipe right**: Previous day
-- **Tap "Today"**: Jump to current date
-- **Tap language icon**: Change language
-
-### Supported Languages
-1. Myanmar (မြန်မာ)
-2. English
-3. Shan (ၽႃႇသႃႇ)
-4. Karen (စှီၤကျိၤ)
-5. Mon (ဘာသာမန်)
-
-## WearOS-Specific Features
-
-- Optimized for both **round** and **square** watch faces
-- **Ambient mode** support (low-power display)
-- **Scrollable content** for detailed information
-- **Touch gestures** for navigation
-- **Minimal UI** for glanceable information
-
-## Customization
-
-### Changing Default Language
-Edit `lib/app/app.dart`:
-```dart
-AppLanguage _currentLanguage = AppLanguage.english; // Change default
-```
-
-### Adjusting Layout for Different Screen Sizes
-Modify padding in `lib/features/day_details/view/day_details_screen.dart`:
-```dart
-padding: EdgeInsets.fromLTRB(
-  isRound ? 20 : 12,  // Adjust these values
-  isRound ? 24 : 12,
-  isRound ? 20 : 12,
-  isRound ? 24 : 12,
-)
-```
-
-### Adding New Widgets
-Create new widgets in `lib/features/day_details/widgets/` and add them to the screen's column.
-
-## Testing
-
-### Run tests:
-```bash
-flutter test
-```
-
-### Test on WearOS emulator:
-1. Open Android Studio
-2. Create a WearOS virtual device
-3. Run `flutter run` and select the WearOS device
-
-## Troubleshooting
-
-### Issue: App doesn't install on WearOS
-- Ensure `minSdkVersion` is set to 26 or higher in `android/app/build.gradle`
-- Check that WearOS feature is declared in `AndroidManifest.xml`
-
-### Issue: Myanmar text not displaying correctly
-- Ensure the device has Myanmar Unicode fonts installed
-- Consider embedding custom fonts in the app
-
-### Issue: Swipe gestures not working
-- Check that `GestureDetector` is properly wrapping the content
-- Ensure no conflicting gesture detectors in child widgets
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
-
-## License
-
-This project is licensed under the MIT License.
-
-## Acknowledgments
-
-- Myanmar Calendar calculations by [myanmar_calendar_dart](https://pub.dev/packages/myanmar_calendar_dart)
-- Based on [Very Good Ventures WearOS Guide](https://www.verygood.ventures/blog/building-wear-os-apps-with-flutter-a-very-good-guide)
-
-## Contact
-
-For questions or support, please open an issue on GitHub.
+MIT License.

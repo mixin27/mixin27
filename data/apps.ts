@@ -46,14 +46,17 @@ export const apps: App[] = [
     name: "Myanmar Calendar",
     shortName: "Myanmar Calendar",
     description:
-      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, class timetables and Calendar Studio for printable calendars.",
+      "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, events, notes and a merit diary, widgets, Apple Watch and Wear OS apps, and Calendar Studio for printable calendars.",
     category: "productivity",
-    platform: "android",
+    platform: "both",
     status: "active",
     packageId: "dev.mixin27.mmcalendar",
     links: {
       playStore:
         "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar",
+      appStore:
+        "https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564",
+      live: "https://calendar.kyawzayartun.com",
       github: "https://github.com/mixin27/mmcalendar",
       privacy: "/apps/myanmar-calendar/privacy",
     },

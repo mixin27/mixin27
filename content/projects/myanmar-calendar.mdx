@@ -1,12 +1,12 @@
 ---
 title: "Myanmar Calendar"
-description: "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, class timetables and events, home-screen widgets, and Calendar Studio for designing printable calendars."
+description: "A Myanmar calendar app with Myanmar and Western dates side by side, moon phases, astrology, holidays, events, notes and a merit diary, interactive home-screen widgets, Apple Watch and Wear OS apps, and Calendar Studio for designing printable calendars."
 date: "2025-10-25"
-tech: ["Flutter", "BLoC", "GoRouter", "Drift", "Firebase", "WidgetKit", "Jetpack Glance"]
+tech: ["Flutter", "BLoC", "GoRouter", "Drift", "Firebase", "WidgetKit", "Jetpack Glance", "watchOS", "Wear OS Tiles"]
 github: "https://github.com/mixin27/mmcalendar"
 playStore: "https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar"
 appStore: "https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564"
-live: "https://myanmarcalendar.kyawzayartun.com"
+live: "https://calendar.kyawzayartun.com"
 status: "completed"
 image: "/images/projects/myanmar-calendar/logo.png"
 ---
@@ -17,12 +17,12 @@ image: "/images/projects/myanmar-calendar/logo.png"
 
 <div align="center">
 
-| [GitHub](https://github.com/mixin27/mmcalendar) | [Play Store](https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar) | [App Store](https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564) | [Website](https://myanmarcalendar.kyawzayartun.com) |
+| [GitHub](https://github.com/mixin27/mmcalendar) | [Play Store](https://play.google.com/store/apps/details?id=dev.mixin27.mmcalendar) | [App Store](https://apps.apple.com/us/app/myanmar-calendar-pyatkadain/id6811349564) | [Website](https://calendar.kyawzayartun.com) |
 
-| [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev/) | [![Dart](https://img.shields.io/badge/Dart-3.11%2B-blue.svg)](https://dart.dev/) | [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/mixin27/mmcalendar/blob/main/LICENSE) | [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Web-lightgrey.svg)](https://flutter.dev/) |
+| [![Flutter](https://img.shields.io/badge/Flutter-3.x-blue.svg)](https://flutter.dev/) | [![Dart](https://img.shields.io/badge/Dart-3.11%2B-blue.svg)](https://dart.dev/) | [![License](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/mixin27/mmcalendar/blob/main/LICENSE) | [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20watchOS%20%7C%20Wear%20OS%20%7C%20Web-lightgrey.svg)](https://flutter.dev/) |
 | --- | --- | --- | --- |
 
-[Features](#-features) • [Screenshots](#-screenshots) • [Quick Start](#-quick-start) • [Remote Config](#%EF%B8%8F-remote-config) • [Architecture](#%EF%B8%8F-architecture)
+[Features](#-features) • [Screenshots](#-screenshots) • [Watches](#%EF%B8%8F-watches) • [Quick Start](#-quick-start) • [Remote Config](#%EF%B8%8F-remote-config) • [Architecture](#%EF%B8%8F-architecture)
 
 </div>
 
@@ -30,7 +30,7 @@ image: "/images/projects/myanmar-calendar/logo.png"
 
 ## 📱 Overview
 
-Myanmar Calendar shows every day in both calendars at once: the Western date, the Myanmar date and moon, Sabbath days, holidays and the traditional astrological days. Around that it adds what people actually plan with: events and class timetables, a holiday list with reminders, home-screen widgets, and **Calendar Studio** for designing a calendar to print or share.
+Myanmar Calendar shows every day in both calendars at once: the Western date, the Myanmar date and moon, Sabbath days, holidays and the traditional astrological days. Around that it adds what people actually plan with: events and class timetables, day notes and a merit diary, a holiday list with long-weekend planning and reminders, search that understands typed dates, home-screen widgets you can tick events off on, apps for Apple Watch and Wear OS, and **Calendar Studio** for designing a calendar to print or share.
 
 The interface is in Myanmar and English, and calendar data is available in six languages (Myanmar, English, Zawgyi, Mon, Shan and Karen). Calculations come from my [`myanmar_calendar_dart`](https://pub.dev/packages/myanmar_calendar_dart) package, and several screens use the widgets from [`flutter_mmcalendar`](https://pub.dev/packages/flutter_mmcalendar).
 
@@ -51,10 +51,15 @@ The interface is in Myanmar and English, and calendar data is available in six l
 - Moon phase, with a countdown to the next full moon, new moon and Sabbath
 - Astrology said the way people say it: ဥပုသ် နေ့, ရက်ရာဇာ, ပြဿဒါး နေ့, ဘင်္ဂဖွား, လူ နက္ခတ်, ဘဒြ နှစ်
 - A Nagahle compass, and an AI prompt for a horoscope, fortune-telling or divination reading (nothing is sent from the app)
+- **Good days**: the days with good astrological marks in the next 1, 3 or 6 months
+- **Birth** tool: the birth sign, Mahabote, Nakhat, exact age and the next Western and Myanmar birthdays
+- Share any day as an image, square or story size, in your theme and calendar language
 
 ### 🏮 Holidays
 
-- Public, religious and cultural holidays, searchable and filterable, with details and reminders
+- Public, religious and cultural holidays, searchable and filterable, with reminders and **Good to know** for each festival: what happens, tips, etiquette and where to see it
+- **Long weekends**: the breaks the year's holidays make, and the days of leave that make them longer ("Take Fri 20 Nov off → 5 days off")
+- **Reminders**: Sabbath reminders the evening before or that morning, and a morning daily summary of the date, holidays and the day's marks
 - Remote-config overrides to add or disable holidays without an app update
 
 ### 👀 Views
@@ -67,7 +72,20 @@ The interface is in Myanmar and English, and calendar data is available in six l
 
 - **Weekly timetables**: several weekdays, every N weeks, an end date or count, and a time for each day, all in one save
 - **Multiple dates**: one event on any set of days, picked on the Myanmar calendar
-- Daily, monthly and yearly repeats; change or skip one occurrence; categories, priorities, tags and reminders
+- Daily, monthly and yearly repeats, or **by Myanmar date** (every Tabaung full moon, a Myanmar birthday); change or skip one occurrence; categories, priorities, tags and reminders
+- **Share an event** as a QR code, a link or an `.ics` file, Myanmar-date repeats included
+- Every date picker takes a typed date, in English or Myanmar ("13 Apr 2027", "Tabaung full moon 1388", "next Sabbath")
+
+### 📝 Notes, merit and search
+
+- **Day notes** on any day, with a dot in the grid and a searchable list
+- **Merit diary**: log donations, precepts and meditation, with a Sabbath streak and yearly totals
+- **Search** for typed dates, holidays, events and notes
+
+### 💾 Backup
+
+- Back up events, notes, merit entries, custom holidays and reminder choices to one file, and restore by merging or replacing
+- Export events as `.ics`, and import from Google Calendar, Apple Calendar and other `.ics` files
 
 ### 🎨 Calendar Studio
 
@@ -83,8 +101,10 @@ The interface is in Myanmar and English, and calendar data is available in six l
 
 ### 📲 Widgets and personalisation
 
-- iOS widgets (Today, Moon, Week, Countdown, Astrology day, Myanmar year) and lock-screen widgets; Android Jetpack Glance widgets in five styles
-- Clear (iOS-like) and Material app styles, light and dark, theme presets, custom colours and alternate icons
+- iOS widgets (Today, Moon, Week, Countdown, Astrology day, Myanmar year, Today's note, Good days) and lock-screen widgets; Android Jetpack Glance widgets in five styles
+- **Interactive widgets**: tick an event done right on the Agenda and Today widgets, and open the note editor from the Today's note widget
+- Clear (iOS-like) and Material app styles, light and dark, theme presets, custom colours, alternate icons and **Easy reading** (larger text)
+- English for Western dates, whatever the calendar language
 - Onboarding with quick setup, and a What's new sheet after each update
 
 ---
@@ -100,6 +120,23 @@ The interface is in Myanmar and English, and calendar data is available in six l
 | Class Timetable | Calendar Studio | Grid Layouts | Converter |
 | --- | --- | --- | --- |
 | ![Class Timetable](/images/projects/myanmar-calendar/screenshots/05_timetable.png) | ![Calendar Studio](/images/projects/myanmar-calendar/screenshots/06_studio.png) | ![Grid Layouts](/images/projects/myanmar-calendar/screenshots/07_grid_styles.png) | ![Converter](/images/projects/myanmar-calendar/screenshots/08_converter.png) |
+
+</div>
+
+---
+
+## ⌚️ Watches
+
+The same calendar on the wrist, built from the same Dart code as the phone's widgets.
+
+- **Apple Watch**: today and the next days, Coming up, and watch-face complications. The iPhone app sends the watch half a year of days, so it keeps going without the phone.
+- **Wear OS**: a standalone app with day pages, each day's astrology and Coming up, plus a Tile and a watch-face complication, in Myanmar, English, Shan, Mon or Karen. See [Myanmar Calendar for Wear OS](/projects/myanmar-calendar-wear).
+
+<div align="center">
+
+| Apple Watch | Wear OS | Wear OS Tile | Complication |
+| --- | --- | --- | --- |
+| ![Apple Watch](/images/projects/myanmar-calendar/apple-watch/today.jpg) | ![Wear OS](/images/projects/myanmar-calendar/wear/today.jpg) | ![Tile](/images/projects/myanmar-calendar/wear/tile.jpg) | ![Complication](/images/projects/myanmar-calendar/wear/face.jpg) |
 
 </div>
 
@@ -134,6 +171,9 @@ cd apps/myanmar_calendar
 flutter build appbundle --release   # Android
 flutter build ipa --release         # iOS (macOS only)
 flutter build web --release         # Web
+
+cd ../myanmar_calendar_wear
+flutter build appbundle --release   # Wear OS
 ```
 
 ---
@@ -176,13 +216,16 @@ A Flutter workspace: one app, feature packages, and shared and integration layer
 
 ```text
 mmcalendar/
-├── apps/myanmar_calendar/         # Routing, DI, native widgets
+├── apps/
+│   ├── myanmar_calendar/          # Routing, DI, native widgets, Apple Watch app
+│   └── myanmar_calendar_wear/     # Wear OS app, Tile and complication
 ├── packages/
-│   ├── features/                  # calendar, views, holidays, events, calendar_studio,
+│   ├── features/                  # calendar, views, holidays, events, notes, calendar_studio,
 │   │                              # converter, home_widgets, onboarding, whats_new, settings
-│   ├── shared/                    # core, localizations, ui_kit, moon, motifs
+│   ├── shared/                    # core, localizations, ui_kit, moon, motifs, widget_payload
 │   └── integrations/              # database (Drift), firebase, app_update, telegram_web
-├── store/                         # Store screenshots and feature graphic
+├── site/                          # calendar.kyawzayartun.com (Next.js)
+├── store/                         # Store screenshots and listing text
 └── scripts/
 ```
 
@@ -190,7 +233,9 @@ mmcalendar/
 
 - Flutter and Dart, `flutter_bloc`, `go_router`, `drift`, `get_it` + `injectable`
 - `myanmar_calendar_dart` for the calendar engine and `flutter_mmcalendar` for calendar widgets
-- WidgetKit (iOS) and Jetpack Glance (Android) for home-screen widgets
+- WidgetKit (iOS) and Jetpack Glance (Android) for home-screen widgets, with App Intents and Glance actions for ticking events off
+- SwiftUI and WatchConnectivity for the Apple Watch app; Wear OS Tiles and complications in Kotlin
+- One widget payload, built in Dart, that every widget, watch and Tile draws
 - Firebase Remote Config, Analytics and Crashlytics, only with the user's consent
 
 ---
