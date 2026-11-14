@@ -7,9 +7,10 @@ import Link from "next/link"
 import { ArrowLeft, Save, FileText } from "lucide-react"
 import {
   saveContract,
-  getClients,
+  getSelectableClients,
   getSettings,
   getNextContractNumber,
+  incrementContractNumber,
   getClientById,
 } from "@/lib/storage/tools-storage"
 import { Client, Contract, ContractTemplateType } from "@/types/invoice"
@@ -57,7 +58,7 @@ export default function NewContractForm() {
   useEffect(() => {
     const loadData = async () => {
       const [loadedClients, settings] = await Promise.all([
-        getClients(),
+        getSelectableClients(preSelectedClientId),
         Promise.resolve(getSettings()),
       ])
 
@@ -103,6 +104,7 @@ export default function NewContractForm() {
       contractNumber,
       templateType,
       templateName: template.name,
+      clientId: client.id,
       client,
       projectName,
       projectScope,
@@ -125,6 +127,7 @@ export default function NewContractForm() {
     }
 
     await saveContract(contract)
+    await incrementContractNumber(contractNumber)
     router.push("/tools/contracts")
   }
 
@@ -225,7 +228,7 @@ export default function NewContractForm() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">Client</h2>
               <Link
-                href="/tools/invoices/clients/new"
+                href="/tools/clients/new?returnTo=/tools/contracts/new"
                 className="text-sm text-purple-400 hover:underline"
               >
                 + Add New Client

@@ -2,13 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowLeft, Save, Download, Upload } from "lucide-react"
-import {
-  getSettings,
-  saveSettings,
-  exportAllData,
-  importAllData,
-} from "@/lib/storage/tools-storage"
+import { ArrowLeft, Save, Download } from "lucide-react"
+import { getSettings, saveSettings } from "@/lib/storage/tools-storage"
 import { InvoiceSettings } from "@/types/invoice"
 
 export default function SettingsPage() {
@@ -25,48 +20,6 @@ export default function SettingsPage() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     }
-  }
-
-  const handleExport = () => {
-    const data = exportAllData()
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = `invoice-data-backup-${new Date().toISOString().split("T")[0]}.json`
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
-  const handleImport = () => {
-    const input = document.createElement("input")
-    input.type = "file"
-    input.accept = "application/json"
-    input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
-        const reader = new FileReader()
-        reader.onload = (event) => {
-          try {
-            const data = JSON.parse(event.target?.result as string)
-            if (
-              confirm("This will replace all your current data. Are you sure?")
-            ) {
-              importAllData(data)
-              setSettings(getSettings())
-              alert("Data imported successfully!")
-            }
-          } catch (error) {
-            alert("Invalid file format!")
-            console.error("Error importing data:", error)
-          }
-        }
-        reader.readAsText(file)
-      }
-    }
-    input.click()
   }
 
   if (!settings) {
@@ -323,6 +276,47 @@ export default function SettingsPage() {
                 />
               </div>
 
+              {(
+                [
+                  ["Quotation", "quotationPrefix", "nextQuotationNumber", "QUO-"],
+                  ["Receipt", "receiptPrefix", "nextReceiptNumber", "REC-"],
+                  ["Contract", "contractPrefix", "nextContractNumber", "CON-"],
+                ] as const
+              ).map(([label, prefixKey, nextKey, fallback]) => (
+                <div key={prefixKey} className="contents">
+                  <div>
+                    <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
+                      {label} Prefix
+                    </label>
+                    <input
+                      type="text"
+                      value={settings[prefixKey] ?? fallback}
+                      onChange={(e) =>
+                        setSettings({ ...settings, [prefixKey]: e.target.value })
+                      }
+                      className="w-full rounded-xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
+                      Next {label} Number
+                    </label>
+                    <input
+                      type="number"
+                      value={settings[nextKey] ?? 1}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          [nextKey]: parseInt(e.target.value) || 1,
+                        })
+                      }
+                      className="w-full rounded-xl border border-border bg-background/80 px-4 py-3 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20"
+                      min="1"
+                    />
+                  </div>
+                </div>
+              ))}
+
               <div className="md:col-span-2">
                 <label className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase mb-2">
                   Default Payment Terms
@@ -347,29 +341,16 @@ export default function SettingsPage() {
           <div className="rounded-2xl border border-border bg-card/60 shadow-sm p-6">
             <h2 className="text-2xl font-bold tracking-tight mb-6">Data Management</h2>
             <p className="text-sm text-muted-foreground mb-4">
-              Export or import all your data including invoices, clients, and
-              settings.
+              All your data is stored only in this browser. Back it up to Google
+              Drive or a file, and restore it on another device.
             </p>
-            <div className="flex gap-3">
-              <button
-                onClick={handleExport}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
-              >
-                <Download className="size-4" />
-                Export Data
-              </button>
-              <button
-                onClick={handleImport}
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
-              >
-                <Upload className="size-4" />
-                Import Data
-              </button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              💡 Tip: Export your data regularly as a backup. All data is stored
-              locally in your browser.
-            </p>
+            <Link
+              href="/tools/backup"
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/60 px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-card"
+            >
+              <Download className="size-4" />
+              Backup &amp; Restore
+            </Link>
           </div>
         </div>
       </div>

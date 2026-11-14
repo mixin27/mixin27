@@ -9,6 +9,7 @@ export interface Client {
     zipCode?: string
     country?: string
     taxId?: string
+    archived?: boolean
     createdAt: string
 }
 
@@ -20,13 +21,45 @@ export interface InvoiceItem {
     amount: number
 }
 
+export type PaymentMethod =
+    | "cash"
+    | "check"
+    | "bank_transfer"
+    | "credit_card"
+    | "paypal"
+    | "kbz_pay"
+    | "aya_pay"
+    | "wave_pay"
+    | "uab_pay"
+    | "cb_pay"
+    | "other"
+
+export interface Payment {
+    id: string
+    date: string
+    amount: number
+    method: PaymentMethod
+    reference?: string
+    receiptId?: string
+}
+
+export interface InvoiceInstallment {
+    index: number
+    count: number
+    label: string
+    mode: "percent" | "fixed"
+    value: number
+}
+
 export interface Invoice {
     id: string
     invoiceNumber: string
+    /** Link to the client record. `client` stays as a snapshot for rendering. */
+    clientId?: string
     client: Client
     issueDate: string
     dueDate: string
-    status: "draft" | "sent" | "paid" | "overdue" | "cancelled"
+    status: "draft" | "sent" | "partially_paid" | "paid" | "overdue" | "cancelled"
     items: InvoiceItem[]
     subtotal: number
     taxRate: number
@@ -38,6 +71,9 @@ export interface Invoice {
     terms?: string
     currency: string
     token?: string
+    sourceQuotationId?: string
+    installment?: InvoiceInstallment
+    payments?: Payment[]
     createdAt: string
     updatedAt: string
 }
@@ -58,31 +94,41 @@ export interface InvoiceSettings {
     defaultPaymentTerms: string
     invoicePrefix: string
     nextInvoiceNumber: number
+    quotationPrefix?: string
+    nextQuotationNumber?: number
+    receiptPrefix?: string
+    nextReceiptNumber?: number
+    contractPrefix?: string
+    nextContractNumber?: number
 }
 
-export interface Quotation extends Omit<Invoice, "status"> {
+export interface SplitPart {
+    label: string
+    mode: "percent" | "fixed"
+    /** Percent (0–100) or amount in the quotation's currency. Ignored for the last part, which takes the remainder. */
+    value: number
+    dueDate: string
+}
+
+export interface Quotation
+    extends Omit<Invoice, "status" | "sourceQuotationId" | "installment" | "payments"> {
     validUntil: string
     status: "draft" | "sent" | "accepted" | "rejected" | "expired"
+    invoiceIds?: string[]
+    /** Set when the quotation was split into installment invoices. */
+    splitPlan?: SplitPart[]
 }
 
 export interface Receipt {
     id: string
     receiptNumber: string
+    clientId?: string
     client: Client
     paymentDate: string
-    paymentMethod:
-    | "cash"
-    | "check"
-    | "bank_transfer"
-    | "credit_card"
-    | "paypal"
-    | "kbz_pay"
-    | "aya_pay"
-    | "wave_pay"
-    | "uab_pay"
-    | "cb_pay"
-    | "other"
+    paymentMethod: PaymentMethod
     relatedInvoiceNumber?: string
+    invoiceId?: string
+    paymentId?: string
     items: InvoiceItem[]
     subtotal: number
     taxRate: number
@@ -94,6 +140,29 @@ export interface Receipt {
     notes?: string
     currency: string
     token?: string
+    createdAt: string
+    updatedAt: string
+}
+
+export type RecurringInterval = "weekly" | "monthly" | "yearly"
+
+export interface RecurringTemplate {
+    id: string
+    name: string
+    clientId: string
+    client: Client
+    items: InvoiceItem[]
+    taxRate: number
+    discount: number
+    discountType: "percentage" | "fixed"
+    currency: string
+    interval: RecurringInterval
+    nextDate: string
+    paymentTermsDays: number
+    notes?: string
+    terms?: string
+    active: boolean
+    lastGeneratedAt?: string
     createdAt: string
     updatedAt: string
 }
@@ -120,6 +189,7 @@ export interface Contract {
     contractNumber: string
     templateType: ContractTemplateType
     templateName: string
+    clientId?: string
     client: Client
     projectName: string
     projectScope: string

@@ -6,6 +6,7 @@ import { useRouter, useParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Plus, Trash2, Save, Loader2 } from "lucide-react"
 import { Invoice, InvoiceItem, Client } from "@/types/invoice"
+import { computeTotals, lineAmount } from "@/lib/tools/totals"
 import {
   saveInvoice,
   getClients,
@@ -96,7 +97,7 @@ export default function EditInvoicePage() {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
           if (field === "quantity" || field === "rate") {
-            updated.amount = updated.quantity * updated.rate
+            updated.amount = lineAmount(updated.quantity, updated.rate, currency)
           }
           return updated
         }
@@ -105,30 +106,11 @@ export default function EditInvoicePage() {
     )
   }
 
-  const calculateSubtotal = () => {
-    return items.reduce((sum, item) => sum + item.amount, 0)
-  }
-
-  const calculateDiscount = () => {
-    const subtotal = calculateSubtotal()
-    if (discountType === "percentage") {
-      return subtotal * (discount / 100)
-    }
-    return discount
-  }
-
-  const calculateTax = () => {
-    const subtotal = calculateSubtotal()
-    const discountAmount = calculateDiscount()
-    return (subtotal - discountAmount) * (taxRate / 100)
-  }
-
-  const calculateTotal = () => {
-    const subtotal = calculateSubtotal()
-    const discountAmount = calculateDiscount()
-    const taxAmount = calculateTax()
-    return subtotal - discountAmount + taxAmount
-  }
+  const totals = computeTotals({ items, discount, discountType, taxRate, currency })
+  const calculateSubtotal = () => totals.subtotal
+  const calculateDiscount = () => totals.discountAmount
+  const calculateTax = () => totals.taxAmount
+  const calculateTotal = () => totals.total
 
   const handleSave = async (statusUpdate: Invoice["status"] = "draft") => {
     const selectedClient = clients.find((c) => c.id === selectedClientId)
@@ -153,6 +135,7 @@ export default function EditInvoicePage() {
     const invoice: Invoice = {
       ...existingInvoice,
       invoiceNumber,
+      clientId: selectedClient.id,
       client: selectedClient,
       issueDate,
       dueDate,
@@ -299,6 +282,7 @@ export default function EditInvoicePage() {
                 >
                   <option value="draft">Draft</option>
                   <option value="sent">Sent</option>
+                  <option value="partially_paid">Partially paid</option>
                   <option value="paid">Paid</option>
                   <option value="overdue">Overdue</option>
                   <option value="cancelled">Cancelled</option>
@@ -323,7 +307,7 @@ export default function EditInvoicePage() {
                   ))}
                 </select>
                 <Link
-                  href="/tools/invoices/clients/new"
+                  href="/tools/clients/new"
                   className="text-sm text-purple-400 hover:underline mt-1 inline-block"
                 >
                   + Add new client

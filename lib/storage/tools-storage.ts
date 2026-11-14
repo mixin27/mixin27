@@ -17,6 +17,10 @@ import {
     hybridDelete,
 } from "./hybrid-storage"
 import { Resume, ResumeStats } from "@/types/resume"
+import { ensureMigrated, parseDocNumber } from "./migrations"
+import { DEFAULT_SETTINGS } from "./settings-defaults"
+import { notifyToolsDataChanged } from "./change-events"
+import { deriveInvoiceStatus, invoicePaidAmount } from "@/lib/tools/payments"
 
 const STORAGE_KEYS = {
     INVOICES: "invoices",
@@ -58,17 +62,49 @@ export const deleteInvoice = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.INVOICES, id)
 }
 
-export const getNextInvoiceNumber = (): string => {
+// Document numbering. Each type has its own prefix and counter in settings.
+type CounterKind = "invoice" | "quotation" | "receipt" | "contract"
+
+const COUNTER_FIELDS = {
+    invoice: { prefix: "invoicePrefix", next: "nextInvoiceNumber" },
+    quotation: { prefix: "quotationPrefix", next: "nextQuotationNumber" },
+    receipt: { prefix: "receiptPrefix", next: "nextReceiptNumber" },
+    contract: { prefix: "contractPrefix", next: "nextContractNumber" },
+} as const satisfies Record<CounterKind, { prefix: keyof InvoiceSettings; next: keyof InvoiceSettings }>
+
+export const formatDocNumber = (prefix: string, number: number): string =>
+    `${prefix}${String(number).padStart(4, "0")}`
+
+export const peekDocNumber = (kind: CounterKind): string => {
     const settings = getSettings()
-    const number = settings.nextInvoiceNumber
-    return `${settings.invoicePrefix}${String(number).padStart(4, "0")}`
+    const { prefix, next } = COUNTER_FIELDS[kind]
+    return formatDocNumber(
+        (settings[prefix] as string | undefined) ?? (DEFAULT_SETTINGS[prefix] as string),
+        (settings[next] as number | undefined) || 1,
+    )
 }
 
-export const incrementInvoiceNumber = async (): Promise<void> => {
+/**
+ * Advance a counter after a document is saved. If the saved number was typed
+ * by hand and is higher than the counter, jump past it so it is never reused.
+ */
+export const advanceDocNumber = async (kind: CounterKind, usedNumber?: string): Promise<void> => {
     const settings = getSettings()
-    settings.nextInvoiceNumber += 1
-    await saveSettings(settings)
+    const { next } = COUNTER_FIELDS[kind]
+    const current = (settings[next] as number | undefined) || 1
+    const used = parseDocNumber(usedNumber)
+    await saveSettings({ ...settings, [next]: Math.max(current, used) + 1 })
 }
+
+export const getNextInvoiceNumber = (): string => peekDocNumber("invoice")
+
+export const incrementInvoiceNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("invoice", usedNumber)
+
+export const getNextQuotationNumber = (): string => peekDocNumber("quotation")
+
+export const incrementQuotationNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("quotation", usedNumber)
 
 // Client Operations
 export const saveClient = async (client: Client): Promise<void> => {
@@ -79,6 +115,14 @@ export const getClients = async (): Promise<Client[]> => {
     return hybridGetAll<Client>(STORAGE_KEYS.CLIENTS)
 }
 
+/** Clients for a picker: archived ones are hidden unless already selected. */
+export const getSelectableClients = async (keepId?: string | null): Promise<Client[]> => {
+    const clients = await getClients()
+    return clients
+        .filter((c) => !c.archived || c.id === keepId)
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }))
+}
+
 export const getClientById = async (id: string): Promise<Client | null> => {
     return hybridGetById<Client>(STORAGE_KEYS.CLIENTS, id)
 }
@@ -87,34 +131,69 @@ export const deleteClient = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.CLIENTS, id)
 }
 
-// Settings Operations
-const defaultSettings: InvoiceSettings = {
-    businessName: "Your Business Name",
-    businessEmail: "contact@yourbusiness.com",
-    businessPhone: "",
-    businessAddress: "",
-    businessCity: "",
-    businessState: "",
-    businessZipCode: "",
-    businessCountry: "",
-    taxId: "",
-    logo: "",
-    defaultCurrency: "USD",
-    defaultTaxRate: 0,
-    defaultPaymentTerms: "Net 30",
-    invoicePrefix: "INV-",
-    nextInvoiceNumber: 1,
+/** Every document type that can belong to a client, loaded in one go. */
+export const loadClientDocuments = async () => {
+    const [quotations, invoices, receipts, contracts, timeEntries] = await Promise.all([
+        getQuotations(),
+        getInvoices(),
+        getReceipts(),
+        getContracts(),
+        getTimeEntries(),
+    ])
+    return { quotations, invoices, receipts, contracts, timeEntries }
 }
 
+/**
+ * Copy an edited client onto documents that are still drafts. Sent, paid and
+ * signed documents keep the client details they were issued with.
+ */
+export const updateClientOnDrafts = async (client: Client): Promise<number> => {
+    const docs = await loadClientDocuments()
+    const isMine = (d: { clientId?: string; client: Client }) =>
+        (d.clientId ?? d.client.id) === client.id
+    const now = new Date().toISOString()
+    let count = 0
+    for (const q of docs.quotations.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveQuotation({ ...q, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    for (const i of docs.invoices.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveInvoice({ ...i, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    for (const c of docs.contracts.filter((d) => isMine(d) && d.status === "draft")) {
+        await saveContract({ ...c, clientId: client.id, client, updatedAt: now })
+        count++
+    }
+    return count
+}
+
+export const countClientDrafts = async (clientId: string): Promise<number> => {
+    const docs = await loadClientDocuments()
+    const isMine = (d: { clientId?: string; client: Client }) => (d.clientId ?? d.client.id) === clientId
+    return (
+        docs.quotations.filter((d) => isMine(d) && d.status === "draft").length +
+        docs.invoices.filter((d) => isMine(d) && d.status === "draft").length +
+        docs.contracts.filter((d) => isMine(d) && d.status === "draft").length
+    )
+}
+
+// Settings Operations
 export const getSettings = (): InvoiceSettings => {
-    if (typeof window === "undefined") return defaultSettings
-    const data = localStorage.getItem(STORAGE_KEYS.SETTINGS)
-    return data ? JSON.parse(data) : defaultSettings
+    if (typeof window === "undefined") return { ...DEFAULT_SETTINGS }
+    ensureMigrated()
+    try {
+        const data = localStorage.getItem(STORAGE_KEYS.SETTINGS)
+        return data ? { ...DEFAULT_SETTINGS, ...JSON.parse(data) } : { ...DEFAULT_SETTINGS }
+    } catch {
+        return { ...DEFAULT_SETTINGS }
+    }
 }
 
 export const saveSettings = async (settings: InvoiceSettings): Promise<void> => {
     if (typeof window === "undefined") return
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
+    notifyToolsDataChanged(STORAGE_KEYS.SETTINGS)
 }
 
 // Quotation Operations
@@ -151,11 +230,10 @@ export const deleteReceipt = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.RECEIPTS, id)
 }
 
-export const getNextReceiptNumber = async (): Promise<string> => {
-    const receipts = await getReceipts()
-    const nextNumber = receipts.length + 1
-    return `REC-${String(nextNumber).padStart(4, "0")}`
-}
+export const getNextReceiptNumber = async (): Promise<string> => peekDocNumber("receipt")
+
+export const incrementReceiptNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("receipt", usedNumber)
 
 // Contract Operations
 export const saveContract = async (contract: Contract): Promise<void> => {
@@ -174,11 +252,10 @@ export const deleteContract = async (id: string): Promise<void> => {
     await hybridDelete(STORAGE_KEYS.CONTRACTS, id)
 }
 
-export const getNextContractNumber = async (): Promise<string> => {
-    const contracts = await getContracts()
-    const nextNumber = contracts.length + 1
-    return `CON-${String(nextNumber).padStart(4, "0")}`
-}
+export const getNextContractNumber = async (): Promise<string> => peekDocNumber("contract")
+
+export const incrementContractNumber = async (usedNumber?: string): Promise<void> =>
+    advanceDocNumber("contract", usedNumber)
 
 // Time Entry Operations
 export const saveTimeEntry = async (entry: TimeEntry): Promise<void> => {
@@ -316,20 +393,23 @@ export const getTimeTrackingStats = async (): Promise<TimeTrackingStats> => {
 
 // Statistics
 export const getInvoiceStats = async () => {
-    const invoices = await getInvoices()
+    const [invoices, receipts] = await Promise.all([getInvoices(), getReceipts()])
+    const withStatus = invoices.map((invoice) => ({
+        invoice,
+        status: deriveInvoiceStatus(invoice, receipts),
+        paid: invoicePaidAmount(invoice, receipts),
+    }))
+    const billed = withStatus.filter((i) => i.status !== "draft" && i.status !== "cancelled")
 
     return {
         total: invoices.length,
-        draft: invoices.filter((i) => i.status === "draft").length,
-        sent: invoices.filter((i) => i.status === "sent").length,
-        paid: invoices.filter((i) => i.status === "paid").length,
-        overdue: invoices.filter((i) => i.status === "overdue").length,
-        totalRevenue: invoices
-            .filter((i) => i.status === "paid")
-            .reduce((sum, i) => sum + i.total, 0),
-        pendingRevenue: invoices
-            .filter((i) => i.status === "sent" || i.status === "overdue")
-            .reduce((sum, i) => sum + i.total, 0),
+        draft: withStatus.filter((i) => i.status === "draft").length,
+        sent: withStatus.filter((i) => i.status === "sent").length,
+        partiallyPaid: withStatus.filter((i) => i.status === "partially_paid").length,
+        paid: withStatus.filter((i) => i.status === "paid").length,
+        overdue: withStatus.filter((i) => i.status === "overdue").length,
+        totalRevenue: billed.reduce((sum, i) => sum + i.paid, 0),
+        pendingRevenue: billed.reduce((sum, i) => sum + (i.invoice.total - i.paid), 0),
     }
 }
 
@@ -553,81 +633,4 @@ export const formatDuration = (minutes: number): string => {
 
 export const formatDurationDecimal = (minutes: number): string => {
     return (minutes / 60).toFixed(2)
-}
-
-// Export all data (for backup)
-export const exportAllData = async () => {
-    const [
-        invoices,
-        clients,
-        quotations,
-        receipts,
-        contracts,
-        timeEntries,
-        settings,
-        resumes,
-    ] = await Promise.all([
-        getInvoices(),
-        getClients(),
-        getQuotations(),
-        getReceipts(),
-        getContracts(),
-        getTimeEntries(),
-        Promise.resolve(getSettings()),
-        getResumes(),
-    ])
-
-    return {
-        invoices,
-        clients,
-        quotations,
-        receipts,
-        contracts,
-        timeEntries,
-        settings,
-        resumes,
-        exportedAt: new Date().toISOString(),
-    }
-}
-
-// Import data (from backup)
-export const importAllData = async (data: any): Promise<void> => {
-    if (data.clients) {
-        for (const client of data.clients) {
-            await saveClient(client)
-        }
-    }
-    if (data.invoices) {
-        for (const invoice of data.invoices) {
-            await saveInvoice(invoice)
-        }
-    }
-    if (data.quotations) {
-        for (const quotation of data.quotations) {
-            await saveQuotation(quotation)
-        }
-    }
-    if (data.receipts) {
-        for (const receipt of data.receipts) {
-            await saveReceipt(receipt)
-        }
-    }
-    if (data.contracts) {
-        for (const contract of data.contracts) {
-            await saveContract(contract)
-        }
-    }
-    if (data.timeEntries) {
-        for (const entry of data.timeEntries) {
-            await saveTimeEntry(entry)
-        }
-    }
-    if (data.settings) {
-        await saveSettings(data.settings)
-    }
-    if (data.resumes) {
-        for (const resume of data.resumes) {
-            await saveResume(resume)
-        }
-    }
 }

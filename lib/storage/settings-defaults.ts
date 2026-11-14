@@ -1,0 +1,25 @@
+import type { InvoiceSettings } from "@/types/invoice"
+
+export const DEFAULT_SETTINGS: InvoiceSettings = {
+    businessName: "Your Business Name",
+    businessEmail: "contact@yourbusiness.com",
+    businessPhone: "",
+    businessAddress: "",
+    businessCity: "",
+    businessState: "",
+    businessZipCode: "",
+    businessCountry: "",
+    taxId: "",
+    logo: "",
+    defaultCurrency: "USD",
+    defaultTaxRate: 0,
+    defaultPaymentTerms: "Net 30",
+    invoicePrefix: "INV-",
+    nextInvoiceNumber: 1,
+    quotationPrefix: "QUO-",
+    nextQuotationNumber: 1,
+    receiptPrefix: "REC-",
+    nextReceiptNumber: 1,
+    contractPrefix: "CON-",
+    nextContractNumber: 1,
+}

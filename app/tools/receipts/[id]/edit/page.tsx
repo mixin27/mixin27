@@ -11,6 +11,7 @@ import {
   getClients,
 } from "@/lib/storage/tools-storage"
 import { Client, InvoiceItem, Receipt } from "@/types/invoice"
+import { computeTotals, lineAmount } from "@/lib/tools/totals"
 
 export default function EditReceiptPage() {
   const params = useParams()
@@ -95,7 +96,7 @@ export default function EditReceiptPage() {
         if (item.id === id) {
           const updated = { ...item, [field]: value }
           if (field === "quantity" || field === "rate") {
-            updated.amount = updated.quantity * updated.rate
+            updated.amount = lineAmount(updated.quantity, updated.rate, currency)
           }
           return updated
         }
@@ -104,21 +105,8 @@ export default function EditReceiptPage() {
     )
   }
 
-  const calculateTotals = () => {
-    const subtotal = items.reduce((sum, item) => sum + item.amount, 0)
-    const discountAmount =
-      discountType === "percentage" ? subtotal * (discount / 100) : discount
-    const taxableAmount = subtotal - discountAmount
-    const taxAmount = taxableAmount * (taxRate / 100)
-    const total = taxableAmount + taxAmount
-
-    return {
-      subtotal,
-      discountAmount,
-      taxAmount,
-      total,
-    }
-  }
+  const calculateTotals = () =>
+    computeTotals({ items, discount, discountType, taxRate, currency })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,6 +131,7 @@ export default function EditReceiptPage() {
     const updatedReceipt: Receipt = {
       ...originalReceipt,
       receiptNumber,
+      clientId: client.id,
       client,
       paymentDate,
       paymentMethod,

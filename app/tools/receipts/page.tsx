@@ -13,9 +13,9 @@ import {
 } from "lucide-react"
 import {
   getReceipts,
-  deleteReceipt,
   getReceiptStats,
 } from "@/lib/storage/tools-storage"
+import { confirmAndDeleteReceipt } from "@/lib/document-conversions"
 import { Receipt } from "@/types/invoice"
 import { formatDate } from "@/lib/utils"
 
@@ -42,8 +42,8 @@ export default function ReceiptsPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this receipt?")) {
-      await deleteReceipt(id)
+    const receipt = receipts.find((r) => r.id === id)
+    if (receipt && (await confirmAndDeleteReceipt(receipt))) {
       await loadData()
     }
   }
