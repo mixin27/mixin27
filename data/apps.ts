@@ -8,7 +8,7 @@ export const apps: App[] = [
     name: "FOM Order Manager",
     shortName: "FOM",
     description:
-      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+      "Turn Messenger, Telegram and Viber chats into orders, and track stock, delivery, payment and sales.",
     category: "productivity",
     platform: "both",
     status: "active",

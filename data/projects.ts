@@ -7,11 +7,11 @@ export const projects: Project[] = [
     slug: "fom-order-manager",
     name: "FOM Order Manager",
     shortDesc:
-      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+      "Order management for Myanmar shops that sell through chat, on web, Android and iOS.",
     fullDesc:
-      "Full-stack e-commerce platform for Facebook-first shops with mobile app, web dashboard, and real-time messaging",
+      "A production SaaS that turns Messenger, Telegram and Viber chats into orders, with products and stock, printing, rider cash, customer tags and segments, reports and billing, built with Flutter, Next.js, NestJS and PostgreSQL.",
     category: "full-stack",
-    tags: ["React", "Next.js", "Flutter", "NestJS", "PostgreSQL", "Docker"],
+    tags: ["Flutter", "Next.js", "NestJS", "PostgreSQL", "Redis", "BullMQ", "Docker"],
     featured: true,
     links: {
       live: "https://getfom.com",
