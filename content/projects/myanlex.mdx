@@ -1,148 +1,235 @@
 ---
 title: "MyanLex"
-description: "An open-source developer platform for deterministic Myanmar-language text processing with explicit, stable API contracts."
+description: "An open-source toolkit for Myanmar-language text: Unicode/Zawgyi detection and conversion, safe normalization, Burmese syllables, orthography checks, ALA-LC transliteration and tokenization, with a self-hostable API and SDKs for TypeScript, Dart and Python."
 date: "2026-10-06"
-tech:
-  [
-    "TypeScript",
-    "NestJS",
-    "Next.js",
-    "PostgreSQL",
-    "Prisma",
-    "Redis",
-    "OpenAPI",
-    "Dart",
-  ]
+tech: ["TypeScript", "NestJS", "Fastify", "Next.js", "PostgreSQL", "Prisma", "Redis", "OpenAPI", "Dart", "Python"]
 github: "https://github.com/mixin27/myanlex"
-live: "https://myanlex-docs.vercel.app/"
+live: "https://docs.myanlex.dev/"
 demo: "https://myanmar-data-review.vercel.app/"
+pubDev: "https://pub.dev/packages/myanlex_dart"
 status: "in-progress"
 image: "/images/projects/myanlex/logo.png"
 ---
 
-**MyanLex** is an open-source developer platform for processing Myanmar-language text with deterministic behavior and explicit API contracts.
+<div align="center">
 
-It is built from a framework-independent linguistic core outward, separating language-processing rules from APIs, authentication, databases, and infrastructure.
+| [GitHub](https://github.com/mixin27/myanlex) | [Docs](https://docs.myanlex.dev/) | [npm](https://www.npmjs.com/package/@myanlex/core) | [pub.dev](https://pub.dev/packages/myanlex_dart) | [PyPI](https://pypi.org/project/myanlex-python/) |
+| --- | --- | --- | --- | --- |
 
-## Why I Built It
+[Overview](#-overview) • [Operations](#-operations) • [Examples](#-examples) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights) • [Status](#-status)
 
-Myanmar text processing has challenges that generic text libraries do not adequately address, including Unicode and Zawgyi coexistence, orthographic structure, normalization differences, syllable boundaries, mixed scripts, and transliteration.
+</div>
 
-MyanLex provides a reusable foundation for applications, backend services, developer tools, data pipelines, and NLP workflows that need reliable Myanmar-language processing.
+---
 
-## Language Processing
+## 📱 Overview
 
-MyanLex provides explicit operations for:
+Myanmar text breaks the assumptions most text libraries make. Much of it is still typed in **Zawgyi**, a legacy font encoding that reuses the Unicode Myanmar block with different meanings, so the same bytes can be two different texts. Standard Unicode has its own traps: marks that canonical ordering moves, written syllables that don't line up with code points or graphemes, and other languages written in Myanmar script (Shan, Mon, Karen) that look like Zawgyi to rules written only for Burmese.
 
-- Unicode and Zawgyi detection
-- Unicode and Zawgyi conversion
-- Unicode normalization
-- Burmese orthography validation
-- Written syllable segmentation
-- Myanmar-aware tokenization
-- Mixed-script analysis
-- Myanmar-to-Latin transliteration
-- Batch text processing
+**MyanLex** is a toolkit that handles these cases one explicit operation at a time. It is built from the language engine outward:
 
-Each operation has a clearly defined responsibility. Detection does not automatically convert text, conversion does not silently normalize it, syllabification is distinct from dictionary-based word segmentation, and transliteration is distinct from translation.
+- **`@myanlex/core`**: a framework-independent engine with no web framework, database, network or environment dependencies
+- **`@myanlex/application`**: use cases with input limits and ordered batches, usable offline in Node or a browser worker
+- **A versioned HTTP API** (NestJS on Fastify) described by an OpenAPI 3.2.1 contract, with API keys, rate limits and quotas
+- **SDKs** for TypeScript, Dart and Python, and a **developer console**, **playground** and **docs site**
 
-## Developer Platform
+The project is built so its rules can be checked: every behaviour has a written specification, a corpus of regression cases with recorded sources, and a named, versioned profile reported in every result.
 
-MyanLex exposes its language engine through a versioned HTTP API that can be consumed independently of the platform repository.
+[Myanmar Data Review](/projects/myanmar-data-review) is a web app built on MyanLex for inspecting real Myanmar text data.
 
-The developer platform includes:
+---
 
-- Workspaces and projects
-- Project API keys
-- Authentication and permissions
-- Usage limits and quotas
-- Batch operations
-- OpenAPI-generated API contracts
-- Typed SDK support
-- Developer console
-- Interactive playground
-- Self-hosted deployments
+## 🧰 Operations
 
-This allows applications written in different languages or frameworks to use the same Myanmar text-processing behavior through stable contracts.
+Nine language operations, each with one job:
 
-## Architecture
+| Operation | Profile | What it does |
+| :--- | :--- | :--- |
+| **Encoding detection** | `zawgyi-unicode-v1` | Classifies each Myanmar run as Unicode, Zawgyi, mixed or unknown, without changing the text |
+| **Encoding conversion** | `cldr-zawgyi-v1` | Converts Unicode ↔ Zawgyi in the direction the caller names; it never guesses the source |
+| **Safe normalization** | `unicode-nfc` | Unicode NFC only, never the compatibility forms that can erase distinctions |
+| **Syllabification** | `burmese-orthographic-v1` | Splits Burmese into written syllables, losslessly |
+| **Orthography validation** | `burmese-orthography-v1` | Checks the order and structure of each syllable's components against Unicode 17, with code-point diagnostics |
+| **Transliteration** | `ala-lc-2011-mapping-v1` | Myanmar to Latin using the Library of Congress ALA-LC 2011 table |
+| **Tokenization** | `myanmar-script-tokens-v1` | Lossless tokens for mixed Burmese, Latin, numbers, punctuation, whitespace and emoji |
+| **Batch syllabification** | `burmese-orthographic-v1` | Many texts in one ordered request, with per-item failures |
+| **Batch transliteration** | `ala-lc-2011-mapping-v1` | The same for transliteration |
 
-The architecture keeps the linguistic core independent from:
+The boundaries are deliberate. Detection doesn't convert, conversion doesn't normalize, syllables aren't words (this isn't dictionary word segmentation), validation isn't spell checking, and transliteration isn't translation. When an application needs several steps, it calls them in order and can see what each one did.
 
-- HTTP frameworks
-- Databases
-- Authentication
-- Environment configuration
-- Deployment infrastructure
+---
 
-This separation makes the core easier to test, reuse, and evolve without coupling linguistic behavior to a specific application stack.
+## 💻 Examples
 
-Language behavior is developed from specifications and reviewed corpus fixtures, followed by tests, implementation, and regression validation.
+All outputs below come from running `@myanlex/core`.
 
-## Explicit Processing
+### Detection is conservative
 
-A major design principle of MyanLex is avoiding hidden transformations.
+```ts
+import { detectMyanmarEncoding } from '@myanlex/core';
 
-Operations expose their boundaries clearly and report versioned processing profiles so consumers can understand how text was processed.
+detectMyanmarEncoding('ျမန္မာႏိုင္ငံသည္ အေရွ႕ေတာင္အာရွတြင္ တည္ရွိသည္။').encoding;
+// 'zawgyi': each run has a Zawgyi probability of 1
 
-Text spans also use Unicode code-point offsets, providing predictable positions across supported integrations.
+detectMyanmarEncoding('မဂၤလာပါ');
+// encoding: 'unknown', segments[0].zawgyiProbability ≈ 0.54
+```
 
-## API & SDKs
+A short string like the second one is too ambiguous to call either way, so MyanLex says `unknown` instead of guessing. Each result also returns the code-point span of every run and the model's probability, so the caller decides what to do.
 
-MyanLex provides an OpenAPI-defined HTTP contract for integrating Myanmar-language processing into external applications.
+### Conversion needs a direction
 
-The platform is designed to support typed clients, including **TypeScript** and **Dart**, while remaining usable from any language capable of making HTTP requests.
+```ts
+import { convertMyanmarEncoding } from '@myanlex/core';
 
-API consumers do not need to clone the MyanLex repository or run its internal application stack when connecting to an available deployment.
+convertMyanmarEncoding('မဂၤလာပါ', { from: 'zawgyi', to: 'unicode' });
+// { output: 'မင်္ဂလာပါ', changed: true, profile: 'cldr-zawgyi-v1' }
+```
 
-## Self-Hosting
+### Syllables, tokens and transliteration
 
-MyanLex can be deployed as a self-hosted platform.
+```ts
+import { segmentBurmeseSyllables, tokenizeText, transliterateMyanmar } from '@myanlex/core';
 
-The current architecture includes:
+segmentBurmeseSyllables('မြန်မာစာ');
+// မြန် [0,4)  မာ [4,6)  စာ [6,8)
 
-- API service
-- Developer console
-- Documentation application
-- PostgreSQL persistence
-- Redis-backed distributed rate limiting
-- API key authentication
-- Usage quota enforcement
-- Health and readiness endpoints
-- Prometheus-compatible metrics
+tokenizeText('MyanLex က မြန်မာစာ 2026 😀').tokens;
+// MyanLex latin_word · က burmese_syllable · မြန် မာ စာ burmese_syllable
+// 2026 number · 😀 emoji [24,25), plus whitespace tokens
 
-This makes the project suitable for both local development and independently operated deployments.
+transliterateMyanmar('မြန်မာ', { scheme: 'ala-lc-2011' }).output;
+// 'mranʻmā'
+```
 
-## Linguistic Correctness
+The emoji in the tokenizer example spans one position, `[24, 25)`: MyanLex counts in Unicode code points, not JavaScript's UTF-16 units, where it would take two.
 
-For NLP behavior, the project follows a specification-first workflow:
+---
 
-1. Define the linguistic behavior
-2. Add provenance-recorded corpus fixtures
-3. Write tests
-4. Implement the behavior
-5. Run regression validation
+## 🏗️ Architecture
 
-The goal is to make Myanmar-language processing predictable, reproducible, and reviewable rather than relying on undocumented heuristics.
+A pnpm monorepo. Dependencies point inward: adapters may use the engine, and the engine may not use them.
 
-## Myanmar Data Review
+<Mermaid
+  caption="MyanLex package boundaries"
+  chart='graph TD
+    Core["@myanlex/core<br/>language engine"]
+    App["@myanlex/application<br/>use cases · input limits · batches"]
+    API["API<br/>NestJS 12 on Fastify 5"]
+    Contract["OpenAPI 3.2.1 contract"]
+    SDK["SDKs<br/>TypeScript · Dart · Python"]
+    Web["Developer console<br/>Next.js · Better Auth"]
+    Docs["Docs site<br/>Fumadocs"]
+    Data["PostgreSQL · Prisma<br/>Redis limits"]
+    Local["Your app<br/>offline, in Node or a browser worker"]
 
-**Myanmar Data Review** is a practical web application built with MyanLex.
+    App --> Core
+    API --> App
+    Local --> App
+    API --- Contract
+    SDK -->|HTTP| API
+    Web --> API
+    API --> Data
+    Docs -.-> Contract
 
-It provides a visual way to inspect Myanmar-language text and experiment with the processing capabilities of the underlying engine.
+    style Core fill:#16a34a,stroke:#15803d,color:#fff
+    style App fill:#16a34a,stroke:#15803d,color:#fff
+    style API fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style Contract fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style SDK fill:#db2777,stroke:#be185d,color:#fff
+    style Local fill:#db2777,stroke:#be185d,color:#fff
+    style Web fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style Docs fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style Data fill:#d97706,stroke:#b45309,color:#fff'
+/>
 
-[Explore Myanmar Data Review](https://myanmar-data-review.vercel.app/)
+```text
+myanlex/
+├── packages/
+│   ├── core/            # Framework-independent language engine
+│   ├── application/     # Use cases, input policy, batches
+│   ├── types/           # Shared public types
+│   ├── sdk/             # TypeScript HTTP client (native fetch)
+│   ├── myanlex_dart/    # Dart HTTP client
+│   ├── myanlex_python/  # Python client, sync and async
+│   └── playground/      # Shared playground engine and snippets
+├── apps/
+│   ├── api/             # NestJS/Fastify adapter
+│   ├── web/             # Developer console
+│   └── docs/            # Documentation site
+├── openapi/             # The authoritative HTTP contract
+├── corpus/              # Regression cases with recorded sources
+├── prisma/              # Platform schema and migrations
+└── docs/                # Linguistic specs and 20 architecture decision records
+```
 
-## Current Status
+### Stack
 
-MyanLex is currently in **developer preview**.
+| Layer | Technology |
+| :--- | :--- |
+| **Engine** | TypeScript with no runtime framework dependencies; Unicode 17 character data |
+| **API** | NestJS 12 on Fastify 5, Zod validation, RFC 9457 problem responses, Scalar and Swagger UI |
+| **Platform** | PostgreSQL with Prisma 7, Redis for distributed rate limits, dynamic roles and permissions, hashed project API keys |
+| **Console** | Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth (email/password, optional Google and GitHub) |
+| **Docs** | Fumadocs with search, language tabs and a generated OpenAPI reference |
+| **SDKs** | TypeScript (`@myanlex/sdk`), Dart (`myanlex_dart`), Python (`myanlex-python`) |
+| **Ops** | Docker images, Compose for local, staging and monitoring stacks, Prometheus-compatible metrics, GitHub Actions |
 
-The documentation and self-hosting workflow are available, while the public hosted API and npm/pub.dev packages have not yet been launched.
+---
 
-For now, developers can run a self-hosted deployment and use the local SDK setup.
+## 🧠 Engineering Highlights
 
-## Links
+### A core that knows nothing about the web
 
-- [Documentation](https://myanlex-docs.vercel.app/)
-- [GitHub Repository](https://github.com/mixin27/myanlex)
-- [Myanmar Data Review](https://myanmar-data-review.vercel.app/)
+The first architecture decision record keeps all language behaviour in `@myanlex/core`, which may not depend on web frameworks, databases, HTTP, authentication, environment variables or logging. Because of that rule, the same engine runs behind the API, in a Node script, or in a browser worker with the network turned off. The package checks prove the last case: they install only the packed archives into an empty directory with an empty npm cache, then run all nine operations in a real browser worker after network access is disabled.
+
+### Positions that mean the same thing everywhere
+
+Every span in every result is a zero-based, half-open **Unicode code-point** range. UTF-8 byte offsets and JavaScript UTF-16 offsets differ between runtimes and can split characters outside the Basic Multilingual Plane, such as emoji. Graphemes don't match Burmese written units either. The TypeScript, Dart and Python clients all get the same numbers, and the tests include emoji to keep it that way.
+
+### Detection that admits when it isn't sure
+
+Hand-written Zawgyi rules misfire on Shan and Mon, whose standard Unicode can look like Zawgyi to rules written for Burmese. MyanLex uses the trained Markov model from Google Myanmar Tools, which was trained on several Myanmar-script languages, and classifies each contiguous Myanmar run separately. A run only counts as Zawgyi at a probability of 0.95 or more, and as Unicode at 0.05 or less. Anything in between is `unknown`. Separate runs in different encodings return `mixed`.
+
+### Conversion that won't damage what's already right
+
+Converting a whole sentence in one direction can break the parts that were already in the target encoding. Conversion always takes an explicit `from` and `to`, and an optional `validateSource` check rejects input that detection finds mixed, mismatched or uncertain, rather than returning a half-damaged result. Automatic mixed-text conversion was looked at and deliberately put off until there are reviewed test cases for it. That decision is written up as an architecture decision record.
+
+### Normalization that only does what's safe
+
+The safe profile is NFC only. NFKC and NFKD are left out on purpose, because compatibility mappings can remove distinctions. The specification records the Myanmar-specific effects: the one canonical composition in the block (U+1025 U+102E becomes U+1026 ဦ) and the four marks with non-zero combining classes. Canonical ordering can move the dot below ahead of an asat, so the orthography validator accepts both orders as equivalent.
+
+### Rules written before code
+
+A change to linguistic behaviour updates the specification, the corpus, the tests and the code together. The corpus holds **334 regression cases** across nine datasets. Each dataset records its source, redistribution terms, transformations and review status. `pnpm quality:report` matches every case to its test result and lists the cases still waiting for independent linguistic review. It's explicit that passing the regression set is not a measured accuracy score.
+
+### A platform around the engine
+
+The API adds what a shared service needs:
+- organizations, projects and dynamic roles
+- scoped, hashed API keys
+- best-effort usage reports that never include the submitted text
+- Redis-backed burst limits across instances, and opt-in monthly quotas in PostgreSQL
+- health and readiness endpoints, and operator-protected Prometheus metrics
+
+The console's **playground** runs operations in the browser engine by default, or through the API with a signed-in project, with private saved runs.
+
+---
+
+## 🚦 Status
+
+MyanLex is a **developer preview**. Beta packages are published:
+
+- **npm**: `@myanlex/core`, `@myanlex/application`, `@myanlex/types` and `@myanlex/sdk` at `0.1.0-beta.0`
+- **pub.dev**: `myanlex_dart` at `0.1.0-beta.0`
+- **PyPI**: `myanlex-python` at `0.1.0b1`
+
+There's no public hosted API yet, so the HTTP SDKs need a self-hosted deployment. The local packages work without one. The API and package interfaces aren't stable contracts yet, and independent linguistic review is still a release gate.
+
+---
+
+## 🔗 Links
+
+- **Source**: [github.com/mixin27/myanlex](https://github.com/mixin27/myanlex) (MIT)
+- **Documentation**: [docs.myanlex.dev](https://docs.myanlex.dev/)
+- **Built with MyanLex**: [Myanmar Data Review](/projects/myanmar-data-review) ([live](https://myanmar-data-review.vercel.app/))
