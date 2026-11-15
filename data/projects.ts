@@ -113,11 +113,12 @@ export const projects: Project[] = [
     id: "beads-math",
     slug: "beads-math",
     name: "Beads Math",
-    shortDesc: "Mobile application to improve maths calculation skills.",
+    shortDesc:
+      "Abacus mental-arithmetic practice app for the students of an abacus school.",
     fullDesc:
-      "Gamified mathematics learning app inspired by traditional abacus mechanics with flashcards, text-to-speech, and progressive difficulty.",
+      "Daily abacus drills outside class: listening questions read aloud by text-to-speech, timed flash cards, a curriculum-ordered question bank, scores and history, plus admin tools for student accounts, questions and promotions.",
     category: "flutter",
-    tags: ["flashcard", "abacus", "text-to-speech"],
+    tags: ["abacus", "education", "text-to-speech", "flashcard", "Riverpod", "Firebase"],
     featured: true,
     links: {
       live: "https://www.facebook.com/Kids-Brain-Work-114184707850861/",

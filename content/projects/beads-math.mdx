@@ -1,25 +1,178 @@
 ---
 title: "Beads Math"
-description: "Mobile application to improve maths calculation skills."
+description: "An abacus mental-arithmetic practice app for the students of Kids Brain Work: listening drills read aloud by text-to-speech, timed flash cards, a curriculum-ordered question bank, daily scores, and admin tools for accounts, questions and promotions."
 date: "2024-02-01"
-tech: ["Flutter", "Riverpod", "GoRouter", "Drift", "Firebase"]
-playStore: "https://play.google.com/store/apps/details?id=tech.kbw.beads_math"
+tech: ["Flutter", "Riverpod", "GoRouter", "Drift", "Firebase", "Cloud Firestore", "flutter_tts", "SoLoud"]
 status: "completed"
 image: "/images/projects/beads-math/logo.png"
 ---
 
-What is abacus?
-An abacus is a method of calculation that has been used for centuries before the advent of calculators.
+<div align="center">
 
-Types of abacus
-There are many types of abacus.
-The type of abacus that will be used now is the Japanese abacus.
+| [Kids Brain Work](https://www.facebook.com/Kids-Brain-Work-114184707850861/) |
+| --- |
 
-Using abacus as a base, it is a method of simultaneously teaching mental arithmetic.
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Features](#-features) • [Curriculum](#-the-curriculum-in-code) • [Engineering](#-engineering-highlights) • [Architecture](#%EF%B8%8F-architecture)
 
-Benefits
+</div>
 
-- Brain Development
-- Improve in Math Skills
+---
 
-(Beads Maths application can be used not only for abacus math calculations but also for other math calculations.)
+## 📱 Overview
+
+Abacus mental arithmetic is taught in drills. A teacher reads out a string of numbers ("seven, minus two, three, minus eight, one") or flashes them on cards, and students add them up by moving beads on a Japanese abacus, or, later, by picturing the beads in their heads. The drills only work if they are repeated every day, and outside class there is no teacher to read the numbers.
+
+**Beads Math** is that practice partner, built for **Kids Brain Work**, an abacus school in Myanmar. Students sign in with an account the school gives them and get the same two drills they do in class:
+
+- **Listening**: the phone reads each number aloud, then asks for the total
+- **Flash cards**: numbers flash on screen, one after another, at a speed the student picks
+
+Questions follow the school's curriculum: the early levels draw from hand-written sets for each technique, and the higher levels are generated from a digit count and a number of rows. Every answer is saved on the device, so students and parents can see the day's score and look back over past practice.
+
+I built and maintain the app end to end. The project started in October 2023 and is now at version 1.2.2. It isn't on an app store: Kids Brain Work sends the Android APK straight to its pupils, and access is controlled by the accounts the school creates rather than by who has the file.
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Home | Listening | Flash card | Answer |
+| --- | --- | --- | --- |
+| ![Home](/images/projects/beads-math/screenshots/01_home.png) | ![Listening](/images/projects/beads-math/screenshots/02_listening.png) | ![Flash card](/images/projects/beads-math/screenshots/03_flash_card.png) | ![Answer](/images/projects/beads-math/screenshots/04_answer.png) |
+
+| Question types | Flash card setup | Records | Voice settings |
+| --- | --- | --- | --- |
+| ![Question types](/images/projects/beads-math/screenshots/05_question_types.png) | ![Flash card setup](/images/projects/beads-math/screenshots/06_flash_setup.png) | ![Records](/images/projects/beads-math/screenshots/07_records.png) | ![Voice settings](/images/projects/beads-math/screenshots/08_voice_settings.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+### 🎧 Listening practice
+
+- The app says "Listen carefully", reads every number in the question, then asks "What is the answer?"
+- Voice **language, speed, pitch and volume** settings, with a per-question plan that slows the voice down for long or many-digit questions
+- An option to read large numbers **digit by digit** ("1, 2, 3, 4" instead of "one thousand two hundred…"), which is easier to follow at speed
+- Type the total and get it marked right or wrong straight away
+
+### ⚡ Flash cards
+
+- A **Ready… Go** countdown, then one number per card with a short beep and a haptic tick
+- **Speed in seconds per card**, from quick presets (0.5 s to 5 s) or a slider
+- A progress bar through the question, and an answer screen when the last card has gone
+
+### 🧮 Levels and question types
+
+- **Level 1**: Direct method, Little friend, Big friend, Direct / Little / Big friend, and a one-digit, ten-row version of the last
+- **Level 2**: Mix family, High / Deep jump, High / Deep / Long / Back jump, and a one-digit, ten-row version
+- **Levels 3 to 6** and **7 and above**: questions generated from the digit count and number of rows the student sets, with an optional switch for minus numbers
+
+### 📊 Scores and history
+
+- **Today's score** for the selected level on both practice screens
+- Separate listening and flash-card histories with the question, the right answer, the student's answer and the time
+- Clear the records when a new term starts
+
+### 🛠️ Admin tools for the school
+
+- **Accounts**: create student accounts, set an expiry date, turn an account off, see which device it is signed in on, and sign a device out remotely
+- **Question bank**: add questions to any level and technique, turn them on or off, and they appear in practice without an app update
+- **Promotions**: manage the image carousel on the home screen, with a detail page for each banner
+- Admin screens are only reachable for accounts marked as admins
+
+### 🌐 Everything else
+
+- English and Myanmar translations, with the in-app language switch controlled from Remote Config
+- Light and dark themes, with dynamic colour on Android
+- A **free or paid** mode switched from Remote Config
+- An About page that explains the abacus method and the team behind it
+
+---
+
+## 🧮 The Curriculum in Code
+
+Abacus courses teach one bead technique at a time. "Little friend" is adding or taking away with the five-bead (5 = 1 + 4), "big friend" with the ten (10 = 1 + 9), and later families combine them. A question that is fine for one technique can be useless for another, so random numbers don't work for the early levels.
+
+The school's teachers write the Level 1 and Level 2 questions by hand. Those sets, **1,000 questions** across the nine techniques, are compiled into the app:
+
+1. Teachers' questions are kept as plain comma-separated lines, one question per line
+2. A small Dart script (`question_parser.dart`) turns each set into a typed `List<List<int>>` file under `lib/questions/`
+3. At practice time the app merges the built-in set with any questions admins have added in Firestore, removes duplicates, and picks one at random
+
+Higher levels drill speed and digit count rather than a single technique, so those questions are generated. For **Levels 3 to 6**, each new number is checked against the running total and redrawn if it would take it below zero, since a student can't take a bigger number away from a smaller one on the abacus at that stage. From **Level 7** the numbers are fully random.
+
+---
+
+## 🧠 Engineering Highlights
+
+### Speech that keeps pace with the question
+
+Text-to-speech is easy to make fast and hard to make followable. Before reading a question the app builds a **speech plan** from it: a complexity score from the number of items and the largest digit count caps the speaking rate (long, many-digit questions are never read at full speed), a pause is worked out for after each number from the rate, digits and length, and a slightly longer "breath" pause comes every four or five numbers. The student's speed setting still applies; the plan only stops it from becoming unreadable.
+
+### Flash-card timing that feels right
+
+A flash card is only useful if every number is clearly a new one. Each card holds for the chosen duration, with a short blank gap between cards worked out from the speed. When the **same number appears twice in a row**, the gap and the hold get a little longer, so the repeat is seen as a second card rather than one card staying on screen. The last card is held for at least 650 ms so it isn't missed, and the countdown, gaps and holds all stop cleanly if the student leaves the screen.
+
+### A beep that always plays
+
+Every card plays a short beep through **SoLoud**, a low-latency audio engine, because platform media players add a noticeable delay at sub-second speeds. The audio engine is warmed up when the screen opens, with one shared initialisation so overlapping calls don't start it twice. If playback fails, the app rebuilds the engine and the sound once, and if that fails as well it falls back to the system click, so a student always gets the cue.
+
+### One account, one device
+
+Student accounts are issued by the school and are meant for one student. Signing in records the device's ID (from [`native_id`](/projects/native-id), a plugin I also wrote), and a second device can't sign in while the account is in use. Each user document is watched in real time, so when an admin uses **force logout** the app on that phone signs itself out and the account is free for a new device. A route guard and an expiry check sign out accounts whose access date has passed, and GoRouter's redirect keeps `/admin/*` routes to admin accounts.
+
+### History that survives schema changes
+
+Practice history lives on the device in **Drift** (SQLite), with reactive queries for the day's score and the history lists. Flash cards, Level 2 types and the student's answer were added after the first release, so before the database opens it reads the existing table's columns and adds any that are missing, copying the old question-type column across. Students updating from an early version keep their records.
+
+### Content without releases
+
+Admin-added questions, home-screen promotions and the free/paid and language switches all come from **Cloud Firestore**, **Firebase Storage** and **Remote Config**. Fetched questions are cached for five minutes per level and type, and if a fetch fails practice carries on with the built-in set.
+
+---
+
+## 🏗️ Architecture
+
+A single Flutter app, organised by feature, with each feature split into data, domain, application and presentation layers.
+
+```text
+lib/
+├── bootstrap/            # Firebase, Crashlytics, logging and locale setup
+├── questions/            # Level 1 and Level 2 question sets, generated from text
+└── src/
+    ├── database/         # Drift database for practice history
+    ├── routes/           # GoRouter routes, redirect and guards (auth, admin, expiry)
+    ├── features/
+    │   ├── listening/        # Listening practice, settings and history
+    │   ├── flash_card/       # Flash cards, audio service, settings and history
+    │   ├── text_to_speech/   # Voice settings
+    │   ├── question/         # Question repository and admin question bank
+    │   ├── authentication/   # Sign-in, device check, force logout, account
+    │   ├── admin/            # User management
+    │   ├── promotions/       # Home carousel and admin
+    │   ├── remote_config/    # Free/paid and language switches
+    │   └── home, settings, about_us, app
+    └── shared/           # Theme, widgets, TTS provider, preferences, utilities
+```
+
+### Stack
+
+| Area | Technology |
+| :--- | :--- |
+| **App** | Flutter, Dart 3, Material 3 with `dynamic_color`, the Baloo 2 typeface |
+| **State** | Riverpod 3 with code generation (`riverpod_generator`) |
+| **Navigation** | GoRouter with an async redirect for sign-in and admin routes |
+| **Local data** | Drift on SQLite for practice history; `shared_preferences` for settings |
+| **Backend** | Firebase Auth, Cloud Firestore, Firebase Storage, Remote Config |
+| **Monitoring** | Firebase Analytics and Crashlytics; on-device logs with `flutter_logs` |
+| **Audio** | `flutter_tts` for spoken questions; `flutter_soloud` for the flash-card beep |
+| **Localization** | `easy_localization` with English and Myanmar files |
+
+---
+
+## 🔗 Links
+
+- **Kids Brain Work**: [Facebook page](https://www.facebook.com/Kids-Brain-Work-114184707850861/)
