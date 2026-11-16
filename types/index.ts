@@ -2,7 +2,7 @@
 // Global TypeScript Types
 // ============================================================
 
-export type ProjectCategory = "flutter" | "dart" | "android" | "web" | "library" | "full-stack";
+export type ProjectCategory = "flutter" | "react-native" | "dart" | "android" | "web" | "library" | "full-stack";
 
 export interface Project {
   id: string;
