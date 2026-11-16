@@ -1,0 +1,137 @@
+---
+title: "Astra Wealth Sales"
+description: "A role-based field sales app for the teams selling POCO phones in Myanmar for Astra Wealth: IMEI scanning for stock-in and sales, warranty-card photos, targets and KPIs, a sales hierarchy from promoter to sale director, and regional dashboards."
+date: "2026-06-07"
+tech: ["Flutter", "Signals", "Flutter Hooks", "GoRouter", "get_it", "Dio", "Firebase Messaging", "fl_chart"]
+status: "completed"
+image: "/images/projects/astra-wealth-sales/logo.png"
+---
+
+<div align="center">
+
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights)
+
+</div>
+
+---
+
+## 📱 Overview
+
+**Astra Wealth Sales** is the internal app for the field sales force that sells **POCO** phones in Myanmar for **Astra Wealth**. The sign-in screen carries the POCO Myanmar branding.
+
+The people using it work at different levels. Promoters stand at a shop counter, receiving phones into stock and recording each sale. Sale supervisors look after a set of shops and the promoters in them. Area and regional sale managers look after supervisors, and the sale director looks at the whole country. Every phone is tracked by its **IMEI**, so the app is built around scanning one quickly and correctly.
+
+The app opens differently depending on who signs in. A promoter sees their target and a stock-in button. A manager sees their team's numbers and can drill down to any person below them. The sale director gets a regional dashboard.
+
+It's a client project built at **Anka Studio** for Android and iOS, and it's handed out to staff as app builds rather than through a public store. I'm the main developer on the mobile app, working with one other developer.
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Home and targets | Sale upload | Stock-in |
+| --- | --- | --- |
+| ![Home and targets](/images/projects/astra-wealth-sales/screenshots/01_home.png) | ![Sale upload](/images/projects/astra-wealth-sales/screenshots/02_sale_upload.png) | ![Stock-in](/images/projects/astra-wealth-sales/screenshots/03_stock_in.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+### 🔐 Sign-in
+
+- Employee ID and password. The ID is checked against the staff list before the password is sent
+- Device details are recorded at sign-in, and the device ID can be copied from the sign-in screen
+- Sessions are kept in secure storage, restored in the background, and each role lands on its own home screen
+
+### 📦 Stock-in
+
+- **Promoters** scan IMEIs as phones arrive at their counter. Scans are kept as **drafts on the phone** until submitted, so nothing is lost if the app closes or the network drops
+- **Sale supervisors** assign IMEIs to a shop's counter from that shop's live IMEI list
+- Check-in history by month
+
+### 🧾 Sales
+
+- Record a sale: scan the IMEI, choose the model, enter the price and the customer's details, and photograph the **warranty card**
+- The IMEI is looked up in stock first, and a supervisor can't record a sale against a shop the phone isn't assigned to
+- Sale history filtered by date range and model
+
+### 📊 Targets and reports
+
+- Monthly **sale achievement** against target, with KPI cards
+- A **sales hierarchy** that each manager can drill down: area managers see their supervisors, supervisors see their promoters, and so on down to individual sales
+- Supervisors see sales and stock balances for each of their shops
+- The **sale director** dashboard splits the country into Upper and Lower Myanmar, with regional sales, staff and charts
+
+### 🔔 Everything else
+
+- Push notifications with an inbox and unread badge counts
+- Profile and device information screens
+- English and Myanmar
+
+---
+
+## 🏗️ Architecture
+
+A feature-first Flutter app with small local packages for platform work, in a Dart pub workspace.
+
+```text
+lib/
+├── app/                 # Bootstrap, DI modules (get_it), router, guards, role-filtered shell
+├── core/                # API client, theme, shared widgets, image utilities
+└── features/
+    ├── auth/            # Staff check, login, session restore, roles
+    ├── home/            # Role-specific home dashboards
+    ├── stock_upload/    # Promoter IMEI drafts and supervisor shop assignment
+    ├── sales/           # Sale upload, warranty photo, history
+    ├── sale_reports/    # Hierarchy drill-down, team performance, KPI report
+    ├── sale_director/   # Upper and Lower Myanmar dashboards
+    ├── scanner/         # Shared IMEI scan-and-confirm screen
+    ├── shops/           # Shop lists and filters
+    ├── notifications/   # Inbox and badge counts
+    └── profile/
+packages/
+├── app_device/          # Device and OS details for sign-in
+├── app_storage/         # Secure storage and preferences behind one interface
+├── app_push/            # FCM tokens and local notifications
+└── app_logger/          # Talker-based logging
+```
+
+### Stack
+
+| Area | Technology |
+| :--- | :--- |
+| **App** | Flutter and Dart for Android and iOS, with development and production flavours on both |
+| **State** | Signals with Flutter Hooks, so only widgets that read a value rebuild |
+| **Navigation** | GoRouter with typed route arguments, auth guards and role-based landing routes |
+| **DI and network** | get_it modules and a Dio API client |
+| **Device** | `mobile_scanner` for IMEIs, `image_picker` and `image` for warranty photos |
+| **Charts and i18n** | `fl_chart`, `easy_localization` (English and Myanmar) |
+| **Push** | Firebase Cloud Messaging with local notifications |
+
+---
+
+## 🧠 Engineering Highlights
+
+### One app, six roles
+
+The server reports one of several role names, and the app maps them onto six roles: promoter, sale supervisor, area sale manager, regional sale manager, trainer and sale director. Different server names for the same job resolve to the same role. Each role gets its own landing route, and the router guards send a signed-in user to the right home. The bottom navigation is built from one list and filtered by role, so a promoter never sees a report tab they can't use. The sale director gets a separate home altogether.
+
+### Reports that follow the org chart
+
+The reports screen asks the server for the signed-in user's **direct reports**, and tapping a person loads theirs. The same screens, with typed route arguments, walk from regional manager down to area manager, supervisor and promoter, until the last level opens that promoter's individual sales. The sale director dashboard loads the Upper and Lower Myanmar figures in parallel with `Future.wait`, so it opens in one round of requests rather than several.
+
+### Scanning that holds up at a busy counter
+
+There's one shared scan screen for both stock-in and sales. It throttles detections to one a second and locks while you confirm, so the camera can't record the same phone twice, and an IMEI can also be typed when a barcode won't scan. A promoter's stock-in scans are written to local drafts as they go and only cleared after a successful upload.
+
+### Photos that upload on a phone connection
+
+Warranty-card photos are resized to at most 2048 px on the longest side, and compressed under a size limit before upload. A sale upload doesn't stall on a large camera image over a slow mobile connection.
+
+### Platform work kept out of features
+
+Device details, secure storage, push setup and logging each live in a small local package behind an interface. Feature code depends on those interfaces, which keeps it testable. The test suite covers routing, guards, controllers and model parsing.

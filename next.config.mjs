@@ -19,6 +19,8 @@ const nextConfig = {
       { source: "/tools/invoices/clients/:id", destination: "/tools/clients/:id", permanent: true },
       // Backup moved from /tools/migrate to /tools/backup
       { source: "/tools/migrate", destination: "/tools/backup", permanent: true },
+      // Project renamed: Astral Wealth -> Astra Wealth Sales
+      { source: "/projects/astral-wealth-mobile", destination: "/projects/astra-wealth-sales", permanent: true },
     ];
   },
 };
