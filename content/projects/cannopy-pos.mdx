@@ -1,131 +1,204 @@
 ---
 title: "Cannopy POS"
-description: "Enterprise-grade local-first mobile Point of Sale (POS) system with cursor-based synchronization."
-category: "mobile"
-longDescription: "A production-grade, offline-first retail Point of Sale (POS) application featuring Drift-backed local storage, cursor-based API sync, socket-based local LAN data replication, active cashier shift tracking, and ESC/POS thermal printing integrations."
-image: "/images/projects/cannopy/logo.png"
+description: "A phone- and tablet-first point of sale for Myanmar shops that keeps selling offline: checkout, stock, credit (A Kyway), refunds and shifts on a local database, cursor-based sync with the cloud, LAN transfer between tills, thermal printing in Myanmar, and a customer-facing display."
+date: "2026-07-11"
+tech: ["Flutter", "BLoC", "Drift", "GoRouter", "get_it", "Dio", "MQTT", "Kotlin", "Firebase"]
+live: "https://cannopypos.com/"
 playStore: "https://play.google.com/store/apps/details?id=com.cannopypos.retail"
-tags:
-  [
-    offline-first,
-    p2p-sync,
-    clean-architecture,
-    bluetooth-printing,
-    inventory,
-    retail,
-  ]
-technologies: [flutter, bloc, drift, sqlite, go_router, dio, get_it]
-platform: Flutter
-status: in-progress
-featured: true
-date: 2026-07-11
+appStore: "https://apps.apple.com/mm/app/cannopy-pos/id6808059928"
+status: "in-progress"
+image: "/images/projects/cannopy/logo.png"
 ---
 
-# Cannopy POS — Enterprise-Grade Local-First Retail Point of Sale
+![Cannopy POS website: A Simple POS Built for Myanmar Shops](/images/projects/cannopy/cannopypos-com-home.png)
 
-**Cannopy POS** is a production-grade, offline-first mobile Point of Sale (POS) application tailored for retail operations. Engineered using Flutter and Dart, the application is designed to operate seamlessly in connectivity-challenged environments (e.g., brick-and-mortar stores, remote markets) by prioritizing local database states, employing automated cursor-based synchronization, and leveraging peer-to-peer (P2P) LAN data transfer when external internet access is down.
+<div align="center">
+
+| [Website](https://cannopypos.com/) | [Play Store](https://play.google.com/store/apps/details?id=com.cannopypos.retail) | [App Store](https://apps.apple.com/mm/app/cannopy-pos/id6808059928) |
+| --- | --- | --- |
+
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights)
+
+</div>
 
 ---
 
-## 🚀 Key Technical Highlights
+## 📱 Overview
 
-- **Local-First Runtime Architecture:** All critical business transactions, checkout states, inventory updates, and cashier shifts are managed locally via [Drift (SQLite)](file:///Users/mixin/Projects/Cannopy/cannopy_pos/packages/app_database/lib/app_database.dart) before being synchronized with the cloud.
-- **Peer-to-Peer LAN Synchronization:** Built-in TCP/IP master-slave packet replication allows offline POS registers to synchronize sales, inventory, and database states across a Local Area Network (LAN) using socket bridges, removing reliance on external APIs.
-- **Enterprise-Grade Clean Architecture:** Strict separation between Presentation (BLoC), Domain (UseCases, Entities), and Data (Repositories, DAOs) layers ensures testing isolation and independent layer maintenance.
-- **Dynamic Session & Lock Lifecycle:** Real-time inactivity tracking, shift-based operations, and role-based access control (RBAC) with local PIN validation ensure high-security cashier drawer operations.
-- **Hardware Integration & Printing:** Custom native integrations for Bluetooth/LAN thermal receipt printers (ESC/POS formatting) and barcode scanners.
+**Cannopy POS** is a point-of-sale app for grocery stores, mini-marts, wholesalers and other small shops in Myanmar, made by **Cannopy Technologies**. It runs on the phones and tablets shops already have, and it's built around two facts of selling in Myanmar: the internet goes down, and money is often owed rather than paid.
 
----
+So the till never waits for the network. Sales, stock, receipts, refunds, shifts and customer credit all live in a local database, and the app syncs with the cloud when it can. If several tills in one shop lose the internet together, they can still pass data between them over the shop's Wi-Fi. Receipts print on Bluetooth and network thermal printers, in Myanmar script.
 
-## 🛠️ Tech Stack & Workspace Structure
-
-Cannopy POS is organized as a **Dart pub workspace** containing high-cohesion, low-coupling packages to facilitate code reuse and modularity:
-
-| Module / Package                   | Purpose                                                                                      | Core Technologies                              |
-| ---------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| **App Core Container**             | Entry points, bootstrap routing, config, global DI, startup tasks, and shell overlays.       | `go_router`, `get_it`, custom startup runner   |
-| **`packages/app_database`**        | Thread-safe database engine, DAOs, schema definitions, and migration path mappings.          | `drift` (SQLite wrapper), code generation      |
-| **`packages/app_network`**         | Robust HTTP wrapper featuring automated token refresh intercepts and skip-auth routing.      | `dio`, JSON serialization                      |
-| **`packages/app_local_network`**   | Peer-to-peer data transport layer for LAN syncing.                                           | Custom TCP Sockets, Bonsoir NSD                |
-| **`packages/app_bluetooth_print`** | ESC/POS thermal printing formatter and peripheral adapter.                                   | Core Bluetooth / Native bridges                |
-| **`packages/app_ui_kit`**          | Internal Design System: Custom cards, status dialogues, buttons, and custom layout overlays. | Core Flutter SDK, Canvas, Poppins typography   |
-| **`packages/app_logger`**          | Unified console & diagnostic logging.                                                        | `talker` integration                           |
-| **`packages/app_storage`**         | Local Key-Value and hardware-backed Secure Storage.                                          | `shared_preferences`, `flutter_secure_storage` |
+It's a production app on Google Play and the App Store. I work on it in a small team, and I'm the largest contributor to the mobile codebase.
 
 ---
 
-## 📐 Architecture & Runtime Flow
+## 📸 Screenshots
 
-The codebase strictly adheres to **Clean Architecture** patterns. Business logic is separated into decoupled feature modules inside `lib/features/`:
+From the app running on an Android phone with a demo shop.
 
-```mermaid
-flowchart TD
-    User([Cashier Interface]) --> View[UI View Layer]
-    View -->|Triggers UI Events| Bloc[BLoC / State Management]
-    Bloc -->|Executes Business Logic| UseCase[Domain Use Case]
-    UseCase -->|Reads/Writes Data| Repo[Repository Pattern]
-    Repo -->|Check Local Cache First| LocalDS[Local Data Source]
-    Repo -->|Try Synchronize / Push| RemoteDS[Remote Data Source]
-    LocalDS -->|Persist Transaction| Drift[Drift DB SQLite]
-    RemoteDS -->|HTTP Call / Cursor Sync| APIService[API Client / Dio]
+<div align="center">
+
+| Sale | Variants | Categories | Receipts |
+| --- | --- | --- | --- |
+| ![Sale](/images/projects/cannopy-pos/screenshots/01_sale.png) | ![Variants](/images/projects/cannopy-pos/screenshots/02_variants.png) | ![Categories](/images/projects/cannopy-pos/screenshots/03_categories.png) | ![Receipts](/images/projects/cannopy-pos/screenshots/04_receipts.png) |
+
+| Products | Stock balance | Printer settings | Settings |
+| --- | --- | --- | --- |
+| ![Products](/images/projects/cannopy-pos/screenshots/05_products.png) | ![Stock balance](/images/projects/cannopy-pos/screenshots/06_stock_balance.png) | ![Printer settings](/images/projects/cannopy-pos/screenshots/07_printer.png) | ![Settings](/images/projects/cannopy-pos/screenshots/08_settings.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+### 🛒 Selling
+
+- Product grid by category, search and barcode lookup (camera or a Bluetooth scanner)
+- Cart with item and invoice discounts, taxes and rounding rules
+- Cash, digital and split payments, with change suggestions
+- **Loose items** sold by weight or measure
+- Held and draft orders that can be picked up later
+- A **customer display** on a second screen showing the cart and total
+
+### 🧾 Receipts and refunds
+
+- Receipts stored on the device, reprinted at any time
+- Full and partial refunds with PIN approval, which put stock back and record the cash payout. The original receipt never changes
+- Receipt layout and design settings with a live preview
+
+### 💳 Credit (A Kyway)
+
+- When a customer pays less than the total, the shortfall is recorded as debt against them
+- Repayments go to the oldest debt first and print their own receipt
+- Customer statements
+
+### 📦 Stock and catalogue
+
+- Products with variants, bundles and kits, units, categories and taxes
+- Pack and unpack between pack sizes and single units
+- Stock adjustments, stock movement and stock reports
+- Purchases from suppliers, supplier credit payments, and transfers between stores
+- Price history, favourites and bulk import
+
+### 👥 Staff, shifts and security
+
+- Phone OTP sign-in for staff, then a PIN to unlock the till
+- Shift in and shift out with cash drawer pay-in and pay-out, or a lighter "cashier session" mode for shops that don't run shifts
+- The till locks itself after a set time without use
+- Role-based permissions from the server, checked before each guarded action
+
+### 🌐 Online and reports
+
+- **Online orders** with a shop QR code customers scan to order
+- Sales summaries, best sellers and tax reports
+- Data export
+
+---
+
+## 🏗️ Architecture
+
+A Dart pub workspace: the app in clean-architecture feature modules (presentation with BLoC, domain, data), plus internal packages for everything that isn't a feature.
+
+<Mermaid
+  caption="How a sale reaches the cloud, and the other tills"
+  chart='graph TD
+    UI["Till UI<br/>BLoC"]
+    DB["Drift database<br/>local source of truth"]
+    Outbox["Sync outbox<br/>idempotent events"]
+    Cloud["Cannopy cloud API"]
+    MQTT["MQTT<br/>change hints"]
+    LAN["Other tills<br/>LAN transfer"]
+    Print["Thermal printer<br/>ESC/POS"]
+    Display["Customer display"]
+
+    UI -->|write first| DB
+    DB --> Outbox
+    Outbox -->|push| Cloud
+    Cloud -->|cursor pull + ack| DB
+    MQTT -.->|trigger pull| Cloud
+    DB <-->|offline| LAN
+    UI --> Print
+    UI --> Display
+
+    style UI fill:#2563eb,stroke:#1d4ed8,color:#fff
+    style DB fill:#16a34a,stroke:#15803d,color:#fff
+    style Outbox fill:#16a34a,stroke:#15803d,color:#fff
+    style Cloud fill:#d97706,stroke:#b45309,color:#fff
+    style MQTT fill:#d97706,stroke:#b45309,color:#fff
+    style LAN fill:#7c3aed,stroke:#6d28d9,color:#fff
+    style Print fill:#db2777,stroke:#be185d,color:#fff
+    style Display fill:#db2777,stroke:#be185d,color:#fff'
+/>
+
+```text
+cannopy_pos/
+├── lib/
+│   ├── app/                    # Bootstrap, routing, DI, sync coordination
+│   ├── core/                   # Shared app services (sync outbox, formatting)
+│   └── features/               # ~50 feature modules: sale, checkout, debt, refund,
+│                               # shift, product, inventory, data_sync, data_transfer…
+├── packages/
+│   ├── app_database/           # Drift schema, DAOs and migrations
+│   ├── app_network/            # Dio client, auth and error handling
+│   ├── app_mqtt_sync/          # MQTT connection for sync hints
+│   ├── app_local_network/      # LAN discovery and transfer between tills
+│   ├── app_bluetooth_print/    # ESC/POS printing
+│   ├── app_barcode_scanner/
+│   ├── app_ui_kit/             # Design system
+│   ├── app_localization/
+│   └── app_logger, app_storage, app_image_cache, app_update, app_device…
+└── android/                    # Kotlin plugins: printer discovery, Bluetooth HID
+                                # scanners, customer display, Myanmar text printing
 ```
 
-### 1. Presentation Layer (BLoC + View Separation)
+### Stack
 
-Every screen is decoupled into:
-
-- **Screen Widget:** [view/](file:///Users/mixin/Projects/Cannopy/cannopy_pos/lib/app/router/app_router.dart) injects local BLoCs via GetIt dependency injection, triggers initial lifecycle events, and mounts the view content.
-- **View Content Widget:** Purely handles UI layout, listens for BLoC state changes (using `BlocListener` for navigation and alerts), and rebuilds stateful UI via `BlocBuilder`.
-- **BLoC Container:** Manages state mutations using immutable event-to-state transitions via [Equatable](https://pub.dev/packages/equatable) models.
-
-### 2. Local-First Repository Strategy
-
-To maintain absolute offline operability, repositories implement a cache-first approach:
-
-1. **Reads** are dispatched directly against the Drift database DAOs for instant UI rendering.
-2. **Writes** update the local database first and append a transaction record to an outbox sync queue.
-3. A background process runs cursor-based synchronizations when network connectivity is detected, ensuring data convergence.
+| Area | Technology |
+| :--- | :--- |
+| **App** | Flutter, `flutter_bloc`, GoRouter, get_it, Equatable |
+| **Local data** | Drift (SQLite), secure storage for tokens |
+| **Network** | Dio for the REST API, `mqtt_client` for change notifications |
+| **Devices** | ESC/POS printing over Bluetooth and the network, `mobile_scanner` and Bluetooth HID scanners, Android Presentation API for the customer display |
+| **LAN** | Bonsoir (mDNS) discovery, TCP sockets, UDP fallback |
+| **Services** | Firebase Crashlytics, Analytics, Cloud Messaging and In-App Messaging; Huawei Push |
+| **Quality** | Three build flavours (development, staging, production), a strict lint set, secret scanning in git hooks, and over 700 test files |
 
 ---
 
-## 🧠 Core Engineering Achievements
+## 🧠 Engineering Highlights
 
-### 1. Cursor-Based Sync Engine
+### The local database is the source of truth
 
-To maintain consistency between hundreds of distributed POS clients and the central API server, the synchronization system implements a cursor-pull architecture:
+Every screen reads from Drift, and every change is written there first, so checkout works the same with or without a connection. The schema is at **version 48**, and every change ships with a migration that keeps a shop's sales history intact. After sign-in, the app downloads a full snapshot of the shop's catalogue and settings. From then on it only pulls changes.
 
-- **Bootstrap Phase:** Upon OTP-based login, a device registration payload is sent. The app pulls a complete snapshot of organization, store, product catalog, tax, categories, and unit data.
-- **Incremental Sync:** Utilizing transaction cursor markers, the client pulls differences since the last cursor update. On success, the client issues a `sync_ack` back to the server to advance the sync cursor.
-- **Image Pre-caching:** Media payloads are parsed asynchronously to download and pre-cache product thumbnails, preventing layout pop during offline operations.
+### Sync that can retry safely
 
-### 2. Local P2P Database Replication
+Local changes go into an outbox. Each event's key is built from the store, event type, record, operation, time and a **SHA-256 fingerprint of the payload**, taken from a canonical form of the JSON. Retrying the same change sends the same key, so the server can drop duplicates. A real edit always gets a new key, so it's never mistaken for one already sent.
 
-For stores with multiple POS registers operating in zero-internet environments, Cannopy POS features a LAN synchronization mode:
+Each cycle pushes the outbox first, then pulls the cloud's changes since the last **cursor**. Pulled changes are staged, applied, and only then **acknowledged**, so the cursor moves forward only for changes that are safely stored. Shop data and shared reference data each have their own cursor. Sync runs only while the app is in use, and polling needs a server request each time, so an **MQTT** connection carries "something changed" hints that trigger a pull straight away. Because MQTT can drop messages while offline, the app refetches when it reconnects instead of trusting it fully.
 
-- **Master-Slave Roles:** One POS device is designated as the LAN Host, while secondary terminals act as Receivers.
-- **Network Discovery:** The host advertises its socket server using Network Service Discovery (NSD) protocols.
-- **Data Transfer Protocol:** Records are serialized, packed, and streamed over raw TCP sockets in packets, using custom handshakes and retry-on-failure protocols to reconcile database tables across devices.
+### Tills that talk to each other offline
 
-### 3. Bulletproof Shift & Cash Drawer Security
+In a shop with several tills and no internet, one till hosts and the others connect over the local network. The `app_local_network` package covers:
+- **mDNS discovery** (with a native multicast lock on Android)
+- TCP messaging with **chunking** for large tables
+- a shared-secret session, rate limiting, heartbeats and automatic reconnects
+- a UDP fallback for networks where discovery doesn't work
 
-Cashier shifts govern the operational lifecycle of the POS:
+### Printing Myanmar on cheap thermal printers
 
-- **Active Sessions:** The application enforces shift requirements (Shift In / Shift Out) for cash drawer tracking.
-- **Shiftless Operation Fallback:** In custom configurations, cashier presence sessions are validated against secure local employee schemas, enabling POS functions without strict shift constraints.
-- **Auto-Lock Security:** Inactivity timers track user input. Upon expiry, the interface locks and requires the cashier's security PIN (locally verified via hashed databases) to resume operations, preventing unauthorized drawer access.
+Most receipt printers can't draw Myanmar script. A Kotlin plugin draws each Myanmar line onto a bitmap with the app's font, then turns the bitmap into ESC/POS raster commands, so receipts print correctly on any ESC/POS printer. Other native plugins find Bluetooth printers, read Bluetooth HID barcode scanners, and drive the customer-facing display through Android's Presentation API.
 
-### 4. Custom Calculations & Transaction Flows
+### Money rules written down, then coded
 
-The checkout pipeline is custom-built to handle complex retail flows:
-
-- **Splits & Shortfalls:** Handles cash, digital wallets, split payments, and A Kyway (customer debt) options.
-- **Loose-Item Settlement:** Dynamic precision calculations for weighted items, integrating rounding rules and change-due balancing.
-- **Repayments:** Ledger tracking for customer debt repayments, allocating funds oldest-debt-first and printing dedicated payment receipts.
+Discounts, invoice discounts, tax, rounding, loose items, credit shortfalls, repayments and refunds each have a written rule document in the repo, and the code follows it. Repayments are allocated oldest debt first, refunds can never touch the original receipt, and approved or rejected refunds are final.
 
 ---
 
-## 🔒 Enterprise Security & Validation
+## 🔗 Links
 
-- **Automated Secrets Scanning:** Integrated `gitleaks` verification via git hooks prevents API credentials or private keys from entering the repository.
-- **Strict Static Analysis:** A comprehensive ruleset containing over 200 lints (enforcing double quotes, strict typing, const constructor usage, package imports, and trailing commas) is executed on every commit to maintain high codebase quality.
-- **Multi-Flavor Environments:** Fully separated environments (`development`, `staging`, `production`) configured via `.env` injection and compile-time Dart defines (`--dart-define`).
+- **Website**: [cannopypos.com](https://cannopypos.com/)
+- **Android**: [Google Play](https://play.google.com/store/apps/details?id=com.cannopypos.retail)
+- **iOS**: [App Store](https://apps.apple.com/mm/app/cannopy-pos/id6808059928)
