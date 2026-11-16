@@ -194,7 +194,7 @@ export const projects: Project[] = [
     tags: ["React Native", "Expo", "TypeScript", "offline-first", "SQLCipher", "encryption"],
     featured: false,
     links: {},
-    image: "/images/projects/dart.png",
+    image: "/images/projects/react-native.png",
   },
   {
     id: "myanmar-calendar-dart",
