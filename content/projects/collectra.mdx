@@ -1,103 +1,178 @@
 ---
 title: "Collectra: Collection Tracker"
-description: "Catalog collections, track value, tags, loans, and backups in one app."
+description: "An offline-first collection tracker for books, movies, games and anything else: tags, price history, loans, barcode and metadata lookup, statistics, and JSON/CSV backups, in seven languages on Android and iOS."
 date: "2026-02-23"
-tech: ["Flutter", "Riverpod", "GoRouter", "Drift", "Firebase"]
+tech: ["Flutter", "Riverpod", "GoRouter", "Drift", "Dio", "Firebase", "NestJS", "Prisma"]
 github: "https://github.com/mixin27/collection_tracker"
 playStore: "https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker"
+appStore: "https://apps.apple.com/us/app/collectra-collection-tracker/id6811477706"
 status: "completed"
 image: "/images/projects/collectra/logo.png"
 ---
 
-Collection Tracker is an offline-first Flutter app for organizing personal collections (books, movies, games, and custom categories), with optional cloud sync and Firebase-powered observability.
+## Featured Graphic
 
-## Current State
+![Collectra feature graphic](/images/projects/collectra/feature_graphic.png)
 
-This repository is actively developed and already includes:
+<div align="center">
 
-- Collection and item management (list/grid views, create/edit/delete)
-- Tag system (assign tags, rename/merge/delete tags, bulk tag actions)
-- Favorites and wishlist flows
-- Item detail with price tracking and value history
-- Statistics dashboard with valuation and distribution insights
-- Import/export (JSON and CSV)
-- Barcode scanner flow
-- Localization support for 7 languages
-- Custom design system and glass bottom navigation
-- Firebase Crashlytics, Analytics (consent-based), Performance, Remote Config, App Check, FCM
-- Optional backend auth and sync (feature-flag gated)
+| [GitHub](https://github.com/mixin27/collection_tracker) | [Play Store](https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker) | [App Store](https://apps.apple.com/us/app/collectra-collection-tracker/id6811477706) | [Releases](https://github.com/mixin27/collection_tracker/releases/latest) |
+| --- | --- | --- | --- |
 
-## Tech Stack
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights)
 
-- Flutter + Dart (workspace/monorepo)
-- Riverpod (with code generation)
-- Drift (local database)
-- GoRouter (navigation)
-- Firebase (Core, Analytics, Crashlytics, Performance, Remote Config)
-- Dio (backend/sync transport)
+</div>
 
-## Workspace Layout
+---
+
+## 📱 Overview
+
+People who collect things (books, films, games, cards, figures) usually keep track in a spreadsheet, a notes app or their heads. That works until they want to know what a shelf is worth, who borrowed a box set, or whether they already own something they're looking at in a shop.
+
+**Collectra** is a catalogue for those collections. You make collections, add items by hand, by searching or by scanning a barcode, and Collectra fills in titles, covers and descriptions for books, films and games. Each item keeps its condition, location, quantity, purchase price and current value, with a price history, tags and a record of who it's lent to.
+
+It's **offline-first**. Everything lives in a local database, nothing needs an account, and your data can be exported as JSON or CSV at any time. The app is in seven languages (English, Myanmar, Spanish, Indonesian, Japanese, Korean and Chinese) and is published on Google Play and the App Store.
+
+I designed and built it alone: the Flutter app, its shared packages, and a NestJS backend for accounts and sync. The sync side is fully built but switched off in the current release (see [below](#offline-first-with-sync-built-but-held-back)).
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Collections | Collection | Metadata search | Add item |
+| --- | --- | --- | --- |
+| ![Collections](/images/projects/collectra/screenshots/01_collections.png) | ![Collection](/images/projects/collectra/screenshots/02_collection_items.png) | ![Metadata search](/images/projects/collectra/screenshots/03_metadata_search.png) | ![Add item](/images/projects/collectra/screenshots/04_add_item.png) |
+
+| Loans | Item and price history | Export and import | Tags |
+| --- | --- | --- | --- |
+| ![Loans](/images/projects/collectra/screenshots/05_loans.png) | ![Item and price history](/images/projects/collectra/screenshots/06_item_detail.png) | ![Export and import](/images/projects/collectra/screenshots/07_export_import.png) | ![Tags](/images/projects/collectra/screenshots/08_tags.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+### 📚 Collections and items
+
+- Collections for books, movies, games or any custom category, in list or grid view
+- Items with a cover photo, description, notes, condition, quantity and location
+- **Favorites** and a **wishlist** for things you want but don't own yet
+- Search and filters across a collection
+
+### 🔎 Metadata and barcodes
+
+- Search **Google Books**, **TMDB** (films) and **IGDB** (games) by title and fill in the item from the result
+- Scan a barcode with the camera. An ISBN goes straight to a book lookup
+- Metadata assistance can be turned on or off in settings
+
+### 💰 Value
+
+- Purchase price, purchase date and current value for each item
+- **Price history**, with a chart of how the value has changed
+- A **statistics** screen: portfolio value, items by type and by condition, the largest collection, and favorites
+
+### 🏷️ Tags
+
+- Tag items, then rename, merge or delete tags from one screen
+- Apply or remove tags on many items at once
+
+### 🤝 Loans
+
+- Record who borrowed an item, how to reach them, when it's due, and notes
+- Active and history tabs, with overdue loans counted separately
+- Mark an item returned when it comes back
+
+### 💾 Backup
+
+- Export everything to **JSON**, or items to **CSV** for a spreadsheet
+- Import JSON with a preview of what's in the file before anything is written
+
+### ⚙️ Everything else
+
+- Onboarding for first-time users
+- Optional push notifications, with a setting to turn them off
+- In-app update prompts driven by Remote Config, with optional or required updates per platform
+- Crash reporting with Firebase Crashlytics
+
+---
+
+## 🏗️ Architecture
+
+A Dart workspace (monorepo) with the app, clean-architecture core packages and one package per integration, so each piece can be built and tested on its own.
 
 ```text
-apps/mobile/                  Flutter app
-packages/core/domain/         Domain contracts/entities
-packages/core/data/           Repository implementations
-packages/common/ui/           Shared design system components
-packages/common/utils/        Shared utilities
-packages/common/env/          Compile-time env access (Envied)
-packages/integrations/*       Database, analytics, auth session, backend API, sync API, etc.
-documentation/                Project documentation hub
+collection_tracker/
+├── apps/
+│   └── mobile/                   # Flutter app: features, routing, bootstrap
+├── packages/
+│   ├── core/
+│   │   ├── domain/               # Entities and repository contracts
+│   │   └── data/                 # Repository implementations
+│   ├── common/
+│   │   ├── ui/                   # Design system and glass bottom navigation
+│   │   ├── utils/
+│   │   └── env/                  # Compile-time API keys (Envied)
+│   └── integrations/
+│       ├── database/             # Drift schema, DAOs, migrations
+│       ├── metadata_api/         # Google Books, TMDB, IGDB clients
+│       ├── barcode_scanner/
+│       ├── storage/              # Images and secure storage
+│       ├── firebase_services/
+│       ├── logger/
+│       ├── auth_session/         # Token storage (for sync)
+│       ├── backend_api/          # Auth client (for sync)
+│       └── sync_api/             # Sync transport (for sync)
+├── scripts/                      # Build, test and Firebase setup for every package
+└── documentation/
 ```
 
-## Quick Start
+### Stack
 
-1. Install dependencies:
+| Layer | Technology |
+| :--- | :--- |
+| **App** | Flutter, Dart workspace, Riverpod with code generation, GoRouter, Freezed |
+| **Local data** | Drift (SQLite): collections, items, tags, price history, loans, and sync outbox and state tables |
+| **Lookups** | Dio clients for Google Books, TMDB and IGDB; `mobile_scanner` for barcodes |
+| **Firebase** | Crashlytics, Performance, Remote Config, App Check, Cloud Messaging |
+| **Backend** (built, not used by the release) | NestJS 11, Prisma 7, PostgreSQL, JWT auth and device sessions |
+| **CI** | GitHub Actions for analysis, tests and builds; release APKs attached to GitHub releases |
 
-```bash
-dart pub get
-```
+---
 
-2. Create API env file used by metadata integrations:
+## 🧠 Engineering Highlights
 
-```bash
-cat > packages/common/env/.env <<'ENV'
-GOOGLE_BOOKS_API_KEY=...
-TMDB_API_KEY=...
-TMDB_READ_ACCESS_TOKEN=...
-IGDB_CLIENT_ID=...
-IGDB_CLIENT_SECRET=...
-ENV
-```
+### Offline-first, with sync built but held back
 
-3. Materialize Firebase files (recommended, especially for CI/local parity):
+Every change is written to the local database first. For sync, the same transaction also queues an operation in a **sync outbox**. The operation's ID is `entityType:entityId:operationType`, so editing the same item five times leaves one pending operation, not five.
 
-```bash
-./scripts/setup_firebase.sh --require dart
-```
+The sync orchestrator sends those changes and applies the server's in one transaction, with some safeguards:
+- it skips a server change for anything that still has a local edit waiting
+- it ignores server updates older than the local copy, allowing for small clock differences
+- it applies tags before items so links are restored straight away
 
-4. Generate code:
+Network errors get a few quick retries, then a jittered retry time stored in the database, which the app checks again when it comes back to the foreground. Expired access tokens are refreshed once and the request retried.
 
-```bash
-./scripts/build_all.sh
-```
+All of this is behind three Remote Config flags and an authentication check. For the App Store release I went further and **locked accounts and sync off in code**, so a remote config change can't switch on a half-finished feature. The app ships as a fully offline product while the sync work stays in the codebase.
 
-5. Run app:
+### Metadata lookups that don't hammer the APIs
 
-```bash
-cd apps/mobile
-flutter run
-```
+The `metadata_api` package wraps Google Books, TMDB and IGDB behind one interface. The app's lookup service picks the right source: an ISBN-shaped barcode (10 or 13 digits) goes to a book lookup. Results are cached in memory with time limits and a size cap (5 minutes for searches, 10 for barcodes, at most 120 entries each), so typing a search or re-scanning the same code doesn't send a new request every time.
 
-## Cloud Sync Flags (Important)
+### A database that has grown with the app
 
-Cloud Sync is enabled only when all required Remote Config flags are `true`:
+The Drift schema is at **version 8**. Loans, price history and the sync tables were added after the first release, each with its own migration, so people upgrading keep their collections.
 
-- `app_backend_integration_enabled`
-- `app_auth_feature_enabled`
-- `app_sync_feature_enabled`
+### One workspace, many packages
 
-If either is `false`, sync UI/actions are disabled.
+Each integration is its own package with its own tests, and shared scripts run code generation, analysis and tests across all of them in dependency order. API keys for the metadata services are compiled in with Envied instead of living in source. A setup script creates the Firebase config files, so local builds and CI match.
 
-## License
+---
 
-MIT.
+## 🔗 Links
+
+- **Android**: [Google Play](https://play.google.com/store/apps/details?id=dev.mixin27.collection_tracker), or the APK from [GitHub releases](https://github.com/mixin27/collection_tracker/releases/latest)
+- **iOS**: [App Store](https://apps.apple.com/us/app/collectra-collection-tracker/id6811477706)
+- **Source**: [github.com/mixin27/collection_tracker](https://github.com/mixin27/collection_tracker) (MIT)
