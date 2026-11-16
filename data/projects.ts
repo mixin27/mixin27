@@ -25,16 +25,17 @@ export const projects: Project[] = [
     slug: "cannopy-pos",
     name: "Cannopy POS",
     shortDesc:
-      "Enterprise-grade local-first mobile Point of Sale (POS) system with cursor-based synchronization.",
+      "A phone- and tablet-first point of sale for Myanmar shops that keeps selling offline.",
     fullDesc:
-      "A production-grade, offline-first retail Point of Sale (POS) application featuring Drift-backed local storage, cursor-based API sync, socket-based local LAN data replication, active cashier shift tracking, and ESC/POS thermal printing integrations.",
+      "A production POS on Google Play and the App Store: checkout, stock, customer credit, refunds and shifts on a local Drift database, idempotent cursor-based sync with MQTT change hints, LAN transfer between tills, and ESC/POS printing in Myanmar script.",
     category: "flutter",
     tags: [
       "offline-first",
-      "p2p-sync",
-      "clean-architecture",
-      "bluetooth-printing",
-      "inventory",
+      "BLoC",
+      "Drift",
+      "cursor-sync",
+      "LAN-sync",
+      "thermal-printing",
       "retail",
     ],
     featured: true,
