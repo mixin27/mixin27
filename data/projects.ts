@@ -73,9 +73,9 @@ export const projects: Project[] = [
     shortDesc:
       "Catalog collections, track value, tags, loans, and backups in one app.",
     fullDesc:
-      "Collectra helps you catalog collections, track value, manage tags and loans, and keep backups with export/import. Built with Flutter and published on the Play Store.",
+      "An offline-first collection tracker with barcode and Google Books/TMDB/IGDB lookups, price history, tags, loans, statistics and JSON/CSV backups, in seven languages. Built with Flutter, Riverpod and Drift, and published on Google Play and the App Store.",
     category: "flutter",
-    tags: ["collection", "tracker", "catalog"],
+    tags: ["offline-first", "Riverpod", "Drift", "barcode", "catalog"],
     featured: true,
     links: {
       github: "https://github.com/mixin27/collection_tracker",
