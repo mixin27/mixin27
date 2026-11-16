@@ -183,6 +183,20 @@ export const projects: Project[] = [
 
   // ── MORE PROJECTS ─────────────────────────────────────────
   {
+    id: "coar-collector-app",
+    slug: "coar-collector-app",
+    name: "Collector App (COAR)",
+    shortDesc:
+      "An offline-first mobile app for collecting form data in the field, built with React Native and Expo.",
+    fullDesc:
+      "A React Native and Expo app for filling in forms offline and sending them when a connection is available, with an encrypted local database, encrypted media storage, resumable uploads and an app lock. In progress for COAR; I build the mobile app.",
+    category: "react-native",
+    tags: ["React Native", "Expo", "TypeScript", "offline-first", "SQLCipher", "encryption"],
+    featured: false,
+    links: {},
+    image: "/images/projects/react-native.png",
+  },
+  {
     id: "myanmar-calendar-dart",
     slug: "myanmar-calendar-dart",
     name: "Myanmar Calendar Dart",

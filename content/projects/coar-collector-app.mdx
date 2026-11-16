@@ -1,0 +1,92 @@
+---
+title: "Collector App (COAR)"
+description: "An offline-first mobile app for collecting form data in the field, built with React Native and Expo: an encrypted local database, encrypted media storage, resumable uploads and an app lock. In progress for COAR; I build the mobile app."
+date: "2026-02-17"
+tech: ["React Native", "Expo", "TypeScript", "Expo Router", "TanStack Query", "Zustand", "Zod", "SQLite (SQLCipher)", "Swift", "Kotlin"]
+status: "in-progress"
+image: "/images/projects/react-native.png"
+---
+
+<Callout type="info" title="In progress">
+This project is mid-build, at milestone 2 of the engagement. Screenshots and more detail will be added when it's finished. The client's work is sensitive, so this page only covers the technical side of the mobile app.
+</Callout>
+
+## 📱 Overview
+
+**Collector App** is a mobile app for collecting form data in the field, being built for **COAR**. People fill in forms on their phones, often without a connection, and the app keeps their work safe on the device until it can be sent.
+
+I build the **mobile app** (iOS and Android). The backend, the admin tools and the shared form engine are built by other members of the team, so they aren't covered here.
+
+---
+
+## ✨ What the app does
+
+- **Forms that work offline**: forms are downloaded, filled in and saved on the phone, then sent when a connection is available
+- **Rich answers**: photos, video, audio recordings, files and GPS locations, captured inside the app
+- **Submission states**: unsent, sending, failed and received, with retry and corrections
+- **Protected access**: sign-in, a PIN or biometric app lock, and protection against screenshots and screen recording on sensitive screens
+
+---
+
+## 🏗️ Architecture
+
+The mobile app lives in a TypeScript monorepo next to the shared packages it uses, including the form engine and API contracts.
+
+```text
+apps/mobile/
+├── src/
+│   ├── app/          # Expo Router routes: public, onboarding, gate and app groups
+│   ├── core/         # Database, security, files, network, auth, permissions, config
+│   └── modules/      # Feature modules: forms, submissions, capture, app lock, settings…
+├── modules/          # Local native Expo module (Swift and Kotlin) for file hashing
+└── __tests__/
+```
+
+### Stack
+
+| Area | Technology |
+| :--- | :--- |
+| **App** | React Native, Expo (development builds), TypeScript |
+| **Navigation** | Expo Router with route groups for each stage of the app |
+| **State and data** | TanStack Query for server data, Zustand for local state, Zod for validation |
+| **Local storage** | `expo-sqlite` with SQLCipher, `expo-secure-store` for keys, `expo-file-system` |
+| **Capture** | `expo-camera`, `expo-image-picker`, `expo-audio`, `expo-video`, `expo-location` |
+| **Security** | `expo-local-authentication`, `expo-screen-capture`, `@noble/hashes`, AES-GCM through `expo-crypto` |
+| **Native** | A local Expo module in Swift and Kotlin |
+| **Testing** | Jest, with tests next to the core and feature code |
+
+---
+
+## 🧠 Engineering Highlights
+
+Several of these designs are still being reviewed at this milestone.
+
+### A separate encrypted database for each account
+
+Each signed-in account gets its own **SQLCipher** database file. Its location comes from the environment and the account, and the encryption key is kept in the platform's secure storage. Opening a database fails if it's the wrong one or the encryption isn't available, rather than falling back to an unencrypted file.
+
+SQLCipher brought a catch: `expo-sqlite`'s exclusive transactions open a second connection that doesn't have the key. So all database work goes through one **serial queue** on the single keyed connection, with explicit `BEGIN IMMEDIATE … COMMIT` steps that roll back completely on failure.
+
+### Large media files encrypted without loading them into memory
+
+Photos, video and audio can be far bigger than a phone can comfortably hold in memory. Attachments are encrypted with **AES-256-GCM in 1 MiB segments**, using the established streaming format from Google's Tink library (AES-GCM-HKDF) behind a version marker, not a home-made one.
+- Each file gets its own derived key.
+- Segment numbers and a last-segment flag in the nonce make a reordered or cut-off file fail to decrypt.
+- New files are written to a temporary location and only moved into place once complete.
+- Files in the older format can still be read.
+
+### Native file hashing
+
+Media must be verified after upload, which means hashing large files. JavaScript hashing on Hermes is slow, so I wrote a small **native Expo module in Swift and Kotlin** that streams a SHA-256 hash of a file. The app falls back to JavaScript hashing where the module isn't available, such as in tests or Expo Go.
+
+### Uploads that can be retried and resumed
+
+Each submission is sent with an **idempotency key**, so retrying a send can never create a duplicate. Media upload straight to short-lived signed storage URLs:
+- URLs are renewed shortly before they expire.
+- An expired URL is renewed once and the upload resumes.
+- Files are read in ranges, so only one part is decrypted in memory at a time, and the temporary copy is deleted afterwards.
+- A file that's now larger than the server allows is reported clearly instead of being retried for ever.
+
+### An app lock that never puts data at risk
+
+The PIN or biometric lock sits in front of the app and is separate from the encryption, so locking, unlocking or resetting it never deletes or re-encrypts saved work. The PIN is stored only as a salted hash in secure storage, along with a count of failed attempts. Biometric unlock turns itself off if the fingerprints or faces on the phone change. Opening the camera, photo library or file picker is marked as an intentional hand-off, so leaving the app for those doesn't lock it, unless the user stays away too long.
