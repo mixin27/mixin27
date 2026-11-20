@@ -13,6 +13,7 @@ export function getCategoryLabel(category: string): string {
     android: "Android",
     web: "Web",
     library: "Library",
+    "full-stack": "Full Stack",
   }
   return map[category] ?? category
 }
@@ -25,6 +26,7 @@ export function getCategoryColor(category: string): string {
     android: "bg-green-500/10 text-green-400 border-green-500/20",
     web: "bg-orange-500/10 text-orange-400 border-orange-500/20",
     library: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    "full-stack": "bg-rose-500/10 text-rose-400 border-rose-500/20",
   }
   return map[category] ?? "bg-muted/70 text-muted-foreground border-border"
 }
