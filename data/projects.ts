@@ -150,7 +150,7 @@ export const projects: Project[] = [
     links: {
       github: "https://github.com/mixin27/myanlex",
       live: "https://docs.myanlex.dev/",
-      demo: "https://myanmar-data-review.vercel.app/",
+      demo: "https://review.myanlex.dev/",
       pubDev: "https://pub.dev/packages/myanlex_dart",
     },
     image: "/images/projects/myanlex/logo.png",
@@ -176,7 +176,7 @@ export const projects: Project[] = [
     ],
     featured: true,
     links: {
-      live: "https://myanmar-data-review.vercel.app/",
+      live: "https://review.myanlex.dev/",
     },
     image: "/images/projects/myanmar-data-review/logo.png",
   },

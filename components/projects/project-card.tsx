@@ -127,7 +127,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             href={project.links.playStore}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`${project.name} on the App Store`}
+            aria-label={`${project.name} on Google Play`}
             className="flex items-center gap-1 font-mono text-[11px] text-muted-foreground/80 transition-colors hover:text-foreground"
           >
             Play Store
