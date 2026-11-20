@@ -1,0 +1,179 @@
+---
+title: "Billleaf"
+description: "An all-in-one business workspace for freelancers: clients, quotes, contracts, projects, time, invoices, payments and receipts in one place, with a client portal and an iOS and Android app. A TypeScript monorepo with a NestJS API, a Next.js web app and an Expo mobile app."
+date: "2026-11-14"
+tech: ["TypeScript", "Next.js", "React", "NestJS", "Fastify", "PostgreSQL", "Drizzle", "Better Auth", "BullMQ", "Valkey", "TanStack Query", "Zustand", "Zod", "Expo", "React Native", "Playwright"]
+github: "https://github.com/mixin27/billleaf"
+live: "https://billleaf-docs.vercel.app"
+status: "in-progress"
+image: "/images/projects/billleaf/logo.png"
+---
+
+![Billleaf: quotes, contracts, time, invoices and payments in one place](/images/projects/billleaf/billleaf-banner.png)
+
+<div align="center">
+
+| [GitHub](https://github.com/mixin27/billleaf) | [Documentation](https://billleaf-docs.vercel.app) |
+| --- | --- |
+
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Features](#-features) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights)
+
+</div>
+
+---
+
+## 📱 Overview
+
+**Billleaf** is a business workspace for freelancers and small studios. Freelancers usually stitch together a spreadsheet of clients, a quote template, a PDF tool for contracts, a timer app, an invoicing app and their bank statement, re-typing the same details at every step and never quite knowing what's still unpaid.
+
+Billleaf follows one piece of work from start to finish, and everything entered once flows forward:
+
+```text
+Client → Quote → Contract → Project → Time → Invoice → Payment → Receipt
+```
+
+An accepted quote becomes a contract, a project or an invoice. Billable time and expenses turn into invoice lines. Recording a payment issues a receipt. Clients answer quotes, sign contracts and see their invoices in a portal, and the mobile app covers the work done away from a desk: the timer, receipts for expenses, and getting paid.
+
+It's an open-source project I'm building on my own: the API, the web app, the mobile app, the docs site and the end-to-end tests.
+
+---
+
+## 📸 Screenshots
+
+### Web app
+
+From a demo workspace in the web app.
+
+![Home dashboard with what's outstanding, time this week and project budgets](/images/projects/billleaf/screenshots/web_01_dashboard.png)
+
+![An issued invoice with a credit note and refunded payments](/images/projects/billleaf/screenshots/web_02_invoice.png)
+
+![A project with its time, costs, budget and task board](/images/projects/billleaf/screenshots/web_03_project.png)
+
+![Profit and loss, expenses by category and a tax summary](/images/projects/billleaf/screenshots/web_04_reports.png)
+
+### Mobile app
+
+From the iOS app, with the same demo workspace.
+
+<div align="center">
+
+| Time | Invoice | Client | Project |
+| --- | --- | --- | --- |
+| ![The timer and a day's time entries](/images/projects/billleaf/screenshots/mobile_01_time.png) | ![An invoice with record payment, share PDF and email](/images/projects/billleaf/screenshots/mobile_02_invoice.png) | ![A client with what they owe, their invoices and projects](/images/projects/billleaf/screenshots/mobile_03_client.png) | ![A project with tasks, time and budget](/images/projects/billleaf/screenshots/mobile_04_project.png) |
+
+</div>
+
+---
+
+## ✨ Features
+
+### 🧾 Selling
+
+- **Clients** with contacts, a primary contact for documents, and their full history
+- **Quotes** that clients accept or decline online, then turn into a contract, a project or an invoice
+- **Contracts** from templates, signed by the client in the portal
+
+### 🗂️ Work
+
+- **Projects** with hourly, fixed-price or non-billable billing, time and money estimates, and a task board
+- **Time tracking**: a timer, a week calendar you drag on, a weekly timesheet, favourites, tags, CSV import
+- **Rates and costs** per workspace, member, project and task, so each project shows its billable amount, cost and profit
+- **Time rules**: rounding, a lock date for closed periods, and timesheet approvals for teams
+
+### 💸 Getting paid
+
+- **Invoices** in any currency, with taxes, PDFs, email delivery, payment reminders and recurring schedules
+- **Credit notes** for corrections: issued documents are never edited
+- **Payments and receipts**: recording a payment issues a numbered receipt that can be emailed to the client
+- **Client portal**: clients sign in with an emailed link (no password) to accept or decline quotes, sign contracts, download PDFs and send proof of payment
+
+### 📒 Books
+
+- **Expenses** with receipt photos, billable to a client and rebilled on their next invoice
+- **Reports**: profit and loss by month, expenses by category, and a tax summary
+
+### 👥 Teams and integrations
+
+- **Workspaces** with members, invitations, and custom roles built from 53 permissions
+- **Plans** (Free, Pro, Team) with limits checked in one place
+- **API keys** for the REST API, **signed webhooks**, CSV and PDF exports, and an audit log
+
+### 📱 Mobile app (iOS and Android)
+
+- The timer and today's time, editable entries, and a reminder when a timer has been running too long
+- Invoices: record a payment, share the PDF, email the invoice or a receipt
+- Clients and projects: what each client owes, call or email them, start a timer on a project or a task, tick tasks off, invoice unbilled time
+- Expenses with a receipt photo from the camera
+
+---
+
+## 🏗️ Architecture
+
+A pnpm and Turborepo monorepo. Shared shapes live in packages, so the API, the web app and the mobile app agree on every request and response.
+
+```text
+billleaf/
+├── apps/
+│   ├── api/        # NestJS on Fastify: REST API, auth, and a BullMQ worker (emails, PDFs, webhooks, schedules)
+│   ├── web/        # Next.js App Router product app, one folder per feature
+│   ├── mobile/     # Expo app for iOS and Android
+│   ├── docs/       # Help pages, developer docs and the API reference (Fumadocs)
+│   └── e2e/        # Playwright journeys against a real API and database
+└── packages/
+    ├── db/         # Drizzle schema and migrations
+    ├── contracts/  # Zod schemas, shared types and the permission catalogue
+    ├── api-client/ # Typed client generated from the API's OpenAPI spec
+    ├── ui/         # shadcn/ui components
+    ├── emails/     # Transactional email templates
+    └── brand/      # Logo, icons and generated app assets
+```
+
+### Stack
+
+| Area | Technology |
+| :--- | :--- |
+| **API** | NestJS on Fastify, Drizzle ORM, PostgreSQL, Better Auth, Zod DTOs, OpenAPI |
+| **Background jobs** | BullMQ on Valkey: emails, PDFs, webhooks, recurring invoices and reminders |
+| **Web** | Next.js (App Router), React, shadcn/ui, TanStack Query, Zustand, React Hook Form |
+| **Mobile** | Expo, React Native, Expo Router, TanStack Query, Zustand, expo-notifications |
+| **Files** | S3-compatible storage (SeaweedFS locally, Cloudflare R2 in production) |
+| **Docs** | Fumadocs, with the API reference generated from the OpenAPI spec |
+| **Testing** | Vitest unit and integration tests, Playwright end-to-end journeys, CI on GitHub Actions |
+| **Deployment** | Docker images built in CI and run on a VPS with Dokploy, promoted to production after an approval; the docs site on Vercel |
+
+---
+
+## 🧠 Engineering Highlights
+
+### Money and documents that stay correct
+
+Money is always stored as whole minor units with its currency, never as floating point. Issued invoices, quotes and receipts can't be edited: a mistake is fixed with a credit note or by voiding. Document numbers (`INV-0001`, `RCT-0001`) are **gap-free per workspace**: the next number is taken inside the same transaction that issues the document, with a row lock that makes concurrent issuers wait, so a rolled-back issue gives its number back.
+
+### One workspace model, from a freelancer to an agency
+
+Every business row carries a `workspace_id`, and every query is scoped to the workspace of the current request, never to an id sent by the client. A solo freelancer is simply a workspace of one, so the same model grows into a studio with members and roles without a migration.
+
+### Permissions as data
+
+Roles are rows, not code. A typed catalogue of permission keys (`invoice.create`, `time.manage`, …) lives in a shared package; every API route declares the key it needs, and the web and mobile apps hide what a role can't do. Workspaces can create their own roles on the Team plan. Plan limits ("entitlements") are a separate check, so feature code asks "is this allowed?" and never looks at plan names.
+
+### A client portal without passwords
+
+Clients aren't users and won't remember a password. They sign in with a single-use emailed link, and document emails carry their own link that opens the portal on that document. Sign-in links land on a page that waits for a click, so corporate mail scanners that open every URL don't use them up. Only hashes of the tokens are stored, and a portal session can only ever see that one client's issued documents.
+
+### Side effects that can't break the action
+
+Emails, PDFs and webhooks run in a worker on BullMQ queues, after the change has been saved. Webhooks are signed with HMAC-SHA256, retried with exponential backoff for about two hours, and recorded per delivery so they can be inspected and resent with the same event id. A failing webhook endpoint never stops an invoice from being issued.
+
+### One API, three clients
+
+The API's Zod schemas produce its OpenAPI spec, which generates a typed client used by the web app, the mobile app and the end-to-end tests. Changing a route without regenerating the client fails the type check, so the apps can't drift from the API.
+
+### A mobile app that shares the session safely
+
+The Expo app signs in through Better Auth's native support: the session cookie lives in the device keychain and is sent with each request, and the API only trusts the app's own URL scheme. The timer runs on the server, so it keeps counting when the phone is locked or the timer was started on the web. A local notification reminds you about a timer left running, rescheduled whenever the timer or the setting changes.
+
+### Tested end to end
+
+Playwright journeys run the real API, worker and web app against their own database and a mail catcher: sign-up with email verification, quote to paid invoice through the client portal, time tracking to invoice, roles and permissions, and password reset. They run on every pull request, with traces uploaded when one fails.
