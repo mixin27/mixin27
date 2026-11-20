@@ -134,7 +134,7 @@ export const projects: Project[] = [
     shortDesc:
       "Open-source toolkit for reliable Myanmar-language text processing.",
     fullDesc:
-      "Unicode/Zawgyi detection and conversion, safe normalization, Burmese syllables, orthography checks, ALA-LC transliteration and tokenization, from a framework-independent engine with a self-hostable API and TypeScript, Dart and Python SDKs.",
+      "Unicode/Zawgyi detection and conversion, safe normalization, Burmese syllables, orthography checks, ALA-LC transliteration and tokenization, from a framework-independent engine with a self-hostable API, TypeScript, Dart and Python SDKs, and a developer console with teams, billing-grade usage statements and plans.",
     category: "full-stack",
     tags: [
       "myanmar-language",

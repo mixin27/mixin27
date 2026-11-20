@@ -1,8 +1,8 @@
 ---
 title: "MyanLex"
-description: "An open-source toolkit for Myanmar-language text: Unicode/Zawgyi detection and conversion, safe normalization, Burmese syllables, orthography checks, ALA-LC transliteration and tokenization, with a self-hostable API and SDKs for TypeScript, Dart and Python."
+description: "An open-source toolkit for Myanmar-language text: Unicode/Zawgyi detection and conversion, safe normalization, Burmese syllables, orthography checks, ALA-LC transliteration and tokenization, with a self-hostable API, SDKs for TypeScript, Dart and Python, and a developer console with teams, billing-grade usage statements and plans."
 date: "2026-10-06"
-tech: ["TypeScript", "NestJS", "Fastify", "Next.js", "PostgreSQL", "Prisma", "Redis", "OpenAPI", "Dart", "Python"]
+tech: ["TypeScript", "NestJS", "Fastify", "Next.js", "React", "PostgreSQL", "Prisma", "Redis", "Better Auth", "OpenAPI", "Dart", "Python", "Playwright"]
 github: "https://github.com/mixin27/myanlex"
 live: "https://docs.myanlex.dev/"
 demo: "https://myanmar-data-review.vercel.app/"
@@ -11,12 +11,14 @@ status: "in-progress"
 image: "/images/projects/myanlex/logo.png"
 ---
 
+![MyanLex: Myanmar language infrastructure](/images/projects/myanlex/myanlex-banner.png)
+
 <div align="center">
 
 | [GitHub](https://github.com/mixin27/myanlex) | [Docs](https://docs.myanlex.dev/) | [npm](https://www.npmjs.com/package/@myanlex/core) | [pub.dev](https://pub.dev/packages/myanlex_dart) | [PyPI](https://pypi.org/project/myanlex-python/) |
 | --- | --- | --- | --- | --- |
 
-[Overview](#-overview) • [Operations](#-operations) • [Examples](#-examples) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights) • [Status](#-status)
+[Overview](#-overview) • [Screenshots](#-screenshots) • [Operations](#-operations) • [Examples](#-examples) • [Architecture](#%EF%B8%8F-architecture) • [Engineering](#-engineering-highlights) • [Status](#-status)
 
 </div>
 
@@ -31,11 +33,26 @@ Myanmar text breaks the assumptions most text libraries make. Much of it is stil
 - **`@myanlex/core`**: a framework-independent engine with no web framework, database, network or environment dependencies
 - **`@myanlex/application`**: use cases with input limits and ordered batches, usable offline in Node or a browser worker
 - **A versioned HTTP API** (NestJS on Fastify) described by an OpenAPI 3.2.1 contract, with API keys, rate limits and quotas
-- **SDKs** for TypeScript, Dart and Python, and a **developer console**, **playground** and **docs site**
+- **SDKs** for TypeScript, Dart and Python, and a **docs site**
+- **A developer console** for workspaces, teams, API keys, a playground, billing-grade usage statements and plans
 
 The project is built so its rules can be checked: every behaviour has a written specification, a corpus of regression cases with recorded sources, and a named, versioned profile reported in every result.
 
 [Myanmar Data Review](/projects/myanmar-data-review) is a web app built on MyanLex for inspecting real Myanmar text data.
+
+---
+
+## 📸 Screenshots
+
+From a demo workspace in the developer console.
+
+![Overview with the workspace's monthly allowance on an overage plan](/images/projects/myanlex/screenshots/web_01_dashboard.png)
+
+![Usage page with the billable monthly statement and its estimated charges](/images/projects/myanlex/screenshots/web_02_usage_statement.png)
+
+![Billing page with the current plan, this month's estimate and plan history](/images/projects/myanlex/screenshots/web_03_billing.png)
+
+![Playground tokenizing mixed Myanmar, Latin, numbers and emoji in the browser engine](/images/projects/myanlex/screenshots/web_04_playground.png)
 
 ---
 
@@ -152,7 +169,8 @@ myanlex/
 │   ├── sdk/             # TypeScript HTTP client (native fetch)
 │   ├── myanlex_dart/    # Dart HTTP client
 │   ├── myanlex_python/  # Python client, sync and async
-│   └── playground/      # Shared playground engine and snippets
+│   ├── playground/      # Shared playground engine and snippets
+│   └── brand/           # Logo sources and generated web, mobile and kit assets
 ├── apps/
 │   ├── api/             # NestJS/Fastify adapter
 │   ├── web/             # Developer console
@@ -160,7 +178,7 @@ myanlex/
 ├── openapi/             # The authoritative HTTP contract
 ├── corpus/              # Regression cases with recorded sources
 ├── prisma/              # Platform schema and migrations
-└── docs/                # Linguistic specs and 20 architecture decision records
+└── docs/                # Linguistic specs and 24 architecture decision records
 ```
 
 ### Stack
@@ -169,7 +187,7 @@ myanlex/
 | :--- | :--- |
 | **Engine** | TypeScript with no runtime framework dependencies; Unicode 17 character data |
 | **API** | NestJS 12 on Fastify 5, Zod validation, RFC 9457 problem responses, Scalar and Swagger UI |
-| **Platform** | PostgreSQL with Prisma 7, Redis for distributed rate limits, dynamic roles and permissions, hashed project API keys |
+| **Platform** | PostgreSQL with Prisma 7, Redis for distributed rate limits, dynamic roles and permissions, hashed project API keys, an append-only usage ledger with monthly statements |
 | **Console** | Next.js 16, React 19, Tailwind CSS 4, shadcn/ui, Better Auth (email/password, optional Google and GitHub) |
 | **Docs** | Fumadocs with search, language tabs and a generated OpenAPI reference |
 | **SDKs** | TypeScript (`@myanlex/sdk`), Dart (`myanlex_dart`), Python (`myanlex-python`) |
@@ -206,13 +224,27 @@ A change to linguistic behaviour updates the specification, the corpus, the test
 ### A platform around the engine
 
 The API adds what a shared service needs:
-- organizations, projects and dynamic roles
+- workspaces, projects, invitations and **roles built from a permission catalogue**, with ownership transfer
+- an **append-only audit log** of every team, key and plan change
 - scoped, hashed API keys
-- best-effort usage reports that never include the submitted text
-- Redis-backed burst limits across instances, and opt-in monthly quotas in PostgreSQL
+- Redis-backed burst limits across instances, and monthly quotas in PostgreSQL
 - health and readiness endpoints, and operator-protected Prometheus metrics
 
 The console's **playground** runs operations in the browser engine by default, or through the API with a signed-in project, with private saved runs.
+
+### Usage you could send a bill for
+
+Every admitted request is written to an append-only `usage_events` ledger **in the same database transaction** that reserves it against the workspace's monthly quota counter, so the two can't disagree: a denied request writes neither, and an admitted one writes both or neither. Metering is always on; the enforcement setting only decides whether limits can deny. If a request can't be metered, it gets a 503 instead of being served for free.
+
+A month-close job writes one **immutable statement** per workspace and month: totals, a breakdown by project and API key, the plan in effect, and a `reconciled` flag that checks the ledger against the counter. Database triggers reject edits to ledger rows and statements. Customers can download every billable request of a month as a CSV, which never contains the submitted text, and ledger rows are kept 13 months before cleanup.
+
+### Plans and prices that can't drift
+
+Plans have a monthly fee, request and character allowances, and per-block overage prices, in their own currency as whole minor units. Each plan either refuses requests at its allowance or bills overage up to an optional ceiling, and quota enforcement uses the same rule. A month is priced on the plan in effect at its end, and the charges are stored on the closed statement. Once any workspace has used a plan, a trigger fixes its terms, so a new price means a new plan; an exclusion constraint stops two subscriptions from overlapping. Plans are assigned with operator scripts that write to the audit log. Payment collection comes next.
+
+### One brand source
+
+The logo, wordmark, favicons, PWA and share images, iOS and Android app icons, and README banners are all generated from three hand-written SVGs by one script. The wordmark is outlined to a path, so images don't depend on installed fonts. A test rebuilds everything and fails if the output changes.
 
 ---
 
@@ -224,7 +256,7 @@ MyanLex is a **developer preview**. Beta packages are published:
 - **pub.dev**: `myanlex_dart` at `0.1.0-beta.0`
 - **PyPI**: `myanlex-python` at `0.1.0b1`
 
-There's no public hosted API yet, so the HTTP SDKs need a self-hosted deployment. The local packages work without one. The API and package interfaces aren't stable contracts yet, and independent linguistic review is still a release gate.
+There's no public hosted API yet, so the HTTP SDKs need a self-hosted deployment. Next on the platform: payment collection and self-service plan changes on top of the priced statements. The local packages work without one. The API and package interfaces aren't stable contracts yet, and independent linguistic review is still a release gate.
 
 ---
 
