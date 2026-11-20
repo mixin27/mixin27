@@ -181,6 +181,33 @@ export const projects: Project[] = [
     image: "/images/projects/myanmar-data-review/logo.png",
   },
 
+  {
+    id: "billleaf",
+    slug: "billleaf",
+    name: "Billleaf",
+    shortDesc:
+      "An all-in-one business workspace for freelancers, from the first quote to the final receipt.",
+    fullDesc:
+      "Clients, quotes, contracts, projects, time tracking, invoices, payments and receipts in one place, with a passwordless client portal and an iOS and Android app. A TypeScript monorepo: NestJS API with a BullMQ worker, Next.js web app, Expo mobile app, PostgreSQL with Drizzle, and permission-based roles.",
+    category: "full-stack",
+    tags: [
+      "TypeScript",
+      "NestJS",
+      "Next.js",
+      "Expo",
+      "PostgreSQL",
+      "multi-tenant",
+      "invoicing",
+      "time-tracking",
+    ],
+    featured: true,
+    links: {
+      github: "https://github.com/mixin27/billleaf",
+      live: "https://billleaf-docs.vercel.app",
+    },
+    image: "/images/projects/billleaf/logo.png",
+  },
+
   // ── MORE PROJECTS ─────────────────────────────────────────
   {
     id: "coar-collector-app",
